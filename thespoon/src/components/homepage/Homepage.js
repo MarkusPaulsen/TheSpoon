@@ -6,9 +6,17 @@ class Homepage extends Component {
     render() {
         return (
             <Layout >
-                <div className="homepage-text">
-                    <h1>Share your menus</h1>
-                    <button className="normal">Get started</button>
+                <div className="homepage-banner">
+                    <div className="homepage-text">
+                        <div className="container">
+                            <div className="row">
+                                <div className="col-sm-8">
+                                    <h1 className="title">Share your menus</h1>
+                                    <button className="normal">Get started</button>  
+                                </div>
+                            </div>
+                        </div>
+                     </div>
                 </div>
             </Layout>
         );

@@ -18,6 +18,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   font-size: 1rem;
   font-weight: 300;
+  line-height: 1.1;
 }
 
 h1 {
@@ -65,6 +66,11 @@ input {
   opacity: 1; /* Firefox */
 }
 
+ul {
+  margin-bottom: 0;
+  padding-left: 0;
+}
+
 
 button {
   background-color: var(--pink);
@@ -92,20 +98,25 @@ button.wide {
 
 /* HEADER > */
 header {
-  height: 6rem;
   background-color: var(--white);
+}
+
+header nav {
+  height: 6rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-header ul li {
+header nav ul li {
   display: inline-block;
   white-space: nowrap;
   position: relative;
+  font-size: 0.875rem;
+  font-weight: 500;
 }
 
-header ul li a {
+header nav ul li a {
   padding: 10px 15px;;
   text-transform: uppercase;
 }
@@ -113,8 +124,8 @@ header ul li a {
 /* < HEADER */
 
 /* HOMEPAGE > */
-.homepage-text {
-    /*background-image: url('/logo192.png');*/
+.homepage-banner {
+    /*background-image: url('/background.png');*/
     background-color: var(--turquoise);
     background-repeat: no-repeat;
     background-position: center center;
@@ -123,6 +134,19 @@ header ul li a {
     position: relative;
     margin: 0;
     color: var(--white);
+    position: relative;
+}
+
+.homepage-text {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.homepage-text .title {
+    margin-bottom: 3.5rem;
 }
 
 
