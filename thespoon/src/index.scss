@@ -46,7 +46,11 @@ h4 {
 a {
   color: var(--turquoise);
   text-decoration: none;
+  &:hover  {
+    color: var(--turquoise);
+  }
 }
+
 
 small {
   font-size: 0.5833333333333334rem;
@@ -85,41 +89,60 @@ button {
   -webkit-box-shadow: 0px 5px 5px 0px rgba(149,149,149,0.62);
   -moz-box-shadow: 0px 5px 5px 0px rgba(149,149,149,0.62);
   box-shadow: 0px 5px 5px 0px rgba(149,149,149,0.62);
-}
 
-button.normal {
+  &:hover {
+    opacity: .8;
+    a {
+      color: var(--white);
+      text-decoration: none;
+    }
+  }
+
+  &.normal {
     width: 8.333333333333334rem;
-}
+  }
 
-button.wide {
-  width: 12.708333333333334rem;
+  &.wide {
+    width: 12.708333333333334rem;
+  }
+
+  a {
+    color: var(--white);  
+  }
+
+  &.exit {
+    background-color: transparent;
+    box-shadow: none;
+  }
 }
 
 
 /* HEADER > */
 header {
   background-color: var(--white);
+
+  nav {
+    height: 6rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    li {
+      display: inline-block;
+      white-space: nowrap;
+      position: relative;
+      font-size: 0.875rem;
+      font-weight: 500;
+
+      a, label {
+        padding: 10px 15px;;
+        text-transform: uppercase;
+      }
+    }
+  }
 }
 
-header nav {
-  height: 6rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
 
-header nav ul li {
-  display: inline-block;
-  white-space: nowrap;
-  position: relative;
-  font-size: 0.875rem;
-  font-weight: 500;
-}
-
-header nav ul li a {
-  padding: 10px 15px;;
-  text-transform: uppercase;
-}
 
 /* < HEADER */
 
@@ -135,27 +158,47 @@ header nav ul li a {
     margin: 0;
     color: var(--white);
     position: relative;
+
+    .homepage-text {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+
+      .title {
+        margin-bottom: 3.5rem;
+      }
+    }
+
 }
-
-.homepage-text {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%);
-}
-
-.homepage-text .title {
-    margin-bottom: 3.5rem;
-}
-
-
 
 /* < HOMEPAGE */
 
 
+/* MODALS > */
 
-.user-handle {
-  background-color: var(--white);
-  display: inline-block;
+/* < MODALS */
+
+.modal-content {
+  .choose-user {
+    padding: 4rem 2rem;
+    text-align: center;
+
+    h2 {
+      margin-bottom: 3rem;
+    }
+
+    button {
+      margin-bottom: 2rem;
+    }
+
+    label {
+      margin-top: 1rem;
+    }
+  }
+
+  .exit {
+    float: right;
+  }
 }
