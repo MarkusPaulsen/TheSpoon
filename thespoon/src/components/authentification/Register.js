@@ -14,28 +14,28 @@ class Register extends Component  {
           </div>
           <div className="input-field name">
             <IconName />
-            <input type="text" id="firstname" name="firstname" placeholder="First name" />
-            <input type="text" id="surname" name="surname" placeholder="Surname"/>
+            <input type="text" id="firstname" name="firstname" placeholder="First name" required/>
+          <input type="text" id="surname" name="surname" placeholder="Surname" required/>
           </div>
           <div className="input-field">
             <IconLocation />
-          <input type="text" id="nationality" name="nationality" placeholder="Nationality" />
+          <input type="text" id="nationality" name="nationality" placeholder="Nationality" required/>
           </div>
           <div className="input-field">
             <IconBirthday />
-            <input type="date" id="birth-date" name="birth-date"/>
+          <input type="date" id="birth-date" name="birth-date" required/>
           </div>
           <div className="input-field">
             <IconEmail />
-            <input type="email" id="email" name="email" placeholder="E-mail" />
+          <input type="email" id="email" name="email" placeholder="E-mail" required/>
           </div>
           <div className="input-field">
            <IconPassword />
-          <input type="password" name="password" id="password" placeholder="Password"/>
+          <input type="password" name="password" id="password" placeholder="Password" required/>
           </div> 
           <div className="input-field">
             <IconPassword />
-            <input type="confirm-password" id="confirm-password" name="confirm-password" placeholder="Confirm password"/>
+          <input type="confirm-password" id="confirm-password" name="confirm-password" placeholder="Confirm password" required/>
           </div>
           <button type="submit" className="normal">Sign up</button>
         </form>
