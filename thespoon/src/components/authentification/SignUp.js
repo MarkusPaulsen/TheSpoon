@@ -1,114 +1,103 @@
-import React, { useState } from 'react';
-import { Component } from 'react';
+import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { IconName, IconLocation, IconBirthday, IconEmail, IconPassword, IconExit } from './Icons';
-import {Modal,Button} from 'react-bootstrap';
+import { IconExit } from './Icons';
+import { Modal } from 'react-bootstrap';
+import Register from './Register';
 
 
-class SignUp extends Component  {
 
-  render() {
-    return (
-      <div className="user-handle">
-        <form>
-          <h2>Sign up</h2>
-          <div className="account-type">
-            <h4>as a {this.props.location.state}</h4>
-          </div>
-          <div className="input-field">
-            <label htmlFor="firstname"><IconName /></label>
-            <input type="firstname" id="firstname" name="firstname" placeholder="First name" />
-            <input type="surname" id="surname" name="surname" placeholder="Surname"/>
-          </div>
-          <div className="input-field">
-            <label htmlFor="nationality"><IconLocation /></label>
-            <input type="nationality" id="nationality" name="nationality" placeholder="Nationality" />
-          </div>
-          <div className="input-field">
-            <label htmlFor="birth-date"><IconBirthday /></label>
-            <input type="date" id="birth-date" name="birth-date"/>
-          </div>
-          <div className="input-field">
-            <label htmlFor="email"><IconEmail /></label>
-            <input type="email" id="email" name="email" placeholder="E-mail" />
-          </div>
-          <div className="input-field">
-            <label htmlFor="password"><IconPassword /></label>
-            <input type="password" name="password" id="password"/>
-          </div> 
-          <div className="input-field">
-            <label htmlFor="confirm-password"><IconPassword /></label>
-            <input type="confirm-password" id="confirm-password" name="confirm-password" placeholder="Confirm password"/>
-          </div>
-          <div className="input-field">
-            <button type="submit" className="normal">Sign up</button>
-          </div>
-        </form>
-        <div>
-          Already have an account? <Link to="/LogIn">Log in</Link>
-        </div>
-      </div>
-    );
-  }
+class SignUp extends Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            showChooseRole: false,
+            showRegister: false,
+            role: ''
+        };
+        this.handleCloseChooseRole = this.handleCloseChooseRole.bind(this);
+        this.handleShowChooseRole = this.handleShowChooseRole.bind(this);
+        this.handleShowRegister = this.handleShowRegister.bind(this);
+        this.handleCloseSignUpForm = this.handleCloseRegister.bind(this);
+        this.handleBackToRoleChoosing = this.handleBackToRoleChoosing.bind(this);
+    }
+
+    handleCloseChooseRole = () => {
+        this.setState({
+            showChooseRole: false,
+        });
+
+    };
+
+    handleShowChooseRole = () => {
+        this.setState({
+            showChooseRole: true,
+        });
+
+    };
+
+    handleShowRegister = (e, role) => {
+        e.preventDefault();
+       
+        this.setState({
+            showChooseRole: false,
+            showRegister: true,
+            role: role
+        });
+    }
+
+    handleCloseRegister = () => {
+        this.setState({
+            showRegister: false,
+            role: ''
+        });
+    }
+
+    handleBackToRoleChoosing = () => {
+        this.setState({
+            showRegister: false,
+            showChooseRole: true,
+            role: ''
+        });
+    }
+
+    render() {
+        return(
+            <>
+                <label onClick={this.handleShowChooseRole}>Sign Up</label>
+
+                <Modal show={this.state.showChooseRole} onHide={this.handleCloseChooseRole} centered>
+                    <Modal.Body>
+                        <button className="exit" onClick={this.handleCloseChooseRole}><IconExit /></button>
+                        <div className="sign-up choose-role">
+                            <form>
+                                <h2>Sign up</h2>
+                                <button className="wide" onClick={(e) => this.handleShowRegister(e, "restaurant owner")}>Restaurant owner</button>
+                                <button className="wide" onClick={(e) => this.handleShowRegister(e, "customer")}>Customer</button>       
+                            </form>
+                            <label>
+                                Already have an account? <Link to="/LogIn">Log in</Link>
+                            </label>
+                        </div>
+                    </Modal.Body>  
+                </Modal>
+
+
+                <Modal show={this.state.showRegister} onHide={this.handleCloseRegister} centered>
+                    <Modal.Body>
+                        <button className="exit" onClick={this.handleCloseRegister}><IconExit /></button>
+                        <span className="back" onClick={this.handleBackToRoleChoosing}>back to role choosing</span>
+                        <div className="sign-up">
+                            <Register role={this.state.role}/>
+                            <label>
+                                Already have an account? <Link to="/LogIn">Log in</Link>
+                            </label>
+                        </div>
+                    </Modal.Body>
+                </Modal>
+            </>
+        );
+    }
 }
-
-  /*const[show, setShow] = useState(false);
-
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
-
-  return(
-    <>
-  <Button variant="primary" onClick={handleShow}>
-    Launch demo modal
-      </Button>
-
-  <Modal show={show} onHide={handleClose}>
-        <Modal.Body>
-        <div className="user-handle">
-            <button onClick={handleClose}><IconExit /></button>
-          <form>
-            <h2>Sign up</h2>
-            <div className="account-type">
-              <h4>as a restaurant owner</h4>
-            </div>
-            <div className="input-field">
-              <label for="firstname"><IconName /></label>
-              <input type="firstname" id="firstname" name="firstname" placeholder="First name" />
-              <input type="surname" id="surname" name="surname" placeholder="Surname" />
-            </div>
-            <div className="input-field">
-              <label for="nationality"><IconLocation /></label>
-              <input type="nationality" id="nationality" name="nationality" placeholder="Nationality" />
-            </div>
-            <div className="input-field">
-              <label for="birth-date"><IconBirthday /></label>
-              <input type="date" id="birth-date" name="birth-date" />
-            </div>
-            <div className="input-field">
-              <label for="email"><IconEmail /></label>
-              <input type="email" id="email" name="email" placeholder="E-mail" />
-            </div>
-            <div className="input-field">
-              <label for="password"><IconPassword /></label>
-              <input type="password" name="password" id="password" />
-            </div>
-            <div className="input-field">
-              <label for="confirm-password"><IconPassword /></label>
-              <input type="confirm-password" id="confirm-password" name="confirm-password" placeholder="Confirm password" />
-            </div>
-            <div className="input-field">
-              <button type="submit" className="normal">Sign up</button>
-            </div>
-            <div>
-              Already have an account? <Link to="/LogIn">Log in</Link>
-            </div>
-          </form>
-        </div>
-        </Modal.Body>
-      </Modal>
-    </>
-  );
-}*/
 
 export default SignUp;

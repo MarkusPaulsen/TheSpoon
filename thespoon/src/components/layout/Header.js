@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import SignUpChooseUser from './../authentification/SignUpChooseUser';
+import SignUp from '../authentification/SignUp';
 
 const Header = () => {
     return (
@@ -15,7 +15,7 @@ const Header = () => {
                             <Link to="/login">Log In</Link>
                         </li>
                         <li>
-                            <SignUpChooseUser />
+                            <SignUp />
                         </li>
                     </ul> 
                 </nav> 

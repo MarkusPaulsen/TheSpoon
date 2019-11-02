@@ -23,24 +23,25 @@ body {
 
 h1 {
   font-size: 4rem;
-  margin: 0;
-  font-weight: 500;
+  
 }
 
 h2 {
   font-size: 2rem;
-  margin: 0;
-  font-weight: 500;
 }
 
 h3 {
   font-size: 1.5rem;
-  font-weight: 500;
 }
 
 h4 {
   font-size: 1rem;
+}
+
+h1, h2, h3, h4 {
   font-weight: 500;
+  line-height: 1.1;
+  margin: 0;
 }
 
 a {
@@ -50,7 +51,6 @@ a {
     color: var(--turquoise);
   }
 }
-
 
 small {
   font-size: 0.5833333333333334rem;
@@ -63,6 +63,9 @@ input {
   font-weight: 500;
   border: none;
   border-bottom: 1px solid var(--pink);
+  &:focus, &:active {
+    outline: none;
+  }
 }
 
 ::placeholder, :-ms-input-placeholder {
@@ -137,14 +140,20 @@ header {
       a, label {
         padding: 10px 15px;;
         text-transform: uppercase;
+        color: var(--black);
+        &:hover {
+          color: var(--turquoise);
+          text-decoration: underline;
+          cursor: pointer;
+        }
       }
     }
   }
 }
 
-
-
 /* < HEADER */
+
+
 
 /* HOMEPAGE > */
 .homepage-banner {
@@ -178,27 +187,73 @@ header {
 
 /* MODALS > */
 
-/* < MODALS */
+.modal-dialog {
+  max-width: 25rem;
+}
 
 .modal-content {
-  .choose-user {
-    padding: 4rem 2rem;
+  .sign-up {
+    padding: 3rem;
     text-align: center;
 
-    h2 {
-      margin-bottom: 3rem;
-    }
-
     button {
-      margin-bottom: 2rem;
+      margin: 1rem 0 2rem;
     }
 
-    label {
-      margin-top: 1rem;
+    .account-type {
+      margin: .25rem 0 2rem;
+      .role {
+        color: var(--turquoise);
+      }
+    }
+
+    .input-field {
+      margin-bottom: 1.25rem;
+
+      i {
+        margin-right: 1rem;
+        width: 20%;
+      }
+
+      input {
+        width: 80%;
+      }
+      
+      &.name {
+        input {
+          width: calc(40% - .25rem);
+          &#firstname {
+            margin-right: .5rem;
+          }
+        }
+      }
+    }
+
+    &.choose-role {
+      h2 {
+        margin-bottom: 3rem;
+      }
+
+      label {
+        margin-top: 1rem;
+      }
     }
   }
 
   .exit {
     float: right;
+    &:focus {
+      outline: none;
+    }
   }
+
+  .back {
+    line-height: 2rem;
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
 }
+
+/* < MODALS */
