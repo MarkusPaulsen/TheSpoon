@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { IconExit } from './Icons';
+import { IconExit, IconBack } from './Icons';
 import { Modal } from 'react-bootstrap';
 import Register from './Register';
 
@@ -86,7 +86,7 @@ class SignUp extends Component {
                 <Modal show={this.state.showRegister} onHide={this.handleCloseRegister} centered>
                     <Modal.Body>
                         <button className="exit" onClick={this.handleCloseRegister}><IconExit /></button>
-                        <span className="back" onClick={this.handleBackToRoleChoosing}>back to role choosing</span>
+                        <span className="back" onClick={this.handleBackToRoleChoosing}><IconBack /></span>
                         <div className="sign-up">
                             <Register role={this.state.role}/>
                             <label>

@@ -88,7 +88,7 @@ button {
   border-radius: 25px;
   font-weight: 500;
   height: 2rem;
-  font-size: 0.75rem;
+  font-size: .625rem;
   -webkit-box-shadow: 0px 5px 5px 0px rgba(149,149,149,0.62);
   -moz-box-shadow: 0px 5px 5px 0px rgba(149,149,149,0.62);
   box-shadow: 0px 5px 5px 0px rgba(149,149,149,0.62);
@@ -122,7 +122,12 @@ button {
 
 /* HEADER > */
 header {
-  background-color: var(--white);
+  background-color:transparent;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1;
 
   nav {
     height: 6rem;
@@ -140,9 +145,9 @@ header {
       a, label {
         padding: 10px 15px;;
         text-transform: uppercase;
-        color: var(--black);
+        color: var(--white);
         &:hover {
-          color: var(--turquoise);
+          color: var(--white);
           text-decoration: underline;
           cursor: pointer;
         }
@@ -157,12 +162,11 @@ header {
 
 /* HOMEPAGE > */
 .homepage-banner {
-    /*background-image: url('/background.png');*/
-    background-color: var(--turquoise);
+    background-image: url('/images/background_web.png');
     background-repeat: no-repeat;
     background-position: center center;
     background-size: cover;
-    height: calc(100vh - 6rem);
+    height: calc(100vh);
     position: relative;
     margin: 0;
     color: var(--white);
@@ -177,6 +181,10 @@ header {
 
       .title {
         margin-bottom: 3.5rem;
+      }
+
+      button {
+        font-size: 0.75rem;
       }
     }
 

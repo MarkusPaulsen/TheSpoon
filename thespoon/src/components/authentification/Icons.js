@@ -67,3 +67,13 @@ export const IconExit = () => {
     )
 }
 
+export const IconBack = () => {
+    return (
+        <i>
+            <svg width="15" height="24" viewBox="0 0 15 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M14.8 2.7641L12 0L0 11.8462L12 23.6923L14.8 20.9282L5.6 11.8462L14.8 2.7641Z" fill="black" />
+            </svg>
+        </i>
+    )
+}
+
