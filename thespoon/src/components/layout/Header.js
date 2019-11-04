@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import SignUp from '../authentification/SignUp';
+import LogIn from '../authentification/LogIn';
 
 const Header = () => {
     return (
@@ -12,7 +13,7 @@ const Header = () => {
                     </Link>
                     <ul>
                         <li>
-                            <Link to="/login">Log In</Link>
+                            <LogIn />
                         </li>
                         <li>
                             <SignUp />

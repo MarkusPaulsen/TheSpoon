@@ -40,7 +40,7 @@ class Register extends Component  {
 
           <div className="input-field">
             <IconPassword />
-            <input type="password" name="password" id="password" placeholder="Password" required/>
+            <input type="password" id="password" name="password" placeholder="Password" required/>
           </div> 
 
           <div className="input-field">

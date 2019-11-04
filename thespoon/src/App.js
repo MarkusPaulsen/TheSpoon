@@ -11,7 +11,7 @@ return (
           {/*<Navbar />*/}
           <Switch>
             <Route exact path='/' component={HomePage} />
-            <Route exact path='/login' component={LogIn} />
+            <Route exact path='/' component={LogIn} />
           </Switch>
       </BrowserRouter>
   );

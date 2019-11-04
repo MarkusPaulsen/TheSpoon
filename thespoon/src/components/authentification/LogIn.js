@@ -1,33 +1,58 @@
-import React from 'react';
-import { Component } from 'react';
+import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-
+import { IconExit, IconEmail, IconPassword } from './Icons';
+import { Modal } from 'react-bootstrap';
+import Register from './Register';
 
 class LogIn extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      showLogin: false,
+    };
+    this.handleShowLoginForm = this.handleShowLoginForm.bind(this);
+  }
+
+  handleShowLoginForm = () => {
+    this.setState({
+      showLogin: true
+    })
+  }
+
+  handleCloseLoginForm = () => {
+    this.setState({
+      showLogin: false
+    })
+  }
+
   render() {
     return (
-      <div className="container">
-        <h1> The Spoon </h1>
-        <form>
-          <h5>Log in</h5>
-          <div className="input-field">
-            <label htmlFor="email">Email</label>
-            <input type="email" id="email" />
-          </div>
-          <div className="input-field">
-            <label htmlFor="password">Password</label>
-            <input type="password" id="password" />
-          </div>
-          <div className="input-field">
-            <button>Login</button>
-          </div>
-          <div>
-            <Link to="/SignUp">Don't have an account yet? Register now</Link>
-          </div>
-        </form>
-      </div>
+      <>
+      <label onClick={this.handleShowLoginForm}>LogIn</label>
+        <Modal show={this.state.showLogin} onHide={this.handleCloseLoginForm} centered>
+          <Modal.Body>
+            <div className="account-type">
+            <form>
+              <button className="exit" onClick={this.handleCloseLoginForm}><IconExit /></button>
+              <h2>Log In</h2>
+
+              <div className="input-field">
+                <IconEmail />
+                <input type="email" id="email" name="email" placeholde="E-mail" required />
+              </div>
+
+              <div className="input-field">
+                <IconPassword />
+                <input typer="password" id="password" name="password" placeholde="Password" required/>
+              </div>
+
+              <button type="submit" className="normal">Log in</button>
+            </form>
+            </div>
+          </Modal.Body>
+        </Modal>
+      </>
     );
   }
 }
 export default LogIn;
-
