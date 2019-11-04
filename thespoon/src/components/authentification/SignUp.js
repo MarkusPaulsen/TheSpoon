@@ -76,7 +76,7 @@ class SignUp extends Component {
                                 <button className="wide" onClick={(e) => this.handleShowRegister(e, "customer")}>Customer</button>       
                             </form>
                             <label>
-                                Already have an account? <Link to="/LogIn">Log in</Link>
+                                Already have an account? <Link to="/">Log in</Link>
                             </label>
                         </div>
                     </Modal.Body>  
@@ -90,7 +90,7 @@ class SignUp extends Component {
                         <div className="sign-up">
                             <Register role={this.state.role}/>
                             <label>
-                                Already have an account? <Link to="/LogIn">Log in</Link>
+                                Already have an account? <Link to="/">Log in</Link>
                             </label>
                         </div>
                     </Modal.Body>
