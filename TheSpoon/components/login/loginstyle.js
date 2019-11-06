@@ -25,12 +25,12 @@ export default {
     backgroundColor: "#F3A3A3",
     marginTop: 6,
     alignSelf: "center"
-  }, 
+  },
   loginButton: {
     width: 100,
     height: 36,
-    backgroundColor: "#F3A3A3",
-    marginTop: 6,
+    backgroundColor: "#959595",
+    marginTop: 45,
     alignSelf: "center"
   }
 };
