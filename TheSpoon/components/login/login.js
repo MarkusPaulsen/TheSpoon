@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import styles from "./style";
+import styles from "./loginstyle";
 import {
   StyleSheet,
   View,
@@ -8,7 +8,8 @@ import {
   TextInput,
   Button,
   Alert, 
-  Linking
+  Linking, 
+  TouchableOpacity
 } from "react-native";
 
 export default class LoginScreen extends Component {
@@ -19,21 +20,19 @@ export default class LoginScreen extends Component {
         <StatusBar animated={false} hidden={false} />
         <Text style={styles.text2}>Log in</Text>
         <TextInput placeholder="Username" style={styles.textInput} />
-        <TextInput placeholder="Password" style={styles.textInput2} />
-        <Button
-          title="Login"
-          onPress={() => Alert.alert("Login Button pressed")}
-          onPress={() => this.onLoginPress()}
-          onPress={() => this.props.navigation.navigate('Home')}
-          style={styles.loginButton}
-        />
+        <TextInput placeholder="Password" style={styles.textInput} />
         <Button 
-          title="Not registered yet?"
-          onPress={() => Alert.alert("Login Button pressed")}
-          onPress={() => this.onLoginPress()}
-          onPress={() => Linking.openURL('https://google.com')}
-          style={styles.loginButton}
+            title="Login"
+            style={styles.loginButton}
+            onPress={() => Alert.alert("Login Button pressed")}
+            onPress={() => this.onLoginPress()}
+            onPress={() => this.props.navigation.navigate('Home')}
         />
+         <TouchableOpacity>
+            <Text style = {styles.loginButton}>
+              
+            </Text>
+         </TouchableOpacity>
       </View>
     );
   }
