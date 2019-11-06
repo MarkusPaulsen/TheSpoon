@@ -7,10 +7,12 @@ import {
   Text,
   TextInput,
   Button,
-  Alert
+  Alert, 
+  Linking
 } from "react-native";
 
 export default class LoginScreen extends Component {
+
   render() {
     return (
       <View style={styles.container}>
@@ -22,6 +24,14 @@ export default class LoginScreen extends Component {
           title="Login"
           onPress={() => Alert.alert("Login Button pressed")}
           onPress={() => this.onLoginPress()}
+          onPress={() => this.props.navigation.navigate('Home')}
+          style={styles.loginButton}
+        />
+        <Button 
+          title="Not registered yet?"
+          onPress={() => Alert.alert("Login Button pressed")}
+          onPress={() => this.onLoginPress()}
+          onPress={() => Linking.openURL('https://google.com')}
           style={styles.loginButton}
         />
       </View>
