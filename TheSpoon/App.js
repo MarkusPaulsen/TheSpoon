@@ -1,17 +1,21 @@
 import React, { Component } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import LoginScreen from "./components/login/login.js";
-import HomeScreen from './components/home/homescreen.js';
+import LoginScreen from "./components/login/login";
+import HomeScreen from './components/home/homescreen';
+import LandingPage from './components/landingpage/landingpage';
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 
 const RootStack = createStackNavigator(
   {
     Home: HomeScreen,
-    Login: LoginScreen,
+    Login: LoginScreen, 
+    Start: LandingPage
   },
   {
-    initialRouteName: 'Login',
+    initialRouteName: 'Start',
+    header: null, 
+    headerMode: 'none'
   }
 );
 
@@ -31,11 +35,4 @@ export default class App extends Component {
     return <AppContainer />;
   }
 }
-
-//export default class App extends Component {
- // render() {
-   // return <LoginScreen />;
- // }
-//}
-
 

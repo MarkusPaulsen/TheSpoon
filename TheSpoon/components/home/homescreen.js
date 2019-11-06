@@ -3,14 +3,15 @@ import {
   View, 
   Text
 } from "react-native";
+import styles from './homescreenstyle';
 
 export default class HomeScreen extends Component {
 
   render() {
     return (
-      <View>
-        <Text style={{color: "rgba(213,85,141,1)", fontSize: 24,marginTop: 204, alignSelf: "center"}}>
-          Welcome to your home screen
+      <View style={styles.container}>
+        <Text style={styles.loginTextBig}>
+          You are now logged in
         </Text>
       </View>
     );

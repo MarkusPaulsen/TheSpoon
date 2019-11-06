@@ -1,7 +1,5 @@
 const React = require("react-native");
-
 const { Stylesheet } = React;
-
 export default {
   container: {
     flex: 1
@@ -15,21 +13,23 @@ export default {
   textInput: {
     width: 224,
     height: 42,
-    color: "#121212",
+    color: "#000000",
+    borderBottomColor: "#F3A3A3",
+    borderBottomWidth: 1.5,
     marginTop: 99,
-    alignSelf: "center"
-  },
-  textInput2: {
-    width: 224,
-    height: 44,
-    color: "#121212",
-    marginTop: 14,
     alignSelf: "center"
   },
   loginButton: {
     width: 100,
     height: 36,
-    backgroundColor: "rgba(46,236,187,1)",
+    backgroundColor: "#F3A3A3",
+    marginTop: 6,
+    alignSelf: "center"
+  }, 
+  loginButton: {
+    width: 100,
+    height: 36,
+    backgroundColor: "#F3A3A3",
     marginTop: 6,
     alignSelf: "center"
   }
