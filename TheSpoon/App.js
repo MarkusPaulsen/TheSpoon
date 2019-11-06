@@ -1,21 +1,24 @@
 import React, { Component } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import LoginScreen from "./components/login/login";
-import HomeScreen from './components/home/homescreen';
-import LandingPage from './components/landingpage/landingpage';
-import { createAppContainer } from 'react-navigation';
-import { createStackNavigator } from 'react-navigation-stack';
+import HomeScreen from "./components/home/homescreen";
+import LandingPage from "./components/landingpage/landingpage";
+import LoadingPage from "./components/loading";
+import { createAppContainer } from "react-navigation";
+import { createStackNavigator } from "react-navigation-stack";
+import * as Font from "expo-font";
 
 const RootStack = createStackNavigator(
   {
     Home: HomeScreen,
-    Login: LoginScreen, 
+    Login: LoginScreen,
+    Loading: LoadingPage,
     Start: LandingPage
   },
   {
-    initialRouteName: 'Start',
-    header: null, 
-    headerMode: 'none'
+    initialRouteName: "Start",
+    header: null,
+    headerMode: "none"
   }
 );
 
@@ -31,8 +34,23 @@ const styles = StyleSheet.create({
 });
 
 export default class App extends Component {
+  state = {
+    fontLoaded: false
+  };
+
+  async componentDidMount() {
+    await Font.loadAsync({
+      roboto: require("./assets/fonts/roboto-regular.ttf")
+    });
+
+    this.setState({ fontLoaded: true });
+  }
   render() {
-    return <AppContainer />;
+    if (this.state.fontLoaded) {
+      console.log("font loaded");
+      return <AppContainer />;
+    } else {
+      return <LoadingPage />;
+    }
   }
 }
-
