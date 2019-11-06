@@ -1,15 +1,21 @@
 import React, { Component } from "react";
-import { Localization } from "expo";
-import { createAppContainer, createStackNavigator } from "react-navigation";
 import { StyleSheet, Text, View } from "react-native";
-import i18n from "i18n-js";
 import LoginScreen from "./components/login/login.js";
+import HomeScreen from './components/home/homescreen.js';
+import { createAppContainer } from 'react-navigation';
+import { createStackNavigator } from 'react-navigation-stack';
 
-export default class App extends Component {
-  render() {
-    return <LoginScreen />;
+const RootStack = createStackNavigator(
+  {
+    Home: HomeScreen,
+    Login: LoginScreen,
+  },
+  {
+    initialRouteName: 'Login',
   }
-}
+);
+
+const AppContainer = createAppContainer(RootStack);
 
 const styles = StyleSheet.create({
   container: {
@@ -19,3 +25,17 @@ const styles = StyleSheet.create({
     justifyContent: "center"
   }
 });
+
+export default class App extends Component {
+  render() {
+    return <AppContainer />;
+  }
+}
+
+//export default class App extends Component {
+ // render() {
+   // return <LoginScreen />;
+ // }
+//}
+
+
