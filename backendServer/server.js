@@ -1,9 +1,11 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 //let pg = require('pg');
-//const Sequelize = require('sequelize');
+const Sequelize = require('sequelize');
 const db = require('./sequelizeSettings');
+
 const app = express();
+app.use(express.json());
 
 //Test if express works
 app.get('/', (req, res) =>
@@ -21,6 +23,45 @@ db.authenticate()
 
 
 app.use(bodyParser.json());
+
+
+const Customer = db.define('Customer', {
+    Email: {
+        type: Sequelize.STRING
+    },
+    Password: {
+        type: Sequelize.STRING
+    },
+    Firstname: {
+        type: Sequelize.STRING
+    },
+    Surname: {
+        type: Sequelize.STRING
+    },
+    Nationality: {
+        type: Sequelize.STRING
+    },
+    BirthDay: {
+        type: Sequelize.DATE
+    }
+}, {
+    freezeTableName: true
+});
+
+
+app.get('/api/user/customer/register', (req, res) => {
+    Customer.create({
+        Email: req.body.email,
+        Password: req.body.password,
+        Firstname: req.body.name,
+        Surname: req.body.surname,
+        Nationality: req.body.nationality,
+        BirthDay: req.body.birthday
+    })
+
+});
+
+
 
 
 const port = process.env.PORT || 5000;
