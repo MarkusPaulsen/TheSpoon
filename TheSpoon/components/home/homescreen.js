@@ -11,7 +11,7 @@ export default class HomeScreen extends Component {
     return (
       <View style={styles.container}>
         <Text style={styles.loginTextBig}>
-          You are now logged in
+          Logged in
         </Text>
       </View>
     );
