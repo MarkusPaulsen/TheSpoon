@@ -7,6 +7,7 @@ export default {
   text2: {
     color: "rgba(213,85,141,1)",
     fontSize: 24,
+    fontFamily: "roboto",
     marginTop: 204,
     alignSelf: "center"
   },
@@ -14,6 +15,7 @@ export default {
     width: 224,
     height: 42,
     color: "#000000",
+    fontFamily: "roboto",
     borderBottomColor: "#F3A3A3",
     borderBottomWidth: 1.5,
     marginTop: 99,
@@ -22,6 +24,7 @@ export default {
   loginButton: {
     width: 100,
     height: 36,
+    fontFamily: "roboto",
     backgroundColor: "#F3A3A3",
     marginTop: 6,
     alignSelf: "center"
@@ -29,6 +32,7 @@ export default {
   loginButton: {
     width: 100,
     height: 36,
+    fontFamily: "roboto",
     backgroundColor: "#959595",
     marginTop: 45,
     alignSelf: "center"
