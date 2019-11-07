@@ -1,11 +1,9 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.scss';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { render } from 'react-dom'
-import {combineReducers, createStore} from 'redux'
 import { Provider } from 'react-redux'
 import configureStore from "./store/configureStore";
 

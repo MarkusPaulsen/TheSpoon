@@ -4,10 +4,22 @@ import {IconName, IconLocation, IconBirthday, IconEmail, IconPassword, IconExit,
 import {Modal} from "react-bootstrap";
 import FilterLink from "../../containers/FilterModalLink";
 import {authentificationModalVisibilityFilters} from "../../constants/authentificationModalVisibiltyFilters";
+import {roles} from "../../constants/roles";
 
 
 class Register extends Component  {
-
+  constructor(props)
+  {
+    super(props);
+    this.state = {
+      firstname:'',
+      surname:'',
+      nationality:'',
+      birth_date:'',
+      email:'',
+      password:'',
+    }
+  }
   render() {
     return (
         <Modal.Body>
@@ -26,14 +38,14 @@ class Register extends Component  {
                   <input type="text" id="surname" name="surname" placeholder="Surname" required/>
                   </div>
 
-                 {this.props.role == "customer" ?
+                 {this.props.role === roles.CUSTOMER ?
                     <div className="input-field">
                        <IconLocation />
                       <input type="text" id="nationality" name="nationality" placeholder="Nationality" required/>
                     </div>
                   : null }
 
-                  {this.props.role == "customer" ?
+                  {this.props.role === roles.CUSTOMER ?
                     <div className="input-field">
                       <IconBirthday />
                       <input type="date" id="birth-date" name="birth-date" required/>

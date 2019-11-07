@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import { IconExit, IconBack } from '../Icons';
+import { IconExit } from '../Icons';
 import { Modal } from 'react-bootstrap';
-import Register from './Register';
 import {authentificationModalVisibilityFilters} from "../../constants/authentificationModalVisibiltyFilters";
 import FilterLink from "../../containers/FilterModalLink";
 

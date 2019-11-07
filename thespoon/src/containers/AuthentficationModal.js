@@ -1,5 +1,6 @@
 import React, {Component} from "react";
 import {authentificationModalVisibilityFilters} from "../constants/authentificationModalVisibiltyFilters";
+import {roles} from "../constants/roles";
 import {connect} from "react-redux";
 import ChooseRoleModal from "../components/authentification/ChooseRoleModal";
 import {Modal} from "react-bootstrap";
@@ -43,7 +44,7 @@ class AuthentficationModal extends Component {
                 return (
                     <Modal show={true} onHide={() => this.props.handleClose()} centered>
                         <Register
-                            role="restaurant owner"
+                            role={roles.RESTAURANT_OWNER}
                             onHide={() => this.props.handleClose()}/>
                     </Modal>
                 )
@@ -51,7 +52,7 @@ class AuthentficationModal extends Component {
                 return (
                     <Modal show={true} onHide={() => this.props.handleClose()} centered>
                         <Register
-                            role="customer"
+                            role={roles.CUSTOMER}
                             onHide={() => this.props.handleClose()}
                         />
                     </Modal>

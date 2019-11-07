@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import { IconExit, IconEmail, IconPassword } from '../Icons';
-import { Modal } from 'react-bootstrap';
-import Register from './Register';
+import {Modal} from "react-bootstrap";
 import FilterLink from "../../containers/FilterModalLink";
 import {authentificationModalVisibilityFilters} from "../../constants/authentificationModalVisibiltyFilters";
 
@@ -21,6 +19,7 @@ class LogIn extends Component {
                   <IconEmail />
                   <input type="email" id="email" name="email" placeholder="E-mail" required />
                 </div>
+
 
                 <div className="input-field">
                   <IconPassword />
