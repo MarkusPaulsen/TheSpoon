@@ -9,7 +9,7 @@ const Owner = db.define('Owner', {
     Password: {
         type: Sequelize.STRING
     },
-    Firstname: {
+    Name: {
         type: Sequelize.STRING
     },
     Surname: {
