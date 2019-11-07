@@ -10,7 +10,27 @@ import {
   Image
 } from "react-native";
 
-export default class LoginScreen extends Component {
+interface State {
+  username: string;
+  password: string;
+}
+
+export default class LoginScreen extends Component<{}, State> {
+  readonly state:State = {
+    username: "", 
+    password: "",
+  }
+  
+  handleUsernameChange = (username: string) => {
+    this.setState({username:username});
+  };
+
+  handlePasswordChange = (password:string) => {
+    this.setState ({password:password});
+  }
+
+
+
   render() {
     return (
       <View style={styles.container}>
@@ -19,10 +39,13 @@ export default class LoginScreen extends Component {
           <Image source={require('/Users/janinestang/git/TheSpoon/TheSpoon/assets/login-email.png')} style={{alignSelf: "center"}}/>
           <TextInput
             placeholder="Username"
+            value = {this.state.username}
+            onChangeText = {this.handleUsernameChange}
             placeholderTextColor="#959595"
-            multiline
             numberOfLines={1}
             autoCapitalize="none"
+            returnKeyType="next"
+            keyboardType="email-address"
             autoCorrect={false}
             style={styles.textInput}
           />
@@ -31,11 +54,13 @@ export default class LoginScreen extends Component {
           <Image source={require('/Users/janinestang/git/TheSpoon/TheSpoon/assets/login-password.png')} style={{alignSelf: "center"}}/>
           <TextInput
             placeholder="Password"
+            value={this.state.password}
+            onChangeText={this.handlePasswordChange}
             placeholderTextColor="#959595"
             autoCapitalize="none"
             autoCorrect={false}
             style={styles.textInput}
-            returnKeyType="go"
+            returnKeyType="done"
             secureTextEntry={true}
           />
         </View>
