@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { IconExit, IconEmail, IconPassword } from './Icons';
 import { Modal } from 'react-bootstrap';
+import { connect } from 'react-redux'
 import Register from './Register';
 
 class LogIn extends Component {
@@ -9,6 +10,8 @@ class LogIn extends Component {
     super(props);
     this.state = {
       showLogin: false,
+      email: '',
+      password:''
     };
     this.handleShowLoginForm = this.handleShowLoginForm.bind(this);
   }
@@ -28,14 +31,14 @@ class LogIn extends Component {
   render() {
     return (
       <>
-      <label onClick={this.handleShowLoginForm}>LogIn</label>
+      <label onClick={this.handleShowLoginForm}>Log in</label>
         <Modal show={this.state.showLogin} onHide={this.handleCloseLoginForm} centered>
           <Modal.Body>
           <button className="exit" onClick={this.handleCloseLoginForm}><IconExit /></button>
             <div className="sign-up">
             <form>
               <div className="login-title">
-                <h2>Log In</h2>
+                <h2>Log in</h2>
               </div>
               <div className="input-field">
                 <IconEmail />

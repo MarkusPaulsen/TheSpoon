@@ -4,7 +4,18 @@ import { IconName, IconLocation, IconBirthday, IconEmail, IconPassword } from '.
 
 
 class Register extends Component  {
-
+  constructor(props)
+  {
+    super(props);
+    this.state = {
+      firstname:'',
+      surname:'',
+      nationality:'',
+      birth_date:'',
+      email:'',
+      password:'',
+    }
+  }
   render() {
     return (
         <form>
