@@ -1,62 +1,39 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { IconExit, IconEmail, IconPassword } from './Icons';
+import { IconExit, IconEmail, IconPassword } from '../Icons';
 import { Modal } from 'react-bootstrap';
 import Register from './Register';
+import FilterLink from "../../containers/FilterModalLink";
+import {authentificationModalVisibilityFilters} from "../../constants/authentificationModalVisibiltyFilters";
 
 class LogIn extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      showLogin: false,
-    };
-    this.handleShowLoginForm = this.handleShowLoginForm.bind(this);
-  }
-
-  handleShowLoginForm = () => {
-    this.setState({
-      showLogin: true
-    })
-  }
-
-  handleCloseLoginForm = () => {
-    this.setState({
-      showLogin: false
-    })
-  }
 
   render() {
     return (
-      <>
-      <label onClick={this.handleShowLoginForm}>LogIn</label>
-        <Modal show={this.state.showLogin} onHide={this.handleCloseLoginForm} centered>
-          <Modal.Body>
-          <button className="exit" onClick={this.handleCloseLoginForm}><IconExit /></button>
+        <Modal.Body>
+           <button className="exit" onClick={this.props.onHide}><IconExit /></button>
             <div className="sign-up">
-            <form>
-              <div className="login-title">
-                <h2>Log In</h2>
-              </div>
-              <div className="input-field">
-                <IconEmail />
-                <input type="email" id="email" name="email" placeholder="E-mail" required />
-              </div>
+              <form>
+                <div className="login-title">
+                  <h2 className="title">Log In</h2>
+                </div>
+                <div className="input-field">
+                  <IconEmail />
+                  <input type="email" id="email" name="email" placeholder="E-mail" required />
+                </div>
 
-              <div className="input-field">
-                <IconPassword />
-                <input typer="password" id="password" name="password" placeholder="Password" required/>
-              </div>
+                <div className="input-field">
+                  <IconPassword />
+                  <input typer="password" id="password" name="password" placeholder="Password" required/>
+                </div>
 
-              <button type="submit" className="normal">Log in</button>
-
-              <label>
-                Don't have an account? <Link to="/">Register now</Link>
+                <button type="submit" className="normal">Log in</button>
+              </form>
+              <label className="link-wrapper">
+                <small>Don't have an account? <FilterLink filter={authentificationModalVisibilityFilters.SHOW_CHOOSE_ROLE}>Register now</FilterLink></small>
               </label>
-            </form>
             </div>
-          </Modal.Body>
-        </Modal>
-      </>
+        </Modal.Body>
     );
   }
 }

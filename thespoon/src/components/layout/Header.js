@@ -1,7 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import SignUp from '../authentification/SignUp';
-import LogIn from '../authentification/LogIn';
+import {authentificationModalVisibilityFilters} from "../../constants/authentificationModalVisibiltyFilters";
+
+
+import FilterLink from "../../containers/FilterModalLink";
 
 const Header = () => {
     return (
@@ -13,12 +15,12 @@ const Header = () => {
                     </Link>
                     <ul>
                         <li>
-                            <LogIn />
+                            <FilterLink filter={authentificationModalVisibilityFilters.SHOW_LOGIN}>LOGIN</FilterLink>
                         </li>
                         <li>
-                            <SignUp />
+                            <FilterLink filter={authentificationModalVisibilityFilters.SHOW_CHOOSE_ROLE}>Sign up</FilterLink>
                         </li>
-                    </ul> 
+                    </ul>
                 </nav> 
             </div>  
         </header>
