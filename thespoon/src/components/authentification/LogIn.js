@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { IconExit, IconEmail, IconPassword } from './Icons';
 import { Modal } from 'react-bootstrap';
-import { connect } from 'react-redux'
 import Register from './Register';
 
 class LogIn extends Component {
