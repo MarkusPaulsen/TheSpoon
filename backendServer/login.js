@@ -20,6 +20,7 @@ router.post('/', async (req, res) => {
         //Add restraints on password? Suggest a regex like this to avoid special characters. 
         //password: Joi.string().regex(/[^a-zA-Z0-9]/)
     });
+
     Joi.validate(req.body, schema, err => {
         //If the req.body doesn't match the email-schema, send error message
         if(err) {
@@ -27,14 +28,14 @@ router.post('/', async (req, res) => {
         }
         let user;
         if (req.body.isRestaurantOwner) {   
-            user = await Owner.findAll({
+            user = /*await*/ Owner.findAll({
                 where: {
                     Email: req.body.email
                 }
             });
         }
         else {
-            user = await Customer.findAll({
+            user = /*await*/ Customer.findAll({
                 where: {
                     Email: req.body.email
                 }
@@ -45,7 +46,7 @@ router.post('/', async (req, res) => {
         if (user.length <= 0) res.status(400).send('Invalid username or password');
         else {
             //check if the password is correct
-            const isValid = await bcrypt.compare(req.body.password, user[0].dataValues.Password);
+            const isValid = /*await*/ bcrypt.compare(req.body.password, user[0].dataValues.Password);
             if (!isValid) res.status(400).send('Invalid username or password');
             else {
                 //if the password is valid, send the token to the user
