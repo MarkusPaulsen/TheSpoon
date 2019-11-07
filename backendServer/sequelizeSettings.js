@@ -4,4 +4,4 @@ const dbURL = 'postgres://vlbganljybqkij:19f31cdd0c3704ba6f463d0236de1e224187121
 
 const postgresDb = new Sequelize(dbURL);
 
-module.exports = postgresDb
+module.exports = postgresDb;
