@@ -16,13 +16,12 @@ router.post('/', async (req, res) => {
     //if it's an owner the check has to be done on Owner table, Customer otherwise
 
     const schema = Joi.object().keys({
-        email: Joi.string().trim().email({minDomainAtoms: 2}).required()
-        //Add restraints on password? Suggest a regex like this to avoid special characters. 
-        //password: Joi.string().regex(/[^a-zA-Z0-9]/)
+        email: Joi.string().trim().email({minDomainAtoms: 2}).required(),
+        password: Joi.string().regex(/^[a-zA-Z0-9]/).min(5)
     });
 
     Joi.validate(req.body, schema, err => {
-        //If the req.body doesn't match the email-schema, send error message
+        //If the req.body doesn't match the schema, send error message
         if(err) {
             res.status(400).send('Invalid username or password');
         }

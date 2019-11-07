@@ -12,11 +12,11 @@ router.post('/', async (req, res) => {
 
     const schema = Joi.object().keys({
         email: Joi.string().trim().email({minDomainAtoms: 2}).required(),
-        password: Joi.string().required(),
-        firstName: Joi.string().required(),
-        surname: Joi.string().required()
+        password: Joi.string().regex(/^[a-zA-Z0-9]/).min(5).required(),
+        firstName: Joi.string().regex(/^[a-zA-Z]/).required(),
+        surname: Joi.string().regex(/^[a-zA-Z]/).required()
 
-    });
+    }); 
 
 
 
