@@ -4,59 +4,15 @@ router.use(express.json());
 
 const jwt = require('jsonwebtoken');
 const config = require('config');
+const bcrypt = require('bcrypt');
 
-const Sequelize = require('sequelize');
-const db = require('./sequelizeSettings');
+const Owner = require('./models/owner.js');
 
-const Owner = db.define('Owner', {
-    Email: {
-        type: Sequelize.STRING,
-        primaryKey: true
-    },
-    Password: {
-        type: Sequelize.STRING
-    },
-    Firstname: {
-        type: Sequelize.STRING
-    },
-    Surname: {
-        type: Sequelize.STRING
-    }
-}, {
-    freezeTableName: true,
-    timestamps: false
-});
+const Customer = require('./models/customer.js');
 
-const Customer = db.define('Customer', {
-    Email: {
-        type: Sequelize.STRING,
-        primaryKey: true
-    },
-    Password: {
-        type: Sequelize.STRING
-    },
-    Firstname: {
-        type: Sequelize.STRING
-    },
-    Surname: {
-        type: Sequelize.STRING
-    },
-    Nationality: {
-        type: Sequelize.STRING
-    },
-    Birthday: {
-        type: Sequelize.DATE
-    }
-}, {
-    freezeTableName: true,
-    timestamps: false
-});
-
-router.post('/', (req, res) => {
-    loginFunction(req, res);
-});
-
-const loginFunction = async (req, res) => {
+router.post('/', async (req, res) => {
+    //first of all, check if there is a user with given username
+    //if it's an owner the check has to be done on Owner table, Customer otherwise
     let user;
     if (req.body.isRestaurantOwner) {
         user = await Owner.findAll({
@@ -70,16 +26,18 @@ const loginFunction = async (req, res) => {
                 Email: req.body.email
             }
         });}
+    //if there isn't a user with given name, send error message
     if (user.length <= 0) res.status(400).send('Invalid username or password');
     else {
-        const isValid = req.body.password == user[0].dataValues.Password;
+        //check if the password is correct
+        const isValid = await bcrypt.compare(req.body.password, user[0].dataValues.Password);
         if (!isValid) res.status(400).send('Invalid username or password');
         else {
+            //if the password is valid, send the token to the user
             const token = jwt.sign({email: req.body.email}, config.get('jwtPrivateKey'));
             res.status(201).send({token: token});
         }
     }
-};
-
+});
 
 module.exports = router;
