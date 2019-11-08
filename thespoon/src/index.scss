@@ -261,17 +261,30 @@ header {
         width: 22px;
       }
 
-      input {
+      > div {
         width: 80%;
+        display: inline-block;
+        input {
+          width: 100%;
+        }
       }
       
       &.name {
-        input {
+        > div {
           width: calc(40% - .25rem);
-          &#firstname {
+          &:first-of-type {
             margin-right: .5rem;
           }
         }
+      }
+    }
+
+    .error-block {
+      color: red;
+      margin-bottom: 1.6666666666666667rem;
+      small {
+        display: block;
+        margin-bottom: .25rem;
       }
     }
 
