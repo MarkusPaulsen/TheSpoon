@@ -7,9 +7,9 @@ const config = require('config');
 const bcrypt = require('bcrypt');
 const Joi = require('joi');
 
-const Owner = require('./models/owner.js');
+const Owner = require('../models/owner.js');
 
-const Customer = require('./models/customer.js');
+const Customer = require('../models/customer.js');
 
 router.post('/', async (req, res) => {
 

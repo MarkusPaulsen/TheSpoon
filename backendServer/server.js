@@ -12,10 +12,20 @@ if (!config.get('jwtPrivateKey')){
     process.exit(1);
 }
 
+
+const swaggerUi = require('swagger-ui-express');
+const YAML = require('yamljs');
+const swaggerDocument = YAML.load('./backendServer/API_reference.yaml');
+
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
+
+
+
 //those are all the routes
-const login = require('./login.js');
-const registrationCustomer = require('./registrationCustomer.js');
-const registrationOwner = require('./registrationOwner.js');
+const login = require('./routes/login.js');
+const registrationCustomer = require('./routes/registrationCustomer.js');
+const registrationOwner = require('./routes/registrationOwner.js');
 app.use('/api/user/login', login);
 app.use('/api/user/customer/register', registrationCustomer);
 app.use('/api/user/owner/register', registrationOwner);

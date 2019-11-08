@@ -5,7 +5,7 @@ router.use(express.json());
 const Joi = require('joi');
 const bcrypt = require('bcrypt');
 
-const Customer = require('./models/customer.js');
+const Customer = require('../models/customer.js');
 
 router.post('/', async (req, res) => {
     const schema = Joi.object().keys({
