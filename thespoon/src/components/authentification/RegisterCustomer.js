@@ -1,66 +1,62 @@
 import React from 'react';
 import { Component } from 'react';
-import {IconName, IconLocation, IconBirthday, IconEmail, IconPassword, IconExit, IconBack} from '../Icons';
+import {IconName, IconEmail, IconPassword, IconExit, IconBack} from '../Icons';
 import {Modal} from "react-bootstrap";
 import FilterLink from "../../containers/FilterModalLink";
 import {authentificationModalVisibilityFilters} from "../../constants/authentificationModalVisibiltyFilters";
-import {roles} from "../../constants/roles";
 import Form from 'react-validation/build/form';
 import Input from 'react-validation/build/input';
 import Button from 'react-validation/build/button';
-import FormValidator from "../../utils/FormValidator";
+import FormValidator from "../../validation/FormValidator";
 
 
-
-class Register extends Component  {
+class RegisterCustomer extends Component  {
   constructor(props)
   {
     super(props);
 
       this.validator = new FormValidator([
-          {
-              field: 'email',
-              method: 'isEmpty',
-              validWhen: false,
-              message: 'E-mail is required.'
-          },
-          {
-              field: 'email',
-              method: 'isEmail',
-              validWhen: true,
-              message: 'That is not a valid email.'
-          },
-          {
-              field: 'username',
-              method: 'isEmpty',
-              validWhen: false,
-              message: 'Username is required.'
-          },
-          {
-              field: 'password',
-              method: 'isEmpty',
-              validWhen: false,
-              message: 'Password is required.'
-          },
-          {
-              field: 'confirmPassword',
-              method: 'isEmpty',
-              validWhen: false,
-              message: 'Password confirmation is required.'
-          },
-          {
-              field: 'confirmPassword',
-              method: this.passwordMatch,
-              validWhen: true,
-              message: 'Confirm password has to be identical to the password.'
-          }
-      ]);
+      {
+          field: 'email',
+          method: 'isEmpty',
+          validWhen: false,
+          message: 'E-mail is required.'
+      },
+      {
+          field: 'email',
+          method: 'isEmail',
+          validWhen: true,
+          message: 'That is not a valid email.'
+      },
+      {
+          field: 'username',
+          method: 'isEmpty',
+          validWhen: false,
+          message: 'Username is required.'
+      },
+      {
+          field: 'password',
+          method: 'isEmpty',
+          validWhen: false,
+          message: 'Password is required.'
+      },
+      {
+          field: 'confirmPassword',
+          method: 'isEmpty',
+          validWhen: false,
+          message: 'Password confirmation is required.'
+      },
+      {
+          field: 'confirmPassword',
+          method: this.passwordMatch,
+          validWhen: true,
+          message: 'Confirm password has to be identical to the password.'
+      }
+  ]);
 
       this.state = {
           email:'',
-          firstname:'',
           username: '',
-          surname:'',
           password:'',
           confirmPassword: '',
           validation: this.validator.valid(),
@@ -70,7 +66,7 @@ class Register extends Component  {
       this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-    passwordMatch = (confirmation, state) => (state.password === confirmation)
+    passwordMatch = (confirmation, state) => (state.password === confirmation);
 
     handleSubmit = event => {
         event.preventDefault();
@@ -120,14 +116,6 @@ class Register extends Component  {
                         <Input type="text" name="username" placeholder="Username"/>
                     </div>
 
-                    {this.props.role === roles.RESTAURANT_OWNER &&
-                      <div className="input-field name">
-                        <IconName />
-                        <Input type="text" name="firstname" placeholder="First name"/>
-                        <Input type="text" name="surname" placeholder="Surname"/>
-                      </div>
-                    }
-
                     <div className="input-field">
                         <IconPassword />
                         <Input type="password" name="password" placeholder="Password"/>
@@ -156,4 +144,4 @@ class Register extends Component  {
   }
 }
 
-export default Register;
+export default RegisterCustomer;

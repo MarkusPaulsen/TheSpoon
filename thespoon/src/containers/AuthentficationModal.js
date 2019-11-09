@@ -6,7 +6,8 @@ import ChooseRoleModal from "../components/authentification/ChooseRoleModal";
 import {Modal} from "react-bootstrap";
 import {setAuthentificatonModalVisibilityFilterAction} from "../actions/authentificationModalAction";
 import LogIn from "../components/authentification/LogIn";
-import Register from "../components/authentification/Register";
+import RegisterRestaurantowner from "../components/authentification/RegisterRestaurantowner";
+import RegisterCustomer from "../components/authentification/RegisterCustomer";
 
 
 const mapStateToProps = (state) => {
@@ -34,13 +35,13 @@ class AuthentificationModal extends Component {
                 )
             case authentificationModalVisibilityFilters.SHOW_REGISTER_RESTAURANT_OWNER:
                 return (
-                    <Register
+                    <RegisterRestaurantowner
                         role={roles.RESTAURANT_OWNER}
                         onHide={() => this.props.handleClose()}/>
                 )
             case authentificationModalVisibilityFilters.SHOW_REGISTER_CUSTOMER:
                 return (
-                    <Register
+                    <RegisterCustomer
                         role={roles.CUSTOMER}
                         onHide={() => this.props.handleClose()}
                     />
