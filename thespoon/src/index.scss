@@ -280,17 +280,18 @@ header {
     }
 
     .error-block {
-      color: red;
+      color: var(--pink);
       margin-bottom: 1.6666666666666667rem;
       small {
         display: block;
         margin-bottom: .25rem;
+        font-weight: 500;
       }
     }
 
     &.choose-role {
       button {
-        margin: 0 0 1.4583333333333333rem;
+        margin: 0 0 2.2916666666666665rem;
       }
       label {
         margin-top: 1rem;

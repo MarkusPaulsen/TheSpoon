@@ -20,42 +20,30 @@ const mapDispatchToProps = dispatch => ({
 })
 
 
-class AuthentficationModal extends Component {
+class AuthentificationModal extends Component {
 
     getVisibleModal = filter => {
         switch (filter) {
             case authentificationModalVisibilityFilters.SHOW_LOGIN:
                 return (
-                    <Modal show={true} onHide={() => this.props.handleClose()} centered>
-                        <LogIn
-                            onHide={() => this.props.handleClose()}
-                        />
-                    </Modal>
+                    <LogIn onHide={() => this.props.handleClose()} />
                 )
             case authentificationModalVisibilityFilters.SHOW_CHOOSE_ROLE:
                 return (
-                    <Modal show={true} onHide={() => this.props.handleClose()} centered>
-                        <ChooseRoleModal
-                            onHide={() => this.props.handleClose()}
-                            />
-                    </Modal>
+                    <ChooseRoleModal onHide={() => this.props.handleClose()} />
                 )
             case authentificationModalVisibilityFilters.SHOW_REGISTER_RESTAURANT_OWNER:
                 return (
-                    <Modal show={true} onHide={() => this.props.handleClose()} centered>
-                        <Register
-                            role={roles.RESTAURANT_OWNER}
-                            onHide={() => this.props.handleClose()}/>
-                    </Modal>
+                    <Register
+                        role={roles.RESTAURANT_OWNER}
+                        onHide={() => this.props.handleClose()}/>
                 )
             case authentificationModalVisibilityFilters.SHOW_REGISTER_CUSTOMER:
                 return (
-                    <Modal show={true} onHide={() => this.props.handleClose()} centered>
-                        <Register
-                            role={roles.CUSTOMER}
-                            onHide={() => this.props.handleClose()}
-                        />
-                    </Modal>
+                    <Register
+                        role={roles.CUSTOMER}
+                        onHide={() => this.props.handleClose()}
+                    />
                 )
             default:
                 return null;
@@ -65,17 +53,18 @@ class AuthentficationModal extends Component {
     render() {
         return (
             <>
-                {this.getVisibleModal(this.props.authentificationModalVisibilityFilter)}
+                {this.props.authentificationModalVisibilityFilter !== authentificationModalVisibilityFilters.HIDE_ALL &&
+                    <Modal show={true} onHide={() => this.props.handleClose()} centered>
+                        {this.getVisibleModal(this.props.authentificationModalVisibilityFilter)}
+                    </Modal>
+                }
             </>
 
         );
     }
 }
 
-//wrap App in connect and pass in mapStateToProps
-//export default connect(mapStateToProps)(AuthentficationModal)
-
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(AuthentficationModal)
+)(AuthentificationModal)

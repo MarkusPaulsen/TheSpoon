@@ -19,18 +19,6 @@ class Register extends Component  {
 
       this.validator = new FormValidator([
           {
-              field: 'firstname',
-              method: 'isEmpty',
-              validWhen: false,
-              message: 'First name is required.'
-          },
-          {
-              field: 'surname',
-              method: 'isEmpty',
-              validWhen: false,
-              message: 'Surname is required.'
-          },
-          {
               field: 'email',
               method: 'isEmpty',
               validWhen: false,
@@ -41,6 +29,12 @@ class Register extends Component  {
               method: 'isEmail',
               validWhen: true,
               message: 'That is not a valid email.'
+          },
+          {
+              field: 'username',
+              method: 'isEmpty',
+              validWhen: false,
+              message: 'Username is required.'
           },
           {
               field: 'password',
@@ -58,16 +52,15 @@ class Register extends Component  {
               field: 'confirmPassword',
               method: this.passwordMatch,
               validWhen: true,
-              message: 'Password and password confirmation do not match.'
+              message: 'Confirm password has to be identical to the password.'
           }
       ]);
 
       this.state = {
-          firstname:'',
-          surname:'',
-          nationality:'',
-          birthDate:'',
           email:'',
+          firstname:'',
+          username: '',
+          surname:'',
           password:'',
           confirmPassword: '',
           validation: this.validator.valid(),
@@ -83,17 +76,12 @@ class Register extends Component  {
         event.preventDefault();
         const values = this.form.getValues();
 
-        console.log(values);
-
         this.setState({
-            firstname: values.firstname,
-            surname: values.surname,
-            nationality:values.nationality,
-            birthDate: values.birthDate,
             email:values.email,
+            username: values.username,
             password:values.password,
             confirmPassword: values.confirmPassword
-        }, () => { //because setstate is asynchronus, furhter action must be taken on callback
+        }, () => { //because setstate is asynchronus, further action must be taken on callback
 
                 const validation = this.validator.validate(this.state);
                 this.setState({ validation });
@@ -117,50 +105,42 @@ class Register extends Component  {
             <button className="exit" onClick={this.props.onHide}><IconExit /></button>
             <div className="sign-up choose-role">
                 <Form ref={ (c) => { this.form = c; }} onSubmit={(e) => this.handleSubmit(e)}>
-                  <h2>Sign up</h2>
-                  <div className="account-type">
-                    <h4>as a <span className="role">{this.props.role}</span></h4>
-                  </div>
-
-                  <div className="input-field name">
-                    <IconName />
-                    <Input type="text" id="firstname" name="firstname" placeholder="First name"/>
-                    <Input type="text" id="surname" name="surname" placeholder="Surname"/>
-                  </div>
-
-                 {this.props.role === roles.CUSTOMER &&
-                    <div className="input-field">
-                       <IconLocation />
-                      <Input type="text" id="nationality" name="nationality" placeholder="Nationality"/>
+                    <h2>Sign up</h2>
+                    <div className="account-type">
+                        <h4>as a <span className="role">{this.props.role}</span></h4>
                     </div>
-                 }
 
-                  {this.props.role === roles.CUSTOMER &&
                     <div className="input-field">
-                      <IconBirthday />
-                      <Input type="date" id="birth-date" name="birthDate"/>
+                        <IconEmail />
+                        <Input type="email" name="email" placeholder="E-mail"/>
                     </div>
-                   }
 
-                  <div className="input-field">
-                    <IconEmail />
-                    <Input type="email" id="email" name="email" placeholder="E-mail"/>
-                  </div>
+                    <div className="input-field">
+                        <IconName />
+                        <Input type="text" name="username" placeholder="Username"/>
+                    </div>
 
-                  <div className="input-field">
-                    <IconPassword />
-                    <Input type="password" id="password" name="password" placeholder="Password"/>
-                  </div>
+                    {this.props.role === roles.RESTAURANT_OWNER &&
+                      <div className="input-field name">
+                        <IconName />
+                        <Input type="text" name="firstname" placeholder="First name"/>
+                        <Input type="text" name="surname" placeholder="Surname"/>
+                      </div>
+                    }
 
-                  <div className="input-field">
-                    <IconPassword />
-                    <Input type="password" id="confirm-password" name="confirmPassword" placeholder="Confirm password"/>
-                  </div>
+                    <div className="input-field">
+                        <IconPassword />
+                        <Input type="password" name="password" placeholder="Password"/>
+                    </div>
+
+                    <div className="input-field">
+                        <IconPassword />
+                        <Input type="password" id="confirm-password" name="confirmPassword" placeholder="Confirm password"/>
+                    </div>
 
                     <div className="error-block">
-                        <small>{validation.firstname.message}</small>
-                        <small>{validation.surname.message}</small>
                         <small>{validation.email.message}</small>
+                        <small>{validation.username.message}</small>
                         <small>{validation.password.message}</small>
                         <small>{validation.confirmPassword.message}</small>
                     </div>
