@@ -2,7 +2,7 @@ const Sequelize = require('sequelize');
 const db = require('../sequelizeSettings');
 
 const Customer = db.define('Customer', {
-    Email: {
+    Username: {
         type: Sequelize.STRING,
         primaryKey: true
     },
@@ -20,6 +20,9 @@ const Customer = db.define('Customer', {
     },
     Birthday: {
         type: Sequelize.DATE
+    },
+    Email: {
+        type: Sequelize.STRING
     }
 }, {
     freezeTableName: true,
