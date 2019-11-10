@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import styles from "./landingpagestyle";
 import {
   View,
   StatusBar,
@@ -8,20 +7,24 @@ import {
   Linking,
   TouchableOpacity,
   Image,
-  ImageBackground
+  ImageBackground,
+  StyleSheet
 } from "react-native";
+import TheSpoonLogo from '../../assets/thespoon-logo.png';
+import SpoonBackground from '../../assets/spoon-background.png';
+
 
 export default class LandingPage extends Component {
   render() {
     return (
       <View>
         <ImageBackground
-          source={require("/Users/cathrineakreaas/theSpoon/TheSpoon/TheSpoon/assets/backgroundspoon.png")}
+          source={SpoonBackground}
           style={{ width: "100%", height: "100%" }}
         >
           <View style={styles.container}>
             <Image
-              source={require("/Users/cathrineakreaas/theSpoon/TheSpoon/TheSpoon/assets/thespoon_logo_black.png")}
+              source={TheSpoonLogo}
               style={styles.logo}
             />
             <View style={styles.buttons}>
@@ -52,3 +55,37 @@ export default class LandingPage extends Component {
 
   onLoginPress() {}
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    flexDirection: 'column',
+    justifyContent: 'space-around'
+  },
+  loginButton: {
+    width: 203,
+    height: 38,
+    backgroundColor: '#F3A3A3',
+    marginTop: 6,
+    alignSelf: 'center',
+    borderRadius: 20,
+  },
+  signupButton: {
+    width: 203,
+    height: 38,
+    backgroundColor: '#A5DED0',
+    marginTop: 6,
+    alignSelf: 'center',
+    borderRadius: 20,
+  },
+  smallText: {
+    color: '#000000',
+    alignSelf: 'center',
+    marginTop: 9
+  },
+  buttons: {
+    flexDirection: 'column',
+    justifyContent: 'space-around'
+  }
+});

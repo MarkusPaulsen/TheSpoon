@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import styles from "./loginstyle";
+//import styles from "./loginstyle";
 import {
   View,
   Text,
@@ -7,9 +7,11 @@ import {
   Button,
   Linking,
   TouchableOpacity,
-  Image
+  Image,
+  StyleSheet
 } from "react-native";
-
+import UsernameIcon from '../../assets/login-email.png';
+import PasswordIcon from '../../assets/login-password.png';
 // interface State {
 //   username: string;
 //   password: string;
@@ -50,11 +52,11 @@ export default class LoginScreen extends Component {
   //     password: "",
   //   }
 
-  handleUsernameChange = (username: string) => {
+  handleUsernameChange = (username) => {
     this.setState({ username: username });
   };
 
-  handlePasswordChange = (password: string) => {
+  handlePasswordChange = (password) => {
     this.setState({ password: password });
   };
 
@@ -64,7 +66,7 @@ export default class LoginScreen extends Component {
         <Text style={styles.text}>Log in</Text>
         <View style={{ flexDirection: "row" }}>
           <Image
-            source={require("/Users/cathrineakreaas/theSpoon/TheSpoon/TheSpoon/assets/login-email.png")}
+            source={UsernameIcon}
             style={{ alignSelf: "center" }}
           />
           <TextInput
@@ -82,7 +84,7 @@ export default class LoginScreen extends Component {
         </View>
         <View style={{ flexDirection: "row" }}>
           <Image
-            source={require("/Users/cathrineakreaas/theSpoon/TheSpoon/TheSpoon/assets/login-password.png")}
+            source={PasswordIcon}
             style={{ alignSelf: "center" }}
           />
           <TextInput
@@ -121,3 +123,52 @@ export default class LoginScreen extends Component {
 
   onLoginPress() {}
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#FFFFFF",
+    alignItems: "center"
+  },
+  text: {
+    fontSize: 48,
+    marginTop: 204
+    //alignSelf: "center"
+  },
+  textInput: {
+    width: 224,
+    height: 42,
+    color: "#000000",
+    fontFamily: "roboto",
+    borderBottomColor: "#F3A3A3",
+    borderBottomWidth: 1.5,
+    //marginTop: 99,
+    alignSelf: "center"
+  },
+  loginButton: {
+    width: 203,
+    height: 38,
+    borderRadius: 20,
+    backgroundColor: "#F3A3A3",
+    marginTop: 6,
+    alignSelf: "center"
+  },
+  registrationButton: {
+    //width: 100,
+    //height: 36,
+    color: "#A5DED0"
+    //marginTop: 45,
+    //alignSelf: "center"
+  },
+  registration: {
+    //textAlign: 'center',
+    //justifyContent: 'space-around',
+    flexDirection: "row"
+  },
+  buttonText: {
+    color: "#000000",
+    alignSelf: "center",
+    marginTop: 9
+  }
+}
+);
