@@ -52,7 +52,7 @@ router.post('/', async (req, res) => {
         if (!isValid) res.status(400).send('Invalid username or password');
         else {
             //if the password is valid, send the token to the user
-            const token = jwt.sign({email: req.body.email}, config.get('jwtPrivateKey'));
+            const token = jwt.sign({email: req.body.email}, config.get('jwtPrivateKey'), {expiresIn: "2 days"});
             res.status(201).send({token: token});
         }
     }
