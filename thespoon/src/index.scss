@@ -218,28 +218,32 @@ header {
 /* MODALS > */
 
 .modal-dialog {
-  max-width: 25rem;
+  //max-width: 25rem;
 }
 
 .modal-body {
-  padding: 1.4583333333333333rem;
+  padding: 1rem;
 }
 
 .modal-content {
   .sign-up {
-    padding: 4.8rem 2.7rem;
+    padding: 3rem 1.5rem;
     text-align: center;
 
     .title {
-      margin-bottom: 4.041666666666667rem;
+      margin-bottom: 3rem;
     }
 
     button {
-      margin: 2.08rem 0 2.0833333333333335rem;
+      margin: 1.5rem 0 2rem;
+    }
+
+    label {
+      margin-bottom: 0;
     }
 
     .account-type {
-      margin: .25rem 0 2rem;
+      margin: .25rem 0 3rem;
       .role {
         color: var(--turquoise);
       }
@@ -254,7 +258,7 @@ header {
     }
 
     .input-field {
-      margin-bottom: 1.6666666666666667rem;
+      margin-bottom: 1.5rem;
 
       i {
         margin-right: 1rem;
@@ -281,7 +285,6 @@ header {
 
     .error-block {
       color: var(--pink);
-      margin-bottom: 1.6666666666666667rem;
       small {
         display: block;
         margin-bottom: .25rem;
@@ -291,7 +294,7 @@ header {
 
     &.choose-role {
       button {
-        margin: 0 0 2.2916666666666665rem;
+        margin: 0 0 2rem;
       }
       label {
         margin-top: 1rem;
@@ -307,6 +310,7 @@ header {
   }
 
   .back {
+    float: left;
     line-height: 2rem;
     &:hover {
       cursor: pointer;

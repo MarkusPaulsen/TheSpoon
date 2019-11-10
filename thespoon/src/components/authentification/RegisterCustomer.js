@@ -99,7 +99,7 @@ class RegisterCustomer extends Component  {
         <Modal.Body>
             <span className="back"> <FilterLink filter={authentificationModalVisibilityFilters.SHOW_CHOOSE_ROLE}><IconBack /></FilterLink></span>
             <button className="exit" onClick={this.props.onHide}><IconExit /></button>
-            <div className="sign-up choose-role">
+            <div className="sign-up">
                 <Form ref={ (c) => { this.form = c; }} onSubmit={(e) => this.handleSubmit(e)}>
                     <h2>Sign up</h2>
                     <div className="account-type">

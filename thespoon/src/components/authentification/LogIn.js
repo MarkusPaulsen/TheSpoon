@@ -75,9 +75,7 @@ class LogIn extends Component {
            <button className="exit" onClick={this.props.onHide}><IconExit /></button>
             <div className="sign-up">
               <Form ref={ (c) => { this.form = c; }} onSubmit={this.handleSubmit}>
-                <div className="login-title">
-                  <h2 className="title">Log In</h2>
-                </div>
+                <h2 className="title">Log In</h2>
                 <div className="input-field">
                   <IconEmail />
                   <Input type="email" id="email" name="email" placeholder="E-mail"/>
