@@ -1,5 +1,4 @@
-import React from 'react';
-import { Component } from 'react';
+import React, {Component} from 'react';
 import {IconName, IconEmail, IconPassword, IconExit, IconBack} from '../Icons';
 import {Modal} from "react-bootstrap";
 import FilterLink from "../../containers/FilterModalLink";
@@ -157,7 +156,10 @@ class RegisterRestaurantowner extends Component  {
                         <small>{validation.confirmPassword.message}</small>
                     </div>
 
-                  <Button type="submit" className="normal" >Sign up</Button>
+                    <button className="normal">
+                        <FilterLink filter={authentificationModalVisibilityFilters.SHOW_RESTAURANT_INFORMATION}>Continue</FilterLink>
+                    </button>
+
                 </Form>
                 <label className="link-wrapper">
                     <small>Already have an account? <FilterLink filter={authentificationModalVisibilityFilters.SHOW_LOGIN}>Log in</FilterLink></small>
