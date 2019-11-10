@@ -9,7 +9,7 @@ const Customer = db.define('Customer', {
     Password: {
         type: Sequelize.STRING
     },
-    Firstname: {
+    Name: {
         type: Sequelize.STRING
     },
     Surname: {
