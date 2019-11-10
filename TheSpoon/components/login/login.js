@@ -4,7 +4,6 @@ import {
   View,
   Text,
   TextInput,
-  Button,
   Linking,
   TouchableOpacity,
   Image,
@@ -64,50 +63,48 @@ export default class LoginScreen extends Component {
     return (
       <View style={styles.container}>
         <Text style={styles.text}>Log in</Text>
-        <View style={{ flexDirection: "row" }}>
-          <Image
-            source={UsernameIcon}
-            style={{ alignSelf: "center" }}
-          />
-          <TextInput
-            placeholder="Username"
-            //value={this.state.username}
-            //onChangeText={this.handleUsernameChange}
-            placeholderTextColor="#959595"
-            numberOfLines={1}
-            autoCapitalize="none"
-            returnKeyType="next"
-            keyboardType="email-address"
-            autoCorrect={false}
-            style={styles.textInput}
-          />
+        <View style={{ flex: 2, justifyContent: 'space-around' }}>
+          <View style={{ flexDirection: "row" }}>
+            <Image source={UsernameIcon} style={{ alignSelf: "center" }} />
+            <TextInput
+              placeholder="Username"
+              //value={this.state.username}
+              //onChangeText={this.handleUsernameChange}
+              placeholderTextColor="#959595"
+              numberOfLines={1}
+              autoCapitalize="none"
+              returnKeyType="next"
+              keyboardType="email-address"
+              autoCorrect={false}
+              style={styles.textInput}
+            />
+          </View>
+          <View style={{ flexDirection: "row", marginBottom: 90 }}>
+            <Image source={PasswordIcon} style={{ alignSelf: "center" }} />
+            <TextInput
+              placeholder="Password"
+              //value={this.state.password}
+              //onChangeText={this.handlePasswordChange}
+              placeholderTextColor="#959595"
+              autoCapitalize="none"
+              autoCorrect={false}
+              style={styles.textInput}
+              returnKeyType="done"
+              secureTextEntry={true}
+            />
+          </View>
         </View>
-        <View style={{ flexDirection: "row" }}>
-          <Image
-            source={PasswordIcon}
-            style={{ alignSelf: "center" }}
-          />
-          <TextInput
-            placeholder="Password"
-            //value={this.state.password}
-            //onChangeText={this.handlePasswordChange}
-            placeholderTextColor="#959595"
-            autoCapitalize="none"
-            autoCorrect={false}
-            style={styles.textInput}
-            returnKeyType="done"
-            secureTextEntry={true}
-          />
+        <View style={{ flex: 1 }}>
+          <TouchableOpacity
+            //actually needs to only be called if validation goes through
+            //onPress={() => this.handleLogin()}
+            // need to fix proper navigation if token is set
+            onPress={() => this.props.navigation.navigate("Home")}
+            style={styles.loginButton}
+          >
+            <Text style={styles.buttonText}>Log in</Text>
+          </TouchableOpacity>
         </View>
-        <TouchableOpacity
-          //actually needs to only be called if validation goes through
-          //onPress={() => this.handleLogin()}
-          // need to fix proper navigation if token is set
-          onPress={() => this.props.navigation.navigate("Home")}
-          style={styles.loginButton}
-        >
-          <Text style={styles.buttonText}>Log in</Text>
-        </TouchableOpacity>
         <View style={styles.registration}>
           <Text>Don't have an account?</Text>
           <TouchableOpacity
@@ -121,7 +118,7 @@ export default class LoginScreen extends Component {
     );
   }
 
-  onLoginPress() {}
+  onLoginPress() { }
 }
 
 const styles = StyleSheet.create({
@@ -132,8 +129,10 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 48,
-    marginTop: 204
-    //alignSelf: "center"
+    fontFamily: 'roboto',
+    marginTop: 150,
+    flex: 1,
+    //justifyContent: 'center'
   },
   textInput: {
     width: 224,
@@ -151,7 +150,8 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     backgroundColor: "#F3A3A3",
     marginTop: 6,
-    alignSelf: "center"
+    alignSelf: "center",
+    //marginBottom: 50
   },
   registrationButton: {
     //width: 100,
@@ -162,13 +162,17 @@ const styles = StyleSheet.create({
   },
   registration: {
     //textAlign: 'center',
-    //justifyContent: 'space-around',
-    flexDirection: "row"
+    //justifyContent: 'space-between',
+    flexDirection: "row",
+    flex: 1,
+    //marginTop: 50
+
   },
   buttonText: {
     color: "#000000",
     alignSelf: "center",
-    marginTop: 9
+    marginTop: 9,
+    fontFamily: 'roboto'
   }
 }
 );
