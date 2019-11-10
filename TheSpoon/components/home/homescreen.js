@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import {
-  View, 
+  View,
   Text,
   StyleSheet
 } from "react-native";
@@ -9,7 +9,7 @@ export default class HomeScreen extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
+      <View>
         <Text style={styles.loginTextBig}>
           Logged in
         </Text>
@@ -21,10 +21,12 @@ export default class HomeScreen extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF'
+    backgroundColor: '#FFFFFF',
+    alignContent: 'center',
+    //justifyContent: 'row'
   },
   loginTextBig: {
-    position: 'absolute',
+    //position: 'absolute',
     width: 310,
     height: 56,
     left: 20,
@@ -38,5 +40,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     textAlign: 'center',
     color: '#000000'
+  },
+  button: {
+    width: 203,
+    height: 38,
+    borderRadius: 20,
+    backgroundColor: "#F3A3A3",
+    marginTop: 6,
+    alignSelf: "center",
+    //marginBottom: 50
   }
 });

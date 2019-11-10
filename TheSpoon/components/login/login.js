@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import UsernameIcon from '../../assets/login-email.png';
 import PasswordIcon from '../../assets/login-password.png';
+import CustomizedButton from '../button.js';
 // interface State {
 //   username: string;
 //   password: string;
@@ -95,15 +96,10 @@ export default class LoginScreen extends Component {
           </View>
         </View>
         <View style={{ flex: 1 }}>
-          <TouchableOpacity
-            //actually needs to only be called if validation goes through
-            //onPress={() => this.handleLogin()}
-            // need to fix proper navigation if token is set
+          <CustomizedButton label="Log in"
             onPress={() => this.props.navigation.navigate("Home")}
             style={styles.loginButton}
-          >
-            <Text style={styles.buttonText}>Log in</Text>
-          </TouchableOpacity>
+          />
         </View>
         <View style={styles.registration}>
           <Text>Don't have an account?</Text>
@@ -167,12 +163,6 @@ const styles = StyleSheet.create({
     flex: 1,
     //marginTop: 50
 
-  },
-  buttonText: {
-    color: "#000000",
-    alignSelf: "center",
-    marginTop: 9,
-    fontFamily: 'roboto'
   }
 }
 );

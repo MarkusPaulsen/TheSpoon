@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import TheSpoonLogo from '../../assets/thespoon-logo.png';
 import SpoonBackground from '../../assets/spoon-background.png';
-
+import CustomizedButton from '../button.js';
 
 export default class LandingPage extends Component {
   render() {
@@ -20,27 +20,17 @@ export default class LandingPage extends Component {
         <ImageBackground source={SpoonBackground} style={{ width: "100%", height: "100%" }} >
           <View style={styles.container}>
             <View style={styles.logo}>
-                <Image source={TheSpoonLogo} />
+              <Image source={TheSpoonLogo} />
             </View>
             <View style={styles.buttons}>
-              <TouchableOpacity
+              <CustomizedButton label="Log in"
                 style={styles.loginButton}
-                activeOpacity={0.8}
-                onPress={() => Alert.alert("Login Button pressed")}
-                onPress={() => this.onLoginPress()}
                 onPress={() => this.props.navigation.navigate("Login")}
-              >
-                <Text style={styles.smallText}>Log in</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
+              />
+              <CustomizedButton label="Sign up"
                 style={styles.signupButton}
-                activeOpacity={0.8}
-                onPress={() => Alert.alert("Sign Up Button pressed")}
-                onPress={() => this.onLoginPress()}
                 onPress={() => Linking.openURL("https://google.com")}
-              >
-                <Text style={styles.smallText}>Sign up</Text>
-              </TouchableOpacity>
+              />
             </View>
           </View>
         </ImageBackground>
@@ -48,7 +38,7 @@ export default class LandingPage extends Component {
     );
   }
 
-  onLoginPress() {}
+  onLoginPress() { }
 }
 
 const styles = StyleSheet.create({
@@ -91,7 +81,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     //alignItems: 'center',
     //flexWrap: 'wrap'
-    justifyContent: 'space-around', 
+    justifyContent: 'space-around',
     marginTop: 140
   }
 });
