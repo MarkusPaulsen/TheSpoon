@@ -2,7 +2,7 @@ const Sequelize = require('sequelize');
 const db = require('../sequelizeSettings');
 
 const Owner = db.define('Owner', {
-    Email: {
+    Username: {
         type: Sequelize.STRING,
         primaryKey: true
     },
@@ -13,6 +13,9 @@ const Owner = db.define('Owner', {
         type: Sequelize.STRING
     },
     Surname: {
+        type: Sequelize.STRING
+    },
+    Email: {
         type: Sequelize.STRING
     }
 }, {
