@@ -38,6 +38,21 @@ db.authenticate()
 app.use(bodyParser.json());
 
 
+//START OF THE REQUIRED CODE TO MAKE THE DEPLOY WORK
+//NOTE: currently not working, since build doesn't work
+
+const path = require("path");
+
+
+app.use(express.static(path.join(__dirname, "thespoon", "build")));
+
+
+app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "thespoon", "build", "index.html"));
+});
+
+//END OF THE REQUIRED CODE TO MAKE THE DEPLOY WORK
+
 const port = process.env.PORT || 5000;
 
 app.listen(port, () => console.log('Server started on port ' + port));
