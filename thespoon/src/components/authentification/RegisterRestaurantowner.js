@@ -5,7 +5,6 @@ import FilterLink from "../../containers/FilterModalLink";
 import {authentificationModalVisibilityFilters} from "../../constants/authentificationModalVisibiltyFilters";
 import Form from 'react-validation/build/form';
 import Input from 'react-validation/build/input';
-import Button from 'react-validation/build/button';
 import FormValidator from "../../validation/FormValidator";
 
 
