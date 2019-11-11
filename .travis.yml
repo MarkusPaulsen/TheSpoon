@@ -1,0 +1,12 @@
+language: node_js
+node_js:
+  - "13"
+cache:
+  directories:
+    - $HOME/node_modules
+env:
+  global:
+    - theSpoon_jwtPrivateKey=mySecureKey
+braches:
+  only:
+    - travis
