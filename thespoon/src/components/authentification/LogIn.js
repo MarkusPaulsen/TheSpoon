@@ -94,7 +94,7 @@ class LogIn extends Component {
               <Form ref={ (c) => { this.form = c; }} onSubmit={this.handleSubmit}>
                 <h2 className="title">Log in</h2>
                 <div className="input-field">
-                  <IconName />
+                  <IconEmail />
                   <Input type="username" id="username" name="username" placeholder="Username"/>
                 </div>
 
