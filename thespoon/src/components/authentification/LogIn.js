@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { ajax } from 'rxjs/ajax';
+import paths from '../../constants/paths';
 import { IconExit, IconEmail, IconPassword } from '../Icons';
 import {Modal} from "react-bootstrap";
 import FilterLink from "../../containers/FilterModalLink";
@@ -59,8 +61,28 @@ class LogIn extends Component {
           this.submitted = true;
 
           if (validation.isValid) {
-            console.log("you passed our validation");
-            this.props.onHide();
+            let thisTemp = this;
+            console.log(paths['restApi']['login']);
+            ajax({
+              url: paths['restApi']['login'],
+              method: 'POST',
+              headers: {},
+              body: {
+                email: this.state.email,
+                password:this.state.password
+              }
+            }).subscribe(
+                function (next) {
+                  console.log("Ajax step");
+                },
+                function (error) {
+                  alert("Wrong username or password");
+                },
+                function (complete) {
+                  console.log("you passed our validation");
+                  thisTemp.props.onHide();
+                }
+            );
           }
         }
     );

@@ -1,6 +1,6 @@
-import * as LogInRegisterActions from "../actions/LogInRegisterActions";
+import * as LogInRegisterActions from "../actions/logInRegisterActions";
 
-export default function logInRegisterReducer(state, action) {
+export default function loginRegisterReducer(state, action) {
     switch(action.type) {
         case LogInRegisterActions.REGISTERING_ATTEMPTING:
             return Object.assign({}, state, {

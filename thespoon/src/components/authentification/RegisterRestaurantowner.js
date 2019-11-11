@@ -1,5 +1,6 @@
-import React from 'react';
-import { Component } from 'react';
+import React, { Component } from 'react';
+import { ajax } from 'rxjs/ajax';
+import paths from '../../constants/paths';
 import {IconName, IconEmail, IconPassword, IconExit, IconBack} from '../Icons';
 import {Modal} from "react-bootstrap";
 import FilterLink from "../../containers/FilterModalLink";
@@ -100,8 +101,30 @@ class RegisterRestaurantowner extends Component  {
                 this.submitted = true;
 
                 if (validation.isValid) {
-                    console.log("you passed our validation");
-                    this.props.onHide();
+                    let thisTemp = this;
+                    ajax({
+                        url: paths['restApi']['registrationRestaurantOwner'],
+                        method: 'POST',
+                        headers: {},
+                        body: {
+                            email: this.state.email,
+                            password:this.state.password,
+                            username: this.state.username,
+                            firstName:this.state.firstName,
+                            surname:this.state.surname
+                        }
+                    }).subscribe(
+                        function (next) {
+                            console.log("Ajax step");
+                        },
+                        function (error) {
+                            alert("An error happened!");
+                        },
+                        function (complete) {
+                            console.log("you passed our validation");
+                            thisTemp.props.onHide();
+                        }
+                    );
                 }
             }
             );

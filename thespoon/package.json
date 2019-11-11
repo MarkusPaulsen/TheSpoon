@@ -17,6 +17,8 @@
     "react-scripts": "3.2.0",
     "react-validation": "^3.0.7",
     "redux": "latest",
+    "rxjs": "latest",
+    "rxjs-compat": "^6.5.3",
     "validator": "^12.0.0"
   },
   "scripts": {
@@ -39,5 +41,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "jquery": "^3.4.1",
+    "rx-dom": "^7.0.3"
   }
 }
