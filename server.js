@@ -15,7 +15,7 @@ if (!config.get('jwtPrivateKey')){
 
 const swaggerUi = require('swagger-ui-express');
 const YAML = require('yamljs');
-const swaggerDocument = YAML.load('./backendServer/API_reference.yaml');
+const swaggerDocument = YAML.load('./API_reference.yaml');
 
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 

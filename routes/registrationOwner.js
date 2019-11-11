@@ -2,31 +2,15 @@ const express = require('express');
 const router = express();
 router.use(express.json());
 
-const Joi = require('joi');
 const bcrypt = require('bcrypt');
 
 const Owner = require('../models/owner.js');
+const inputValidator = require('../middleware/inputValidationMiddleware.js');
+const validationSchema = require('../validationSchemas.js');
+
 const credentialsAlreadyUsed = require('../utils/credentialsAlreadyUsed.js');
 
-router.post('/', async (req, res) => {
-
-
-    const schema = Joi.object().keys({
-        username: Joi.string().regex(/^[a-zA-Z0-9]/).min(5),
-        name: Joi.string().regex(/^[a-zA-Z]/).required(),
-        surname: Joi.string().regex(/^[a-zA-Z]/).required(),
-        email: Joi.string().trim().email({minDomainAtoms: 2}).required(),
-        password: Joi.string().regex(/^[a-zA-Z0-9]/).min(5).required()
-    }); 
-
-
-
-    const result = Joi.validate(req.body, schema);
-    //If the req.body doesn't match the schema, send error message
-    if (result.error) {
-        res.status(400).send('Invalid input');
-        return;
-    }
+router.post('/', inputValidator(validationSchema.registrationOwnerValidation), async (req, res) => {
 
     //check if the username of the email are already taken. If that is the case, credentialsAlreadyUsed sends error response
     if(await credentialsAlreadyUsed(req, res)){
