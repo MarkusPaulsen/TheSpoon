@@ -14,7 +14,7 @@ const Customer = require('../models/customer.js');
 router.post('/', async (req, res) => {
 
     const schema = Joi.object().keys({
-        email: Joi.string().trim().email({minDomainAtoms: 2}).required(),
+        username: Joi.string().regex(/^[a-zA-Z0-9]/).min(5),
         password: Joi.string().regex(/^[a-zA-Z0-9]/).min(5),
         isRestaurantOwner: Joi.boolean()
     });
@@ -32,14 +32,14 @@ router.post('/', async (req, res) => {
     if (req.body.isRestaurantOwner) {
         user = await Owner.findAll({
             where: {
-                Email: req.body.email
+                Username: req.body.username
             }
         });
     }
     else {
         user = await Customer.findAll({
             where: {
-                Email: req.body.email
+                Username: req.body.username
             }
         });
     }
@@ -52,7 +52,7 @@ router.post('/', async (req, res) => {
         if (!isValid) res.status(400).send('Invalid username or password');
         else {
             //if the password is valid, send the token to the user
-            const token = jwt.sign({email: req.body.email}, config.get('jwtPrivateKey'));
+            const token = jwt.sign({email: req.body.email}, config.get('jwtPrivateKey'), {expiresIn: "2 days"});
             res.status(201).send({token: token});
         }
     }
