@@ -8,7 +8,6 @@ import {authentificationModalVisibilityFilters} from "../../constants/authentifi
 import Form from 'react-validation/build/form';
 import Input from 'react-validation/build/input';
 import Button from 'react-validation/build/button';
-import { required, email } from "../../validation/validators";
 import FormValidator from "../../validation/FormValidator";
 
 class LogIn extends Component {
@@ -18,16 +17,10 @@ class LogIn extends Component {
 
     this.validator = new FormValidator([
       {
-        field: 'email',
+        field: 'username',
         method: 'isEmpty',
         validWhen: false,
-        message: 'E-mail is required.'
-      },
-      {
-        field: 'email',
-        method: 'isEmail',
-        validWhen: true,
-        message: 'That is not a valid email.'
+        message: 'Username is required'
       },
       {
         field: 'password',
@@ -38,8 +31,9 @@ class LogIn extends Component {
     ]);
 
     this.state = {
-      email:'',
+      username:'',
       password:'',
+      isRestaurantOwner: true,
       validation: this.validator.valid(),
     }
 
@@ -52,8 +46,9 @@ class LogIn extends Component {
     const values = this.form.getValues();
 
     this.setState({
-          email:values.email,
+          username:values.username,
           password:values.password,
+          isRestaurantOwner: true,
         }, () => { //because setstate is asynchronus, further action must be taken on callback
 
           const validation = this.validator.validate(this.state);
@@ -97,19 +92,19 @@ class LogIn extends Component {
            <button className="exit" onClick={this.props.onHide}><IconExit /></button>
             <div className="sign-up">
               <Form ref={ (c) => { this.form = c; }} onSubmit={this.handleSubmit}>
-                <h2 className="title">Log In</h2>
+                <h2 className="title">Log in</h2>
                 <div className="input-field">
-                  <IconEmail />
-                  <Input type="email" id="email" name="email" placeholder="E-mail"/>
+                  <IconName />
+                  <Input type="username" id="username" name="username" placeholder="Username"/>
                 </div>
 
                 <div className="input-field">
                   <IconPassword />
-                  <Input typer="password" name="password" placeholder="Password" />
+                  <Input type="password" name="password" placeholder="Password" />
                 </div>
 
                 <div className="error-block">
-                  <small>{validation.email.message}</small>
+                  <small>{validation.username.message}</small>
                   <small>{validation.password.message}</small>
                 </div>
 

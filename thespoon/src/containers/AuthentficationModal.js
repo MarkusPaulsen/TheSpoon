@@ -7,6 +7,7 @@ import {Modal} from "react-bootstrap";
 import {setAuthentificatonModalVisibilityFilterAction} from "../actions/authentificationModalAction";
 import LogIn from "../components/authentification/LogIn";
 import RegisterRestaurantowner from "../components/authentification/RegisterRestaurantowner";
+import FillRestaurantInfo from "../components/authentification/FillRestaurantInfo"
 import RegisterCustomer from "../components/authentification/RegisterCustomer";
 
 
@@ -39,12 +40,18 @@ class AuthentificationModal extends Component {
                         role={roles.RESTAURANT_OWNER}
                         onHide={() => this.props.handleClose()}/>
                 )
+            case authentificationModalVisibilityFilters.SHOW_RESTAURANT_INFORMATION:
+                return (
+                    <FillRestaurantInfo
+                        role={roles.RESTAURANT_OWNER}
+                        onHide={() => this.props.handleClose()}
+                        />
+                )
             case authentificationModalVisibilityFilters.SHOW_REGISTER_CUSTOMER:
                 return (
                     <RegisterCustomer
                         role={roles.CUSTOMER}
-                        onHide={() => this.props.handleClose()}
-                    />
+                        onHide={() => this.props.handleClose()}/>
                 )
             default:
                 return null;

@@ -7,7 +7,6 @@ import FilterLink from "../../containers/FilterModalLink";
 import {authentificationModalVisibilityFilters} from "../../constants/authentificationModalVisibiltyFilters";
 import Form from 'react-validation/build/form';
 import Input from 'react-validation/build/input';
-import Button from 'react-validation/build/button';
 import FormValidator from "../../validation/FormValidator";
 
 
@@ -180,7 +179,10 @@ class RegisterRestaurantowner extends Component  {
                         <small>{validation.confirmPassword.message}</small>
                     </div>
 
-                  <Button type="submit" className="normal" >Sign up</Button>
+                    <button className="normal">
+                        <FilterLink filter={authentificationModalVisibilityFilters.SHOW_RESTAURANT_INFORMATION}>Continue</FilterLink>
+                    </button>
+
                 </Form>
                 <label className="link-wrapper">
                     <small>Already have an account? <FilterLink filter={authentificationModalVisibilityFilters.SHOW_LOGIN}>Log in</FilterLink></small>

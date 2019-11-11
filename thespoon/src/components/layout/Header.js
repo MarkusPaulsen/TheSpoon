@@ -15,7 +15,7 @@ const Header = () => {
                     </Link>
                     <ul>
                         <li>
-                            <FilterLink filter={authentificationModalVisibilityFilters.SHOW_LOGIN}>LOGIN</FilterLink>
+                            <FilterLink filter={authentificationModalVisibilityFilters.SHOW_LOGIN}>Log in</FilterLink>
                         </li>
                         <li>
                             <FilterLink filter={authentificationModalVisibilityFilters.SHOW_CHOOSE_ROLE}>Sign up</FilterLink>
