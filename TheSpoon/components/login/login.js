@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-//import styles from "./loginstyle";
 import {
   View,
   Text,
@@ -12,45 +11,45 @@ import {
 import UsernameIcon from '../../assets/login-email.png';
 import PasswordIcon from '../../assets/login-password.png';
 import CustomizedButton from '../button.js';
-// interface State {
-//   username: string;
-//   password: string;
-//   token:string;
-// }
+
+
 
 export default class LoginScreen extends Component {
-  //   handleLogin() {
-  //   let collection={}
-  //   collection.username=this.state.username,
-  //   collection.email=this.state.password
+  constructor(props) {
+    super(props);
+    this.state = {
+      username: "",
+      password: "",
+      token: ""
+    };
+  }
+  async handleLogin() {
+      //TODO: Add token
+      // TODO: test navigation
+      try {
+          let data = JSON.stringify({email: this.state.username,
+              password: this.state.password,
+              isRestaurantOwner: false})
+          ;
+          let res = await fetch('http://192.168.1.110:5000/api/user/login/', {
+              method: 'POST',
+              headers: {
+                  Accept: 'application/json',
+                  'Content-Type': 'application/json',
+              },
+              body: data,
+          });
+          res = await res.text();
+          console.log(res);
+          //have not tested this yet, do not have any valid username to test
+          //if(res.ok){
+            //  this.props.navigation.navigate('Home');
+         // }
+      } catch (e) {
+          console.error(e);
+      }
+  }
 
-  //   fetch('exp://192.168.1.110:19000', {
-  //     method: 'POST',
-  //     headers: {
-  //       Accept: 'application/json',
-  //       'Content-Type': 'application/json',
-  //     },
-  //     body: JSON.stringify({
-  //       email: this.state.username,
-  //       password: this.state.password,
-  //       isRestaurantOwner:false
-
-  //     })
-  //   })
-  //   .then((response) => response.json())
-  //   .then((json) => {
-  //     console.log(json);
-  //     this.setState({token:json});
-  //     return json;
-  //   }).catch((error) => {
-  //       console.error(error);
-  //     });
-  // }
-
-  //   readonly state:State = {
-  //     username: "",
-  //     password: "",
-  //   }
 
   handleUsernameChange = (username) => {
     this.setState({ username: username });
@@ -69,8 +68,8 @@ export default class LoginScreen extends Component {
             <Image source={UsernameIcon} style={{ alignSelf: "center" }} />
             <TextInput
               placeholder="Username"
-              //value={this.state.username}
-              //onChangeText={this.handleUsernameChange}
+              value={this.state.username}
+              onChangeText={this.handleUsernameChange}
               placeholderTextColor="#959595"
               numberOfLines={1}
               autoCapitalize="none"
@@ -84,8 +83,8 @@ export default class LoginScreen extends Component {
             <Image source={PasswordIcon} style={{ alignSelf: "center" }} />
             <TextInput
               placeholder="Password"
-              //value={this.state.password}
-              //onChangeText={this.handlePasswordChange}
+              value={this.state.password}
+              onChangeText={this.handlePasswordChange}
               placeholderTextColor="#959595"
               autoCapitalize="none"
               autoCorrect={false}
@@ -97,14 +96,12 @@ export default class LoginScreen extends Component {
         </View>
         <View style={{ flex: 1 }}>
           <CustomizedButton label="Log in"
-            onPress={() => this.props.navigation.navigate("Home")}
-            style={styles.loginButton}
+          onPress={() => this.handleLogin()} style={styles.loginButton}
           />
         </View>
         <View style={styles.registration}>
           <Text>Don't have an account?</Text>
           <TouchableOpacity
-            onPress={() => this.onLoginPress()}
             onPress={() => Linking.openURL("https://google.com")}
           >
             <Text style={styles.registrationButton}>Register now</Text>
@@ -113,8 +110,6 @@ export default class LoginScreen extends Component {
       </View>
     );
   }
-
-  onLoginPress() { }
 }
 
 const styles = StyleSheet.create({
