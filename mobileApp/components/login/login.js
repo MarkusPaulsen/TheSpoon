@@ -62,7 +62,7 @@ export default class LoginScreen extends Component {
       passwordError: passwordError
     });
     if (!usernameError && !passwordError) {
-      this.props.navigation.navigate("Home");
+      this.props.navigation.navigate("Search");
     }
   }
 
@@ -114,7 +114,7 @@ export default class LoginScreen extends Component {
               {this.state.passwordError ? "*" : null}
             </Text>
           </View>
-          <Text style={{ color: "#F3A3A3" }}>
+          <Text style={{ color: "#F3A3A3", alignSelf: "center"}}>
             {this.state.usernameError || this.state.passwordError
               ? "All fields must be filled out"
               : null}
@@ -177,13 +177,14 @@ const styles = StyleSheet.create({
   registrationButton: {
     //width: 100,
     //height: 36,
-    color: "#A5DED0"
+    color: "#A5DED0",
     //marginTop: 45,
     //alignSelf: "center"
+    marginLeft: 5
   },
   registration: {
     //textAlign: 'center',
-    //justifyContent: 'space-between',
+    justifyContent: 'space-between',
     flexDirection: "row",
     flex: 1
     //marginTop: 50
@@ -192,6 +193,7 @@ const styles = StyleSheet.create({
     color: "#000000",
     alignSelf: "center",
     marginTop: 9,
-    fontFamily: "roboto"
+    fontFamily: "roboto",
+    fontSize: 14
   }
 });

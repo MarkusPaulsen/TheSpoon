@@ -1,18 +1,11 @@
 import React, { Component } from "react";
-import {
-  View,
-  Text,
-  StyleSheet
-} from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 
 export default class HomeScreen extends Component {
-
   render() {
     return (
       <View>
-        <Text style={styles.loginTextBig}>
-          Logged in
-        </Text>
+        <Text style={styles.loginTextBig}>Logged in</Text>
       </View>
     );
   }
@@ -21,8 +14,8 @@ export default class HomeScreen extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
-    alignContent: 'center',
+    backgroundColor: "#FFFFFF",
+    alignContent: "center"
     //justifyContent: 'row'
   },
   loginTextBig: {
@@ -32,14 +25,14 @@ const styles = StyleSheet.create({
     left: 20,
     top: 165,
     //fontFamily: ‘Roboto’,
-    fontStyle: 'normal',
+    fontStyle: "normal",
     //fontWeight: 500,
     fontSize: 30,
     lineHeight: 56,
-    display: 'flex',
-    alignItems: 'center',
-    textAlign: 'center',
-    color: '#000000'
+    display: "flex",
+    alignItems: "center",
+    textAlign: "center",
+    color: "#000000"
   },
   button: {
     width: 203,
@@ -47,7 +40,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     backgroundColor: "#F3A3A3",
     marginTop: 6,
-    alignSelf: "center",
+    alignSelf: "center"
     //marginBottom: 50
   }
 });

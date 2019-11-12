@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import LoginScreen from "./components/login/login";
-import HomeScreen from "./components/home/homescreen";
+import SearchPage from "./components/search/search";
 import LandingPage from "./components/landingpage/landingpage";
 import LoadingPage from "./components/loading";
 import { createAppContainer } from "react-navigation";
@@ -10,7 +10,7 @@ import * as Font from "expo-font";
 
 const RootStack = createStackNavigator(
   {
-    Home: HomeScreen,
+    Search: SearchPage,
     Login: LoginScreen,
     Loading: LoadingPage,
     Start: LandingPage

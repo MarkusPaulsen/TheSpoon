@@ -28,5 +28,5 @@ export default function Validate(fieldName, value) {
   if (result) {
     return result[fieldName][0];
   }
-  return null;
+  //return null;
 }

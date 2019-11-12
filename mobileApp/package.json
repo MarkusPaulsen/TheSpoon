@@ -20,10 +20,12 @@
     "react-native-svg-transformer": "^0.13.0",
     "react-native-web": "^0.11.7",
     "react-navigation": "^4.0.10",
-    "react-navigation-stack": "^1.10.3"
+    "react-navigation-stack": "^1.10.3",
+    "validate.js": "^0.13.1"
   },
   "devDependencies": {
-    "babel-preset-expo": "^7.1.0"
+    "babel-preset-expo": "^7.1.0",
+    "prettier": "1.19.1"
   },
   "private": true
 }
