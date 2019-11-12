@@ -21,36 +21,38 @@ export default class LoginScreen extends Component {
       usernameError: "",
       password: "",
       passwordError: "",
-      token: ""
+      token: "",
+        invalidError: false
     };
     this.register = this.register.bind(this);
   }
   async handleLogin() {
-    //TODO: Add token
-    // TODO: test navigation
-    try {
-      let data = JSON.stringify({
-        username: this.state.username,
-        password: this.state.password,
-        isRestaurantOwner: false
-      });
-      let res = await fetch("http://192.168.1.112:5000/api/user/login/", {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json"
-        },
-        body: data
-      });
-      res = await res.text();
-      console.log(res);
-      //have not tested this yet, do not have any valid username to test
-      //if(res.ok){
-      //  this.props.navigation.navigate('Home');
-      // }
-    } catch (e) {
-      console.error(e);
-    }
+      try {
+          let data = JSON.stringify({username: this.state.username,
+              password: this.state.password,
+              isRestaurantOwner: false})
+          ;
+          let res = await fetch('http://192.168.1.110:5000/api/user/login/', {
+              method: 'POST',
+              headers: {
+                  Accept: 'application/json',
+                  'Content-Type': 'application/json',
+              },
+              body: data,
+          });
+          let responseText = await res.text();
+          console.log("The response is: ", responseText);
+          if(res.ok){
+              let jsonResponse = JSON.parse(responseText);
+              this.setState({token:jsonResponse.token });
+              console.log("Token is set to: ", this.state.token);
+              this.props.navigation.navigate("Search");
+          }
+          if(!res.ok){
+this.setState({invalidError: true});          }
+      } catch (e) {
+          console.error(e);
+      }
   }
 
   register() {
@@ -62,7 +64,7 @@ export default class LoginScreen extends Component {
       passwordError: passwordError
     });
     if (!usernameError && !passwordError) {
-      this.props.navigation.navigate("Search");
+      this.handleLogin();
     }
   }
 
@@ -73,6 +75,7 @@ export default class LoginScreen extends Component {
   handlePasswordChange = password => {
     this.setState({ password: password.trim() });
   };
+
 
   render() {
     return (
@@ -119,6 +122,11 @@ export default class LoginScreen extends Component {
               ? "All fields must be filled out"
               : null}
           </Text>
+            <Text style={{ color: "#F3A3A3", alignSelf: "center"}}>
+                {this.state.invalidError
+                    ? "Invalid username or password"
+                    : null}
+            </Text>
         </View>
         <View style={{ flex: 1 }}>
           <TouchableOpacity
