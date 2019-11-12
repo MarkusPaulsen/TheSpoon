@@ -5,26 +5,16 @@ router.use(express.json());
 const jwt = require('jsonwebtoken');
 const config = require('config');
 const bcrypt = require('bcrypt');
-const Joi = require('joi');
 
 const Owner = require('../models/owner.js');
 
 const Customer = require('../models/customer.js');
+const inputValidator = require('../middleware/inputValidationMiddleware.js');
+const validationSchema = require('../validationSchemas.js');
 
-router.post('/', async (req, res) => {
+router.post('/', inputValidator(validationSchema.loginValidation), async (req, res) => {
 
-    const schema = Joi.object().keys({
-        username: Joi.string().regex(/^[a-zA-Z0-9]/).min(5),
-        password: Joi.string().regex(/^[a-zA-Z0-9]/).min(5),
-        isRestaurantOwner: Joi.boolean()
-    });
 
-    const result = Joi.validate(req.body, schema);
-    //If the req.body doesn't match the schema, send error message
-    if(result.error) {
-        res.status(400).send('Invalid input');
-        return;
-    }
 
     //first of all, check if there is a user with given username
     //if it's an owner the check has to be done on Owner table, Customer otherwise

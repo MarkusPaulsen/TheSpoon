@@ -15,7 +15,7 @@ if (!config.get('jwtPrivateKey')){
 
 const swaggerUi = require('swagger-ui-express');
 const YAML = require('yamljs');
-const swaggerDocument = YAML.load('./backendServer/API_reference.yaml');
+const swaggerDocument = YAML.load('./API_reference.yaml');
 
 app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
@@ -37,6 +37,21 @@ db.authenticate()
 
 app.use(bodyParser.json());
 
+
+//START OF THE REQUIRED CODE TO MAKE THE DEPLOY WORK
+//NOTE: currently not working, since build doesn't work
+
+const path = require("path");
+
+
+app.use(express.static(path.join(__dirname, "thespoon", "build")));
+
+
+app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "thespoon", "build", "index.html"));
+});
+
+//END OF THE REQUIRED CODE TO MAKE THE DEPLOY WORK
 
 const port = process.env.PORT || 5000;
 
