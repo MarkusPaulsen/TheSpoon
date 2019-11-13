@@ -26,9 +26,14 @@ app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 const login = require('./routes/login.js');
 const registrationCustomer = require('./routes/registrationCustomer.js');
 const registrationOwner = require('./routes/registrationOwner.js');
+const image=require('./routes/image-upload.js');
+
+
 app.use('/api/user/login', login);
 app.use('/api/user/customer/register', registrationCustomer);
 app.use('/api/user/owner/register', registrationOwner);
+app.use('/api/image',image);
+
 
 //Test DB
 db.authenticate()
