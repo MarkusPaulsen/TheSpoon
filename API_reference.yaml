@@ -1,11 +1,18 @@
 swagger: "2.0"
 info:
-  description: "This is the API reference of The Spoon project.\n IMPORTANT: The version number works in this way: it's composed of two numbers separated by a point. The first number identifies the Sprint, so for example the version 2.1 of the API reference is related to the Sprint number 2. The second number starts from 0 and has to be increased by one each time the file is modified. The person who modifies this document is responsible for increasing the number."
-  version: "2.0"
+  description: "This is the API reference of The Spoon project.\n \n VERSIONING: The version number works in this way: it's composed of two numbers separated by a point. The first number identifies the Sprint, so for example the version 2.1 of the API reference is related to the Sprint number 2. The second number starts from 0 and has to be increased by one each time the file is modified. The person who modifies this document is responsible for increasing the number.\n \n GROUPING OF ENDPOINTS: The endpoints are grouped by dividing them into customers' operations and owners' operations. All the endpoints that are not strictly related to customers nor owners remain inside the default group.\n \n AUTHENTICATION/AUTHORIZATION: The json web token returned when the login is performed is supposed to be put into x-auth-token header in the endpoints that require authorization"
+  version: "2.1"
   title: "The Spoon API reference"
+tags:
+  - name: "customer"
+    description: "Operations about customers"
+  - name: "owner"
+    description: "Operations about owners"
 paths:
   /api/user/customer/register:
     post:
+      tags:
+        - "customer"
       summary: "Creates customer"
       description: "Creates a new customer profile. This endpoint is used only for customer registration.\n The endpoint, if the registration succeeds, returns the username of the account as a confirmation."
       operationId: "createCustomer"
@@ -29,6 +36,8 @@ paths:
           description: "Username or email already taken"
   /api/user/owner/register:
     post:
+      tags:
+        - "owner"
       summary: "Creates restaurant owner"
       description: "Creates a new restaurant owner profile. This endpoint is used only for restaurant owner registration.\n The endpoint, if the registration succeeds, returns the username of the account as a confirmation."
       operationId: "createOwner"
@@ -73,13 +82,163 @@ paths:
             $ref: "#/definitions/Token"
         400:
           description: "Invalid username or password"
+  /api/user/owner/restaurant:
+    post:
+      tags:
+        - "owner"
+      summary: "Configure data of the restaurant"
+      description: "Save the data of the restaurant given by the owner. Authentication is needed."
+      operationId: "configureRestaurant"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Restaurant data"
+          required: true
+          schema:
+            $ref: "#/definitions/Restaurant"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/RestaurantID"
+        403:
+          description: "Access denied"
+      security:
+        - Bearer: []
+      x-security-scopes:
+        - "owner"
+  /api/user/owner/restaurant/menu:
+    post:
+      tags:
+        - "owner"
+      summary: "Add a menu to a restaurant"
+      description: "Add a menu to a restaurant of a restaurant owner, which needs to be logged in"
+      operationId: "Add menu"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Menu data"
+          required: true
+          schema:
+            $ref: "#/definitions/Menu"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/MenuID"
+        403:
+          description: "Access denied"
+      security:
+        - Bearer: []
+      x-security-scopes:
+        - "owner"
+    get:
+      tags:
+        - "owner"
+      summary: "Returns all the menus of the restaurant"
+      description: "Returns all the menus of the restaurant. Since authentication is required, the backend is able to get which restaurant is involved from the authentication token. It also the returns the ID of each menu, that can be in the post for editing a specific menu."
+      operationId: "getOwnMenus"
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/MenuWithID"
+        403:
+          description: "Access denied"
+      security:
+        - Bearer: []
+      x-security-scopes:
+        - "owner"
+  /api/user/owner/restaurant/menu/{menuID}:
+    post:
+      tags:
+        - "owner"
+      summary: "Edit a menu"
+      description: "Edits a given menu. To identify the menu, the menuID needs to be given. When the get that returns all the menus of the restaurant is performed, the menuID of each menu is also returned, so the menuID can be taken from there. Authentication is required."
+      operationId: "editMenu"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "menuID"
+          in: "path"
+          description: "ID of the menu to be edited"
+          required: true
+          type: "integer"
+        - name: "body"
+          in: "body"
+          description: "Data of the menu to be saved"
+          required: true
+          schema:
+            $ref: "#/definitions/Menu"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/MenuID"
+        404:
+          description: "Menu not found"
+        403:
+          description: "Access denied"
+      security:
+        - Bearer: []
+      x-security-scopes:
+        - "owner"
+  /api/user/customer/searchByMenuItem:
+    get:
+      tags:
+        - "customer"
+      summary: "Search by menu item"
+      description: "Returns all the menus with given menu item (dish/drink) with menuID. It also returns the names of the associated restaurants with restaurantID."
+      produces:
+        - "application/json"
+      parameters:
+        - name: "menuItemName"
+          in: "query"
+          description: "Name of the desired menu item"
+          required: true
+          type: "string"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/MenuAndRestaurant"
+        404:
+          description: "No menu item with that name found"
+  /image:
+    post:
+      summary: "Upload an image"
+      description: "This endpoint is used in order to upload EVERY image. For example, when a restaurant owner is registering his restaurant data, he will need to upload an image. Both this endpoint and the dedicated endpoint (POST /api/user/owner/restaurant) will be used. This endpoint to upload the image, the other one to upload all the other textual data (with a json). The images will be stored using Amazon s3. The ID of the image is returned.\n For more information, this is used as a reference:  https://stackoverflow.com/questions/33279153/rest-api-file-ie-images-processing-best-practices"
+      consumes:
+        - "image/png"
+        - "image/jpeg"
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/ImageID"
 
 
 
 securityDefinitions:
   Bearer:
     type: "apiKey"
-    name: "json_web_token"
+    name: "x-auth-token"
     in: "header"
 
 
@@ -143,3 +302,86 @@ definitions:
       username: "xXEmilioXx"
       password: "123456"
       isRestaurantOwner: true
+  Restaurant:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+      address:
+        type: "string"
+      city:
+        type: "string"
+      country:
+        type: "string"
+      latitude:
+        type: "string"
+      longitude:
+        type: "string"
+  RestaurantID:
+    type: "object"
+    properties:
+      restaurant_ID:
+        type: "integer"
+  Menu:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+      description:
+        type: "string"
+      tags:
+        type: "array"
+        items:
+          type: "string"
+      menuItems:
+        type: "array"
+        items:
+          $ref: "#/definitions/MenuItem"
+  MenuItem:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+      description:
+        type: "string"
+      price:
+        type: "integer"
+  MenuID:
+    type: "object"
+    properties:
+      menu_ID:
+        type: "integer"
+  MenuWithID:
+    type: "object"
+    properties:
+      menu_ID:
+        type: "integer"
+      name:
+        type: "string"
+      description:
+        type: "string"
+      tags:
+        type: "array"
+        items:
+          type: "string"
+      menuItems:
+        type: "array"
+        items:
+          $ref: "#/definitions/MenuItem"
+  MenuAndRestaurant:
+    type: "object"
+    properties:
+      restaurantData:
+        type: "object"
+        properties:
+          restaurantID:
+            type: "integer"
+          restaurantName:
+            type: "string"
+      menu:
+        $ref: "#/definitions/MenuWithID"
+  ImageID:
+    type: "object"
+    properties:
+      imageID:
+        type: "integer"
