@@ -1,7 +1,7 @@
 swagger: "2.0"
 info:
   description: "This is the API reference of The Spoon project.\n \n VERSIONING: The version number works in this way: it's composed of two numbers separated by a point. The first number identifies the Sprint, so for example the version 2.1 of the API reference is related to the Sprint number 2. The second number starts from 0 and has to be increased by one each time the file is modified. The person who modifies this document is responsible for increasing the number.\n \n GROUPING OF ENDPOINTS: The endpoints are grouped by dividing them into customers' operations and owners' operations. All the endpoints that are not strictly related to customers nor owners remain inside the default group.\n \n AUTHENTICATION/AUTHORIZATION: The json web token returned when the login is performed is supposed to be put into x-auth-token header in the endpoints that require authorization"
-  version: "2.1"
+  version: "2.2"
   title: "The Spoon API reference"
 tags:
   - name: "customer"
@@ -87,7 +87,7 @@ paths:
       tags:
         - "owner"
       summary: "Configure data of the restaurant"
-      description: "Save the data of the restaurant given by the owner. Authentication is needed."
+      description: "Save the data of the restaurant given by the owner. Authentication is needed.\n One of the parameter to be passed is the imageID, this is the flow:\n 1. The restaurant owner is in the page in which he can input the restaurant data. He will upload the photo of the restaurant while he is writing all the fields of the form.\n 2. The uploading of the photo is done by sending the photo to the /api/image endpoint. While the restaurant owner is still writing the fields of the form, the message to that endpoint is sent and the imageID is received as a response.\n 3. When the restaurant owner finishes writing the fields of the form and click the send button, the photo was actually already been ent in the point 2 and he doesn't have to wait for the upload (if he was fast compiling the form and the upload isn't finished yet, at least he has to wait less because it was already started). The imageID received as a response by the /api/image endpoint will be sent to this endpoint with the data of the form in a json, because the backend needs it in order to associate the json to the previously uploaded photo."
       operationId: "configureRestaurant"
       consumes:
         - "application/json"
@@ -105,7 +105,7 @@ paths:
           description: "Successful operation"
           schema:
             $ref: "#/definitions/RestaurantID"
-        403:
+        401:
           description: "Access denied"
       security:
         - Bearer: []
@@ -134,7 +134,7 @@ paths:
           description: "Successful operation"
           schema:
             $ref: "#/definitions/MenuID"
-        403:
+        401:
           description: "Access denied"
       security:
         - Bearer: []
@@ -144,7 +144,7 @@ paths:
       tags:
         - "owner"
       summary: "Returns all the menus of the restaurant"
-      description: "Returns all the menus of the restaurant. Since authentication is required, the backend is able to get which restaurant is involved from the authentication token. It also the returns the ID of each menu, that can be in the post for editing a specific menu."
+      description: "Returns all the menus of the restaurant. Since authentication is required, the backend is able to get which restaurant is involved from the authentication token. It also returns the ID of each menu, that can be in the post and in the get of the endpoint /api/user/owner/restaurant/menu/{menuID}.\n It's important to underline that this endpoint doesn't provide the menu items of the menus. In order to receive them a get to the other mentioned endpoint is necessary."
       operationId: "getOwnMenus"
       produces:
         - "application/json"
@@ -155,13 +155,39 @@ paths:
             type: "array"
             items:
               $ref: "#/definitions/MenuWithID"
-        403:
+        401:
           description: "Access denied"
       security:
         - Bearer: []
       x-security-scopes:
         - "owner"
   /api/user/owner/restaurant/menu/{menuID}:
+    get:
+      tags:
+        - "owner"
+      summary: "Return data of a specific menu of the owner"
+      description: "Returns all the data about the menu with given menuID, even the menu items inside it. The photos of the menu items are saved in the Amazon s3 storage, so the links to the cloud storage are also returned. The frontend will directly download them from the cloud storage, they won't be sent by the backend with this endpoint.\n The menuID should be related to a menu of the restaurant owned by the authenticated restaurant owner, otherwise an error response will be received."
+      produces:
+        - "application/json"
+      parameters:
+        - name: "menuID"
+          in: "path"
+          description: "ID of the menu to be returned"
+          required: true
+          type: "integer"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/Menu"
+        404:
+          description: "No menu associated to that restaurant found"
+        401:
+          description: "Access denied"
+      security:
+        - Bearer: []
+      x-security-scopes:
+        - "owner"
     post:
       tags:
         - "owner"
@@ -191,18 +217,18 @@ paths:
             $ref: "#/definitions/MenuID"
         404:
           description: "Menu not found"
-        403:
+        401:
           description: "Access denied"
       security:
         - Bearer: []
       x-security-scopes:
         - "owner"
-  /api/user/customer/searchByMenuItem:
+  /api/user/customer/menu/searchByMenuItem:
     get:
       tags:
         - "customer"
       summary: "Search by menu item"
-      description: "Returns all the menus with given menu item (dish/drink) with menuID. It also returns the names of the associated restaurants with restaurantID."
+      description: "Returns all the menus with given menu item (dish/drink) with menuID. It also returns the names of the associated restaurants with restaurantID.\n The menu items inside every menu are not returned. It will be needed to access the endpoint /api/user/customer/menu/{menuID} to get the menu items of a specific menu (the menuID passed can be obtained from the response of this endpoint, since it returns the menuID of every menu)."
       produces:
         - "application/json"
       parameters:
@@ -216,9 +242,26 @@ paths:
           description: "Successful operation"
           schema:
             $ref: "#/definitions/MenuAndRestaurant"
-        404:
-          description: "No menu item with that name found"
-  /image:
+  /api/user/customer/menu/{menuID}:
+    get:
+      tags:
+        - "customer"
+      summary: Return data of a specific menu
+      description: "Returns all the data about the menu with given menuID, even the menu items inside it. The photos of the menu items are saved in the Amazon s3 storage, so the links to the cloud storage are also returned. The frontend will directly download them from the cloud storage, they won't be sent by the backend with this endpoint."
+      produces:
+        - "application/json"
+      parameters:
+        - name: "menuID"
+          in: "path"
+          description: "ID of the menu to be returned"
+          required: true
+          type: "integer"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/Menu"
+  /api/image:
     post:
       summary: "Upload an image"
       description: "This endpoint is used in order to upload EVERY image. For example, when a restaurant owner is registering his restaurant data, he will need to upload an image. Both this endpoint and the dedicated endpoint (POST /api/user/owner/restaurant) will be used. This endpoint to upload the image, the other one to upload all the other textual data (with a json). The images will be stored using Amazon s3. The ID of the image is returned.\n For more information, this is used as a reference:  https://stackoverflow.com/questions/33279153/rest-api-file-ie-images-processing-best-practices"
@@ -232,7 +275,6 @@ paths:
           description: "Successful operation"
           schema:
             $ref: "#/definitions/ImageID"
-
 
 
 securityDefinitions:
@@ -314,14 +356,26 @@ definitions:
       country:
         type: "string"
       latitude:
-        type: "string"
+        type: "number"
       longitude:
-        type: "string"
+        type: "number"
+      imageID:
+        type: "integer"
+    example:
+      name: "Emilio's Pizza"
+      address: "André route 45"
+      city: "Rome"
+      country: "Italy"
+      latitude: 48.4281350802915
+      longitude: -110.0792542197085
+      imageID: 5
   RestaurantID:
     type: "object"
     properties:
-      restaurant_ID:
+      restaurantID:
         type: "integer"
+    example:
+      restaurantID: 54
   Menu:
     type: "object"
     properties:
@@ -337,6 +391,11 @@ definitions:
         type: "array"
         items:
           $ref: "#/definitions/MenuItem"
+    example:
+      name: "Emilio's menu of the day"
+      description: "Our special menu of today"
+      tags: ["Italian food", "Special menu"]
+      menuItems: [{"name": "Spaghetti alla carbonara", "description": "Fantastic italian dish made of spaghetti, pig cheek, eggs, black pepper, pecorino romano", "priceEuros": 10, "tags": ["First dish", "Pasta", "Italian food"], "imageLink": "www.cloudStorage.com/Carbonara"}, {"name": "Polpette al sugo", "description": "Meatballs with tomato sauce", "priceEuros": 7, "tags": ["Second dish", "Meat", "Italian food"], "imageLink": "www.cloudStorage.com/Meatballs"}]
   MenuItem:
     type: "object"
     properties:
@@ -344,17 +403,31 @@ definitions:
         type: "string"
       description:
         type: "string"
-      price:
-        type: "integer"
+      priceEuros:
+        type: "number"
+      tags:
+        type: "array"
+        items:
+          type: "string"
+      imageLink:
+        type: "string"
+    example:
+      name: "Spaghetti alla carbonara"
+      description: "Fantastic italian dish made of spaghetti, pig cheek, eggs, black pepper, pecorino romano"
+      priceEuros: 10
+      tags: ["First dish", "Pasta", "Italian food"]
+      imageLink: "www.cloudStorage.com/Carbonara"
   MenuID:
     type: "object"
     properties:
-      menu_ID:
+      menuID:
         type: "integer"
+    example:
+      menuID: 2
   MenuWithID:
     type: "object"
     properties:
-      menu_ID:
+      menuID:
         type: "integer"
       name:
         type: "string"
@@ -364,10 +437,11 @@ definitions:
         type: "array"
         items:
           type: "string"
-      menuItems:
-        type: "array"
-        items:
-          $ref: "#/definitions/MenuItem"
+    example:
+      menuID: 2
+      name: "Emilio's menu of the day"
+      description: "Our special menu of today"
+      tags: ["Italian food", "Special menu"]
   MenuAndRestaurant:
     type: "object"
     properties:
@@ -380,8 +454,13 @@ definitions:
             type: "string"
       menu:
         $ref: "#/definitions/MenuWithID"
+    example:
+      restaurantData: {"restaurantID": 54, "restaurantName": "Emilio's Pizza"}
+      menu: {"menuID": 2, "name": "Emilio's menu of the day", "description": "Our special menu of today", "tags": ["Italian food", "Special menu"]}
   ImageID:
     type: "object"
     properties:
       imageID:
         type: "integer"
+    example:
+      imageID: 5
