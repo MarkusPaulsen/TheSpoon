@@ -89,7 +89,7 @@ class RegisterCustomer extends Component  {
                     ajax({
                         url: paths['restApi']['registrationCustomer'],
                         method: 'POST',
-                        headers: {},
+                        headers: {'Content-Type': 'application/json'},
                         body: {
                             email: this.state.email,
                             password:this.state.password,

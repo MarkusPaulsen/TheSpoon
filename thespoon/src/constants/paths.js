@@ -1,4 +1,4 @@
-let BACKEND = "localhost:80";
+let BACKEND = "thespoon.herokuapp.com";
 
 const paths = {
     restApi: {

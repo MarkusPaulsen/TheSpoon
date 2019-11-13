@@ -104,12 +104,12 @@ class RegisterRestaurantowner extends Component  {
                     ajax({
                         url: paths['restApi']['registrationRestaurantOwner'],
                         method: 'POST',
-                        headers: {},
+                        headers: {'Content-Type': 'application/json'},
                         body: {
                             email: this.state.email,
                             password:this.state.password,
                             username: this.state.username,
-                            firstName:this.state.firstName,
+                            name:this.state.firstName,
                             surname:this.state.surname
                         }
                     }).subscribe(
