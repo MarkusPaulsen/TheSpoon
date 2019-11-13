@@ -34,7 +34,7 @@ export default class LandingPage extends Component {
               <CustomizedButton
                 label="Sign up"
                 style={styles.signupButton}
-                onPress={() => Linking.openURL("https://google.com")}
+                onPress={() => Linking.openURL("https://thespoon.herokuapp.com")}
               />
             </View>
           </View>

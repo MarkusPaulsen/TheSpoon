@@ -140,7 +140,7 @@ this.setState({invalidError: true});          }
         <View style={styles.registration}>
           <Text>Don't have an account?</Text>
           <TouchableOpacity
-            onPress={() => Linking.openURL("https://google.com")}
+            onPress={() => Linking.openURL("https://thespoon.herokuapp.com")}
           >
             <Text style={styles.registrationButton}>Register now</Text>
           </TouchableOpacity>
