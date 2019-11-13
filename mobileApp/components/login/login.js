@@ -32,7 +32,7 @@ export default class LoginScreen extends Component {
               password: this.state.password,
               isRestaurantOwner: false})
           ;
-          let res = await fetch('http://192.168.1.110:5000/api/user/login/', {
+          let res = await fetch('http://thespoon.herokuapp.com/api/user/login/', {
               method: 'POST',
               headers: {
                   Accept: 'application/json',

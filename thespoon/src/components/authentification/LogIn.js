@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { ajax } from 'rxjs/ajax';
 import paths from '../../constants/paths';
 import { IconExit, IconEmail, IconPassword } from '../Icons';
-import {Modal} from "react-bootstrap";
+import {Modal, DropdownButton, Dropdown} from "react-bootstrap";
 import FilterLink from "../../containers/FilterModalLink";
 import {authentificationModalVisibilityFilters} from "../../constants/authentificationModalVisibiltyFilters";
 import Form from 'react-validation/build/form';
@@ -39,6 +39,8 @@ class LogIn extends Component {
 
     this.submitted = false;
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.activateIsRestaurantOwner = this.activateIsRestaurantOwner.bind(this);
+    this.deactivateIsRestaurantOwner = this.activateIsRestaurantOwner.bind(this);
   }
 
   handleSubmit = event => {
@@ -57,14 +59,15 @@ class LogIn extends Component {
 
           if (validation.isValid) {
             let thisTemp = this;
-            console.log(paths['restApi']['login']);
+            console.log(this.state);
             ajax({
               url: paths['restApi']['login'],
               method: 'POST',
-              headers: {},
+              headers: {'Content-Type': 'application/json'},
               body: {
-                email: this.state.email,
-                password:this.state.password
+                username: this.state.username,
+                password: this.state.password,
+                isRestaurantOwner: this.state.isRestaurantOwner,
               }
             }).subscribe(
                 function (next) {
@@ -81,7 +84,15 @@ class LogIn extends Component {
           }
         }
     );
-  }
+  };
+
+  activateIsRestaurantOwner = () => {
+    this.setState({ isRestaurantOwner: true })
+  };
+
+  deactivateIsRestaurantOwner = () => {
+    this.setState({ isRestaurantOwner: false })
+  };
 
   render() {
     let validation = this.submitted ?                         // if the form has been submitted at least once
@@ -93,6 +104,13 @@ class LogIn extends Component {
             <div className="sign-up">
               <Form ref={ (c) => { this.form = c; }} onSubmit={this.handleSubmit}>
                 <h2 className="title">Log in</h2>
+                <div className="input-field">
+                  <DropdownButton id="dropdown-basic-button" title="Dropdown button">
+                    <Dropdown.Item onClick={this.activateIsRestaurantOwner}>Restaurant Owner</Dropdown.Item>
+                    <Dropdown.Item onClick={this.deactivateIsRestaurantOwner}>Customer</Dropdown.Item>
+                  </DropdownButton>
+                </div>
+
                 <div className="input-field">
                   <IconEmail />
                   <Input type="username" id="username" name="username" placeholder="Username"/>
