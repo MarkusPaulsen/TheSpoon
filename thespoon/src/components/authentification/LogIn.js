@@ -4,7 +4,7 @@ import paths from '../../constants/paths';
 import { IconExit, IconEmail, IconPassword } from '../Icons';
 import {Modal, DropdownButton, Dropdown} from "react-bootstrap";
 import FilterLink from "../../containers/FilterModalLink";
-import {authentificationModalVisibilityFilters} from "../../constants/authentificationModalVisibiltyFilters";
+import {modalVisibilityFilters} from "../../constants/modalVisibiltyFilters";
 import Form from 'react-validation/build/form';
 import Input from 'react-validation/build/input';
 import Button from 'react-validation/build/button';
@@ -101,7 +101,7 @@ class LogIn extends Component {
     return (
         <Modal.Body>
            <button className="exit" onClick={this.props.onHide}><IconExit /></button>
-            <div className="sign-up">
+            <div className="modal-wrapper ">
               <Form ref={ (c) => { this.form = c; }} onSubmit={this.handleSubmit}>
                 <h2 className="title">Log in</h2>
                 <div className="input-field">
@@ -129,9 +129,9 @@ class LogIn extends Component {
                 <Button type="submit" className="normal">Log in</Button>
               </Form>
 
-              <label className="link-wrapper">
-                <small>Don't have an account? <FilterLink filter={authentificationModalVisibilityFilters.SHOW_CHOOSE_ROLE}>Register now</FilterLink></small>
-              </label>
+              <div className="link-wrapper">
+                <small>Don't have an account? <FilterLink filter={modalVisibilityFilters.SHOW_CHOOSE_ROLE}>Register now</FilterLink></small>
+              </div>
             </div>
         </Modal.Body>
     );

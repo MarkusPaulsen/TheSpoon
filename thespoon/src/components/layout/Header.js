@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import {authentificationModalVisibilityFilters} from "../../constants/authentificationModalVisibiltyFilters";
+import {modalVisibilityFilters} from "../../constants/modalVisibiltyFilters";
 
 
 import FilterLink from "../../containers/FilterModalLink";
@@ -15,10 +15,10 @@ const Header = () => {
                     </Link>
                     <ul>
                         <li>
-                            <FilterLink filter={authentificationModalVisibilityFilters.SHOW_LOGIN}>Log in</FilterLink>
+                            <FilterLink filter={modalVisibilityFilters.SHOW_LOGIN}>Log in</FilterLink>
                         </li>
                         <li>
-                            <FilterLink filter={authentificationModalVisibilityFilters.SHOW_CHOOSE_ROLE}>Sign up</FilterLink>
+                            <FilterLink filter={modalVisibilityFilters.SHOW_CHOOSE_ROLE}>Sign up</FilterLink>
                         </li>
                     </ul>
                 </nav> 

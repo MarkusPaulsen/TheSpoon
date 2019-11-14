@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { IconName, IconDashboard, IconYourRestaurant} from '../Icons.js';
-import {authentificationModalVisibilityFilters} from "../../constants/authentificationModalVisibiltyFilters";
+import { IconNameDark, IconDashboard, IconYourRestaurant} from '../Icons.js';
+import {authentificationModalVisibilityFilters} from "../../constants/modalVisibiltyFilters";
 
 
 import FilterLink from "../../containers/FilterModalLink";
@@ -16,16 +16,13 @@ const MainHeader = () => {
                     </Link>
                     <ul>
                         <li>
-                            <IconDashboard/>
-                            <Link to="/Dashboard">Dashboard</Link>
+                            <Link to="/Dashboard"><IconDashboard/>Dashboard</Link>
                         </li>
                         <li>
-                            <IconYourRestaurant/>
-                            <Link to="/YourRestaurant">Your Restaurant</Link>
+                            <Link to="/YourRestaurant"><IconYourRestaurant/>Your Restaurant</Link>
                         </li>
                         <li>
-                            <IconName/>
-                            <Link to="/Profile">Your Profile</Link>
+                            <Link to="/Profile"><IconNameDark/>Your Profile</Link>
                         </li>
                     </ul>
                 </nav> 

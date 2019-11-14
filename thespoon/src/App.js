@@ -12,7 +12,7 @@ import Profile from './components/homepage/Profile.js';
 function App() {
 return (
       <BrowserRouter>
-          {<SignUpModal />}
+          {<CustomModal />}
           <Switch>
             <Route exact path='/' component={HomePage} />
             <Route exact path='/Mainpage' component={MainPage} />

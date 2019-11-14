@@ -4,7 +4,7 @@ import paths from '../../constants/paths';
 import {IconName, IconEmail, IconPassword, IconExit, IconBack} from '../Icons';
 import {Modal} from "react-bootstrap";
 import FilterLink from "../../containers/FilterModalLink";
-import {authentificationModalVisibilityFilters} from "../../constants/authentificationModalVisibiltyFilters";
+import {modalVisibilityFilters} from "../../constants/modalVisibiltyFilters";
 import Form from 'react-validation/build/form';
 import Input from 'react-validation/build/input';
 import FormValidator from "../../validation/FormValidator";
@@ -135,9 +135,9 @@ class RegisterRestaurantowner extends Component  {
             this.state.validation
         return (
         <Modal.Body>
-            <span className="back"> <FilterLink filter={authentificationModalVisibilityFilters.SHOW_CHOOSE_ROLE}><IconBack /></FilterLink></span>
+            <span className="back"> <FilterLink filter={modalVisibilityFilters.SHOW_CHOOSE_ROLE}><IconBack /></FilterLink></span>
             <button className="exit" onClick={this.props.onHide}><IconExit /></button>
-            <div className="sign-up">
+            <div className="modal-wrapper ">
                 <Form ref={ (c) => { this.form = c; }} onSubmit={(e) => this.handleSubmit(e)}>
                     <h2>Sign up</h2>
                     <div className="account-type">
@@ -180,13 +180,13 @@ class RegisterRestaurantowner extends Component  {
                     </div>
 
                     <button className="normal">
-                        <FilterLink filter={authentificationModalVisibilityFilters.SHOW_RESTAURANT_INFORMATION}>Continue</FilterLink>
+                        <FilterLink filter={modalVisibilityFilters.SHOW_RESTAURANT_INFORMATION}>Continue</FilterLink>
                     </button>
 
                 </Form>
-                <label className="link-wrapper">
-                    <small>Already have an account? <FilterLink filter={authentificationModalVisibilityFilters.SHOW_LOGIN}>Log in</FilterLink></small>
-                </label>
+                <div className="link-wrapper">
+                    <small>Already have an account? <FilterLink filter={modalVisibilityFilters.SHOW_LOGIN}>Log in</FilterLink></small>
+                </div>
             </div>
         </Modal.Body>
     );

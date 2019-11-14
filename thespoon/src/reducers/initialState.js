@@ -1,7 +1,7 @@
-import {authentificationModalVisibilityFilters} from "../constants/authentificationModalVisibiltyFilters";
+import {modalVisibilityFilters} from "../constants/modalVisibiltyFilters";
 
 const initialState = {
-    authentificationModalVisibilityFilter: authentificationModalVisibilityFilters.HIDE_ALL,
+    modalVisibilityFilter: modalVisibilityFilters.HIDE_ALL,
     users: [],
     role: '',
     username: '',

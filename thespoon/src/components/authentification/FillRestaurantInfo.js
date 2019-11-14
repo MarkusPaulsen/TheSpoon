@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {IconName, IconLocation, IconBirthday, IconExit, IconBack} from '../Icons';
 import {Modal} from "react-bootstrap";
 import FilterLink from "../../containers/FilterModalLink";
-import {authentificationModalVisibilityFilters} from "../../constants/authentificationModalVisibiltyFilters";
+import {modalVisibilityFilters} from "../../constants/modalVisibiltyFilters";
 import Form from 'react-validation/build/form';
 import Input from 'react-validation/build/input';
 import Button from 'react-validation/build/button';
@@ -12,9 +12,9 @@ class FillRestaurantInfo extends Component {
     render() {
         return (
             <Modal.Body>
-                <span className="back"> <FilterLink filter={authentificationModalVisibilityFilters.SHOW_REGISTER_RESTAURANT_OWNER}><IconBack /></FilterLink></span>
+                <span className="back"> <FilterLink filter={modalVisibilityFilters.SHOW_REGISTER_RESTAURANT_OWNER}><IconBack /></FilterLink></span>
                 <button className="exit" onClick={this.props.onHide}><IconExit /></button>
-                <div className="sign-up">
+                <div className="modal-wrapper ">
                     <Form ref={ (c) => { this.form = c; }} onSubmit={(e) => this.handleSubmit(e)}>
                     <h2>Sign up</h2>
                     <div className="account-type">
@@ -50,9 +50,9 @@ class FillRestaurantInfo extends Component {
 
                     <Button type="submit" className="normal">Sign up</Button>
                     </Form>
-                    <label className="link-wrapper">
-                        <small>Already have an account? <FilterLink filter={authentificationModalVisibilityFilters.SHOW_LOGIN}>Log in</FilterLink></small>
-                    </label>
+                    <div className="link-wrapper">
+                        <small>Already have an account? <FilterLink filter={modalVisibilityFilters.SHOW_LOGIN}>Log in</FilterLink></small>
+                    </div>
                 </div>
             </Modal.Body>
         )
