@@ -23,17 +23,23 @@ const MenuItem = db.define('MenuItem', {
 },{
     freezeTableName: true,
     timestamps: false
-} ,
+} /*,
     {
     classMethods: {
         associate: () => {
             MenuItem.belongsTo(Menu, {
                 foreignKey: 'Menu_ID'
-            })
+            });
         }
     }
-}
+} */
 );
+
+MenuItem.associate = () => {
+    MenuItem.belongsTo(Menu, {
+        foreignKey: 'Menu_ID'
+    });
+};
 
 /*
 MenuItem.belongsTo(Menu, {

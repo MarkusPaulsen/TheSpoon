@@ -26,26 +26,29 @@ const Restaurant = db.define('Restaurant', {
     Latitude: {
         type: Sequelize.INTEGER
     },
-    Latitude: {
+    Longitude: {
         type: Sequelize.INTEGER
     }
 },{
     freezeTableName: true,
     timestamps: false
-},{
+}
+);
+
+
+/* ,{
     classMethods: {
         associate: () => {
-            Restaurant.hasMany(Menu, {
+            models.Restaurant.hasMany(Menu, {
                 foreignKey: 'Restaurant_ID'
-            })
+            });
         }
-    }
-});
+    } */
 
-/*
-Restaurant.hasMany(Menu, {
-    foreignKey: 'Restaurant_ID'
-    })
-*/
+Restaurant.associate = () => {
+    Restaurant.hasMany(Menu, {
+        foreignKey: 'Restaurant_ID'
+        }
+    )};
 
 module.exports = Restaurant;
