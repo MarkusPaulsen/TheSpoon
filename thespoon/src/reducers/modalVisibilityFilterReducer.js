@@ -1,4 +1,4 @@
-import {authentificationModalVisibilityFilters} from "../constants/authentificationModalVisibiltyFilters";
+import {authentificationModalVisibilityFilters} from "../constants/modalVisibiltyFilters";
 
 const authentificationModalVisibiltyFilterReducer = (state = authentificationModalVisibilityFilters.HIDE_ALL, action) => {
     switch (action.type) {
