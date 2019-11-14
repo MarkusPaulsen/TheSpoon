@@ -1,12 +1,12 @@
-import {authentificationModalVisibilityFilters} from "../constants/modalVisibiltyFilters";
+import {modalVisibilityFilters} from "../constants/modalVisibiltyFilters";
 
-const authentificationModalVisibiltyFilterReducer = (state = authentificationModalVisibilityFilters.HIDE_ALL, action) => {
+const mdalVisibiltyFilterReducer = (state = modalVisibilityFilters.HIDE_ALL, action) => {
     switch (action.type) {
-        case 'SET_AUTHENTIFICATION_MODAL_VISIBILITY_FILTER':
+        case 'SET_MODAL_VISIBILITY_FILTER':
             return action.filter
         default:
             return state
     }
 }
 
-export default authentificationModalVisibiltyFilterReducer
+export default mdalVisibiltyFilterReducer

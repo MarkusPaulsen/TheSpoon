@@ -1,9 +1,9 @@
 import { combineReducers } from 'redux';
-import authentificationModalVisibiltyFilterReducer from "./authentificationModalVisibilityFilterReducer";
+import modalVisibiltyFilterReducer from "./modalVisibilityFilterReducer";
 import logInRegisterReducer from "./loginRegisterReducer";
 
 const rootReducer = combineReducers({
-    authentificationModalVisibilityFilter: authentificationModalVisibiltyFilterReducer,
+    modalVisibilityFilter: modalVisibiltyFilterReducer,
     logInRegisterReducer: logInRegisterReducer
 });
 

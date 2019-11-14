@@ -1,14 +1,14 @@
 import { connect } from 'react-redux'
-import { setAuthentificatonModalVisibilityFilterAction } from '../actions/authentificationModalAction'
+import { setModalVisibilityFilterAction } from '../actions/modalAction'
 import React from "react";
 
 
 const mapStateToProps = (state, ownProps) => ({
-    active: ownProps.filter === state.authentificationModalVisibilityFilter
+    active: ownProps.filter === state.modalVisibilityFilter
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-    onClick: () => dispatch(setAuthentificatonModalVisibilityFilterAction(ownProps.filter))
+    onClick: () => dispatch(setModalVisibilityFilterAction(ownProps.filter))
 })
 
 const FilterModalLink = ({ active, children, onClick }) => (

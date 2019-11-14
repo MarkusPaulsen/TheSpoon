@@ -1,10 +1,10 @@
 import React from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import HomePage from './components/homepage/Homepage.js';
-import MainPage from './components/homepage/MainPage.js';
-import SignUpModal from "./containers/AuthentficationModal";
+import MainPage from './components/mainPage/MainPage.js';
+import CustomModal from "./containers/CustomModal";
 import Dashboard from './components/homepage/Dashboard.js';
-import YourRestaurant from './components/homepage/YourRestaurant.js';
+import YourRestaurant from './components/restaurantPage/YourRestaurant.js';
 import Profile from './components/homepage/Profile.js';
 //import Navbar from './components/layout/Navbar.js'
 

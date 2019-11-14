@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import MainLayout from '../layout/MainLayout.js'
-import {authentificationModalVisibilityFilters} from "../../constants/authentificationModalVisibiltyFilters";
+import {authentificationModalVisibilityFilters} from "../../constants/modalVisibiltyFilters";
 import FilterLink from "../../containers/FilterModalLink";
 import { Link } from 'react-router-dom';
 

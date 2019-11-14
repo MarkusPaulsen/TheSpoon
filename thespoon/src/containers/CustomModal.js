@@ -9,6 +9,9 @@ import LogIn from "../components/authentification/LogIn";
 import RegisterRestaurantowner from "../components/authentification/RegisterRestaurantowner";
 import FillRestaurantInfo from "../components/authentification/FillRestaurantInfo"
 import RegisterCustomer from "../components/authentification/RegisterCustomer";
+import EditRestaurantInfoModal from "../components/restaurantPage/EditRestaurantInfoModal";
+import AddMenuModal from "../components/restaurantPage/AddMenuModal";
+import EditMenuModal from "../components/restaurantPage/EditMenuModal";
 
 
 const mapStateToProps = (state) => {
@@ -22,7 +25,7 @@ const mapDispatchToProps = dispatch => ({
 })
 
 
-class AuthentificationModal extends Component {
+class CustomModal extends Component {
 
     getVisibleModal = filter => {
         switch (filter) {
@@ -53,6 +56,21 @@ class AuthentificationModal extends Component {
                         role={roles.CUSTOMER}
                         onHide={() => this.props.handleClose()}/>
                 )
+            case modalVisibilityFilters.SHOW_EDIT_RESTAURANT_INFORMATION:
+                return (
+                    <EditRestaurantInfoModal
+                        onHide={() => this.props.handleClose()}/>
+                )
+            case modalVisibilityFilters.SHOW_ADD_MENU:
+                return (
+                    <AddMenuModal
+                        onHide={() => this.props.handleClose()}/>
+                )
+            case modalVisibilityFilters.SHOW_EDIT_MENU:
+                return (
+                    <EditMenuModal
+                        onHide={() => this.props.handleClose()}/>
+                )
             default:
                 return null;
         }
@@ -75,4 +93,4 @@ class AuthentificationModal extends Component {
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(AuthentificationModal)
+)(CustomModal)
