@@ -6,6 +6,7 @@ router.use(express.json());
 
 const Menu = require('../models/menu.js');
 const MenuItem = require('../models/menuItem.js');
+const Restaurant = require('../models/restaurant.js');
 
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
@@ -14,18 +15,52 @@ const Op = Sequelize.Op;
 router.get('/', async (req, res) => {
     
     try{
+
+        let matchingItems = await MenuItem.findAll({
+            attributes: ['Menu_ID'],
+            where: {
+                Name: {[Op.substring]: req.query.menuItemName}
+            } /*,
+            include: [{
+                //attributes: ['Name', 'Description'],
+                model: Menu,
+                where: [{
+                    Menu_ID: MenuItem.Menu_ID
+                }],
+                include: [{
+                    //attributes: ['Name','Address'],
+                    model: Restaurant,
+                    where: {
+                        Restaurant_ID: Menu.Restaurant_ID
+                    }
+            }]*/
+        });
+
+
+
+        /*
+        ************* THE FOLLOWING CODE WORKS **************
         let matchingItems = await MenuItem.findAll({
             attributes: ['Name', 'Menu_ID'],
             where: {
                 Name: {[Op.substring]: req.query.menuItemName}
             }
         });
+        ************THE FOLLOWING CODE HAS AN ASYNC PROBLEM ****************
         let menus = await matchingItems.map((mi) => Menu.findAll({
                 where: {
-                    MenuID: mi.Menu_ID
-                }
-
+                    Menu_ID: mi.Menu_ID
+                },
+                include: [{
+                    attributes: 'Name',
+                    model: Restaurant,
+                    where: {
+                        Restaurant_ID: Restaurant_ID
+                    }
+                }]
             }));
+
+         */
         res.status(200).send(matchingItems)
     } catch (error){
         res.status(400).send(error);
@@ -35,57 +70,3 @@ router.get('/', async (req, res) => {
 });
 
 module.exports = router;
-
-
-
-/*
-SELECT Name, description, tags
-FROM Menu
-WHERE MenuID ==(SELECT MenuID
-                FROM MenuItem
-                WHERE Name = req.query.menuItemName)
- */
-/*
-const _s0 = sequelize.dialect.QueryGenerator.selectQuery('MenuItem', {
-attributes: [['MenuID', 'MenuID']],
-where: {[Op.and]: [{Name: {[Op.eq]: req.body}}]},
-}).slice(0,-1);
-var _q = Menu;
-_q.findAll({
-attributes: [['Name', 'Name'],['description', 'description'],['tags', 'tags']],
-where: {[Op.and]: [{MenuID: {[Op.eq]: Sequelize.literal('(' + _s0 + ')')}}]},
-});
-*/
-
-
-/*
-Sequalize.query('SELECT Name, Description, Tags FROM Menu WHERE MenuID = (SELECT MenuID FROM MenuItem)',
-                {model: Menu, MenuItems});
-*/
-
-
-/*
-        const menus = Sequelize.query('SELECT WHERE "Menu"."MenuID" = (SELECT "MenuID" FROM "MenuItem" WHERE "MenuItem"."Name" = (:menuItemName))',
-            {
-                replacements: {menuItemName: req.query.menuItemName}
-            },
-            {
-                model: [Menu, MenuItems]
-            },
-            { type:
-                Sequelize.QueryTypes.SELECT
-            });
-          /*
-        const matchingItems = await MenuItems.findAll({
-            where: {
-                [Op.substring]: req.query.menuItemName
-            }
-        });
-        menus = await matchingItems.map((mi) => Menu.findAll({
-            where: {
-                //[Op.and]: [{MenuID: {[Op.eq]: mi.MenuID}}]
-                MenuID: mi.MenuID
-                // [Op.and: [{MenuID: mi.MenuID}]]
-            }
-        }));
-         */

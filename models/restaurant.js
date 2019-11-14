@@ -1,38 +1,44 @@
 const Sequelize = require('sequelize');
 const db = require('../sequelizeSettings');
-const MenuItem = require('./menuItem');
-const Restaurant =  require('./restaurant');
+const Menu = require('./menu');
 
-const Menu = db.define('Menu', {
-    Menu_ID: {
+const Restaurant = db.define('Restaurant', {
+    Restaurant_ID: {
         type: Sequelize.INTEGER,
         primaryKey: true
+    },
+    Owner: {
+        type: Sequelize.STRING,
     },
     Name: {
         type: Sequelize.STRING
     },
-    Description: {
+    Address: {
         type: Sequelize.STRING
     },
-    Restaurant_ID: {
+    City: {
         type: Sequelize.STRING
+    },
+    Country: {
+        type: Sequelize.STRING
+    },
+    Latitude: {
+        type: Sequelize.INTEGER
+    },
+    Latitude: {
+        type: Sequelize.INTEGER
     }
-},
-    {
+},{
     freezeTableName: true,
     timestamps: false
-}, {
+},{
     classMethods: {
         associate: () => {
-            Menu.hasMany(MenuItem, {
-                foreignKey: 'Menu_ID'
-            });
-            Menu.belongsTo(Restaurant, {
+            Restaurant.hasMany(Menu, {
                 foreignKey: 'Restaurant_ID'
             });
         }
     }
-}
-);
+});
 
-module.exports = Menu;
+module.exports = Restaurant;
