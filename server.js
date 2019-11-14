@@ -30,7 +30,7 @@ const image=require('./routes/image-upload.js');
 const searchByMenuItem = require('./routes/searchByMenuItem.js');
 
 
-app.use('/api/user/login', login);¢
+app.use('/api/user/login', login);
 app.use('/api/user/customer/register', registrationCustomer);
 app.use('/api/user/owner/register', registrationOwner);
 app.use('/api/image',image);

@@ -6,8 +6,8 @@ router.use(express.json());
 const Menu = require('../models/menu');
 const MenuItems = require('../models/menuItems');
 
-const Sequelize = require('sequelize');
-const Op = Sequelize.Op;
+//const Sequelize = require('sequelize');
+//const Op = Sequelize.Op;
 
 
 /*
@@ -35,7 +35,7 @@ router.get('/', async (req, res) => {
 
 router.get('/', (req, res) => {
     console.log('hello world');
-    res.status(200).send('almost there');¢
+    res.status(200).send('almost there');
 })
 module.exports = router;
 
