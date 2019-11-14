@@ -45,7 +45,8 @@ h1, h2, h3, h4 {
 }
 
 a {
-  color: var(--turquoise);
+  //color: var(--turquoise);
+  color: #d501ff;// for test
   text-decoration: none;
   &:hover  {
     color: var(--turquoise);
@@ -146,7 +147,7 @@ header {
   left: 0;
   right: 0;
   z-index: 1;
-
+  
   nav {
     height: 6rem;
     display: flex;
@@ -181,7 +182,6 @@ header {
 /* < HEADER */
 
 
-
 /* HOMEPAGE > */
 .homepage-banner {
     background-image: url('/images/background_web.png');
@@ -214,6 +214,82 @@ header {
 
 /* < HOMEPAGE */
 
+/* MAINHEADER > */
+.main-header {
+  background-color:transparent;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1;
+  
+  nav {
+    height: 6rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .logo {
+      max-width: 9.541666666666666rem;
+    }
+
+    li {
+      display: inline-block;
+      white-space: nowrap;
+      position: relative;
+      font-size: 0.875rem;
+      font-weight: 500;
+      margin-left: 3.1666666666666665rem;
+
+      a, span {
+        text-transform: uppercase;
+        color: #d501ff;
+        &:hover {
+          color: var(--white);
+          border-bottom: 1px solid var(--white);
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}
+
+/* < MAINHEADER */
+
+/* MAINPAGE > */
+.mainpage-banner {
+  background-image: #F1F1F1;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  height: calc(100vh);
+  position: relative;
+  margin: 0;
+  color: var(--black);
+  position: relative;
+
+  .mainpage-text {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+
+    .title {
+      margin-bottom: 3.5rem;
+    }
+
+    button {
+      font-size: 0.75rem;
+    }
+
+    .NavLinks {
+      color: var(--black);
+    }
+  }
+
+}
+/* < MAINPAGE */
 
 /* MODALS > */
 
