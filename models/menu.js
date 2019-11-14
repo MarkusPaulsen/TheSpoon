@@ -1,5 +1,6 @@
 const Sequelize = require('sequelize');
 const db = require('../sequelizeSettings');
+const MenuItem = require('./menuItem');
 
 const Menu = db.define('Menu', {
     MenuID: {
@@ -18,6 +19,15 @@ const Menu = db.define('Menu', {
 },{
     freezeTableName: true,
     timestamps: false
-});
+}, {
+    classMethods: {
+        associate: () => {
+            Menu.hasMany(MenuItem, {
+                foreignKey: 'MenuID'
+            });
+        }
+    }
+}
+);
 
 module.exports = Menu;
