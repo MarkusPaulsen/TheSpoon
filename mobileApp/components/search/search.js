@@ -75,10 +75,26 @@ export default class Search extends Component {
             }}
             error={this.state.searchError}
           />
+        </View >
+        <View style={{justifyContent: "center", alignContent: "center"}}>
+          <View>
+          {this.state.searchError ? (
+              <Image source={require('../../assets/noresults.png')}/>
+          ) : null}
         </View>
-        <Text style={{ color: "#F3A3A3", justifyContent: "center" }}>
-          {this.state.searchError ? "Too short/long search text" : null}
+        </View>
+        <Text
+          style={{
+            color: "#686B6F",
+            justifyContent: "center",
+            textAlign: "center",
+          }}
+        >
+          {this.state.searchError ? (
+            <Text> We can't find what you are {"\n"} looking for...</Text>
+          ) : null}
         </Text>
+
       </View>
     );
   }
