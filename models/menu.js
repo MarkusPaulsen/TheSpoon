@@ -21,18 +21,26 @@ const Menu = db.define('Menu', {
     {
     freezeTableName: true,
     timestamps: false
-}, {
+} , {
     classMethods: {
         associate: () => {
             Menu.hasMany(MenuItem, {
                 foreignKey: 'Menu_ID'
-            });
+            })
             Menu.belongsTo(Restaurant, {
                 foreignKey: 'Restaurant_ID'
-            });
+            })
         }
     }
 }
 );
+/*
+Menu.hasMany(MenuItem, {
+    foreignKey: 'Menu_ID'
+});
+Menu.belongsTo(Restaurant, {
+    foreignKey: 'Restaurant_ID'
+});
+*/
 
 module.exports = Menu;

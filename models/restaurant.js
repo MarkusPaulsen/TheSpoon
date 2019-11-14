@@ -2,6 +2,7 @@ const Sequelize = require('sequelize');
 const db = require('../sequelizeSettings');
 const Menu = require('./menu');
 
+
 const Restaurant = db.define('Restaurant', {
     Restaurant_ID: {
         type: Sequelize.INTEGER,
@@ -36,9 +37,15 @@ const Restaurant = db.define('Restaurant', {
         associate: () => {
             Restaurant.hasMany(Menu, {
                 foreignKey: 'Restaurant_ID'
-            });
+            })
         }
     }
 });
+
+/*
+Restaurant.hasMany(Menu, {
+    foreignKey: 'Restaurant_ID'
+    })
+*/
 
 module.exports = Restaurant;
