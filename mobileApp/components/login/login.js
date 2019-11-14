@@ -175,7 +175,9 @@ const styles = StyleSheet.create({
         borderBottomColor: "#F3A3A3",
         borderBottomWidth: 1.5,
         //marginTop: 99,
-        alignSelf: "center"
+        alignSelf: "center",
+        marginLeft: 7,
+        fontSize: 15
     },
     loginButton: {
         width: 203,
