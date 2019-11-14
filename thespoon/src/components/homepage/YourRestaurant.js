@@ -4,7 +4,7 @@ import {authentificationModalVisibilityFilters} from "../../constants/authentifi
 import FilterLink from "../../containers/FilterModalLink";
 import { Link } from 'react-router-dom';
 
-class Profile extends Component {
+class YourRestaurant extends Component {
     render() {
         return (
             <MainLayout >
@@ -13,7 +13,7 @@ class Profile extends Component {
                         <div className="container">
                             <div className="row">
                                 <div className="col-sm-8">
-                                    <h1 className="title">THIS IS YOUR PROFILE PAGE</h1>
+                                    <h1 className="title">THIS IS YOUR RESTAURANT PAGE</h1>
                                     <Link to="/" className="logo">
                                         <text>Back to Homepage</text>
                                     </Link>
@@ -27,4 +27,4 @@ class Profile extends Component {
     }
 }
 
-export default Profile;
+export default YourRestaurant;

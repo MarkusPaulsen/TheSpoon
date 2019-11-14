@@ -242,8 +242,8 @@ header {
       margin-left: 3.1666666666666665rem;
 
       a, span {
-        text-transform: uppercase;
-        color: #d501ff;
+        text-transform: none;
+        color: #686B6F;
         &:hover {
           color: var(--white);
           border-bottom: 1px solid var(--white);

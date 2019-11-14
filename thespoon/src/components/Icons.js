@@ -77,3 +77,23 @@ export const IconBack = () => {
     )
 }
 
+export const IconDashboard = () => {
+    return (
+        <i>
+            <svg width="19" height="22" viewBox="0 0 19 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M0.672026 12H4.74491V22H0.672026V12ZM7.79957 13H11.8725V22H7.79957V13ZM14.9271 8H19V22H14.9271V8ZM14.9271 0H19V4H17.9818V2.06L9.80547 10.09L5.76313 6.12L1.07931 10.72L0 9.66L5.76313 4L9.80547 7.97L16.9025 1H14.9271V0Z" fill="#686B6F" />
+            </svg>
+        </i>
+    )
+}
+
+export const IconYourRestaurant = () => {
+    return (
+        <i>
+            <svg width="23" height="19" viewBox="0 0 23 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M9.2 19V12.2941H13.8V19H19.55V10.0588H23L11.5 0L0 10.0588H3.45V19H9.2Z" fill="#686B6F" />
+            </svg>
+        </i>
+    )
+}
+

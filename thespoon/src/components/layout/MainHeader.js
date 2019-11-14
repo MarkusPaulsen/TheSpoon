@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { IconName } from '../Icons.js';
+import { IconName, IconDashboard, IconYourRestaurant} from '../Icons.js';
 import {authentificationModalVisibilityFilters} from "../../constants/authentificationModalVisibiltyFilters";
 
 
@@ -16,14 +16,16 @@ const MainHeader = () => {
                     </Link>
                     <ul>
                         <li>
-                            <text>Dashboard</text>
+                            <IconDashboard/>
+                            <Link to="/Dashboard">Dashboard</Link>
                         </li>
                         <li>
-                            <text>Your Restaurant</text>
+                            <IconYourRestaurant/>
+                            <Link to="/YourRestaurant">Your Restaurant</Link>
                         </li>
                         <li>
                             <IconName/>
-                            <Link to="/Profile" className="main-nav-links">Your Profile</Link>
+                            <Link to="/Profile">Your Profile</Link>
                         </li>
                     </ul>
                 </nav> 
