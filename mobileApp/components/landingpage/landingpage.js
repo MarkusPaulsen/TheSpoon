@@ -29,7 +29,7 @@ export default class LandingPage extends Component {
               <CustomizedButton
                 label="Log in"
                 style={styles.loginButton}
-                onPress={() => this.props.navigation.navigate("Login")}
+                onPress={() => this.props.navigation.navigate("Search")}
               />
               <CustomizedButton
                 label="Sign up"

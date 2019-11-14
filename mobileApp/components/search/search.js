@@ -7,23 +7,40 @@ import {
   Image,
   TouchableOpacity
 } from "react-native";
+import Validate from "./searchvalidation.js";
 
 export default class Search extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      search: ""
+      search: "",
+      searchError: ""
     };
+    this.handleSearch = this.handleSearch.bind(this);
+    this.validateSearch = this.validateSearch.bind(this);
   }
 
   updateSearchText = search => {
     this.setState({ search: search });
   };
 
-  onPress = () => {
-    console.log("Hurra");
-    console.log(this.state.search)
-  };
+  handleSearch() {
+    console.log("Searching for: ", this.state.search);
+  }
+
+  validateSearch() {
+    //console.log(this.state.search.toLowerCase());
+
+    const searchError = Validate("search", this.state.search);
+
+    this.setState({
+      searchError: searchError
+    });
+
+    if (!searchError) {
+      this.handleSearch();
+    }
+  }
 
   render() {
     return (
@@ -37,21 +54,31 @@ export default class Search extends Component {
           </View>
         </View>
         <View style={styles.searchBar}>
-          <TouchableOpacity onPress={this.onPress}>
+          <TouchableOpacity
+            value={this.state.search}
+            onPress={this.validateSearch}
+          >
             <Image source={require("../../assets/search.png")} />
           </TouchableOpacity>
           <TextInput
             placeholder="Search..."
-            value={this.state.search}
             onChangeText={this.updateSearchText}
-
-            returnKeyType='search'
+            value={this.state.search}
+            returnKeyType="search"
             autoFocus={true}
-
-            onSubmitEditing={this.onPress}
+            onSubmitEditing={this.validateSearch}
             clearButtonMode="while-editing"
+            onBlur={() => {
+              this.setState({
+                searchError: Validate("search", this.state.search)
+              });
+            }}
+            error={this.state.searchError}
           />
         </View>
+        <Text style={{ color: "#F3A3A3", justifyContent: "center" }}>
+          {this.state.searchError ? "Too short/long search text" : null}
+        </Text>
       </View>
     );
   }
@@ -84,7 +111,7 @@ const styles = StyleSheet.create({
     marginTop: 100
   },
   searchBar: {
-    flex: 5,
+    flex: 1,
     //marginTop: 0,
     flexDirection: "row",
     alignItems: "flex-start"

@@ -22,37 +22,39 @@ export default class LoginScreen extends Component {
       password: "",
       passwordError: "",
       token: "",
-        invalidError: false
+      invalidError: false
     };
     this.register = this.register.bind(this);
   }
   async handleLogin() {
-      try {
-          let data = JSON.stringify({username: this.state.username,
-              password: this.state.password,
-              isRestaurantOwner: false})
-          ;
-          let res = await fetch('http://192.168.1.110:5000/api/user/login/', {
-              method: 'POST',
-              headers: {
-                  Accept: 'application/json',
-                  'Content-Type': 'application/json',
-              },
-              body: data,
-          });
-          let responseText = await res.text();
-          console.log("The response is: ", responseText);
-          if(res.ok){
-              let jsonResponse = JSON.parse(responseText);
-              this.setState({token:jsonResponse.token });
-              console.log("Token is set to: ", this.state.token);
-              this.props.navigation.navigate("Search");
-          }
-          if(!res.ok){
-this.setState({invalidError: true});          }
-      } catch (e) {
-          console.error(e);
+    try {
+      let data = JSON.stringify({
+        username: this.state.username,
+        password: this.state.password,
+        isRestaurantOwner: false
+      });
+      let res = await fetch("http://192.168.1.112:5000/api/user/login/", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+        },
+        body: data
+      });
+      let responseText = await res.text();
+      console.log("The response is: ", responseText);
+      if (res.ok) {
+        let jsonResponse = JSON.parse(responseText);
+        this.setState({ token: jsonResponse.token });
+        console.log("Token is set to: ", this.state.token);
+        this.props.navigation.navigate("Search");
       }
+      if (!res.ok) {
+        this.setState({ invalidError: true });
+      }
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   register() {
@@ -75,7 +77,6 @@ this.setState({invalidError: true});          }
   handlePasswordChange = password => {
     this.setState({ password: password.trim() });
   };
-
 
   render() {
     return (
@@ -117,16 +118,14 @@ this.setState({invalidError: true});          }
               {this.state.passwordError ? "*" : null}
             </Text>
           </View>
-          <Text style={{ color: "#F3A3A3", alignSelf: "center"}}>
+          <Text style={{ color: "#F3A3A3", alignSelf: "center" }}>
             {this.state.usernameError || this.state.passwordError
               ? "All fields must be filled out"
               : null}
           </Text>
-            <Text style={{ color: "#F3A3A3", alignSelf: "center"}}>
-                {this.state.invalidError
-                    ? "Invalid username or password"
-                    : null}
-            </Text>
+          <Text style={{ color: "#F3A3A3", alignSelf: "center" }}>
+            {this.state.invalidError ? "Invalid username or password" : null}
+          </Text>
         </View>
         <View style={{ flex: 1 }}>
           <TouchableOpacity
@@ -192,7 +191,7 @@ const styles = StyleSheet.create({
   },
   registration: {
     //textAlign: 'center',
-    justifyContent: 'space-between',
+    justifyContent: "space-between",
     flexDirection: "row",
     flex: 1
     //marginTop: 50
