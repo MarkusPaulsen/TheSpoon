@@ -3,7 +3,7 @@ const db = require('../sequelizeSettings');
 const MenuItem = require('./menuItem');
 
 const Menu = db.define('Menu', {
-    MenuID: {
+    Menu_ID: {
         type: Sequelize.INTEGER,
         primaryKey: true
     },
@@ -12,9 +12,6 @@ const Menu = db.define('Menu', {
     },
     Description: {
         type: Sequelize.STRING
-    },
-    tags: { 
-        type: Sequelize.ARRAY(Sequelize.STRING)
     }
 },{
     freezeTableName: true,
@@ -23,7 +20,7 @@ const Menu = db.define('Menu', {
     classMethods: {
         associate: () => {
             Menu.hasMany(MenuItem, {
-                foreignKey: 'MenuID'
+                foreignKey: 'Menu_ID'
             });
         }
     }

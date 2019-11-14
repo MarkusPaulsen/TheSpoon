@@ -10,44 +10,29 @@ const MenuItem = require('../models/menuItem.js');
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
+
 router.get('/', async (req, res) => {
+    
     try{
         let matchingItems = await MenuItem.findAll({
-            attributes: ['Name', 'MenuID'],
+            attributes: ['Name', 'Menu_ID'],
             where: {
                 Name: {[Op.substring]: req.query.menuItemName}
             }
-        })
+        });
         let menus = await matchingItems.map((mi) => Menu.findAll({
                 where: {
-                    MenuID: mi.MenuID
+                    MenuID: mi.Menu_ID
                 }
 
             }));
-        res.status(200).send(menus)
+        res.status(200).send(matchingItems)
     } catch (error){
         res.status(400).send(error);
     }
-/*
-    try {
-         let menus = await Menu.findAll ({
-            include: [{
-                model: MenuItems,
-                //required: true,
-                where: {
-                    [Op.and]: [{Name: {[Op.substring]: req.query.menuItemName}}, {MenuID: Menu.MenuID}]
-                }
-            }]
-        });
-        // menus should be a set of unique menus. Yoy have to prune the array.
-        res.status(200).send(menus)
-    } catch (error) {
-        res.status(400).send(error);
-    }
 
- */
+
 });
-
 
 module.exports = router;
 
