@@ -3,8 +3,8 @@ const router = express();
 router.use(express.json());
 
 
-const Menu = require('../models/menu');
-const MenuItems = require('../models/menuItems');
+const Menu = require('../models/menu.js');
+const MenuItems = require('../models/menuItems.js');
 
 //const Sequelize = require('sequelize');
 //const Op = Sequelize.Op;
@@ -34,9 +34,10 @@ router.get('/', async (req, res) => {
 */
 
 router.get('/', (req, res) => {
-    console.log('hello world');
+    console.log(req.parameters.menuItemName);
     res.status(200).send('almost there');
 })
+
 module.exports = router;
 
 

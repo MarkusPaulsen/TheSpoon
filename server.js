@@ -34,7 +34,7 @@ app.use('/api/user/login', login);
 app.use('/api/user/customer/register', registrationCustomer);
 app.use('/api/user/owner/register', registrationOwner);
 app.use('/api/image',image);
-app.use('/api​/user​/customer​/searchByMenuItem', searchByMenuItem);
+app.use('/api/user/customer/menu/searchByMenuItem', searchByMenuItem);
 
 
 //Test DB
@@ -50,13 +50,16 @@ app.use(bodyParser.json());
 
 const path = require("path");
 
-
 app.use(express.static(path.join(__dirname, "thespoon", "build")));
 
-
+/*
 app.get("*", (req, res) => {
     res.sendFile(path.join(__dirname, "thespoon", "build", "index.html"));
+
 });
+
+*/
+
 
 //END OF THE REQUIRED CODE TO MAKE THE DEPLOY WORK
 
