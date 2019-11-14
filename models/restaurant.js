@@ -4,7 +4,8 @@ const db = require('../sequelizeSettings');
 const Restaurant = db.define('Restaurant', {
     Restaurant_ID: {
         type: Sequelize.INTEGER,
-        primaryKey: true
+        primaryKey: true,
+        autoIncrement: true
     },
     Owner: {
         type: Sequelize.STRING

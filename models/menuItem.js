@@ -1,13 +1,13 @@
 const Sequelize = require('sequelize');
 const db = require('../sequelizeSettings');
 
-const Menu = db.define('Menu', {
-    Menu_ID: {
+const MenuItem = db.define('MenuItem', {
+    MI_ID: {
         type: Sequelize.INTEGER,
         primaryKey: true,
         autoIncrement: true
     },
-    Restaurant_ID: {
+    Menu_ID: {
         type: Sequelize.INTEGER
     },
     Name: {
@@ -15,10 +15,16 @@ const Menu = db.define('Menu', {
     },
     Description: {
         type: Sequelize.STRING
+    },
+    Price: {
+        type: Sequelize.FLOAT
+    },
+    ImageLink: {
+        type: Sequelize.STRING
     }
 }, {
     freezeTableName: true,
     timestamps: false
 });
 
-module.exports = Menu;
+module.exports = MenuItem;
