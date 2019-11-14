@@ -9,7 +9,8 @@ module.exports = (req, res, next) => {
 
     try {
         //if the token is correct, just go to the next middleware and req.user is the identified username
-        req.username = jwt.verify(token, config.get('jwtPrivateKey'));
+        const result = jwt.verify(token, config.get('jwtPrivateKey'));
+        req.username = result.username;
         next();
     } catch (e) {
         res.status(403).send('Access denied: invalid token');
