@@ -34,9 +34,9 @@ router.get('/', async (req, res) => {
 */
 
 router.get('/', (req, res) => {
-    console.log(req.parameters.menuItemName);
+    console.log(req.query.menuItemName);
     res.status(200).send('almost there');
-})
+});
 
 module.exports = router;
 
