@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
+import { Redirect } from 'react-router-dom'
 import { ajax } from 'rxjs/ajax';
 import paths from '../../constants/paths';
 import { IconExit, IconEmail, IconPassword } from '../Icons';
-import {Modal, DropdownButton, Dropdown} from "react-bootstrap";
+import {Modal, ButtonToolbar, ToggleButtonGroup, ToggleButton} from "react-bootstrap";
 import FilterLink from "../../containers/FilterModalLink";
 import {modalVisibilityFilters} from "../../constants/modalVisibiltyFilters";
 import Form from 'react-validation/build/form';
@@ -35,12 +36,12 @@ class LogIn extends Component {
       password:'',
       isRestaurantOwner: true,
       validation: this.validator.valid(),
-    }
+      serverMessage: ''
+    };
 
     this.submitted = false;
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.activateIsRestaurantOwner = this.activateIsRestaurantOwner.bind(this);
-    this.deactivateIsRestaurantOwner = this.activateIsRestaurantOwner.bind(this);
+    this.changeRole = this.changeRole.bind(this);
   }
 
   handleSubmit = event => {
@@ -49,17 +50,16 @@ class LogIn extends Component {
 
     this.setState({
           username:values.username,
-          password:values.password,
-          isRestaurantOwner: true,
+          password:values.password
         }, () => { //because setstate is asynchronus, further action must be taken on callback
 
+          this.setState({ serverMessage: null });
           const validation = this.validator.validate(this.state);
           this.setState({ validation });
           this.submitted = true;
 
+          const thisTemp = this;
           if (validation.isValid) {
-            let thisTemp = this;
-            console.log(this.state);
             ajax({
               url: paths['restApi']['login'],
               method: 'POST',
@@ -70,28 +70,35 @@ class LogIn extends Component {
                 isRestaurantOwner: this.state.isRestaurantOwner,
               }
             }).subscribe(
-                function (next) {
-                  console.log("Ajax step");
+                (next) => {
+                  thisTemp.setState({ serverMessage: "Login is processing..." });
                 },
-                function (error) {
-                  alert("Wrong username or password");
+                (error) => {
+                  switch (error.status) {
+                    case 400:
+                        thisTemp.setState({ serverMessage: "Invalid username or password" });
+                        break;
+                    case 404:
+                        thisTemp.setState({ serverMessage: "No connection to the server" });
+                        break;
+                    default:
+                        thisTemp.setState({ serverMessage: "General error" });
+                        break;
+                  }
                 },
-                function (complete) {
-                  console.log("you passed our validation");
+                (complete) => {
+                  thisTemp.setState({ serverMessage: <Redirect to={{pathname: '/Mainpage/'}}/>});
                   thisTemp.props.onHide();
                 }
-            );
-          }
-        }
-    );
-  };
+          )}
+    })};
 
-  activateIsRestaurantOwner = () => {
-    this.setState({ isRestaurantOwner: true })
-  };
-
-  deactivateIsRestaurantOwner = () => {
-    this.setState({ isRestaurantOwner: false })
+  changeRole = (role) => {
+    if (role === 1) {
+      this.setState({ isRestaurantOwner: false });
+    } else {
+      this.setState({ isRestaurantOwner: true });
+    }
   };
 
   render() {
@@ -104,11 +111,14 @@ class LogIn extends Component {
             <div className="modal-wrapper ">
               <Form ref={ (c) => { this.form = c; }} onSubmit={this.handleSubmit}>
                 <h2 className="title">Log in</h2>
+
                 <div className="input-field">
-                  <DropdownButton id="dropdown-basic-button" title="Dropdown button">
-                    <Dropdown.Item onClick={this.activateIsRestaurantOwner}>Restaurant Owner</Dropdown.Item>
-                    <Dropdown.Item onClick={this.deactivateIsRestaurantOwner}>Customer</Dropdown.Item>
-                  </DropdownButton>
+                  <ButtonToolbar>
+                    <ToggleButtonGroup type="radio" name="role" defaultValue={0} onChange={this.changeRole}>
+                      <ToggleButton value={0}>Restaurant Owner</ToggleButton>
+                      <ToggleButton value={1}>Customer</ToggleButton>
+                    </ToggleButtonGroup>
+                  </ButtonToolbar>
                 </div>
 
                 <div className="input-field">
@@ -124,6 +134,7 @@ class LogIn extends Component {
                 <div className="error-block">
                   <small>{validation.username.message}</small>
                   <small>{validation.password.message}</small>
+                  <small>{this.state .serverMessage}</small>
                 </div>
 
                 <Button type="submit" className="normal">Log in</Button>

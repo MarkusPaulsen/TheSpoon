@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Redirect } from 'react-router-dom'
 import { ajax } from 'rxjs/ajax';
 import paths from '../../constants/paths';
 import {IconName, IconEmail, IconPassword, IconExit, IconBack} from '../Icons';
@@ -74,7 +75,8 @@ class RegisterRestaurantowner extends Component  {
           password:'',
           confirmPassword: '',
           validation: this.validator.valid(),
-      }
+          serverMessage: ''
+      };
 
       this.submitted = false;
       this.handleSubmit = this.handleSubmit.bind(this);
@@ -113,14 +115,24 @@ class RegisterRestaurantowner extends Component  {
                             surname:this.state.surname
                         }
                     }).subscribe(
-                        function (next) {
-                            console.log("Ajax step");
+                        (next) => {
+                            thisTemp.setState({ serverMessage: "Login is processing..." });
                         },
-                        function (error) {
-                            alert("An error happened!");
+                        (error) => {
+                            switch (error.status) {
+                                case 400:
+                                    thisTemp.setState({ serverMessage: "Username or email already taken" });
+                                    break;
+                                case 404:
+                                    thisTemp.setState({ serverMessage: "No connection to the server" });
+                                    break;
+                                default:
+                                    thisTemp.setState({ serverMessage: "General error" });
+                                    break;
+                            }
                         },
-                        function (complete) {
-                            console.log("you passed our validation");
+                        (complete) => {
+                            thisTemp.setState({ serverMessage: <Redirect to={{pathname: '/Mainpage/'}}/>});
                             thisTemp.props.onHide();
                         }
                     );
@@ -177,6 +189,7 @@ class RegisterRestaurantowner extends Component  {
                         <small>{validation.surname.message}</small>
                         <small>{validation.password.message}</small>
                         <small>{validation.confirmPassword.message}</small>
+                        <small>{this.state.serverMessage}</small>
                     </div>
 
                     <button className="normal">
