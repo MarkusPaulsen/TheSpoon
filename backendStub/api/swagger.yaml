@@ -12,7 +12,7 @@ info:
     \ to customers nor owners remain inside the default group.\n \n AUTHENTICATION/AUTHORIZATION:\
     \ The json web token returned when the login is performed is supposed to be put\
     \ into x-auth-token header in the endpoints that require authorization"
-  version: "2.3"
+  version: "2.4"
   title: "The Spoon API reference"
 tags:
 - name: "customer"
@@ -187,7 +187,7 @@ paths:
       summary: "Add a menu to a restaurant"
       description: "Add a menu to a restaurant of a restaurant owner, which needs\
         \ to be logged in"
-      operationId: "Add menu"
+      operationId: "addMenu"
       consumes:
       - "application/json"
       produces:
@@ -223,7 +223,7 @@ paths:
         \ the backend with this endpoint.\n The menuID should be related to a menu\
         \ of the restaurant owned by the authenticated restaurant owner, otherwise\
         \ an error response will be received."
-      operationId: "apiUserOwnerRestaurantMenuMenuIDGET"
+      operationId: "getMenuOwner"
       produces:
       - "application/json"
       parameters:
@@ -296,7 +296,7 @@ paths:
         \ access the endpoint /api/user/customer/menu/{menuID} to get the menu items\
         \ of a specific menu (the menuID passed can be obtained from the response\
         \ of this endpoint, since it returns the menuID of every menu)."
-      operationId: "apiUserCustomerMenuSearchByMenuItemGET"
+      operationId: "searchByMenuItem"
       produces:
       - "application/json"
       parameters:
@@ -309,7 +309,9 @@ paths:
         200:
           description: "Successful operation"
           schema:
-            $ref: "#/definitions/MenuAndRestaurant"
+            type: "array"
+            items:
+              $ref: "#/definitions/MenuAndRestaurant"
       x-swagger-router-controller: "Customer"
   /api/user/customer/menu/{menuID}:
     get:
@@ -321,7 +323,7 @@ paths:
         \ s3 storage, so the links to the cloud storage are also returned. The frontend\
         \ will directly download them from the cloud storage, they won't be sent by\
         \ the backend with this endpoint."
-      operationId: "apiUserCustomerMenuMenuIDGET"
+      operationId: "getMenuCustomer"
       produces:
       - "application/json"
       parameters:
@@ -348,7 +350,7 @@ paths:
         \ information, this is used as a reference:  https://stackoverflow.com/questions/33279153/rest-api-file-ie-images-processing-best-practices\
         \ \n This endpoint requires authentication: we don't want anyone to update\
         \ images but only authenticated users."
-      operationId: "apiImagePOST"
+      operationId: "uploadImage"
       consumes:
       - "image/png"
       - "image/jpeg"

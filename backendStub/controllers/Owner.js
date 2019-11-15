@@ -14,17 +14,6 @@ module.exports.addMenu = function addMenu (req, res, next) {
     });
 };
 
-module.exports.apiUserOwnerRestaurantMenuMenuIDGET = function apiUserOwnerRestaurantMenuMenuIDGET (req, res, next) {
-  var menuID = req.swagger.params['menuID'].value;
-  Owner.apiUserOwnerRestaurantMenuMenuIDGET(menuID)
-    .then(function (response) {
-      utils.writeJson(res, response);
-    })
-    .catch(function (response) {
-      utils.writeJson(res, response);
-    });
-};
-
 module.exports.configureRestaurant = function configureRestaurant (req, res, next) {
   var body = req.swagger.params['body'].value;
   Owner.configureRestaurant(body)
@@ -51,6 +40,17 @@ module.exports.editMenu = function editMenu (req, res, next) {
   var menuID = req.swagger.params['menuID'].value;
   var body = req.swagger.params['body'].value;
   Owner.editMenu(menuID,body)
+    .then(function (response) {
+      utils.writeJson(res, response);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
+};
+
+module.exports.getMenuOwner = function getMenuOwner (req, res, next) {
+  var menuID = req.swagger.params['menuID'].value;
+  Owner.getMenuOwner(menuID)
     .then(function (response) {
       utils.writeJson(res, response);
     })

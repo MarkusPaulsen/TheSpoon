@@ -3,8 +3,9 @@
 var utils = require('../utils/writer.js');
 var Default = require('../service/DefaultService');
 
-module.exports.apiImagePOST = function apiImagePOST (req, res, next) {
-  Default.apiImagePOST()
+module.exports.loginUser = function loginUser (req, res, next) {
+  var body = req.swagger.params['body'].value;
+  Default.loginUser(body)
     .then(function (response) {
       utils.writeJson(res, response);
     })
@@ -13,9 +14,8 @@ module.exports.apiImagePOST = function apiImagePOST (req, res, next) {
     });
 };
 
-module.exports.loginUser = function loginUser (req, res, next) {
-  var body = req.swagger.params['body'].value;
-  Default.loginUser(body)
+module.exports.uploadImage = function uploadImage (req, res, next) {
+  Default.uploadImage()
     .then(function (response) {
       utils.writeJson(res, response);
     })
