@@ -3,6 +3,7 @@ const db = require('../sequelizeSettings');
 const Menu = require('./menu');
 
 
+
 const MenuItem = db.define('MenuItem', {
     MI_ID: {
         type: Sequelize.INTEGER,
@@ -10,6 +11,10 @@ const MenuItem = db.define('MenuItem', {
     },
     Menu_ID: {
         type: Sequelize.INTEGER,
+        references: {
+            model: Menu,
+            key: 'Menu_ID'
+        }
     },
     Name: {
         type: Sequelize.STRING
@@ -23,28 +28,16 @@ const MenuItem = db.define('MenuItem', {
 },{
     freezeTableName: true,
     timestamps: false
-} /*,
+} ,
     {
     classMethods: {
         associate: () => {
-            MenuItem.belongsTo(Menu, {
-                foreignKey: 'Menu_ID'
-            });
+            MenuItem.belongsTo(Menu), {
+                foreignKey: 'Menu_ID',
+            };
         }
     }
-} */
+}
 );
-
-MenuItem.associate = () => {
-    MenuItem.belongsTo(Menu, {
-        foreignKey: 'Menu_ID'
-    });
-};
-
-/*
-MenuItem.belongsTo(Menu, {
-    foreignKey: 'Menu_ID'
-});
-*/
 
 module.exports = MenuItem;

@@ -6,10 +6,11 @@ router.use(express.json());
 
 const Menu = require('../models/menu.js');
 const MenuItem = require('../models/menuItem.js');
-const Restaurant = require('../models/restaurant.js');
+const Restaurant = require('../models/restaurants.js');
 
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
+
 
 
 router.get('/', async (req, res) => {
@@ -22,24 +23,24 @@ router.get('/', async (req, res) => {
             }
         });
         // Find the menus that the matched MenuItems belongs to.
-        // There is a problem with the associations between the models
-        //
-        let promises = matchingItems.map( async mi => {
-            await Menu.findAll({
+        // There is a problem with the associations between the models. Need to separate the queries for now.
+        // Will fix this later on. The actually code can be found at the end of this file.
+        let promises =  matchingItems.map(async mi => {
+             const menu = await Menu.findOne({
+                attributes: ['Name', 'Description'],
                 where: {
                     Menu_ID: mi.dataValues.Menu_ID
                 },
-                include: [{
-                    attributes: 'Name',
-                    model: Restaurant,
-                    where: {
-                        Restaurant_ID: Menu.Restaurant_ID
-                    }
-                }]
-            })
+            });
+            return menu
         });
 
-        const menus =  await Promise.all(promises);
+        let menus = await Promise.all(promises);
+
+
+
+
+
         res.status(200).send(menus);
 
     } catch (error){
