@@ -15,7 +15,7 @@ const Menu = db.define('Menu', {
         type: Sequelize.STRING
     },
     Restaurant_ID: {
-        type: Sequelize.STRING,
+        type: Sequelize.INTEGER,
 
     }
 },
@@ -35,15 +35,4 @@ const Menu = db.define('Menu', {
     }
 }
 );
-/*
-Menu.associate = () => {
-    Menu.hasMany(MenuItem, {
-        foreignKey: 'Menu_ID'
-    });
-    Menu.belongsTo(Restaurant, {
-        foreignKey: 'Restaurant_ID'
-    });
-}
-
-*/
 module.exports = Menu;

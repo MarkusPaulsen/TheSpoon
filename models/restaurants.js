@@ -24,10 +24,10 @@ const Restaurant = db.define('Restaurant', {
             type: Sequelize.STRING
         },
         Latitude: {
-            type: Sequelize.INTEGER
+            type: Sequelize.FLOAT
         },
         Longitude: {
-            type: Sequelize.INTEGER
+            type: Sequelize.FLOAT
         }
     },{
         freezeTableName: true,
@@ -42,11 +42,5 @@ const Restaurant = db.define('Restaurant', {
             }
         }}
 );
-/*
-Restaurant.associate = () => {
-    Restaurant.hasMany(Menu, {
-        foreignKey: 'Restaurant_ID'
-        }
-    )};
-*/
+
 module.exports = Restaurant;

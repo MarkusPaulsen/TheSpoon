@@ -11,10 +11,6 @@ const MenuItem = db.define('MenuItem', {
     },
     Menu_ID: {
         type: Sequelize.INTEGER,
-        references: {
-            model: Menu,
-            key: 'Menu_ID'
-        }
     },
     Name: {
         type: Sequelize.STRING
@@ -25,7 +21,7 @@ const MenuItem = db.define('MenuItem', {
     Price: {
         type: Sequelize.FLOAT
     }
-},{
+}, {
     freezeTableName: true,
     timestamps: false
 } ,
