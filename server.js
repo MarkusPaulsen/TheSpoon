@@ -29,6 +29,7 @@ const registrationOwner = require('./routes/registrationOwner.js');
 const image = require('./routes/image-upload.js');
 const searchByMenuItem = require('./routes/searchByMenuItem.js');
 const addMenu = require('./routes/addMenu.js');
+const searchMenu = require('./routes/searchMenu.js');
 
 
 app.use('/api/user/login', login);
@@ -37,6 +38,8 @@ app.use('/api/user/owner/register', registrationOwner);
 app.use('/api/image',image);
 app.use('/api/user/customer/menu/searchByMenuItem', searchByMenuItem);
 app.use('/api/user/owner/restaurant/menu', addMenu);
+app.use('/api/user/customer/menu/', searchMenu);
+
 
 
 //Test DB

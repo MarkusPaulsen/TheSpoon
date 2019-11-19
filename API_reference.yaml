@@ -1,7 +1,7 @@
 swagger: "2.0"
 info:
   description: "This is the API reference of The Spoon project.\n \n VERSIONING: The version number works in this way: it's composed of two numbers separated by a point. The first number identifies the Sprint, so for example the version 2.1 of the API reference is related to the Sprint number 2. The second number starts from 0 and has to be increased by one each time the file is modified. The person who modifies this document is responsible for increasing the number.\n \n GROUPING OF ENDPOINTS: The endpoints are grouped by dividing them into customers' operations and owners' operations. All the endpoints that are not strictly related to customers nor owners remain inside the default group.\n \n AUTHENTICATION/AUTHORIZATION: The json web token returned when the login is performed is supposed to be put into x-auth-token header in the endpoints that require authorization"
-  version: "2.4"
+  version: "3.0"
   title: "The Spoon API reference"
 tags:
   - name: "customer"
@@ -404,8 +404,8 @@ definitions:
     example:
       name: "Emilio's menu of the day"
       description: "Our special menu of today"
-      tags: ["Italian food", "Special menu"]
-      menuItems: [{"name": "Spaghetti alla carbonara", "description": "Fantastic italian dish made of spaghetti, pig cheek, eggs, black pepper, pecorino romano", "priceEuros": 10, "tags": ["First dish", "Pasta", "Italian food"], "imageLink": "www.cloudStorage.com/Carbonara"}, {"name": "Polpette al sugo", "description": "Meatballs with tomato sauce", "priceEuros": 7, "tags": ["Second dish", "Meat", "Italian food"], "imageLink": "www.cloudStorage.com/Meatballs"}]
+      tags: ["Italian", "Mediterranean"]
+      menuItems: [{"name": "Spaghetti alla carbonara", "description": "Fantastic italian dish made of spaghetti, pig cheek, eggs, black pepper, pecorino romano", "priceEuros": 10, "tags": ["Mediterranean", "Pasta", "Italian"], "imageLink": "www.cloudStorage.com/Carbonara"}, {"name": "Polpette al sugo", "description": "Meatballs with tomato sauce", "priceEuros": 7, "tags": ["Mediterranean", "Meat", "Italian"], "imageLink": "www.cloudStorage.com/Meatballs"}]
   MenuItem:
     type: "object"
     properties:
@@ -425,7 +425,7 @@ definitions:
       name: "Spaghetti alla carbonara"
       description: "Fantastic italian dish made of spaghetti, pig cheek, eggs, black pepper, pecorino romano"
       priceEuros: 10
-      tags: ["First dish", "Pasta", "Italian food"]
+      tags: ["Mediterranean", "Pasta", "Italian"]
       imageLink: "www.cloudStorage.com/Carbonara"
   MenuID:
     type: "object"
@@ -451,7 +451,7 @@ definitions:
       menuID: 2
       name: "Emilio's menu of the day"
       description: "Our special menu of today"
-      tags: ["Italian food", "Special menu"]
+      tags: ["Italian", "Mediterranean"]
   MenuAndRestaurant:
     type: "object"
     properties:
@@ -466,7 +466,7 @@ definitions:
         $ref: "#/definitions/MenuWithID"
     example:
       restaurantData: {"restaurantID": 54, "restaurantName": "Emilio's Pizza"}
-      menu: {"menuID": 2, "name": "Emilio's menu of the day", "description": "Our special menu of today", "tags": ["Italian food", "Special menu"]}
+      menu: {"menuID": 2, "name": "Emilio's menu of the day", "description": "Our special menu of today", "tags": ["Italian", "Mediterranean"]}
   ImageID:
     type: "object"
     properties:
