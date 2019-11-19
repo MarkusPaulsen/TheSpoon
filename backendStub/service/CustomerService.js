@@ -36,18 +36,18 @@ exports.getMenuCustomer = function(menuID) {
     examples['application/json'] = {
   "name" : "Emilio's menu of the day",
   "description" : "Our special menu of today",
-  "tags" : [ "Italian food", "Special menu" ],
+  "tags" : [ "Italian", "Mediterranean" ],
   "menuItems" : [ {
     "name" : "Spaghetti alla carbonara",
     "description" : "Fantastic italian dish made of spaghetti, pig cheek, eggs, black pepper, pecorino romano",
     "priceEuros" : 10,
-    "tags" : [ "First dish", "Pasta", "Italian food" ],
+    "tags" : [ "Mediterranean", "Pasta", "Italian" ],
     "imageLink" : "www.cloudStorage.com/Carbonara"
   }, {
     "name" : "Polpette al sugo",
     "description" : "Meatballs with tomato sauce",
     "priceEuros" : 7,
-    "tags" : [ "Second dish", "Meat", "Italian food" ],
+    "tags" : [ "Mediterranean", "Meat", "Italian" ],
     "imageLink" : "www.cloudStorage.com/Meatballs"
   } ]
 };
@@ -79,7 +79,7 @@ exports.searchByMenuItem = function(menuItemName) {
     "menuID" : 2,
     "name" : "Emilio's menu of the day",
     "description" : "Our special menu of today",
-    "tags" : [ "Italian food", "Special menu" ]
+    "tags" : [ "Italian", "Mediterranean" ]
   }
 }, {
   "restaurantData" : {
@@ -90,7 +90,7 @@ exports.searchByMenuItem = function(menuItemName) {
     "menuID" : 2,
     "name" : "Emilio's menu of the day",
     "description" : "Our special menu of today",
-    "tags" : [ "Italian food", "Special menu" ]
+    "tags" : [ "Italian", "Mediterranean" ]
   }
 } ];
     if (Object.keys(examples).length > 0) {
