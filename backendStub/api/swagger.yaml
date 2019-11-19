@@ -12,7 +12,7 @@ info:
     \ to customers nor owners remain inside the default group.\n \n AUTHENTICATION/AUTHORIZATION:\
     \ The json web token returned when the login is performed is supposed to be put\
     \ into x-auth-token header in the endpoints that require authorization"
-  version: "2.4"
+  version: "3.0"
   title: "The Spoon API reference"
 tags:
 - name: "customer"
@@ -41,11 +41,11 @@ paths:
         schema:
           $ref: "#/definitions/Customer"
       responses:
-        201:
+        "201":
           description: "Customer registered"
           schema:
             $ref: "#/definitions/Username"
-        400:
+        "400":
           description: "Username or email already taken"
       x-swagger-router-controller: "Customer"
   /api/user/owner/register:
@@ -69,11 +69,11 @@ paths:
         schema:
           $ref: "#/definitions/Owner"
       responses:
-        201:
+        "201":
           description: "Restaurant owner registered"
           schema:
             $ref: "#/definitions/Username"
-        400:
+        "400":
           description: "Username or email already taken"
       x-swagger-router-controller: "Owner"
   /api/user/login:
@@ -99,11 +99,11 @@ paths:
         schema:
           $ref: "#/definitions/UserLogin"
       responses:
-        201:
+        "201":
           description: "Successful operation"
           schema:
             $ref: "#/definitions/Token"
-        400:
+        "400":
           description: "Invalid username or password"
       x-swagger-router-controller: "Default"
   /api/user/owner/restaurant:
@@ -140,11 +140,11 @@ paths:
         schema:
           $ref: "#/definitions/Restaurant"
       responses:
-        200:
+        "200":
           description: "Successful operation"
           schema:
             $ref: "#/definitions/RestaurantID"
-        401:
+        "401":
           description: "Access denied"
       security:
       - Bearer: []
@@ -168,13 +168,13 @@ paths:
       - "application/json"
       parameters: []
       responses:
-        200:
+        "200":
           description: "Successful operation"
           schema:
             type: "array"
             items:
               $ref: "#/definitions/MenuWithID"
-        401:
+        "401":
           description: "Access denied"
       security:
       - Bearer: []
@@ -200,11 +200,11 @@ paths:
         schema:
           $ref: "#/definitions/Menu"
       responses:
-        200:
+        "200":
           description: "Successful operation"
           schema:
             $ref: "#/definitions/MenuID"
-        401:
+        "401":
           description: "Access denied"
       security:
       - Bearer: []
@@ -233,13 +233,13 @@ paths:
         required: true
         type: "integer"
       responses:
-        200:
+        "200":
           description: "Successful operation"
           schema:
             $ref: "#/definitions/Menu"
-        401:
+        "401":
           description: "Access denied"
-        404:
+        "404":
           description: "No menu associated to that restaurant found"
       security:
       - Bearer: []
@@ -272,13 +272,13 @@ paths:
         schema:
           $ref: "#/definitions/Menu"
       responses:
-        200:
+        "200":
           description: "Successful operation"
           schema:
             $ref: "#/definitions/MenuID"
-        401:
+        "401":
           description: "Access denied"
-        404:
+        "404":
           description: "Menu not found"
       security:
       - Bearer: []
@@ -306,7 +306,7 @@ paths:
         required: true
         type: "string"
       responses:
-        200:
+        "200":
           description: "Successful operation"
           schema:
             type: "array"
@@ -333,7 +333,7 @@ paths:
         required: true
         type: "integer"
       responses:
-        200:
+        "200":
           description: "Successful operation"
           schema:
             $ref: "#/definitions/Menu"
@@ -358,7 +358,7 @@ paths:
       - "application/json"
       parameters: []
       responses:
-        201:
+        "201":
           description: "Successful operation"
           schema:
             $ref: "#/definitions/ImageID"
@@ -454,8 +454,8 @@ definitions:
       address: "André route 45"
       city: "Rome"
       country: "Italy"
-      latitude: 48.4281350802915
-      longitude: -110.0792542197085
+      latitude: 48.42813508029149716094252653419971466064453125
+      longitude: -110.07925421970850266006891615688800811767578125
       imageID: 5
   RestaurantID:
     type: "object"
@@ -483,25 +483,25 @@ definitions:
       name: "Emilio's menu of the day"
       description: "Our special menu of today"
       tags:
-      - "Italian food"
-      - "Special menu"
+      - "Italian"
+      - "Mediterranean"
       menuItems:
       - name: "Spaghetti alla carbonara"
         description: "Fantastic italian dish made of spaghetti, pig cheek, eggs, black\
           \ pepper, pecorino romano"
         priceEuros: 10
         tags:
-        - "First dish"
+        - "Mediterranean"
         - "Pasta"
-        - "Italian food"
+        - "Italian"
         imageLink: "www.cloudStorage.com/Carbonara"
       - name: "Polpette al sugo"
         description: "Meatballs with tomato sauce"
         priceEuros: 7
         tags:
-        - "Second dish"
+        - "Mediterranean"
         - "Meat"
-        - "Italian food"
+        - "Italian"
         imageLink: "www.cloudStorage.com/Meatballs"
   MenuItem:
     type: "object"
@@ -524,9 +524,9 @@ definitions:
         \ pepper, pecorino romano"
       priceEuros: 10
       tags:
-      - "First dish"
+      - "Mediterranean"
       - "Pasta"
-      - "Italian food"
+      - "Italian"
       imageLink: "www.cloudStorage.com/Carbonara"
   MenuID:
     type: "object"
@@ -553,8 +553,8 @@ definitions:
       name: "Emilio's menu of the day"
       description: "Our special menu of today"
       tags:
-      - "Italian food"
-      - "Special menu"
+      - "Italian"
+      - "Mediterranean"
   MenuAndRestaurant:
     type: "object"
     properties:
@@ -571,8 +571,8 @@ definitions:
         name: "Emilio's menu of the day"
         description: "Our special menu of today"
         tags:
-        - "Italian food"
-        - "Special menu"
+        - "Italian"
+        - "Mediterranean"
   ImageID:
     type: "object"
     properties:
