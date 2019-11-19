@@ -1,45 +1,52 @@
 import * as logInRegisterActions from "../actions/logInRegisterActions";
 
-function register(role, username, firstName, surname, email, password) {
+//<editor-fold desc="Register Action Creators">
+export const register = (username, role) => {
     return {
         type: logInRegisterActions.REGISTERING_ATTEMPTING,
-        role: role,
         username: username,
-        firstName: firstName,
-        surname: surname,
-        email: email,
-        password: password
+        role: role
     }
-}
+};
 
-function failRegister() {
+export const failRegister = () => {
     return {
         type: logInRegisterActions.LOGGING_IN_SUCCESSING
     }
-}
+};
 
-function successRegister() {
+export const successRegister = (username) => {
     return {
-        type: logInRegisterActions.REGISTERING_SUCCESSING
+        type: logInRegisterActions.REGISTERING_SUCCESSING,
+        username: username
     }
-}
+};
+//</editor-fold>
 
-function logIn(email, password) {
+//<editor-fold desc="Login Action Creators">
+export const logIn = (username, role) => {
     return {
         type: logInRegisterActions.LOGGING_IN_ATTEMPTING,
-        email: email,
-        password: password
+        username: username,
+        role: role
     }
-}
-
-function failLogIn() {
+};
+export const failLogIn = () => {
     return {
         type: logInRegisterActions.LOGGING_IN_FAILING
     }
-}
+};
 
-function successLogIN() {
+export const successLogIn = (token) => {
     return {
-        type: logInRegisterActions.LOGGING_IN_SUCCESSING
+        type: logInRegisterActions.LOGGING_IN_SUCCESSING,
+        token: token
     }
-}
+};
+
+export const logOut = () => {
+    return {
+        type: logInRegisterActions.LOGGING_OUT
+    }
+};
+//</editor-fold>
