@@ -7,6 +7,6 @@ cache:
 env:
   global:
     - theSpoon_jwtPrivateKey=mySecureKey
-braches:
+branches:
   only:
     - travis
