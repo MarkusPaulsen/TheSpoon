@@ -40,12 +40,13 @@ router.get('/', async (req, res) => {
                     Restaurant_ID: menuInfo.Restaurant_ID
                 }
             });
-             const tags = await TaggedMenu.findAll ({
+             const tagsOnMenu = await TaggedMenu.findAll ({
                  attributes: ['Tag'],
                  where: {
                      Menu_ID: mi.dataValues.Menu_ID
                  }
              });
+             const tags = await tagsOnMenu.map( m => { return m.dataValues.Tag });
 
              const menu = {
                  menuID: mi.dataValues.Menu_ID,

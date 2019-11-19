@@ -30,13 +30,18 @@ router.get('/:menuID', async (req, res) => {
                 Menu_ID: req.params.menuID
             }
         });
+        const tags = await menuTags.map( m => { return m.dataValues.Tag });
+
         const promises =  menuItemsWithoutTags.map(async menuItems => {
-            const tags = await TaggedItem.findAll({
+            const tagsOnItem = await TaggedItem.findAll({
                 attributes: ['Tag'],
                 where: {
                     MI_ID: menuItems.dataValues.MI_ID
                 }
             });
+            const tags = await tagsOnItem.map( m => { return m.dataValues.Tag });
+
+
             return {
                 name: menuItems.dataValues.Name,
                 description: menuItems.dataValues.Description,
@@ -49,7 +54,7 @@ router.get('/:menuID', async (req, res) => {
         res.status(200).send({
             name: menuInfo.dataValues.Name,
             description:  menuInfo.dataValues.Description,
-            tags: menuTags,
+            tags,
             menuItems
         });
     } catch (error){
