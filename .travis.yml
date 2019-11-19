@@ -11,4 +11,4 @@ branches:
   only:
     - travis
 script:
-  - node $HOME/backendServer/server.js
+  - echo "Hello there"
