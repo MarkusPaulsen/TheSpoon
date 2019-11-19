@@ -23,6 +23,7 @@ router.get('/', async (req, res) => {
                 Name: {[Op.substring]: req.query.menuItemName}
             }
         });
+        matchingItems = pruneByMenuID(matchingItems);
 
         // Find the menus that the matched MenuItems belongs to.
         // There is a problem with the associations between the models. Need to separate the queries for now.
@@ -63,13 +64,29 @@ router.get('/', async (req, res) => {
         });
 
         let result = await Promise.all(promises);
-
+        //let i = " " + matchingItems[1].Menu_ID;
         res.status(200).send(result);
 
     } catch (error){
         res.status(400).send(error);
     }
 });
+
+
+const pruneByMenuID = (arr) => {
+    let d = [];
+    for (let i = 0; i < arr.length; i++){
+        let id = arr[i].Menu_ID;
+        if (d.includes(id)){
+            arr.splice(i, 1);
+            i --;
+        } else {
+            d.push(arr[i].Menu_ID);
+        }
+    }
+    return arr
+
+}
 
 module.exports = router;
 
