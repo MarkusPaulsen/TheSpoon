@@ -10,3 +10,5 @@ env:
 branches:
   only:
     - travis
+script:
+  - node $HOME/backendServer/server.js
