@@ -12,34 +12,18 @@ import {
 } from "react-native";
 import Validate from "./searchvalidation.js";
 
-const resultsData = [
+let resultsData = [
   {
     id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
-    title: "Lunch Menu",
+    menuName: "Lunch Menu",
     restaurantName: "Pizzeria AUUM",
     tag1: "Italian",
     tag2: "Pizza",
     score: "4.6"
-  },
-  {
-    id: "3ac68afc-c605-48d3-a4f8-fbd91aa97f63",
-    title: "Dinner Menu",
-    restaurantName: "Da Zero",
-    tag1: "Italian",
-    tag2: "Pizza",
-    score: "4.2"
-  },
-  {
-    id: "58694a0f-3da1-471f-bd96-145571e29d72",
-    title: "Pizza Menu",
-    restaurantName: "Pizzium",
-    tag1: "Italian",
-    tag2: "Pizza",
-    score: "4.0"
   }
 ];
 
-function ResultItem({ title, restaurantName, tag1, tag2, score }) {
+function ResultItem({ menuName, restaurantName, tag1, tag2, score }) {
   return (
     <View style={styles.resultsItem}>
       <View style={styles.imageBox}>
@@ -50,7 +34,7 @@ function ResultItem({ title, restaurantName, tag1, tag2, score }) {
       </View>
       <View style={styles.menuInfo}>
         <View style={{ flexDirection: "row", marginBottom: 10, marginTop: 10 }}>
-          <Text style={styles.h4Black}>{title}</Text>
+          <Text style={styles.h4Black}>{menuName}</Text>
           <Text style={styles.smallTextBlack}>{" by "}</Text>
           <Text style={styles.smallTextPink}>{restaurantName}</Text>
         </View>
@@ -79,6 +63,7 @@ export default class Search extends Component {
     this.state = {
       search: "",
       searchError: "",
+      searchResults: "",
       noSearch: true,
       searchResultsFound: false
     };
@@ -94,6 +79,7 @@ export default class Search extends Component {
   handleSearch() {
     console.log("Searching for: ", this.state.search);
     this.setState({ searchResultsFound: true });
+    this.getResults();
   }
 
   validateSearch() {
@@ -110,7 +96,48 @@ export default class Search extends Component {
       this.handleSearch();
     }
   }
+  async getResults() {
+    //TODO: Handle promise
+    try {
+      let searchString = this.state.search;
+      //change to port 80 if not using the stub
+      let response = await fetch(
+        "http://192.168.1.110:8080/api/user/customer/menu/searchByMenuItem?menuItemName={searchString}",
+        {
+          method: "GET",
+          accept: "application/json"
+        }
+      );
+      let responseJson = await response.json();
+      console.log("The search string is: ", searchString);
+      console.log("The response is: ", responseJson);
 
+      if (response.ok) {
+        this.setState({ searchResults: responseJson });
+        this.createResultsData(responseJson);
+        //this.setState({ searchResultsFound: true });
+      }
+      if (!response.ok) {
+        // this.setState({ searchResultsFound: false });
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
+  createResultsData(responseJson) {
+    responseJson.map(index => {
+      resultsData.push({
+        id: index.menu.menuID.toString(),
+        menuName: index.menu.name,
+        restaurantName: index.restaurantData.restaurantName,
+        //TODO: Handle more than two tags
+        tag1: index.menu.tags[0],
+        tag2: index.menu.tags[1],
+        //TODO: Add the right score
+        score: "4.6"
+      });
+    });
+  }
   render() {
     return (
       <View style={styles.container}>
@@ -168,14 +195,14 @@ export default class Search extends Component {
               ) : null}
             </Text>
           </View>
-          <View style={{ justifyContent: "flex-start"}}>
+          <View style={{ justifyContent: "flex-start" }}>
             <SafeAreaView style={styles.containerResults}>
               {this.state.searchResultsFound ? (
                 <FlatList
                   data={resultsData}
                   renderItem={({ item }) => (
                     <ResultItem
-                      title={item.title}
+                      menuName={item.menuName}
                       restaurantName={item.restaurantName}
                       tag1={item.tag1}
                       tag2={item.tag2}
@@ -264,7 +291,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.5,
     shadowRadius: 1,
-    elevation: 1,
+    elevation: 1
   },
   menuInfo: {
     marginLeft: 20,
