@@ -1,6 +1,6 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { IconNameDark, IconDashboard, IconYourRestaurant} from '../Icons.js';
+import {Link} from 'react-router-dom';
+import {IconNameDark, IconDashboard, IconYourRestaurant} from '../Icons.js';
 import {authentificationModalVisibilityFilters} from "../../constants/modalVisibiltyFilters";
 
 

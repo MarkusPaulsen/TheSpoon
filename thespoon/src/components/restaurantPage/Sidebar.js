@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { IconLocationTurqoise, IconHoursTurqoise, IconEditPink} from '../Icons.js';
+import React, {Component} from 'react';
+import {IconLocationTurqoise, IconHoursTurqoise, IconEditPink} from '../Icons.js';
 import FilterLink from "../../containers/FilterModalLink";
 import {modalVisibilityFilters} from "../../constants/modalVisibiltyFilters";
 

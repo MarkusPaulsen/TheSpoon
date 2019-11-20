@@ -6,20 +6,20 @@ export const register = (username, role) => {
         type: logInRegisterActions.REGISTERING_ATTEMPTING,
         username: username,
         role: role
-    }
+    };
 };
 
 export const failRegister = () => {
     return {
         type: logInRegisterActions.LOGGING_IN_SUCCESSING
-    }
+    };
 };
 
 export const successRegister = (username) => {
     return {
         type: logInRegisterActions.REGISTERING_SUCCESSING,
         username: username
-    }
+    };
 };
 //</editor-fold>
 
@@ -29,24 +29,24 @@ export const logIn = (username, role) => {
         type: logInRegisterActions.LOGGING_IN_ATTEMPTING,
         username: username,
         role: role
-    }
+    };
 };
 export const failLogIn = () => {
     return {
         type: logInRegisterActions.LOGGING_IN_FAILING
-    }
+    };
 };
 
 export const successLogIn = (token) => {
     return {
         type: logInRegisterActions.LOGGING_IN_SUCCESSING,
         token: token
-    }
+    };
 };
 
 export const logOut = () => {
     return {
         type: logInRegisterActions.LOGGING_OUT
-    }
+    };
 };
 //</editor-fold>

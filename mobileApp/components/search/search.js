@@ -1,5 +1,5 @@
-import React, { Component } from "react";
-import { View, Text, StyleSheet, Image } from "react-native";
+import React, {Component} from "react";
+import {View, Text, StyleSheet, Image} from "react-native";
 import SearchIcon from "../../assets/search.png";
 
 export default class Search extends Component {

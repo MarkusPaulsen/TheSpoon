@@ -1,4 +1,4 @@
-import { combineReducers } from 'redux';
+import {combineReducers} from 'redux';
 import modalVisibiltyFilterReducer from "./modalVisibilityFilterReducer";
 import logInRegisterReducer from "./loginRegisterReducer";
 

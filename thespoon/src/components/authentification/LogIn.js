@@ -1,7 +1,7 @@
 //<editor-fold desc="React Import">
-import React, { Component } from 'react';
-import { Redirect } from 'react-router-dom'
-import paths from '../../constants/paths';
+import React, {Component} from 'react';
+import {Redirect} from 'react-router-dom'
+import {paths} from '../../constants/paths';
 //</editor-fold>
 //<editor-fold desc="Redux import">
 import {connect} from "react-redux";
@@ -15,13 +15,21 @@ import {take, map, exhaustMap} from 'rxjs/operators';
 //<editor-fold desc="Bootstrap import">
 import {Modal, ButtonToolbar, ToggleButtonGroup, ToggleButton} from "react-bootstrap";
 //</editor-fold>
-import { IconExit, IconEmail, IconPassword } from '../Icons';
-import FilterLink from "../../containers/FilterModalLink";
-import {modalVisibilityFilters} from "../../constants/modalVisibiltyFilters";
+//<editor-fold desc="Validator">
 import Form from 'react-validation/build/form';
 import Input from 'react-validation/build/input';
 import Button from 'react-validation/build/button';
 import FormValidator from "../../validation/FormValidator";
+//</editor-fold>
+
+//<editor-fold desc="Containers">
+import FilterLink from "../../containers/FilterModalLink";
+import {modalVisibilityFilters} from "../../constants/modalVisibiltyFilters";
+//</editor-fold>
+//<editor-fold desc="Icons">
+import {IconExit, IconEmail, IconPassword} from '../Icons';
+//</editor-fold>
+
 
 
 class LogIn extends Component {
@@ -61,6 +69,7 @@ class LogIn extends Component {
 
   //</editor-fold>
 
+  //<editor-fold desc="Business Logic">
   handleSubmit = (event) => {
     event.preventDefault();
 
@@ -191,6 +200,7 @@ class LogIn extends Component {
       this.setState({ isRestaurantOwner: true });
     }
   };
+  //</editor-fold>
 
   //<editor-fold desc="Render">
   render() {
@@ -215,7 +225,7 @@ class LogIn extends Component {
 
                 <div className="input-field">
                   <IconEmail />
-                  <Input type="username" id="username" name="username" placeholder="Username" id = "loginFormUsername"/>
+                  <Input type="username" name="username" placeholder="Username" id = "loginFormUsername"/>
                 </div>
                 <div className="error-block">
                   <small>{validation.username.message}</small>

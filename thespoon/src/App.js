@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import {BrowserRouter, Switch, Route} from 'react-router-dom';
 import HomePage from './components/homepage/Homepage.js';
 import MainPage from './components/mainPage/MainPage.js';
 import CustomModal from "./containers/CustomModal";

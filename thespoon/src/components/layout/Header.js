@@ -1,9 +1,14 @@
+//<editor-fold desc="React">
 import React from 'react';
-import { Link } from 'react-router-dom';
+import {Link} from 'react-router-dom';
+//</editor-fold>
+
+//<editor-fold desc="Constants">
 import {modalVisibilityFilters} from "../../constants/modalVisibiltyFilters";
-
-
+//</editor-fold>
+//<editor-fold desc="Containers">
 import FilterLink from "../../containers/FilterModalLink";
+//</editor-fold>
 
 const Header = () => {
     return (
@@ -25,6 +30,6 @@ const Header = () => {
             </div>  
         </header>
     );
-}
+};
 
 export default Header;

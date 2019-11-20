@@ -1,11 +1,11 @@
-import React, { Component } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import React, {Component} from "react";
+import {StyleSheet, Text, View} from "react-native";
 import LoginScreen from "./components/login/login";
 import SearchPage from "./components/search/search";
 import LandingPage from "./components/landingpage/landingpage";
 import LoadingPage from "./components/loading";
-import { createAppContainer } from "react-navigation";
-import { createStackNavigator } from "react-navigation-stack";
+import {createAppContainer} from "react-navigation";
+import {createStackNavigator} from "react-navigation-stack";
 import * as Font from "expo-font";
 
 const RootStack = createStackNavigator(

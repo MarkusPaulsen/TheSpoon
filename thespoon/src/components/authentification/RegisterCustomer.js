@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
-import { Redirect } from 'react-router-dom'
-import { ajax } from 'rxjs/ajax';
-import paths from '../../constants/paths';
+import React, {Component} from 'react';
+import {Redirect} from 'react-router-dom'
+import {ajax} from 'rxjs/ajax';
+import {paths} from '../../constants/paths';
 import {IconName, IconEmail, IconPassword, IconExit, IconBack} from '../Icons';
 import {Modal} from "react-bootstrap";
 import FilterLink from "../../containers/FilterModalLink";

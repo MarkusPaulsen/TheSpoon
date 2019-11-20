@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import MainLayout from '../layout/MainLayout.js'
 import Sidebar from "./Sidebar";
 import Menu from "./Menu";
