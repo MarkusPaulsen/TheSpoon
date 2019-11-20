@@ -40,12 +40,14 @@ exports.getMenuCustomer = function(menuID) {
   "menuItems" : [ {
     "name" : "Spaghetti alla carbonara",
     "description" : "Fantastic italian dish made of spaghetti, pig cheek, eggs, black pepper, pecorino romano",
+    "type" : "dish",
     "priceEuros" : 10,
     "tags" : [ "Mediterranean", "Pasta", "Italian" ],
     "imageLink" : "www.cloudStorage.com/Carbonara"
   }, {
     "name" : "Polpette al sugo",
     "description" : "Meatballs with tomato sauce",
+    "type" : "dish",
     "priceEuros" : 7,
     "tags" : [ "Mediterranean", "Meat", "Italian" ],
     "imageLink" : "www.cloudStorage.com/Meatballs"

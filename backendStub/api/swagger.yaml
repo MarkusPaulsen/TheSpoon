@@ -12,7 +12,7 @@ info:
     \ to customers nor owners remain inside the default group.\n \n AUTHENTICATION/AUTHORIZATION:\
     \ The json web token returned when the login is performed is supposed to be put\
     \ into x-auth-token header in the endpoints that require authorization"
-  version: "3.0"
+  version: "3.1"
   title: "The Spoon API reference"
 tags:
 - name: "customer"
@@ -107,6 +107,28 @@ paths:
           description: "Invalid username or password"
       x-swagger-router-controller: "Default"
   /api/user/owner/restaurant:
+    get:
+      tags:
+      - "owner"
+      summary: "Get data of own restaurant"
+      description: "Get the data of the restaurant of authenticated owner, so that\
+        \ it can be showed in the 'Your Restaurant' page."
+      operationId: "getRestaurant"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        "200":
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/RestaurantReceived"
+        "401":
+          description: "Access denied"
+      security:
+      - Bearer: []
+      x-security-scopes:
+      - "owner"
+      x-swagger-router-controller: "Owner"
     post:
       tags:
       - "owner"
@@ -158,11 +180,7 @@ paths:
       summary: "Returns all the menus of the restaurant"
       description: "Returns all the menus of the restaurant. Since authentication\
         \ is required, the backend is able to get which restaurant is involved from\
-        \ the authentication token. It also returns the ID of each menu, that can\
-        \ be in the post and in the get of the endpoint /api/user/owner/restaurant/menu/{menuID}.\n\
-        \ It's important to underline that this endpoint doesn't provide the menu\
-        \ items of the menus. In order to receive them a get to the other mentioned\
-        \ endpoint is necessary."
+        \ the authentication token."
       operationId: "getOwnMenus"
       produces:
       - "application/json"
@@ -173,7 +191,7 @@ paths:
           schema:
             type: "array"
             items:
-              $ref: "#/definitions/MenuWithID"
+              $ref: "#/definitions/MenuCompleteWithID"
         "401":
           description: "Access denied"
       security:
@@ -184,9 +202,10 @@ paths:
     post:
       tags:
       - "owner"
-      summary: "Add a menu to a restaurant"
+      summary: "Add an empty menu to a restaurant"
       description: "Add a menu to a restaurant of a restaurant owner, which needs\
-        \ to be logged in"
+        \ to be logged in. The menuItems are not meant to be added to the menu through\
+        \ this endpoint."
       operationId: "addMenu"
       consumes:
       - "application/json"
@@ -198,7 +217,7 @@ paths:
         description: "Menu data"
         required: true
         schema:
-          $ref: "#/definitions/Menu"
+          $ref: "#/definitions/MenuWithoutItems"
       responses:
         "200":
           description: "Successful operation"
@@ -212,48 +231,12 @@ paths:
       - "owner"
       x-swagger-router-controller: "Owner"
   /api/user/owner/restaurant/menu/{menuID}:
-    get:
-      tags:
-      - "owner"
-      summary: "Return data of a specific menu of the owner"
-      description: "Returns all the data about the menu with given menuID, even the\
-        \ menu items inside it. The photos of the menu items are saved in the Amazon\
-        \ s3 storage, so the links to the cloud storage are also returned. The frontend\
-        \ will directly download them from the cloud storage, they won't be sent by\
-        \ the backend with this endpoint.\n The menuID should be related to a menu\
-        \ of the restaurant owned by the authenticated restaurant owner, otherwise\
-        \ an error response will be received."
-      operationId: "getMenuOwner"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "menuID"
-        in: "path"
-        description: "ID of the menu to be returned"
-        required: true
-        type: "integer"
-      responses:
-        "200":
-          description: "Successful operation"
-          schema:
-            $ref: "#/definitions/Menu"
-        "401":
-          description: "Access denied"
-        "404":
-          description: "No menu associated to that restaurant found"
-      security:
-      - Bearer: []
-      x-security-scopes:
-      - "owner"
-      x-swagger-router-controller: "Owner"
-    post:
+    put:
       tags:
       - "owner"
       summary: "Edit a menu"
-      description: "Edits a given menu. To identify the menu, the menuID needs to\
-        \ be given. When the get that returns all the menus of the restaurant is performed,\
-        \ the menuID of each menu is also returned, so the menuID can be taken from\
-        \ there. Authentication is required."
+      description: "Edit a given menu (but not its menuItems). To identify the menu,\
+        \ the menuID needs to be given. Authentication is required."
       operationId: "editMenu"
       consumes:
       - "application/json"
@@ -270,7 +253,7 @@ paths:
         description: "Data of the menu to be saved"
         required: true
         schema:
-          $ref: "#/definitions/Menu"
+          $ref: "#/definitions/MenuWithoutItems"
       responses:
         "200":
           description: "Successful operation"
@@ -280,6 +263,28 @@ paths:
           description: "Access denied"
         "404":
           description: "Menu not found"
+      security:
+      - Bearer: []
+      x-security-scopes:
+      - "owner"
+      x-swagger-router-controller: "Owner"
+    delete:
+      tags:
+      - "owner"
+      summary: "Delete a menu"
+      description: "Delete a menu of the restaurant. Authentication is required"
+      operationId: "deleteMenu"
+      parameters:
+      - name: "menuID"
+        in: "path"
+        description: "ID of the menu to be edited"
+        required: true
+        type: "integer"
+      responses:
+        "200":
+          description: "Successful operation"
+        "401":
+          description: "Access denied"
       security:
       - Bearer: []
       x-security-scopes:
@@ -362,11 +367,117 @@ paths:
           description: "Successful operation"
           schema:
             $ref: "#/definitions/ImageID"
+        "401":
+          description: "Access denied"
+      security:
+      - Bearer: []
+      x-security-scopes:
+      - "user"
+      x-swagger-router-controller: "Default"
+  /api/user/owner/restaurant/menu/{menuID}/menuItem:
+    post:
+      tags:
+      - "owner"
+      summary: "Add a menuItem to a menu"
+      description: "Add a menuItem to the menu with given menuID. Authentication required."
+      operationId: "addMenuItem"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "menuID"
+        in: "path"
+        description: "ID of the menu"
+        required: true
+        type: "integer"
+      - in: "body"
+        name: "body"
+        description: "Menu data"
+        required: true
+        schema:
+          $ref: "#/definitions/MenuItem"
+      responses:
+        "200":
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/Menu"
+        "401":
+          description: "Access denied"
       security:
       - Bearer: []
       x-security-scopes:
       - "owner"
-      x-swagger-router-controller: "Default"
+      x-swagger-router-controller: "Owner"
+  /api/user/owner/restaurant/menu/{menuID}/menuItem/{menuItemID}:
+    put:
+      tags:
+      - "owner"
+      summary: "Edit a menuItem"
+      description: "Edit the menuItem with given menuItemID of the menu with given\
+        \ menuID. Authentication required."
+      operationId: "editMenuItem"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "menuID"
+        in: "path"
+        description: "ID of the menu"
+        required: true
+        type: "integer"
+      - name: "menuItemID"
+        in: "path"
+        description: "ID of the menuItem"
+        required: true
+        type: "integer"
+      - in: "body"
+        name: "body"
+        description: "Data of the menuItem"
+        required: true
+        schema:
+          $ref: "#/definitions/MenuItem"
+      responses:
+        "200":
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/Menu"
+        "401":
+          description: "Access denied"
+      security:
+      - Bearer: []
+      x-security-scopes:
+      - "owner"
+      x-swagger-router-controller: "Owner"
+    delete:
+      tags:
+      - "owner"
+      summary: "Delete a menuItem"
+      description: "Delete the menuItem with given menuItemID of the menu with given\
+        \ menuID. Authentication required."
+      operationId: "deleteMenuItem"
+      parameters:
+      - name: "menuID"
+        in: "path"
+        description: "ID of the menu"
+        required: true
+        type: "integer"
+      - name: "menuItemID"
+        in: "path"
+        description: "ID of the menuItem"
+        required: true
+        type: "integer"
+      responses:
+        "200":
+          description: "Successful operation"
+        "401":
+          description: "Access denied"
+      security:
+      - Bearer: []
+      x-security-scopes:
+      - "owner"
+      x-swagger-router-controller: "Owner"
 securityDefinitions:
   Bearer:
     type: "apiKey"
@@ -449,6 +560,10 @@ definitions:
         type: "number"
       imageID:
         type: "integer"
+      openingHours:
+        type: "array"
+        items:
+          $ref: "#/definitions/OpenInterval"
     example:
       name: "Emilio's Pizza"
       address: "André route 45"
@@ -457,6 +572,13 @@ definitions:
       latitude: 48.42813508029149716094252653419971466064453125
       longitude: -110.07925421970850266006891615688800811767578125
       imageID: 5
+      openingHours:
+      - day: "Monday"
+        openTime: "12.00"
+        closeTime: "15.00"
+      - day: "Saturday"
+        openTime: "19.00"
+        closeTime: "23.59"
   RestaurantID:
     type: "object"
     properties:
@@ -489,6 +611,7 @@ definitions:
       - name: "Spaghetti alla carbonara"
         description: "Fantastic italian dish made of spaghetti, pig cheek, eggs, black\
           \ pepper, pecorino romano"
+        type: "dish"
         priceEuros: 10
         tags:
         - "Mediterranean"
@@ -497,6 +620,7 @@ definitions:
         imageLink: "www.cloudStorage.com/Carbonara"
       - name: "Polpette al sugo"
         description: "Meatballs with tomato sauce"
+        type: "dish"
         priceEuros: 7
         tags:
         - "Mediterranean"
@@ -510,6 +634,8 @@ definitions:
         type: "string"
       description:
         type: "string"
+      type:
+        type: "string"
       priceEuros:
         type: "number"
       tags:
@@ -522,6 +648,7 @@ definitions:
       name: "Spaghetti alla carbonara"
       description: "Fantastic italian dish made of spaghetti, pig cheek, eggs, black\
         \ pepper, pecorino romano"
+      type: "dish"
       priceEuros: 10
       tags:
       - "Mediterranean"
@@ -580,6 +707,110 @@ definitions:
         type: "integer"
     example:
       imageID: 5
+  OpenInterval:
+    type: "object"
+    properties:
+      day:
+        type: "string"
+      openTime:
+        type: "string"
+      closeTime:
+        type: "string"
+    example:
+      day: "Monday"
+      openTime: "12.00"
+      closeTime: "15.00"
+  RestaurantReceived:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+      address:
+        type: "string"
+      city:
+        type: "string"
+      country:
+        type: "string"
+      imageLink:
+        type: "string"
+      openingHours:
+        type: "array"
+        items:
+          $ref: "#/definitions/OpenInterval"
+    example:
+      name: "Emilio's Pizza"
+      address: "André route 45"
+      city: "Rome"
+      country: "Italy"
+      imageLink: "www.cloudStorage.com/Restaurant"
+      openingHours:
+      - day: "Monday"
+        openTime: "12.00"
+        closeTime: "15.00"
+      - day: "Saturday"
+        openTime: "19.00"
+        closeTime: "23.59"
+  MenuCompleteWithID:
+    type: "object"
+    properties:
+      menuID:
+        type: "integer"
+      name:
+        type: "string"
+      description:
+        type: "string"
+      tags:
+        type: "array"
+        items:
+          type: "string"
+      menuItems:
+        type: "array"
+        items:
+          $ref: "#/definitions/MenuItem"
+    example:
+      menuID: 2
+      name: "Emilio's menu of the day"
+      description: "Our special menu of today"
+      tags:
+      - "Italian"
+      - "Mediterranean"
+      menuItems:
+      - name: "Spaghetti alla carbonara"
+        description: "Fantastic italian dish made of spaghetti, pig cheek, eggs, black\
+          \ pepper, pecorino romano"
+        type: "dish"
+        priceEuros: 10
+        tags:
+        - "Mediterranean"
+        - "Pasta"
+        - "Italian"
+        imageLink: "www.cloudStorage.com/Carbonara"
+      - name: "Polpette al sugo"
+        description: "Meatballs with tomato sauce"
+        type: "dish"
+        priceEuros: 7
+        tags:
+        - "Mediterranean"
+        - "Meat"
+        - "Italian"
+        imageLink: "www.cloudStorage.com/Meatballs"
+  MenuWithoutItems:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+      description:
+        type: "string"
+      tags:
+        type: "array"
+        items:
+          type: "string"
+    example:
+      name: "Emilio's menu of the day"
+      description: "Our special menu of today"
+      tags:
+      - "Italian"
+      - "Mediterranean"
   MenuAndRestaurant_restaurantData:
     type: "object"
     properties:
