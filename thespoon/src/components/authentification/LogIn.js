@@ -8,8 +8,9 @@ import {connect} from "react-redux";
 import {logIn, failLogIn, successLogIn} from '../../actionCreators/logInRegisterActionCreators';
 //</editor-fold>
 //<editor-fold desc="RxJs import">
+import {bindCallback, throwError, of} from "rxjs";
 import {ajax} from "rxjs/ajax";
-import {take} from 'rxjs/operators';
+import {take, map, exhaustMap} from 'rxjs/operators';
 //</editor-fold>
 //<editor-fold desc="Bootstrap import">
 import {Modal, ButtonToolbar, ToggleButtonGroup, ToggleButton} from "react-bootstrap";
@@ -45,7 +46,7 @@ class LogIn extends Component {
       },
     ]);
 
-    this.handleSubmit = this.handleSubmit.bind(this);
+    /*this.handleSubmit = this.handleSubmit.bind(this);*/
     this.changeRole = this.changeRole.bind(this);
 
     this.state = {
@@ -62,7 +63,72 @@ class LogIn extends Component {
 
   handleSubmit = (event) => {
     event.preventDefault();
-    const values = this.form.getValues();
+
+    const thisTemp = this;
+    of(1)
+        .pipe(map((event) => {
+          return thisTemp.form.getValues();
+        }))
+        .pipe(exhaustMap((values) => {
+          return bindCallback(this.setState).call(thisTemp, {
+            username:values.username,
+            password:values.password,
+            serverMessage: null
+          });
+        }))
+        .pipe(exhaustMap((event) => {
+          return bindCallback(this.setState).call(thisTemp, {
+            validation: thisTemp.validator.validate(this.state),
+            submitted: true
+          });
+        }))
+        .pipe(exhaustMap((event) => {
+          if (thisTemp.state.validation.isValid) {
+            thisTemp.props.logIn(thisTemp.state.username, thisTemp.state.isRestaurantOwner);
+            return ajax({
+              url: paths['restApi']['login'],
+              method: 'POST',
+              headers: {'Content-Type': 'application/json'},
+              body: {
+                username: this.state.username,
+                password: this.state.password,
+                isRestaurantOwner: this.state.isRestaurantOwner,
+              }
+            })
+          }
+          else {
+            return throwError({ status: 0});
+          }
+        }))
+        .pipe(take(1))
+        .subscribe(
+            (next) => {
+              this.props.successLogIn(next.response.token);
+              this.setState(
+                  { serverMessage: <Redirect to={{pathname: '/Mainpage/'}}/>}
+              );
+              this.props.onHide();
+            },
+            (error) => {
+              this.props.failLogIn();
+              switch (error.status) {
+                case 400:
+                  this.setState({ serverMessage: "Invalid username or password" });
+                  break;
+                case 404:
+                  this.setState({ serverMessage: "No connection to the server" });
+                  break;
+                case 0:
+                  this.setState({ serverMessage: "" });
+                  break;
+                default:
+                  this.setState({ serverMessage: "General error" });
+                  break;
+              }
+            }
+        );
+
+    /*const values = this.form.getValues();
 
     const nextFunction = (next) => {
       this.props.successLogIn(next.response.token);
@@ -81,13 +147,14 @@ class LogIn extends Component {
         case 404:
           this.setState({ serverMessage: "No connection to the server" });
           break;
+        case 0:
+          this.setState({ serverMessage: "" });
+          break;
         default:
           this.setState({ serverMessage: "General error" });
           break;
       }
     };
-
-
     this.setState({
           username:values.username,
           password:values.password,
@@ -114,7 +181,8 @@ class LogIn extends Component {
             }
               }
           );
-    })};
+    })*/
+  };
 
   changeRole = (role) => {
     if (role === 1) {
@@ -147,7 +215,7 @@ class LogIn extends Component {
 
                 <div className="input-field">
                   <IconEmail />
-                  <Input type="username" id="username" name="username" placeholder="Username"/>
+                  <Input type="username" id="username" name="username" placeholder="Username" id = "loginFormUsername"/>
                 </div>
                 <div className="error-block">
                   <small>{validation.username.message}</small>
@@ -155,7 +223,7 @@ class LogIn extends Component {
 
                 <div className="input-field">
                   <IconPassword />
-                  <Input type="password" name="password" placeholder="Password"/>
+                  <Input type="password" name="password" placeholder="Password" id = "loginFormPassword"/>
                 </div>
                 <div className="error-block">
                   <small>{validation.password.message}</small>

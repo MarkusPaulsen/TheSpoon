@@ -21,7 +21,6 @@ import FormValidator from "../../validation/FormValidator";
 class MainPage extends Component {
     //<editor-fold desc="Render">
     render() {
-        console.log(this.props.username);
         return (
             <MainLayout >
                 <div className="mainpage-banner">
@@ -43,7 +42,6 @@ class MainPage extends Component {
 
 //<editor-fold desc="Redux">
 const mapStateToProps = (state) => {
-    console.log(state)
     return {
         role: state.logInRegisterReducer.role,
         username: state.logInRegisterReducer.username,

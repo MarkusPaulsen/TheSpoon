@@ -12,9 +12,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
 })
 
 const FilterModalLink = ({ active, children, onClick }) => (
-    <span
-        onClick={onClick}
-    >
+    <span onClick={onClick} >
         {children}
     </span>
 )
