@@ -8,8 +8,70 @@ import {
   SafeAreaView,
   TouchableOpacity,
   FlatList,
-  ListView
+  ListView,
+  TextInput
 } from "react-native";
+
+function Dishes() {
+  return (
+    <View>
+      <Text style={styles.thinText}> DISHES </Text>
+      <View style={styles.underline} />
+      <MenuItem />
+      <View style={styles.underline} />
+      <MenuItem />
+      <View style={styles.underline} />
+    </View>
+  );
+}
+
+function Drinks() {
+  return (
+    <View>
+      <Text style={styles.thinText}> DRINKS </Text>
+      <View style={styles.underline} />
+      <MenuItem />
+      <View style={styles.underline} />
+      <MenuItem />
+      <View style={styles.underline} />
+    </View>
+  );
+}
+
+function MenuItem() {
+  return (
+    <View>
+      <View style={{ flexDirection: "row" /*top: 20*/ }}>
+        <View style={{ flexDirection: "column", left: 10 }}>
+          <Image
+            source={require("../../assets/no_image.png")}
+            style={styles.imageCircle}
+          />
+          <View style={{ flexDirection: "row", left: 8 }}>
+            <Image source={require("../../assets/icon-star.png")} />
+            <Text style={styles.smallTextBlack}> Score </Text>
+          </View>
+        </View>
+
+        <View
+          style={{
+            flexDirection: "column",
+            left: 20,
+            justifyContent: "space-between"
+          }}
+        >
+          <Text style={styles.smallTextBlack}> Blue Cheese Burger </Text>
+          <Text style={styles.smallThinText2}> Description </Text>
+          <Text style={styles.smallTextBlack}> Tags </Text>
+        </View>
+
+        <View style={{ flexDirection: "column", left: 100 }}>
+          <Text style={styles.smallTextBlack}> 8¢ </Text>
+        </View>
+      </View>
+    </View>
+  );
+}
 
 export default class Menu extends Component {
   async getResults() {
@@ -18,11 +80,11 @@ export default class Menu extends Component {
       let searchString = this.state.search;
       //change to port 80 if not using the stub
       let response = await fetch(
-          "http://192.168.1.110:8080/api/user/customer/menu/searchByMenuItem?menuItemName={searchString}",
-          {
-            method: "GET",
-            accept: "application/json"
-          }
+        "http://192.168.1.110:8080/api/user/customer/menu/searchByMenuItem?menuItemName={searchString}",
+        {
+          method: "GET",
+          accept: "application/json"
+        }
       );
       let responseJson = await response.json();
       console.log("The search string is: ", searchString);
@@ -57,7 +119,7 @@ export default class Menu extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <ScrollView
           contentContainerStyle={{
             flexGrow: 1,
@@ -79,15 +141,12 @@ export default class Menu extends Component {
               things about the menu.
             </Text>
           </SafeAreaView>
-          <Text styles={styles.thinText}> DISHES </Text>
-          <Text> {resultsData.menuItems.name} </Text>
-          <SafeAreaView>
-
-            <View> {renderData} </View>
-          </SafeAreaView>
-          <Text styles={styles.thinText}> DRINKS </Text>
+          <View style={{ bottom: 50 }}>
+            <Dishes />
+            <Drinks />
+          </View>
         </ScrollView>
-      </View>
+      </SafeAreaView>
     );
   }
 }
@@ -95,13 +154,11 @@ export default class Menu extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    top: 25,
+    //top: 25,
     backgroundColor: "#FFFFFF"
   },
   infoBox: {
-    backgroundColor: "#FFFFFF", // padding: 20,
-    //marginVertical: 8,
-    //marginHorizontal: 0,
+    backgroundColor: "#FFFFFF",
     borderRadius: 20,
     width: 322,
     height: 203,
@@ -150,13 +207,40 @@ const styles = StyleSheet.create({
     color: "#F3A3A3"
   },
   thinText: {
-    bottom: "50",
+    width: 300,
+    //height: 15,
+    color: "#000000",
+    fontFamily: "roboto",
     fontSize: 15,
-    fontFamily: "roboto"
+    marginTop: 10,
+    textAlign: "center"
+  },
+  underline: {
+    borderBottomColor: "#E7E5E5",
+    borderBottomWidth: 1,
+    //textAlign: "center",
+    width: 300,
+    margin: 10
   },
   smallThinText: {
     fontSize: 10,
-    textAlign: "center",
+    textAlign: "center"
+  },
+  smallThinText2: {
+    fontSize: 10,
+    textAlign: "left"
+  },
+  imageCircle: {
+    width: 67,
+    height: 67,
+    borderRadius: 67 / 2
+  },
+  menuItem: {
+    //top: 10,
+    justifyContent: "center",
+    flexDirection: "row"
+  },
+  menuInfo: {
     marginLeft: 10,
     marginRight: 10
   }
