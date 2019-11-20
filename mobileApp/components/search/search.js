@@ -11,7 +11,7 @@ import {
   Keyboard
 } from "react-native";
 import Validate from "./searchvalidation.js";
-import {TouchableWithoutFeedback} from "react-native-web";
+import { TouchableWithoutFeedback } from "react-native-web";
 
 function ResultItem({ menuName, restaurantName, tag1, tag2, score }) {
   return (
@@ -54,7 +54,7 @@ export default class Search extends Component {
       searchWord: "",
       searchError: "",
       searchResults: null,
-      searched: false,
+      searched: false
     };
     this.validateSearch = this.validateSearch.bind(this);
   }
@@ -66,12 +66,12 @@ export default class Search extends Component {
   async validateSearch() {
     Keyboard.dismiss();
     const searchError = Validate("search", this.state.searchWord);
-    this.setState({searched: true});
+    this.setState({ searched: true });
 
     if (!searchError) {
       this.getResults();
     } else {
-      this.setState({searchError, searchResults: null})
+      this.setState({ searchError, searchResults: null });
     }
   }
   async getResults() {
@@ -98,7 +98,7 @@ export default class Search extends Component {
           // TODO: Add right rating-score
           score: "4.6"
         }));
-        this.setState({searchResults});
+        this.setState({ searchResults });
       }
       if (!response.ok) {
         this.setState({ searchResults: null });
@@ -110,80 +110,80 @@ export default class Search extends Component {
   }
   render() {
     return (
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss} >
-          <View style={styles.container}>
-            <View style={styles.text}>
-              <Text style={styles.h2}>What</Text>
-              <View style={{ flexDirection: "row" }}>
-                <Text style={styles.h4Black}>do you want to </Text>
-                <Text style={styles.h4Pink}>eat </Text>
-                <Text style={styles.h4Black}>today </Text>
-              </View>
-            </View>
-            <View style={styles.searchBar}>
-              <TouchableOpacity
-                value={this.state.searchWord}
-                onPress={this.validateSearch}
-              >
-                <Image
-                  source={require("../../assets/search.png")}
-                  style={{ alignSelf: "center", marginTop: 10 }}
-                />
-              </TouchableOpacity>
-              <TextInput
-                style={styles.textInput}
-                placeholder="Search..."
-                onChangeText={this.updateSearchText}
-                value={this.state.searchWord}
-                returnKeyType="search"
-                autoFocus={false}
-                onSubmitEditing={this.validateSearch}
-                onBlur={() => {
-                  this.setState({
-                    searchError: Validate("search", this.state.searchWord)
-                  });
-                }}
-                error={this.state.searchError}
-              />
-            </View>
-            <View style={{ flex: 10 }}>
-                {this.state.searchResults && this.state.searched ? (
-                    <SafeAreaView style={styles.containerResults}>
-                        <FlatList
-                          data={this.state.searchResults}
-                          renderItem={({ item }) => (
-                            <ResultItem
-                              menuName={item.menuName}
-                              restaurantName={item.restaurantName}
-                              tag1={item.tag1}
-                              tag2={item.tag2}
-                              score={item.score}
-                            />
-                          )}
-                          keyExtractor={item => item.id}
-                        />
-                    </SafeAreaView>
-                ) : null }
-                {this.state.searched && !this.state.searchResults ? (
-                    <View style={styles.noResult}>
-                      <View>
-                        <Image source={require("../../assets/noresults.png")} />
-                      </View>
-                      <Text
-                          style={{
-                            color: "#686B6F",
-                            textAlign: "center",
-                            fontFamily: "roboto",
-                            marginTop: 70
-                          }}
-                      >
-                        <Text> We can't find what you are {"\n"} looking for...</Text>
-                      </Text>
-                    </View>
-                ) : null}
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={styles.container}>
+          <View style={styles.text}>
+            <Text style={styles.h2}>What</Text>
+            <View style={{ flexDirection: "row" }}>
+              <Text style={styles.h4Black}>do you want to </Text>
+              <Text style={styles.h4Pink}>eat </Text>
+              <Text style={styles.h4Black}>today </Text>
             </View>
           </View>
-        </TouchableWithoutFeedback>
+          <View style={styles.searchBar}>
+            <TouchableOpacity
+              value={this.state.searchWord}
+              onPress={this.validateSearch}
+            >
+              <Image
+                source={require("../../assets/search.png")}
+                style={{ alignSelf: "center", marginTop: 10 }}
+              />
+            </TouchableOpacity>
+            <TextInput
+              style={styles.textInput}
+              placeholder="Search..."
+              onChangeText={this.updateSearchText}
+              value={this.state.searchWord}
+              returnKeyType="search"
+              autoFocus={false}
+              onSubmitEditing={this.validateSearch}
+              onBlur={() => {
+                this.setState({
+                  searchError: Validate("search", this.state.searchWord)
+                });
+              }}
+              error={this.state.searchError}
+            />
+          </View>
+          <View style={{ flex: 10 }}>
+            {this.state.searchResults && this.state.searched ? (
+              <SafeAreaView style={styles.containerResults}>
+                <FlatList
+                  data={this.state.searchResults}
+                  renderItem={({ item }) => (
+                    <ResultItem
+                      menuName={item.menuName}
+                      restaurantName={item.restaurantName}
+                      tag1={item.tag1}
+                      tag2={item.tag2}
+                      score={item.score}
+                    />
+                  )}
+                  keyExtractor={item => item.id}
+                />
+              </SafeAreaView>
+            ) : null}
+            {this.state.searched && !this.state.searchResults ? (
+              <View style={styles.noResult}>
+                <View>
+                  <Image source={require("../../assets/noresults.png")} />
+                </View>
+                <Text
+                  style={{
+                    color: "#686B6F",
+                    textAlign: "center",
+                    fontFamily: "roboto",
+                    marginTop: 70
+                  }}
+                >
+                  <Text> We can't find what you are {"\n"} looking for...</Text>
+                </Text>
+              </View>
+            ) : null}
+          </View>
+        </View>
+      </TouchableWithoutFeedback>
     );
   }
 }
@@ -195,7 +195,7 @@ const styles = StyleSheet.create({
   },
   containerResults: {
     backgroundColor: "#FFFFFF",
-    alignItems: "center",
+    alignItems: "center"
   },
   text: {
     flex: 1,
@@ -235,17 +235,17 @@ const styles = StyleSheet.create({
     borderBottomColor: "#F3A3A3",
     borderBottomWidth: 1.5,
     marginLeft: 7,
-    fontSize: 15,
+    fontSize: 15
   },
   searchBar: {
     flex: 1,
     flexDirection: "row",
     alignItems: "center",
-    marginLeft: 40,
+    marginLeft: 40
   },
   noResult: {
     marginTop: 120,
-    alignItems: "center",
+    alignItems: "center"
   },
   resultsItem: {
     backgroundColor: "#FFFFFF", // padding: 20,
