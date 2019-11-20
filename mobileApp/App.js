@@ -4,6 +4,7 @@ import LoginScreen from "./components/login/login";
 import SearchPage from "./components/search/search";
 import LandingPage from "./components/landingpage/landingpage";
 import LoadingPage from "./components/loading";
+import MenuPage from "./components/menupage/menupage"
 import { createAppContainer } from "react-navigation";
 import { createStackNavigator } from "react-navigation-stack";
 import * as Font from "expo-font";
@@ -13,10 +14,11 @@ const RootStack = createStackNavigator(
     Search: SearchPage,
     Login: LoginScreen,
     Loading: LoadingPage,
-    Start: LandingPage
+    Start: LandingPage,
+    Menu: MenuPage
   },
   {
-    initialRouteName: "Start",
+    initialRouteName: "Menu",
     header: null,
     headerMode: "none"
   }
