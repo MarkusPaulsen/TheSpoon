@@ -12,17 +12,6 @@ import {
 } from "react-native";
 import Validate from "./searchvalidation.js";
 
-let resultsData = [
-  {
-    id: "bd7acbea-c1b1-46c2-aed5-3ad53abb28ba",
-    menuName: "Lunch Menu",
-    restaurantName: "Pizzeria AUUM",
-    tag1: "Italian",
-    tag2: "Pizza",
-    score: "4.6"
-  }
-];
-
 function ResultItem({ menuName, restaurantName, tag1, tag2, score }) {
   return (
     <View style={styles.resultsItem}>
@@ -65,7 +54,8 @@ export default class Search extends Component {
       searchError: "",
       searchResults: "",
       noSearch: true,
-      searchResultsFound: false
+      searchResultsFound: false,
+      resultsData: null
     };
     this.handleSearch = this.handleSearch.bind(this);
     this.validateSearch = this.validateSearch.bind(this);
@@ -102,7 +92,7 @@ export default class Search extends Component {
       let searchString = this.state.search;
       //change to port 80 if not using the stub
       let response = await fetch(
-        "http://192.168.1.110:8080/api/user/customer/menu/searchByMenuItem?menuItemName={searchString}",
+        "http://192.168.1.101:8080/api/user/customer/menu/searchByMenuItem?menuItemName={searchString}",
         {
           method: "GET",
           accept: "application/json"
@@ -114,7 +104,17 @@ export default class Search extends Component {
 
       if (response.ok) {
         this.setState({ searchResults: responseJson });
-        this.createResultsData(responseJson);
+        const resultsData = responseJson.map(index => ({
+          id: index.menu.menuID.toString(),
+          menuName: index.menu.name,
+          restaurantName: index.restaurantData.restaurantName,
+          // TODO: Handle number of tags
+          tag1: index.menu.tags[0],
+          tag2: index.menu.tags[1],
+          // TODO: Add right rating-score
+          score: "4.6"
+        }));
+        this.setState({resultsData});
         //this.setState({ searchResultsFound: true });
       }
       if (!response.ok) {
@@ -123,20 +123,6 @@ export default class Search extends Component {
     } catch (e) {
       console.error(e);
     }
-  }
-  createResultsData(responseJson) {
-    responseJson.map(index => {
-      resultsData.push({
-        id: index.menu.menuID.toString(),
-        menuName: index.menu.name,
-        restaurantName: index.restaurantData.restaurantName,
-        //TODO: Handle more than two tags
-        tag1: index.menu.tags[0],
-        tag2: index.menu.tags[1],
-        //TODO: Add the right score
-        score: "4.6"
-      });
-    });
   }
   render() {
     return (
@@ -199,7 +185,7 @@ export default class Search extends Component {
             <SafeAreaView style={styles.containerResults}>
               {this.state.searchResultsFound ? (
                 <FlatList
-                  data={resultsData}
+                  data={this.state.resultsData}
                   renderItem={({ item }) => (
                     <ResultItem
                       menuName={item.menuName}
