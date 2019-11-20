@@ -9,8 +9,10 @@ import {
   TouchableOpacity,
   FlatList,
   ListView,
-  TextInput
+  TextInput,
+  Dimensions
 } from "react-native";
+import MapView from "react-native-maps";
 
 function Dishes() {
   return (
@@ -34,6 +36,28 @@ function Drinks() {
       <View style={styles.underline} />
       <MenuItem />
       <View style={styles.underline} />
+    </View>
+  );
+}
+
+function Map() {
+  return (
+    <View>
+      <MapView
+        style={{ width: 300, height: 300, marginBottom: 20 }}
+        initialRegion={{
+          latitude: 45.4688346,
+          longitude: 9.2212227,
+          latitudeDelta: 0.009,
+          longitudeDelta: 0.009
+        }}
+      >
+        <MapView.Marker
+          coordinate={{ latitude: 45.4688346, longitude: 9.2212227 }}
+          title={"AUUM"}
+          description={"Address"}
+        />
+      </MapView>
     </View>
   );
 }
@@ -145,6 +169,7 @@ export default class Menu extends Component {
             <Dishes />
             <Drinks />
           </View>
+          <Map />
         </ScrollView>
       </SafeAreaView>
     );
