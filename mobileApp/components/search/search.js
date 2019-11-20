@@ -11,6 +11,7 @@ import {
   Keyboard
 } from "react-native";
 import Validate from "./searchvalidation.js";
+import {TouchableWithoutFeedback} from "react-native-web";
 
 function ResultItem({ menuName, restaurantName, tag1, tag2, score }) {
   return (
@@ -50,61 +51,44 @@ export default class Search extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      search: "",
+      searchWord: "",
       searchError: "",
-      searchResults: "",
-      noSearch: true,
-      searchResultsFound: false,
-      resultsData: null
+      searchResults: null,
+      searched: false,
     };
-    this.handleSearch = this.handleSearch.bind(this);
     this.validateSearch = this.validateSearch.bind(this);
   }
 
-  updateSearchText = search => {
-    this.setState({ search: search });
-    this.setState({ noSearch: false });
+  updateSearchText = searchWord => {
+    this.setState({ searchWord, searched: false });
   };
 
-  handleSearch() {
-    console.log("Searching for: ", this.state.search);
-    this.setState({ searchResultsFound: true });
-    this.getResults();
-  }
-
-  validateSearch() {
-    //console.log(this.state.search.toLowerCase());
-
-    const searchError = Validate("search", this.state.search);
-
-    this.setState({
-      searchError: searchError
-    });
-    this.setState({ searchResultsFound: false });
+  async validateSearch() {
+    Keyboard.dismiss();
+    const searchError = Validate("search", this.state.searchWord);
+    this.setState({searched: true});
 
     if (!searchError) {
-      this.handleSearch();
+      this.getResults();
+    } else {
+      this.setState({searchError, searchResults: null})
     }
   }
   async getResults() {
-    //TODO: Handle promise
     try {
-      let searchString = this.state.search;
+      const searchString = this.state.searchWord;
       //change to port 80 if not using the stub
-      let response = await fetch(
+      const response = await fetch(
         "http://192.168.1.101:8080/api/user/customer/menu/searchByMenuItem?menuItemName={searchString}",
         {
           method: "GET",
           accept: "application/json"
         }
       );
-      let responseJson = await response.json();
-      console.log("The search string is: ", searchString);
-      console.log("The response is: ", responseJson);
+      const responseJson = await response.json();
 
       if (response.ok) {
-        this.setState({ searchResults: responseJson });
-        const resultsData = responseJson.map(index => ({
+        const searchResults = responseJson.map(index => ({
           id: index.menu.menuID.toString(),
           menuName: index.menu.name,
           restaurantName: index.restaurantData.restaurantName,
@@ -114,11 +98,11 @@ export default class Search extends Component {
           // TODO: Add right rating-score
           score: "4.6"
         }));
-        this.setState({resultsData});
-        //this.setState({ searchResultsFound: true });
+        this.setState({searchResults});
       }
       if (!response.ok) {
-        // this.setState({ searchResultsFound: false });
+        this.setState({ searchResults: null });
+        // TODO: Add error message
       }
     } catch (e) {
       console.error(e);
@@ -126,82 +110,80 @@ export default class Search extends Component {
   }
   render() {
     return (
-      <View style={styles.container}>
-        <View style={styles.text}>
-          <Text style={styles.h2}>What</Text>
-          <View style={{ flexDirection: "row" }}>
-            <Text style={styles.h4Black}>do you want to </Text>
-            <Text style={styles.h4Pink}>eat </Text>
-            <Text style={styles.h4Black}>today </Text>
-          </View>
-        </View>
-        <View style={styles.searchBar}>
-          <TouchableOpacity
-            value={this.state.search}
-            onPress={this.validateSearch && Keyboard.dismiss}
-          >
-            <Image
-              source={require("../../assets/search.png")}
-              style={{ alignSelf: "center", marginTop: 10 }}
-            />
-          </TouchableOpacity>
-          <TextInput
-            style={styles.textInput}
-            placeholder="Search..."
-            onChangeText={this.updateSearchText}
-            value={this.state.search}
-            returnKeyType="search"
-            autoFocus={true}
-            onSubmitEditing={this.validateSearch}
-            onBlur={() => {
-              this.setState({
-                searchError: Validate("search", this.state.search)
-              });
-            }}
-            error={this.state.searchError}
-          />
-        </View>
-        <View style={{ flex: 5 }}>
-          <View style={styles.noResult}>
-            <View>
-              {this.state.searchError ? (
-                <Image source={require("../../assets/noresults.png")} />
-              ) : null}
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} >
+          <View style={styles.container}>
+            <View style={styles.text}>
+              <Text style={styles.h2}>What</Text>
+              <View style={{ flexDirection: "row" }}>
+                <Text style={styles.h4Black}>do you want to </Text>
+                <Text style={styles.h4Pink}>eat </Text>
+                <Text style={styles.h4Black}>today </Text>
+              </View>
             </View>
-            <Text
-              style={{
-                color: "#686B6F",
-                textAlign: "center",
-                fontFamily: "roboto",
-                marginTop: 70
-              }}
-            >
-              {this.state.searchError ? (
-                <Text> We can't find what you are {"\n"} looking for...</Text>
-              ) : null}
-            </Text>
-          </View>
-          <View style={{ justifyContent: "flex-start" }}>
-            <SafeAreaView style={styles.containerResults}>
-              {this.state.searchResultsFound ? (
-                <FlatList
-                  data={this.state.resultsData}
-                  renderItem={({ item }) => (
-                    <ResultItem
-                      menuName={item.menuName}
-                      restaurantName={item.restaurantName}
-                      tag1={item.tag1}
-                      tag2={item.tag2}
-                      score={item.score}
-                    />
-                  )}
-                  keyExtractor={item => item.id}
+            <View style={styles.searchBar}>
+              <TouchableOpacity
+                value={this.state.searchWord}
+                onPress={this.validateSearch}
+              >
+                <Image
+                  source={require("../../assets/search.png")}
+                  style={{ alignSelf: "center", marginTop: 10 }}
                 />
-              ) : null}
-            </SafeAreaView>
+              </TouchableOpacity>
+              <TextInput
+                style={styles.textInput}
+                placeholder="Search..."
+                onChangeText={this.updateSearchText}
+                value={this.state.searchWord}
+                returnKeyType="search"
+                autoFocus={false}
+                onSubmitEditing={this.validateSearch}
+                onBlur={() => {
+                  this.setState({
+                    searchError: Validate("search", this.state.searchWord)
+                  });
+                }}
+                error={this.state.searchError}
+              />
+            </View>
+            <View style={{ flex: 10 }}>
+                {this.state.searchResults && this.state.searched ? (
+                    <SafeAreaView style={styles.containerResults}>
+                        <FlatList
+                          data={this.state.searchResults}
+                          renderItem={({ item }) => (
+                            <ResultItem
+                              menuName={item.menuName}
+                              restaurantName={item.restaurantName}
+                              tag1={item.tag1}
+                              tag2={item.tag2}
+                              score={item.score}
+                            />
+                          )}
+                          keyExtractor={item => item.id}
+                        />
+                    </SafeAreaView>
+                ) : null }
+                {this.state.searched && !this.state.searchResults ? (
+                    <View style={styles.noResult}>
+                      <View>
+                        <Image source={require("../../assets/noresults.png")} />
+                      </View>
+                      <Text
+                          style={{
+                            color: "#686B6F",
+                            textAlign: "center",
+                            fontFamily: "roboto",
+                            marginTop: 70
+                          }}
+                      >
+                        <Text> We can't find what you are {"\n"} looking for...</Text>
+                      </Text>
+                    </View>
+                ) : null}
+            </View>
           </View>
-        </View>
-      </View>
+        </TouchableWithoutFeedback>
     );
   }
 }
@@ -213,11 +195,11 @@ const styles = StyleSheet.create({
   },
   containerResults: {
     backgroundColor: "#FFFFFF",
-    alignItems: "center"
+    alignItems: "center",
   },
   text: {
     flex: 1,
-    marginTop: 100,
+    marginTop: 60,
     marginLeft: 40
   },
   h2: {
@@ -253,18 +235,17 @@ const styles = StyleSheet.create({
     borderBottomColor: "#F3A3A3",
     borderBottomWidth: 1.5,
     marginLeft: 7,
-    fontSize: 15
+    fontSize: 15,
   },
   searchBar: {
     flex: 1,
     flexDirection: "row",
-    alignItems: "flex-start",
+    alignItems: "center",
     marginLeft: 40,
-    marginTop: 20
   },
   noResult: {
-    marginTop: 30,
-    alignItems: "center"
+    marginTop: 120,
+    alignItems: "center",
   },
   resultsItem: {
     backgroundColor: "#FFFFFF", // padding: 20,
