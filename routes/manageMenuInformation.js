@@ -6,6 +6,8 @@ const Menu = require('../models/menu.js');
 const Tag = require('../models/tag.js');
 const TaggedMenu = require('../models/taggedMenu.js');
 
+const inputValidator = require('../middleware/inputValidationMiddleware.js');
+const validationSchema = require('../validationSchemas.js');
 const auth = require('../middleware/authorizationMiddleware.js');
 const isOwner = require('../middleware/checkIfOwnerMiddleware.js');
 const findRestaurant = require('../middleware/findRestaurantOfOwnerMiddleware.js');
@@ -13,7 +15,7 @@ const findRestaurant = require('../middleware/findRestaurantOfOwnerMiddleware.js
 const menuItem = require('./menuItem.js');
 
 //Add an empty menu to a restaurant
-router.post('/', auth, isOwner, findRestaurant, async (req, res) => {
+router.post('/', auth, inputValidator(validationSchema.addMenuValidation), isOwner, findRestaurant, async (req, res) => {
     //only tags already present in the database, in the table Tag, are allowed to used
     //so first check if the tags of the menu are in the database
 
@@ -52,7 +54,7 @@ router.get('/', auth, isOwner, findRestaurant, async (req, res) => {
 });
 
 //Edit a menu's information (not its items)
-router.put('/:menuID', auth, isOwner, findRestaurant, async (req,res) => {
+router.put('/:menuID', auth, inputValidator(validationSchema.editMenuValidation), isOwner, findRestaurant, async (req,res) => {
 
     //check if the menu with given menuID exist
     const menuFound = await Menu.findAll({
