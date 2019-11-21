@@ -62,7 +62,15 @@ function Map() {
   );
 }
 
-function MenuItem({menuItemName, menuItemDescription, priceEuros, menuItemImage, tag1, tag2, score}) {
+function MenuItem({
+  menuItemName,
+  menuItemDescription,
+  priceEuros,
+  menuItemImage,
+  tag1,
+  tag2,
+  score
+}) {
   return (
     <View>
       <View style={{ flexDirection: "row" /*top: 20*/ }}>
@@ -87,14 +95,14 @@ function MenuItem({menuItemName, menuItemDescription, priceEuros, menuItemImage,
           <Text style={styles.smallTextBlack}> {menuItemName} </Text>
           <Text style={styles.smallThinText2}> {menuItemDescription} </Text>
           <Text style={styles.smallTextBlack}> {tag1} </Text>
-            <Text style={styles.smallTextBlack}> {tag2} </Text>
+          <Text style={styles.smallTextBlack}> {tag2} </Text>
         </View>
 
         <View style={{ flexDirection: "column", left: 100 }}>
           <Text style={styles.smallTextBlack}> {priceEuros}</Text>
         </View>
       </View>
-        <View style={styles.underline} />
+      <View style={styles.underline} />
     </View>
   );
 }
@@ -103,21 +111,23 @@ export default class Menu extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      menuInfo: null,
-      menuItems: null,
+      menuInfo: "",
+      menuItems: "",
       searchResults: null
     };
   }
 
-  async componentDidMount() {
+  componentDidMount = async () => {
     const { navigation } = this.props;
     const menuId = navigation.getParam("menuId", "000");
-    const restaurantName = navigation.getParam("restaurantName", "default value");
+    const restaurantName = navigation.getParam(
+      "restaurantName",
+      "default value"
+    );
     await this.getMenuItem(menuId, restaurantName);
-  }
+  };
 
   async getMenuItem(menuId, restaurantName) {
-    //TODO: Handle promise
     try {
       //change to port 80 if not using the stub
       const response = await fetch(
@@ -137,19 +147,17 @@ export default class Menu extends Component {
         tag2: responseJson["tags"][1],
         score: "4.6"
       };
-      const menuItems = responseJson["menuItems"].map(index => (
-          {
-              menuItemName: index["name"],
-              menuItemDescription: index["description"],
-              priceEuros: index["priceEuros"],
-              menuItemImage: index["imageLink"],
-              // TODO: Handle number of tags
-              tag1: index["tags"][0],
-              tag2: index["tags"][1],
-              // TODO: Add right rating-score
-              score: "4.6"
-          }
-      ));
+      const menuItems = responseJson["menuItems"].map(index => ({
+        menuItemName: index["name"],
+        menuItemDescription: index["description"],
+        priceEuros: index["priceEuros"],
+        menuItemImage: index["imageLink"],
+        // TODO: Handle number of tags
+        tag1: index["tags"][0],
+        tag2: index["tags"][1],
+        // TODO: Add right rating-score
+        score: "4.6"
+      }));
       this.setState({ menuInfo, menuItems });
     } catch (e) {
       console.error(e);
@@ -169,58 +177,59 @@ export default class Menu extends Component {
             <Image source={require("../../assets/auum.png")} />
           </View>
           <SafeAreaView style={styles.infoBox}>
-            <Text style={styles.h3}>Lunch menu</Text>
+            <Text style={styles.h3}>{this.state.menuInfo.menuName}</Text>
             <View style={{ flexDirection: "row" }}>
               <Text style={styles.smallTextBlack}> by </Text>
-              <Text style={styles.smallTextPink}> Pizzeria AUUM</Text>
+              <Text style={styles.smallTextPink}>
+                {this.state.menuInfo.restaurantName}
+              </Text>
             </View>
             <Text> Stars </Text>
             <Text style={styles.smallThinText}>
-              This is the description of the menu. Here you can {"\n"} write
-              things about the menu.
+              {this.state.menuInfo.menuDescription}
             </Text>
           </SafeAreaView>
           <View style={{ bottom: 50 }}>
-                  <Text style={styles.thinText}> DISHES </Text>
-                  <View style={styles.underline} />
-                  <FlatList
-                      data={this.state.menuItems}
-                      renderItem={({ item }) => (
-                          <MenuItem
-                              menuId={item.menuItemName}
-                              menuItemName={item.menuItemName}
-                              menuItemDescription={item.menuItemDescription}
-                              priceEuros={item.priceEuros}
-                              menuItemImage={item.menuItemImage}
-                              tag1={item.tag1}
-                              tag2={item.tag2}
-                              score={item.score}
-                          />
-                      )}
-                      keyExtractor={item => item.menuId}
-                  />
-                  <Text style={styles.thinText}> DRINKS </Text>
-                  <View style={styles.underline} />
+            <Text style={styles.thinText}> DISHES </Text>
+            <View style={styles.underline} />
+            <FlatList
+              scrollEnabled={false}
+              data={this.state.menuItems}
+              renderItem={({ item }) => (
+                <MenuItem
+                  menuId={item.menuItemName}
+                  menuItemName={item.menuItemName}
+                  menuItemDescription={item.menuItemDescription}
+                  priceEuros={item.priceEuros}
+                  menuItemImage={item.menuItemImage}
+                  tag1={item.tag1}
+                  tag2={item.tag2}
+                  score={item.score}
+                />
+              )}
+              keyExtractor={item => item.menuId}
+            />
+            <Text style={styles.thinText}> DRINKS </Text>
+            <View style={styles.underline} />
 
-                  <FlatList
-                      data={this.state.menuItems}
-                      renderItem={({ item }) => (
-                          <MenuItem
-                              menuId={"9mmn" + item.menuItemName}
-                              menuItemName={item.menuItemName}
-                              menuItemDescription={item.menuItemDescription}
-                              priceEuros={item.priceEuros}
-                              menuItemImage={item.menuItemImage}
-                              tag1={item.tag1}
-                              tag2={item.tag2}
-                              score={item.score}
-                          />
-                      )}
-                      keyExtractor={item => item.menuId}
-
-                  />
+            <FlatList
+              data={this.state.menuItems}
+              renderItem={({ item }) => (
+                <MenuItem
+                  menuId={"9mmn" + item.menuItemName}
+                  menuItemName={item.menuItemName}
+                  menuItemDescription={item.menuItemDescription}
+                  priceEuros={item.priceEuros}
+                  menuItemImage={item.menuItemImage}
+                  tag1={item.tag1}
+                  tag2={item.tag2}
+                  score={item.score}
+                />
+              )}
+              keyExtractor={item => item.menuId}
+            />
           </View>
-            <Map />
+          <Map />
         </ScrollView>
       </SafeAreaView>
     );

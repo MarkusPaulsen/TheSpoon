@@ -86,7 +86,6 @@ export default class Search extends Component {
         }
       );
       const responseJson = await response.json();
-      //console.log(responseJson);
       if (response.ok) {
         const searchResults = responseJson.map(index => ({
           menuId: index.menu.menuID.toString(),
@@ -98,7 +97,6 @@ export default class Search extends Component {
           // TODO: Add right rating-score
           score: "4.6"
         }));
-        console.log("RESULTS",searchResults[0]["id"]);
         this.setState({ searchResults });
       }
       if (!response.ok) {
