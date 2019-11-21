@@ -10,5 +10,7 @@ env:
 branches:
   only:
     - travis
+    - dev
+    - master
 script:
-  - echo "Hello there"
+  - echo "Temporary message"
