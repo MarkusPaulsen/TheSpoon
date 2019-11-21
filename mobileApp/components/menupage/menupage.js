@@ -14,32 +14,6 @@ import {
 } from "react-native";
 import MapView from "react-native-maps";
 
-function Dishes() {
-  return (
-    <View>
-      <Text style={styles.thinText}> DISHES </Text>
-      <View style={styles.underline} />
-      <MenuItem />
-      <View style={styles.underline} />
-      <MenuItem />
-      <View style={styles.underline} />
-    </View>
-  );
-}
-
-function Drinks() {
-  return (
-    <View>
-      <Text style={styles.thinText}> DRINKS </Text>
-      <View style={styles.underline} />
-      <MenuItem />
-      <View style={styles.underline} />
-      <MenuItem />
-      <View style={styles.underline} />
-    </View>
-  );
-}
-
 function Map() {
   return (
     <View>
@@ -61,6 +35,18 @@ function Map() {
     </View>
   );
 }
+// TODO: connect to score from DB
+function Rating (score){
+  let stars = [];
+  for( let i=0; i< 4; i++) {
+    stars.push(<Image source={require("../../assets/icon-star.png")}/>);
+  }
+  return (
+      <View style={{flexDirection:"row"}}>
+        {stars}
+      </View>
+  )
+}
 
 function MenuItem({
   menuItemName,
@@ -76,6 +62,8 @@ function MenuItem({
       <View style={{ flexDirection: "row" /*top: 20*/ }}>
         <View style={{ flexDirection: "column", left: 10 }}>
           <Image
+              // USE THIS WHEN DB HAS REAL LINKS
+              //source={{uri:menuItemImage}}
             source={require("../../assets/no_image.png")}
             style={styles.imageCircle}
           />
@@ -184,7 +172,9 @@ export default class Menu extends Component {
                 {this.state.menuInfo.restaurantName}
               </Text>
             </View>
-            <Text> Stars </Text>
+           <View style={{flexDirection:"row"}}>
+             <Rating/>
+           </View>
             <Text style={styles.smallThinText}>
               {this.state.menuInfo.menuDescription}
             </Text>

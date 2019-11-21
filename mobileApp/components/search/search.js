@@ -18,6 +18,8 @@ function ResultItem({ menuName, restaurantName, tag1, tag2, score }) {
     <View style={styles.resultsItem}>
       <View style={styles.imageBox}>
         <Image
+            // USE THIS WHEN DB HAS REAL LINKS
+            //source={{uri:menuImage}}
           source={require("../../assets/no_image.png")}
           style={{ width: 322, height: 137, justifyContent: "center" }}
         />
