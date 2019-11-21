@@ -79,7 +79,7 @@ export default class Search extends Component {
       const searchString = this.state.searchWord;
       //change to port 80 if not using the stub
       const response = await fetch(
-        "http://192.168.1.110:8080/api/user/customer/menu/searchByMenuItem?menuItemName={searchString}",
+        "http://192.168.1.103:8080/api/user/customer/menu/searchByMenuItem?menuItemName={searchString}",
         {
           method: "GET",
           accept: "application/json"
@@ -92,8 +92,8 @@ export default class Search extends Component {
           menuName: index.menu.name,
           restaurantName: index.restaurantData.restaurantName,
           // TODO: Handle number of tags
-          tag1: index.menu.tags[0],
-          tag2: index.menu.tags[1],
+          tag1: index.menu.tags[0][0],
+          tag2: index.menu.tags[1][1],
           // TODO: Add right rating-score
           score: "4.6"
         }));
@@ -119,7 +119,7 @@ export default class Search extends Component {
               <Text style={styles.h4Black}>today </Text>
             </View>
           </View>
-          <View style={styles.searchBar}>
+          <View style={[styles.searchBar, {marginTop: 20}]}>
             <TouchableOpacity
               value={this.state.searchWord}
               onPress={this.validateSearch}

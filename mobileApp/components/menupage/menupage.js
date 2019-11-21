@@ -10,7 +10,6 @@ import {
   FlatList
 } from "react-native";
 import MapView from "react-native-maps";
-import stylesheet from "../../modules/fontstyles";
 
 function Map() {
   return (
@@ -20,7 +19,8 @@ function Map() {
           width: 360,
           height: 270,
           alignSelf: "center",
-          marginBottom: 200
+          marginBottom: 30,
+          marginTop: 30
         }}
         initialRegion={{
           latitude: 45.4688346,
@@ -31,24 +31,26 @@ function Map() {
       >
         <MapView.Marker
           coordinate={{ latitude: 45.4688346, longitude: 9.2212227 }}
-          title={"AUUM"}
-          description={"Address"}
+          title={"Emilio's Pizza"}
+          description={"Piazzale Susa, 20129 Milano"}
         />
       </MapView>
     </View>
   );
 }
 // TODO: connect to score from DB
-function Rating (score){
+function Rating(score) {
   let stars = [];
-  for( let i=0; i< 4; i++) {
-    stars.push(<Image source={require("../../assets/icon-star.png")}/>);
+  for (let i = 0; i < 4; i++) {
+    stars.push(<Image source={require("../../assets/icon-star.png")} style={{height: 13, width: 13}}/>);
   }
-  return (
-      <View style={{flexDirection:"row"}}>
-        {stars}
-      </View>
-  )
+  if (stars.length < 5) {
+    for (let i = 0; i < (5 - stars.length); i++) {
+      stars.push(<Image source={require("../../assets/icon-star-empty.png")} style={{height: 13, width: 13}}/>
+      );
+    }
+  }
+  return <View style={{ flexDirection: "row" }}>{stars}</View>;
 }
 
 function MenuItem({
@@ -66,8 +68,7 @@ function MenuItem({
         style={{
           flexDirection: "row",
           flex: 1,
-          marginHorizontal: 15,
-          height: 80
+          marginHorizontal: 15
         }}
       >
         <View
@@ -78,12 +79,12 @@ function MenuItem({
           }}
         >
           <Image
-              // USE THIS WHEN DB HAS REAL LINKS
-              //source={{uri:menuItemImage}}
-            source={require("../../assets/no_image.png")}
+            // USE THIS WHEN DB HAS REAL LINKS
+            //source={{uri:menuItemImage}}
+            source={require("../../assets/burgerPhoto.png")}
             style={[styles.imageCircle, { alignSelf: "center" }]}
           />
-          <View style={{ flexDirection: "row" }}>
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
             <Image source={require("../../assets/icon-star.png")} />
             <Text style={styles.smallTextBlack}> {score} </Text>
           </View>
@@ -98,15 +99,18 @@ function MenuItem({
           <Text style={[styles.smallTextBlack, { marginVertical: 5 }]}>
             {menuItemName}
           </Text>
-          <Text style={styles.smallThinText2}>
-            {menuItemDescription}
-          </Text>
-          <Text style={[styles.smallTextBlack, {marginTop: 5}]}>
-            {tag1} {tag2}
-          </Text>
+          <Text style={styles.smallThinText2}>{menuItemDescription}</Text>
+          <View style={{ flexDirection: "row", marginTop: 15 }}>
+            <View style={[styles.bgLabel, { backgroundColor: "#FFBC8C" }]}>
+              <Text style={styles.label}>{tag1}</Text>
+            </View>
+            <View style={[styles.bgLabel, { backgroundColor: "#97C8F5" }]}>
+              <Text style={styles.label}>{tag2}</Text>
+            </View>
+          </View>
         </View>
 
-        <View style={{ width: 30}}>
+        <View style={{ width: 40 }}>
           <Text style={[styles.smallTextBlack, { alignSelf: "flex-end" }]}>
             {" "}
             {priceEuros}
@@ -185,39 +189,58 @@ export default class Menu extends Component {
           }}
         >
           <View>
-          <View>
-            <Image source={require("../../assets/auum.png")} />
-          </View>
-          <SafeAreaView style={styles.infoBox}>
-            <Text style={styles.h3}>{this.state.menuInfo.menuName}</Text>
-            <View style={{ flexDirection: "row" }}>
-              <Text style={styles.smallTextBlack}> by </Text>
-              <Text style={styles.smallTextPink}>
-                {this.state.menuInfo.restaurantName}
-              </Text>
+            <View>
+              <Image source={require("../../assets/auum.png")} />
+              <View style={{ marginTop: 40, marginLeft: 30, position: "absolute" }} >
+                <TouchableOpacity onPress={() => {
+                  alert('You tapped the button!');
+                }}>
+                  <Image source={require("../../assets/go-back.png")} />
+                </TouchableOpacity>
+              </View>
             </View>
-           <View style={{flexDirection:"row"}}>
-             <Rating/>
-           </View>
-            <Text style={styles.smallThinText}>
-              {this.state.menuInfo.menuDescription}
-            </Text>
-          </SafeAreaView>
-        </View>
-            <SafeAreaView style={{ marginTop: 160, alignItems: "center" }}>
+            <SafeAreaView style={styles.infoBox}>
+              <Text style={[styles.h3, { marginBottom: 5 }]}>
+                {this.state.menuInfo.menuName}
+              </Text>
+              <View style={{ flexDirection: "row", marginBottom: 10 }}>
+                <Text style={styles.smallTextBlack}> by </Text>
+                <Text style={styles.smallTextPink}>
+                  {this.state.menuInfo.restaurantName}
+                </Text>
+              </View>
+              <View style={{ flexDirection: "row", marginBottom: 10 }}>
+                <Rating />
+              </View>
+              <Text style={[styles.smallThinText, { marginBottom: 15 }]}>
+                {this.state.menuInfo.menuDescription}
+              </Text>
+              <View style={{ flexDirection: "row" }}>
+                <View style={[styles.bgLabel, { backgroundColor: "#F3A3A3" }]}>
+                  <Text style={styles.label}> Italian </Text>
+                </View>
+                <View style={[styles.bgLabel, { backgroundColor: "#99C99B" }]}>
+                  <Text style={styles.label}> Pizza </Text>
+                </View>
+              </View>
+            </SafeAreaView>
+          </View>
+          <SafeAreaView
+            style={{ marginTop: 140, alignItems: "center", flex: 1 }}
+          >
             <Text style={styles.thinText}> DISHES </Text>
             <View style={styles.underline} />
             <FlatList
               data={this.state.menuItems}
               contentContainerStyle={{
-                flexGrow: 1
+                flex: 1
               }}
               renderItem={({ item }) => (
                 <MenuItem
                   menuId={item.menuItemName}
                   menuItemName={item.menuItemName}
                   menuItemDescription={item.menuItemDescription}
-                  priceEuros={item.priceEuros}
+                  priceEuros={item.priceEuros + " €"}
                   menuItemImage={item.menuItemImage}
                   tag1={item.tag1}
                   tag2={item.tag2}
@@ -230,7 +253,7 @@ export default class Menu extends Component {
             <View style={styles.underline} />
             <FlatList
               contentContainerStyle={{
-                flexGrow: 1
+                flex: 1
               }}
               data={this.state.menuItems}
               renderItem={({ item }) => (
@@ -238,7 +261,7 @@ export default class Menu extends Component {
                   menuId={"9mmn" + item.menuItemName}
                   menuItemName={item.menuItemName}
                   menuItemDescription={item.menuItemDescription}
-                  priceEuros={item.priceEuros}
+                  priceEuros={item.priceEuros + " €"}
                   menuItemImage={item.menuItemImage}
                   tag1={item.tag1}
                   tag2={item.tag2}
@@ -265,7 +288,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     borderRadius: 20,
     width: 322,
-    height: 203,
+    height: 190,
     shadowColor: "#000000",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.5,
@@ -303,13 +326,13 @@ const styles = StyleSheet.create({
   },
   smallTextBlack: {
     fontFamily: "roboto",
-    fontSize: 12,
+    fontSize: 14,
     color: "#000000",
     fontWeight: "500"
   },
   smallTextPink: {
     fontFamily: "roboto",
-    fontSize: 12,
+    fontSize: 14,
     color: "#F3A3A3"
   },
   thinText: {
@@ -329,11 +352,11 @@ const styles = StyleSheet.create({
     margin: 10
   },
   smallThinText: {
-    fontSize: 10,
+    fontSize: 12,
     textAlign: "center"
   },
   smallThinText2: {
-    fontSize: 10,
+    fontSize: 12,
     textAlign: "left"
   },
   imageCircle: {
@@ -349,5 +372,17 @@ const styles = StyleSheet.create({
   menuInfo: {
     marginLeft: 10,
     marginRight: 10
+  },
+  label: {
+    fontFamily: "roboto",
+    fontSize: 12,
+    textAlign: "center",
+    color: "#FFFFFF",
+    marginHorizontal: 10
+  },
+  bgLabel: {
+    borderRadius: 5,
+    marginRight: 4,
+    justifyContent: "center"
   }
 });
