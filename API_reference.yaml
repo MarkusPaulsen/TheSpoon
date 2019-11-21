@@ -1,7 +1,7 @@
 swagger: "2.0"
 info:
   description: "This is the API reference of The Spoon project.\n \n VERSIONING: The version number works in this way: it's composed of two numbers separated by a point. The first number identifies the Sprint, so for example the version 2.1 of the API reference is related to the Sprint number 2. The second number starts from 0 and has to be increased by one each time the file is modified. The person who modifies this document is responsible for increasing the number.\n \n GROUPING OF ENDPOINTS: The endpoints are grouped by dividing them into customers' operations and owners' operations. All the endpoints that are not strictly related to customers nor owners remain inside the default group.\n \n AUTHENTICATION/AUTHORIZATION: The json web token returned when the login is performed is supposed to be put into x-auth-token header in the endpoints that require authorization"
-  version: "3.4"
+  version: "3.5"
   title: "The Spoon API reference"
 tags:
   - name: "customer"
@@ -337,7 +337,7 @@ paths:
           description: "Menu data"
           required: true
           schema:
-            $ref: "#/definitions/MenuItem"
+            $ref: "#/definitions/MenuItemWithoutColors"
       responses:
         200:
           description: "Successful operation"
@@ -377,7 +377,7 @@ paths:
           description: "Data of the menuItem"
           required: true
           schema:
-            $ref: "#/definitions/MenuItem"
+            $ref: "#/definitions/MenuItemWithoutColors"
       responses:
         200:
           description: "Successful operation"
@@ -566,6 +566,30 @@ definitions:
       priceEuros: 10
       tags: [{"name": "Mediterranean", "color": "#FFBC8C"}, {"name": "Pasta", "color": "#99C99B"}, {"name": "Italian", "color": "#FFBC8C"}]
       imageLink: "www.cloudStorage.com/Carbonara"
+  MenuItemWithoutColors:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+      description:
+        type: "string"
+      type:
+        type: "string"
+      priceEuros:
+        type: "number"
+      tags:
+        type: "array"
+        items:
+          type: "string"
+      imageLink:
+        type: "string"
+    example:
+      name: "Spaghetti alla carbonara"
+      description: "Fantastic italian dish made of spaghetti, pig cheek, eggs, black pepper, pecorino romano"
+      type: "dish"
+      priceEuros: 10
+      tags: ["Mediterranean", "Pasta", "Italian"]
+      imageLink: "www.cloudStorage.com/Carbonara"
   MenuID:
     type: "object"
     properties:
@@ -686,11 +710,11 @@ definitions:
       tags:
         type: "array"
         items:
-          $ref: "#/definitions/Tag"
+          type: "string"
     example:
       name: "Emilio's menu of the day"
       description: "Our special menu of today"
-      tags: [{"name": "Italian", "color": "#FFBC8C"}, {"name": "Mediterranean", "color": "#FFBC8C"}]
+      tags: ["Italian", "Mediterranean"]
   MenuRetrievedToCustomer:
     type: "object"
     properties:
