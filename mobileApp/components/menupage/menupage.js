@@ -10,6 +10,8 @@ import {
   FlatList
 } from "react-native";
 import MapView from "react-native-maps";
+import * as Typography from "../../styles/typography";
+import * as Colors from "../../styles/colors";
 
 function Map() {
   return (
@@ -19,7 +21,6 @@ function Map() {
           width: 360,
           height: 270,
           alignSelf: "center",
-          marginBottom: 30,
           marginTop: 30
         }}
         initialRegion={{
@@ -42,11 +43,20 @@ function Map() {
 function Rating(score) {
   let stars = [];
   for (let i = 0; i < 4; i++) {
-    stars.push(<Image source={require("../../assets/icon-star.png")} style={{height: 13, width: 13}}/>);
+    stars.push(
+      <Image
+        source={require("../../assets/icon-star.png")}
+        style={{ height: 13, width: 13 }}
+      />
+    );
   }
   if (stars.length < 5) {
-    for (let i = 0; i < (5 - stars.length); i++) {
-      stars.push(<Image source={require("../../assets/icon-star-empty.png")} style={{height: 13, width: 13}}/>
+    for (let i = 0; i < 5 - stars.length; i++) {
+      stars.push(
+        <Image
+          source={require("../../assets/icon-star-empty.png")}
+          style={{ height: 13, width: 13 }}
+        />
       );
     }
   }
@@ -68,13 +78,14 @@ function MenuItem({
         style={{
           flexDirection: "row",
           flex: 1,
-          marginHorizontal: 15
+          marginHorizontal: 15,
+          alignItems: "center"
         }}
       >
         <View
           style={{
             flexDirection: "column",
-            width: 80,
+            width: 90,
             alignItems: "center"
           }}
         >
@@ -82,39 +93,48 @@ function MenuItem({
             // USE THIS WHEN DB HAS REAL LINKS
             //source={{uri:menuItemImage}}
             source={require("../../assets/burgerPhoto.png")}
-            style={[styles.imageCircle, { alignSelf: "center" }]}
+            style={[
+              styles.imageCircle,
+              { alignSelf: "center", marginBottom: 5 }
+            ]}
           />
           <View style={{ flexDirection: "row", alignItems: "center" }}>
             <Image source={require("../../assets/icon-star.png")} />
-            <Text style={styles.smallTextBlack}> {score} </Text>
+            <Text style={Typography.FONT_SMALL_BLACK}> {score} </Text>
           </View>
         </View>
-
-        <View
-          style={{
-            flexDirection: "column",
-            width: 190
-          }}
-        >
-          <Text style={[styles.smallTextBlack, { marginVertical: 5 }]}>
-            {menuItemName}
-          </Text>
-          <Text style={styles.smallThinText2}>{menuItemDescription}</Text>
-          <View style={{ flexDirection: "row", marginTop: 15 }}>
-            <View style={[styles.bgLabel, { backgroundColor: "#FFBC8C" }]}>
-              <Text style={styles.label}>{tag1}</Text>
-            </View>
-            <View style={[styles.bgLabel, { backgroundColor: "#97C8F5" }]}>
-              <Text style={styles.label}>{tag2}</Text>
+        <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
+          <View
+            style={{
+              flexDirection: "column",
+              width: 190
+            }}
+          >
+            <Text style={[Typography.FONT_BOLD, { marginBottom: 5 }]}>
+              {menuItemName}
+            </Text>
+            <Text style={[Typography.FONT_SMALL_THIN, { textAlign: "left" }]}>
+              {menuItemDescription}
+            </Text>
+            <View style={{ flexDirection: "row", marginTop: 15 }}>
+              <View style={[styles.bgLabel, { backgroundColor: "#FFBC8C" }]}>
+                <Text style={[Typography.FONT_TAG, { marginHorizontal: 10 }]}>
+                  {tag1}
+                </Text>
+              </View>
+              <View style={[styles.bgLabel, { backgroundColor: "#97C8F5" }]}>
+                <Text style={[Typography.FONT_TAG, { marginHorizontal: 10 }]}>
+                  {tag2}
+                </Text>
+              </View>
             </View>
           </View>
-        </View>
-
-        <View style={{ width: 40 }}>
-          <Text style={[styles.smallTextBlack, { alignSelf: "flex-end" }]}>
-            {" "}
-            {priceEuros}
-          </Text>
+          <View style={{ width: 40 }}>
+            <Text style={[Typography.FONT_BOLD, { alignSelf: "flex-end" }]}>
+              {" "}
+              {priceEuros}
+            </Text>
+          </View>
         </View>
       </View>
       <View style={styles.underline} />
@@ -146,7 +166,7 @@ export default class Menu extends Component {
     try {
       //change to port 80 if not using the stub
       const response = await fetch(
-        `http://192.168.1.110:8080/api/user/customer/menu/${menuId}`,
+        `http://192.168.1.101:8080/api/user/customer/menu/${menuId}`,
         {
           method: "GET",
           accept: "application/json"
@@ -191,36 +211,51 @@ export default class Menu extends Component {
           <View>
             <View>
               <Image source={require("../../assets/auum.png")} />
-              <View style={{ marginTop: 40, marginLeft: 30, position: "absolute" }} >
-                <TouchableOpacity onPress={() => {
-                  alert('You tapped the button!');
-                }}>
+              <View
+                style={{ marginTop: 40, marginLeft: 30, position: "absolute" }}
+              >
+                <TouchableOpacity
+                  onPress={() => {
+                    alert("You tapped the button!");
+                  }}
+                >
                   <Image source={require("../../assets/go-back.png")} />
                 </TouchableOpacity>
               </View>
             </View>
             <SafeAreaView style={styles.infoBox}>
-              <Text style={[styles.h3, { marginBottom: 5 }]}>
+              <Text style={[Typography.FONT_H3_BLACK, { marginBottom: 5 }]}>
                 {this.state.menuInfo.menuName}
               </Text>
               <View style={{ flexDirection: "row", marginBottom: 10 }}>
-                <Text style={styles.smallTextBlack}> by </Text>
-                <Text style={styles.smallTextPink}>
+                <Text style={Typography.FONT_SMALL_BLACK}> by </Text>
+                <Text style={Typography.FONT_SMALL_PINK}>
                   {this.state.menuInfo.restaurantName}
                 </Text>
               </View>
               <View style={{ flexDirection: "row", marginBottom: 10 }}>
                 <Rating />
               </View>
-              <Text style={[styles.smallThinText, { marginBottom: 15 }]}>
+              <Text
+                style={[
+                  Typography.FONT_SMALL_THIN,
+                  { marginBottom: 15, textAlign: "center" }
+                ]}
+              >
                 {this.state.menuInfo.menuDescription}
               </Text>
               <View style={{ flexDirection: "row" }}>
                 <View style={[styles.bgLabel, { backgroundColor: "#F3A3A3" }]}>
-                  <Text style={styles.label}> Italian </Text>
+                  <Text style={[Typography.FONT_TAG, { marginHorizontal: 10 }]}>
+                    {" "}
+                    Italian{" "}
+                  </Text>
                 </View>
                 <View style={[styles.bgLabel, { backgroundColor: "#99C99B" }]}>
-                  <Text style={styles.label}> Pizza </Text>
+                  <Text style={[Typography.FONT_TAG, { marginHorizontal: 10 }]}>
+                    {" "}
+                    Pizza{" "}
+                  </Text>
                 </View>
               </View>
             </SafeAreaView>
@@ -228,7 +263,15 @@ export default class Menu extends Component {
           <SafeAreaView
             style={{ marginTop: 140, alignItems: "center", flex: 1 }}
           >
-            <Text style={styles.thinText}> DISHES </Text>
+            <Text
+              style={[
+                Typography.FONT_REGULAR_THIN,
+                { marginTop: 10, textAlign: "center" }
+              ]}
+            >
+              {" "}
+              DISHES{" "}
+            </Text>
             <View style={styles.underline} />
             <FlatList
               data={this.state.menuItems}
@@ -249,7 +292,10 @@ export default class Menu extends Component {
               )}
               keyExtractor={item => item.menuId}
             />
-            <Text style={styles.thinText}> DRINKS </Text>
+            <Text style={[Typography.FONT_REGULAR_THIN, { marginTop: 15 }]}>
+              {" "}
+              DRINKS{" "}
+            </Text>
             <View style={styles.underline} />
             <FlatList
               contentContainerStyle={{
@@ -282,14 +328,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     //top: 25,
-    backgroundColor: "#FFFFFF"
+    backgroundColor: Colors.WHITE
   },
   infoBox: {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: Colors.WHITE,
     borderRadius: 20,
     width: 322,
     height: 190,
-    shadowColor: "#000000",
+    shadowColor: Colors.BLACK,
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.5,
     shadowRadius: 1,
@@ -301,63 +347,15 @@ const styles = StyleSheet.create({
     alignSelf: "center"
   },
   containerResults: {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: Colors.WHITE,
     alignItems: "center"
   },
-  h3: {
-    //fontFamily: "roboto",
-    //fontWeight: 500,
-    fontSize: 24
-  },
-  h2: {
-    fontFamily: "roboto",
-    fontSize: 40,
-    color: "#F3A3A3"
-  },
-  h4Black: {
-    fontFamily: "roboto",
-    fontSize: 18,
-    color: "#000000"
-  },
-  h4Pink: {
-    fontFamily: "roboto",
-    fontSize: 18,
-    color: "#F3A3A3"
-  },
-  smallTextBlack: {
-    fontFamily: "roboto",
-    fontSize: 14,
-    color: "#000000",
-    fontWeight: "500"
-  },
-  smallTextPink: {
-    fontFamily: "roboto",
-    fontSize: 14,
-    color: "#F3A3A3"
-  },
-  thinText: {
-    width: 300,
-    //height: 15,
-    color: "#000000",
-    fontFamily: "roboto",
-    fontSize: 15,
-    marginTop: 10,
-    textAlign: "center"
-  },
   underline: {
-    borderBottomColor: "#E7E5E5",
+    borderBottomColor: Colors.GRAY_LIGHT,
     borderBottomWidth: 1,
     //textAlign: "center",
     width: 320,
     margin: 10
-  },
-  smallThinText: {
-    fontSize: 12,
-    textAlign: "center"
-  },
-  smallThinText2: {
-    fontSize: 12,
-    textAlign: "left"
   },
   imageCircle: {
     width: 67,
@@ -372,13 +370,6 @@ const styles = StyleSheet.create({
   menuInfo: {
     marginLeft: 10,
     marginRight: 10
-  },
-  label: {
-    fontFamily: "roboto",
-    fontSize: 12,
-    textAlign: "center",
-    color: "#FFFFFF",
-    marginHorizontal: 10
   },
   bgLabel: {
     borderRadius: 5,

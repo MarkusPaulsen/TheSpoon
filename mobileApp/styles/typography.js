@@ -6,6 +6,7 @@ const FONT_FAMILY = "roboto";
 // FONT WEIGHT
 const FONT_WEIGHT_LIGHT = "300";
 const FONT_WEIGHT_MEDIUM = "500";
+const FONT_WEIGHT_BOLD = "800";
 
 // FONT SIZE
 const FONT_SIZE_36 = 36;
@@ -22,6 +23,13 @@ export const FONT_H2_PINK = {
   fontSize: FONT_SIZE_36,
   color: Colors.PINK
 };
+
+export const FONT_H3_BLACK = {
+  fontFamily: FONT_FAMILY,
+  fontWeight: FONT_WEIGHT_MEDIUM,
+  fontSize: FONT_SIZE_24,
+  color: Colors.BLACK
+}
 
 export const FONT_H4_BLACK = {
   fontFamily: FONT_FAMILY,
@@ -68,7 +76,28 @@ export const FONT_SMALL_PINK = {
 export const FONT_TAG = {
   fontFamily: FONT_FAMILY,
   fontWeight: FONT_WEIGHT_MEDIUM,
-  fontSize: FONT_SIZE_10,
+  fontSize: FONT_SIZE_12,
   color: Colors.WHITE,
   textAlign: "center"
 };
+
+export const FONT_SMALL_THIN = {
+  fontFamily: FONT_FAMILY,
+  fontWeight: FONT_WEIGHT_LIGHT,
+  fontSize: FONT_SIZE_12,
+  color: Colors.BLACK,
+}
+
+export const FONT_REGULAR_THIN = {
+  fontFamily: FONT_FAMILY,
+  fontWeight: FONT_WEIGHT_LIGHT,
+  fontSize: FONT_SIZE_15,
+  color: Colors.BLACK
+}
+
+export const FONT_BOLD = {
+  fontFamily: FONT_FAMILY,
+  fontWeight: FONT_WEIGHT_BOLD,
+  fontSize: FONT_SIZE_15,
+  color: Colors.BLACK
+}

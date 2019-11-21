@@ -12,6 +12,8 @@ import {
 } from "react-native";
 import Validate from "./searchvalidation.js";
 import { TouchableWithoutFeedback } from "react-native-web";
+import * as Typography from '../../styles/typography';
+import * as Colors from '../../styles/colors';
 
 function ResultItem({ menuName, restaurantName, tag1, tag2, score }) {
   return (
@@ -24,22 +26,22 @@ function ResultItem({ menuName, restaurantName, tag1, tag2, score }) {
       </View>
       <View style={styles.menuInfo}>
         <View style={{ flexDirection: "row", marginBottom: 10, marginTop: 10 }}>
-          <Text style={styles.h4Black}>{menuName}</Text>
-          <Text style={styles.smallTextBlack}>{" by "}</Text>
-          <Text style={styles.smallTextPink}>{restaurantName}</Text>
+          <Text style={Typography.FONT_H4_BLACK}>{menuName}</Text>
+          <Text style={Typography.FONT_SMALL_BLACK}>{" by "}</Text>
+          <Text style={Typography.FONT_SMALL_PINK}>{restaurantName}</Text>
         </View>
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
           <View style={{ flexDirection: "row" }}>
             <View style={styles.bgLabel}>
-              <Text style={styles.label}>{tag1}</Text>
+              <Text style={Typography.FONT_TAG}>{tag1}</Text>
             </View>
             <View style={styles.bgLabel}>
-              <Text style={styles.label}>{tag2}</Text>
+              <Text style={Typography.FONT_TAG}>{tag2}</Text>
             </View>
           </View>
           <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
             <Image source={require("../../assets/icon-star.png")} />
-            <Text style={styles.smallTextBlack}>{score}</Text>
+            <Text style={Typography.FONT_SMALL_BLACK}>{score}</Text>
           </View>
         </View>
       </View>
@@ -69,7 +71,7 @@ export default class Search extends Component {
     this.setState({ searched: true });
 
     if (!searchError) {
-      this.getResults();
+      await this.getResults();
     } else {
       this.setState({ searchError, searchResults: null });
     }
@@ -79,7 +81,7 @@ export default class Search extends Component {
       const searchString = this.state.searchWord;
       //change to port 80 if not using the stub
       const response = await fetch(
-        "http://192.168.1.103:8080/api/user/customer/menu/searchByMenuItem?menuItemName={searchString}",
+        "http://192.168.1.101:8080/api/user/customer/menu/searchByMenuItem?menuItemName={searchString}",
         {
           method: "GET",
           accept: "application/json"
@@ -112,11 +114,11 @@ export default class Search extends Component {
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.container}>
           <View style={styles.text}>
-            <Text style={styles.h2}>What</Text>
+            <Text style={Typography.FONT_H2_PINK}>What</Text>
             <View style={{ flexDirection: "row" }}>
-              <Text style={styles.h4Black}>do you want to </Text>
-              <Text style={styles.h4Pink}>eat </Text>
-              <Text style={styles.h4Black}>today </Text>
+              <Text style={Typography.FONT_H4_BLACK}>do you want to </Text>
+              <Text style={Typography.FONT_H4_PINK}>eat </Text>
+              <Text style={Typography.FONT_H4_BLACK}>today </Text>
             </View>
           </View>
           <View style={[styles.searchBar, {marginTop: 20}]}>
@@ -130,8 +132,9 @@ export default class Search extends Component {
               />
             </TouchableOpacity>
             <TextInput
-              style={styles.textInput}
+              style={[Typography.FONT_INPUT, styles.textInput]}
               placeholder="Search..."
+              placeholderTextColor={Colors.GRAY_MEDIUM}
               onChangeText={this.updateSearchText}
               value={this.state.searchWord}
               returnKeyType="search"
@@ -178,12 +181,10 @@ export default class Search extends Component {
                   <Image source={require("../../assets/noresults.png")} />
                 </View>
                 <Text
-                  style={{
-                    color: "#686B6F",
+                  style={[Typography.FONT_H4_GRAY_DARK,{
                     textAlign: "center",
-                    fontFamily: "roboto",
                     marginTop: 70
-                  }}
+                  }]}
                 >
                   <Text> We can't find what you are {"\n"} looking for...</Text>
                 </Text>
@@ -199,10 +200,10 @@ export default class Search extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#FFFFFF"
+    backgroundColor: Colors.WHITE
   },
   containerResults: {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: Colors.WHITE,
     alignItems: "center"
   },
   text: {
@@ -210,40 +211,12 @@ const styles = StyleSheet.create({
     marginTop: 60,
     marginLeft: 40
   },
-  h2: {
-    fontFamily: "roboto",
-    fontSize: 40,
-    color: "#F3A3A3"
-  },
-  h4Black: {
-    fontFamily: "roboto",
-    fontSize: 18,
-    color: "#000000"
-  },
-  h4Pink: {
-    fontFamily: "roboto",
-    fontSize: 18,
-    color: "#F3A3A3"
-  },
-  smallTextBlack: {
-    fontFamily: "roboto",
-    fontSize: 12,
-    color: "#000000"
-  },
-  smallTextPink: {
-    fontFamily: "roboto",
-    fontSize: 12,
-    color: "#F3A3A3"
-  },
   textInput: {
     height: 42,
-    color: "#000000",
-    fontFamily: "roboto",
     width: 240,
-    borderBottomColor: "#F3A3A3",
+    borderBottomColor: Colors.PINK,
     borderBottomWidth: 1.5,
     marginLeft: 7,
-    fontSize: 15
   },
   searchBar: {
     flex: 1,
@@ -256,13 +229,13 @@ const styles = StyleSheet.create({
     alignItems: "center"
   },
   resultsItem: {
-    backgroundColor: "#FFFFFF", // padding: 20,
+    backgroundColor: Colors.WHITE, // padding: 20,
     marginVertical: 8,
     marginHorizontal: 0,
     borderRadius: 20,
     width: 322,
     height: 203,
-    shadowColor: "#000000",
+    shadowColor: Colors.BLACK,
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.5,
     shadowRadius: 1,
@@ -271,12 +244,6 @@ const styles = StyleSheet.create({
   menuInfo: {
     marginLeft: 20,
     marginRight: 20
-  },
-  label: {
-    fontFamily: "roboto",
-    fontSize: 10,
-    textAlign: "center",
-    color: "#FFFFFF"
   },
   bgLabel: {
     width: 60,

@@ -18,7 +18,7 @@ const RootStack = createStackNavigator(
     Menu: MenuPage
   },
   {
-    initialRouteName: "Menu",
+    initialRouteName: "Search",
     header: null,
     headerMode: "none"
   }
