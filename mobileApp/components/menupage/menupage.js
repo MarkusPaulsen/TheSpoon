@@ -176,11 +176,11 @@ export default class Menu extends Component {
       const menuInfo = {
         id: menuId,
         restaurantName,
-        menuName: responseJson["name"],
+        menuName: responseJson["menuName"],
         menuDescription: responseJson["description"],
-        tag1: responseJson["tags"][0],
-        tag2: responseJson["tags"][1],
-        score: "4.6"
+        tag1: responseJson["tags"][0]["name"],
+        tag2: responseJson["tags"][1]["name"],
+        score: responseJson["menuRating"]
       };
       const menuItems = responseJson["menuItems"].map(index => ({
         menuItemName: index["name"],
@@ -188,8 +188,8 @@ export default class Menu extends Component {
         priceEuros: index["priceEuros"],
         menuItemImage: index["imageLink"],
         // TODO: Handle number of tags
-        tag1: index["tags"][0],
-        tag2: index["tags"][1],
+        tag1: index["tags"][0]["name"],
+        tag2: index["tags"][1]["name"],
         // TODO: Add right rating-score
         score: "4.6"
       }));

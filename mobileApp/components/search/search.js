@@ -12,8 +12,8 @@ import {
 } from "react-native";
 import Validate from "./searchvalidation.js";
 import { TouchableWithoutFeedback } from "react-native-web";
-import * as Typography from '../../styles/typography';
-import * as Colors from '../../styles/colors';
+import * as Typography from "../../styles/typography";
+import * as Colors from "../../styles/colors";
 
 function ResultItem({ menuName, restaurantName, tag1, tag2, score }) {
   return (
@@ -94,10 +94,10 @@ export default class Search extends Component {
           menuName: index.menu.name,
           restaurantName: index.restaurantData.restaurantName,
           // TODO: Handle number of tags
-          tag1: index.menu.tags[0][0],
-          tag2: index.menu.tags[1][1],
+          tag1: index.menu.tags[0]["name"],
+          tag2: index.menu.tags[1]["name"],
           // TODO: Add right rating-score
-          score: "4.6"
+          score: index.menu.rating
         }));
         this.setState({ searchResults });
       }
@@ -121,7 +121,7 @@ export default class Search extends Component {
               <Text style={Typography.FONT_H4_BLACK}>today </Text>
             </View>
           </View>
-          <View style={[styles.searchBar, {marginTop: 20}]}>
+          <View style={[styles.searchBar, { marginTop: 20 }]}>
             <TouchableOpacity
               value={this.state.searchWord}
               onPress={this.validateSearch}
@@ -154,22 +154,24 @@ export default class Search extends Component {
                 <FlatList
                   data={this.state.searchResults}
                   renderItem={({ item }) => (
-                      <TouchableOpacity
-                          onPress={() => {
-                              console.log(item);
-                              this.props.navigation.navigate('Menu', {
-                                  menuId: item.menuId,
-                                  restaurantName: item.restaurantName,
-                              });}}>
-                          <ResultItem
-                              menuId={item.menuId}
-                              menuName={item.menuName}
-                              restaurantName={item.restaurantName}
-                              tag1={item.tag1}
-                              tag2={item.tag2}
-                              score={item.score}
-                          />
-                      </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={() => {
+                        console.log(item);
+                        this.props.navigation.navigate("Menu", {
+                          menuId: item.menuId,
+                          restaurantName: item.restaurantName
+                        });
+                      }}
+                    >
+                      <ResultItem
+                        menuId={item.menuId}
+                        menuName={item.menuName}
+                        restaurantName={item.restaurantName}
+                        tag1={item.tag1}
+                        tag2={item.tag2}
+                        score={item.score}
+                      />
+                    </TouchableOpacity>
                   )}
                   keyExtractor={item => item.menuId}
                 />
@@ -181,10 +183,13 @@ export default class Search extends Component {
                   <Image source={require("../../assets/noresults.png")} />
                 </View>
                 <Text
-                  style={[Typography.FONT_H4_GRAY_DARK,{
-                    textAlign: "center",
-                    marginTop: 70
-                  }]}
+                  style={[
+                    Typography.FONT_H4_GRAY_DARK,
+                    {
+                      textAlign: "center",
+                      marginTop: 70
+                    }
+                  ]}
                 >
                   <Text> We can't find what you are {"\n"} looking for...</Text>
                 </Text>
@@ -216,7 +221,7 @@ const styles = StyleSheet.create({
     width: 240,
     borderBottomColor: Colors.PINK,
     borderBottomWidth: 1.5,
-    marginLeft: 7,
+    marginLeft: 7
   },
   searchBar: {
     flex: 1,
