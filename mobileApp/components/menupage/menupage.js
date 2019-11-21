@@ -62,7 +62,7 @@ function Map() {
   );
 }
 
-function MenuItem() {
+function MenuItem({menuItemName, menuItemDescription, priceEuros, menuItemImage, tag1, tag2, score}) {
   return (
     <View>
       <View style={{ flexDirection: "row" /*top: 20*/ }}>
@@ -73,7 +73,7 @@ function MenuItem() {
           />
           <View style={{ flexDirection: "row", left: 8 }}>
             <Image source={require("../../assets/icon-star.png")} />
-            <Text style={styles.smallTextBlack}> Score </Text>
+            <Text style={styles.smallTextBlack}> {score} </Text>
           </View>
         </View>
 
@@ -84,61 +84,76 @@ function MenuItem() {
             justifyContent: "space-between"
           }}
         >
-          <Text style={styles.smallTextBlack}> Blue Cheese Burger </Text>
-          <Text style={styles.smallThinText2}> Description </Text>
-          <Text style={styles.smallTextBlack}> Tags </Text>
+          <Text style={styles.smallTextBlack}> {menuItemName} </Text>
+          <Text style={styles.smallThinText2}> {menuItemDescription} </Text>
+          <Text style={styles.smallTextBlack}> {tag1} </Text>
+            <Text style={styles.smallTextBlack}> {tag2} </Text>
         </View>
 
         <View style={{ flexDirection: "column", left: 100 }}>
-          <Text style={styles.smallTextBlack}> 8¢ </Text>
+          <Text style={styles.smallTextBlack}> {priceEuros}</Text>
         </View>
       </View>
+        <View style={styles.underline} />
     </View>
   );
 }
 
 export default class Menu extends Component {
-  async getResults() {
+  constructor(props) {
+    super(props);
+    this.state = {
+      menuInfo: null,
+      menuItems: null,
+      searchResults: null
+    };
+  }
+
+  async componentDidMount() {
+    const { navigation } = this.props;
+    const menuId = navigation.getParam("menuId", "000");
+    const restaurantName = navigation.getParam("restaurantName", "default value");
+    await this.getMenuItem(menuId, restaurantName);
+  }
+
+  async getMenuItem(menuId, restaurantName) {
     //TODO: Handle promise
     try {
-      let searchString = this.state.search;
       //change to port 80 if not using the stub
-      let response = await fetch(
-        "http://192.168.1.110:8080/api/user/customer/menu/searchByMenuItem?menuItemName={searchString}",
+      const response = await fetch(
+        `http://192.168.1.110:8080/api/user/customer/menu/${menuId}`,
         {
           method: "GET",
           accept: "application/json"
         }
       );
-      let responseJson = await response.json();
-      console.log("The search string is: ", searchString);
-      console.log("The response is: ", responseJson);
-
-      if (response.ok) {
-        this.setState({ searchResults: responseJson });
-        this.createResultsData(responseJson);
-        //this.setState({ searchResultsFound: true });
-      }
-      if (!response.ok) {
-        // this.setState({ searchResultsFound: false });
-      }
+      const responseJson = await response.json();
+      const menuInfo = {
+        id: menuId,
+        restaurantName,
+        menuName: responseJson["name"],
+        menuDescription: responseJson["description"],
+        tag1: responseJson["tags"][0],
+        tag2: responseJson["tags"][1],
+        score: "4.6"
+      };
+      const menuItems = responseJson["menuItems"].map(index => (
+          {
+              menuItemName: index["name"],
+              menuItemDescription: index["description"],
+              priceEuros: index["priceEuros"],
+              menuItemImage: index["imageLink"],
+              // TODO: Handle number of tags
+              tag1: index["tags"][0],
+              tag2: index["tags"][1],
+              // TODO: Add right rating-score
+              score: "4.6"
+          }
+      ));
+      this.setState({ menuInfo, menuItems });
     } catch (e) {
       console.error(e);
     }
-  }
-  createResultsData(responseJson) {
-    responseJson.map(index => {
-      resultsData.push({
-        id: index.menu.menuID.toString(),
-        menuName: index.menu.name,
-        restaurantName: index.restaurantData.restaurantName,
-        //TODO: Handle more than two tags
-        tag1: index.menu.tags[0],
-        tag2: index.menu.tags[1],
-        //TODO: Add the right score
-        score: "4.6"
-      });
-    });
   }
 
   render() {
@@ -166,10 +181,46 @@ export default class Menu extends Component {
             </Text>
           </SafeAreaView>
           <View style={{ bottom: 50 }}>
-            <Dishes />
-            <Drinks />
+                  <Text style={styles.thinText}> DISHES </Text>
+                  <View style={styles.underline} />
+                  <FlatList
+                      data={this.state.menuItems}
+                      renderItem={({ item }) => (
+                          <MenuItem
+                              menuId={item.menuItemName}
+                              menuItemName={item.menuItemName}
+                              menuItemDescription={item.menuItemDescription}
+                              priceEuros={item.priceEuros}
+                              menuItemImage={item.menuItemImage}
+                              tag1={item.tag1}
+                              tag2={item.tag2}
+                              score={item.score}
+                          />
+                      )}
+                      keyExtractor={item => item.menuId}
+                  />
+                  <Text style={styles.thinText}> DRINKS </Text>
+                  <View style={styles.underline} />
+
+                  <FlatList
+                      data={this.state.menuItems}
+                      renderItem={({ item }) => (
+                          <MenuItem
+                              menuId={"9mmn" + item.menuItemName}
+                              menuItemName={item.menuItemName}
+                              menuItemDescription={item.menuItemDescription}
+                              priceEuros={item.priceEuros}
+                              menuItemImage={item.menuItemImage}
+                              tag1={item.tag1}
+                              tag2={item.tag2}
+                              score={item.score}
+                          />
+                      )}
+                      keyExtractor={item => item.menuId}
+
+                  />
           </View>
-          <Map />
+            <Map />
         </ScrollView>
       </SafeAreaView>
     );

@@ -79,17 +79,17 @@ export default class Search extends Component {
       const searchString = this.state.searchWord;
       //change to port 80 if not using the stub
       const response = await fetch(
-        "http://192.168.1.101:8080/api/user/customer/menu/searchByMenuItem?menuItemName={searchString}",
+        "http://192.168.1.110:8080/api/user/customer/menu/searchByMenuItem?menuItemName={searchString}",
         {
           method: "GET",
           accept: "application/json"
         }
       );
       const responseJson = await response.json();
-
+      //console.log(responseJson);
       if (response.ok) {
         const searchResults = responseJson.map(index => ({
-          id: index.menu.menuID.toString(),
+          menuId: index.menu.menuID.toString(),
           menuName: index.menu.name,
           restaurantName: index.restaurantData.restaurantName,
           // TODO: Handle number of tags
@@ -98,6 +98,7 @@ export default class Search extends Component {
           // TODO: Add right rating-score
           score: "4.6"
         }));
+        console.log("RESULTS",searchResults[0]["id"]);
         this.setState({ searchResults });
       }
       if (!response.ok) {
@@ -152,15 +153,24 @@ export default class Search extends Component {
                 <FlatList
                   data={this.state.searchResults}
                   renderItem={({ item }) => (
-                    <ResultItem
-                      menuName={item.menuName}
-                      restaurantName={item.restaurantName}
-                      tag1={item.tag1}
-                      tag2={item.tag2}
-                      score={item.score}
-                    />
+                      <TouchableOpacity
+                          onPress={() => {
+                              console.log(item);
+                              this.props.navigation.navigate('Menu', {
+                                  menuId: item.menuId,
+                                  restaurantName: item.restaurantName,
+                              });}}>
+                          <ResultItem
+                              menuId={item.menuId}
+                              menuName={item.menuName}
+                              restaurantName={item.restaurantName}
+                              tag1={item.tag1}
+                              tag2={item.tag2}
+                              score={item.score}
+                          />
+                      </TouchableOpacity>
                   )}
-                  keyExtractor={item => item.id}
+                  keyExtractor={item => item.menuId}
                 />
               </SafeAreaView>
             ) : null}
