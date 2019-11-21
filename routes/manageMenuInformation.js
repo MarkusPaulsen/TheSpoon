@@ -81,8 +81,85 @@ router.post('/', auth, isOwner, findRestaurant, async (req, res) => {
 
 //Return all the menus of the restaurant
 router.get('/', auth, isOwner, findRestaurant, async (req, res) => {
+    try {
+        const menus = await Menu.findAll({
+            attributes: ['Name', 'Description', 'Menu_ID'],
+            where: {
+                // Not sure how the parameter is defined. May be restaurantID
+                Restaurant_ID: req.restaurant.Restaurant_ID
+            }
+        });
 
+        //Map through the menus of the restaurant
+        const menuWithItems = menus.map( async m => {
+            //Find tags associated with the menu.
+            const tagsOnMenu = await TaggedMenu.findAll({
+                attributes: ['Tag'],
+                where: {
+                    Menu_ID: m.dataValues.menuID
+                }
+            });
+
+            //Formating the tags
+            const tags = await tagsOnMenu.map( m => { return m.dataValues.Tag });
+
+            //Find items on the menu
+            const menuItemsWithoutTags = await MenuItem.findAll({
+                attributes: ['Name', 'Description', 'Type', 'Price', 'ImageLink'],
+                where: {
+                    Menu_ID: m.dataValues.Menu_ID
+                }
+            });
+
+            //Map through the items to find the tags connected to the item
+            const menuItemsWithTags = menuItemsWithoutTags.map(async mi => {
+                const tagsOnItem = await TaggedItem.findAll({
+                    attributes: ['Tag'],
+                    where: {
+                        MI_ID: mi.dataValues.MI_ID
+                    }
+                });
+
+                //Just for formating
+                const tags = await tagsOnItem.map(m => {
+                    return m.dataValues.Tag
+                });
+
+                //Return the specific menuItem with the right format.
+                return {
+                    name: mi.dataValues.Name,
+                    description: mi.dataValues.Description,
+                    type: mi.dataValues.Type,
+                    priceEuros: mi.dataValues.Price,
+                    imageLink: mi.dataValues.ImageLink,
+                    tags
+                }
+            });
+
+            //Wait for all the find menuItemTags-operation to finish
+            const menuItems = await Promise.all(menuItemsWithTags);
+
+            //Return the menu with the right format
+            return {
+                menuID: m.dataValues.Menu_ID,
+                name: m.dataValues.Name,
+                description: m.dataValues.Description,
+                tags,
+                menuItems,
+            }
+
+        });
+
+        // Waiting for all the menuItem-operations to be finished
+        const result = await Promise.all(menuWithItems);
+
+        //Return the object
+        res.status(200).send(result)
+    } catch (error){
+        res.status(400).send(error);
+    }
 });
+
 
 //Edit a menu's information (not its items)
 router.put('/:menuID', auth, isOwner, findRestaurant, async (req,res) => {
