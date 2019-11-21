@@ -5,6 +5,8 @@ router.use(express.json());
 const Menu = require('../models/menu.js');
 const Tag = require('../models/tag.js');
 const TaggedMenu = require('../models/taggedMenu.js');
+const TaggedItem = require('../models/taggedItem.js');
+const MenuItem = require('../models/menuItem.js');
 
 const inputValidator = require('../middleware/inputValidationMiddleware.js');
 const validationSchema = require('../validationSchemas.js');
@@ -82,7 +84,6 @@ router.get('/', auth, isOwner, findRestaurant, async (req, res) => {
                 }
             });
             const tags = await Promise.all(menuTags);
-
 
             //Find items on the menu
             const menuItemsWithoutTags = await MenuItem.findAll({
