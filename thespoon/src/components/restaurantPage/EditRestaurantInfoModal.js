@@ -1,14 +1,120 @@
+//<editor-fold desc="React">
 import React, {Component} from 'react';
-import {IconName, IconLocation, IconBirthday, IconExit, IconBack} from '../Icons';
+//</editor-fold>
+//<editor-fold desc="Bootstrap">
 import {Modal} from "react-bootstrap";
-import FilterLink from "../../containers/FilterModalLink";
-import {modalVisibilityFilters} from "../../constants/modalVisibiltyFilters";
+//</editor-fold>
+//<editor-fold desc="Validator">
 import Form from 'react-validation/build/form';
 import Input from 'react-validation/build/input';
 import Button from 'react-validation/build/button';
+import Textarea from 'react-validation/build/textarea';
+//</editor-fold>
+
+//<editor-fold desc="Icons">
+import {IconExit} from '../Icons';
+import {bindCallback, of, throwError} from "rxjs";
+import {exhaustMap, map, take} from "rxjs/operators";
+import {ajax} from "rxjs/ajax";
+//</editor-fold>
 
 
 class EditRestaurantInfoModal extends Component {
+    //<editor-fold desc="Constructor">
+    constructor(props)
+    {
+        super(props);
+
+        this.handleSubmit = this.handleSubmit.bind(this);
+
+        this.state = {
+            name: "",
+            description: "",
+            tags: "",
+            serverMessage: "",
+            submitted: false
+        };
+    }
+
+    //</editor-fold>
+
+    //<editor-fold desc="Business Logic">
+    handleSubmit = (event) => {
+        event.preventDefault();
+
+        const thisTemp = this;
+        of(1)
+            .pipe(map((event) => {
+                return thisTemp.form.getValues();
+            }))
+            .pipe(exhaustMap((values) => {
+                return bindCallback(thisTemp.setState).call(thisTemp, {
+                    latitude: thisTemp.state.latitude,
+                    longitude: thisTemp.state.longitude,
+
+                    name: values.name,
+                    imageID: values.imageID,
+
+                    address: values.address,
+                    city: values.city,
+                    country: values.country,
+                    description: values.description,
+                    serverMessage: null
+                });
+            }))
+            .pipe(exhaustMap((event) => {
+                return bindCallback(thisTemp.setState).call(thisTemp, {
+                    submitted: true
+                });
+            }))
+            .pipe(exhaustMap((event) => {
+                if (true) {
+                    return ajax({
+                        url: "http://localhost:8080/api/user/owner/restaurant",
+                        method: "POST",
+                        headers: {"Content-Type": "application/json"},
+                        body: {
+                            name: thisTemp.state.name,
+                            address: thisTemp.state.address,
+                            city: thisTemp.state.city,
+                            country: thisTemp.state.country,
+                            latitude: thisTemp.state.latitude,
+                            longitude: thisTemp.state.longitude,
+                            imageID: thisTemp.state.imageID
+                        }
+                    })
+                } else {
+                    return throwError({status: 0});
+                }
+            }))
+            .pipe(take(1))
+            .subscribe(
+                (next) => {
+                    console.log(next);
+                    thisTemp.props.onHide();
+                },
+                (error) => {
+                    console.log(error);
+                    switch (error.status) {
+                        case 400:
+                            thisTemp.setState({serverMessage: "Access denied"});
+                            break;
+                        case 404:
+                            thisTemp.setState({serverMessage: "No connection to the server"});
+                            break;
+                        case 0:
+                            thisTemp.setState({serverMessage: ""});
+                            break;
+                        default:
+                            thisTemp.setState({serverMessage: "General error"});
+                            break;
+                    }
+                }
+            );
+    };
+    //</editor-fold>
+
+    //<editor-fold desc="Render">
     render() {
         return (
             <Modal.Body>
@@ -62,6 +168,7 @@ class EditRestaurantInfoModal extends Component {
             </Modal.Body>
         )
     }
+    //</editor-fold>
 }
 
 export default EditRestaurantInfoModal;

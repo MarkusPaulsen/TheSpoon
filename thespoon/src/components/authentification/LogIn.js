@@ -54,7 +54,7 @@ class LogIn extends Component {
       },
     ]);
 
-    /*this.handleSubmit = this.handleSubmit.bind(this);*/
+    this.handleSubmit = this.handleSubmit.bind(this);
     this.changeRole = this.changeRole.bind(this);
 
     this.state = {
@@ -79,15 +79,15 @@ class LogIn extends Component {
           return thisTemp.form.getValues();
         }))
         .pipe(exhaustMap((values) => {
-          return bindCallback(this.setState).call(thisTemp, {
+          return bindCallback(thisTemp.setState).call(thisTemp, {
             username:values.username,
             password:values.password,
             serverMessage: null
           });
         }))
         .pipe(exhaustMap((event) => {
-          return bindCallback(this.setState).call(thisTemp, {
-            validation: thisTemp.validator.validate(this.state),
+          return bindCallback(thisTemp.setState).call(thisTemp, {
+            validation: thisTemp.validator.validate(thisTemp.state),
             submitted: true
           });
         }))
@@ -99,9 +99,9 @@ class LogIn extends Component {
               method: 'POST',
               headers: {'Content-Type': 'application/json'},
               body: {
-                username: this.state.username,
-                password: this.state.password,
-                isRestaurantOwner: this.state.isRestaurantOwner,
+                username: thisTemp.state.username,
+                password: thisTemp.state.password,
+                isRestaurantOwner: thisTemp.state.isRestaurantOwner,
               }
             })
           }
@@ -112,26 +112,25 @@ class LogIn extends Component {
         .pipe(take(1))
         .subscribe(
             (next) => {
-              this.props.successLogIn(next.response.token);
-              this.setState(
+              thisTemp.props.successLogIn(next.response.token);
+              thisTemp.setState(
                   { serverMessage: <Redirect to={{pathname: '/Mainpage/'}}/>}
               );
-              this.props.onHide();
-            },
-            (error) => {
-              this.props.failLogIn();
+              thisTemp.props.onHide();
+            }, (error) => {
+              thisTemp.props.failLogIn();
               switch (error.status) {
                 case 400:
-                  this.setState({ serverMessage: "Invalid username or password" });
+                  thisTemp.setState({ serverMessage: "Invalid username or password" });
                   break;
                 case 404:
-                  this.setState({ serverMessage: "No connection to the server" });
+                  thisTemp.setState({ serverMessage: "No connection to the server" });
                   break;
                 case 0:
-                  this.setState({ serverMessage: "" });
+                  thisTemp.setState({ serverMessage: "" });
                   break;
                 default:
-                  this.setState({ serverMessage: "General error" });
+                  thisTemp.setState({ serverMessage: "General error" });
                   break;
               }
             }

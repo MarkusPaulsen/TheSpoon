@@ -1,13 +1,13 @@
-import React, {Component} from 'react';
-import {Redirect} from 'react-router-dom'
-import {ajax} from 'rxjs/ajax';
-import {paths} from '../../constants/paths';
-import {IconName, IconEmail, IconPassword, IconExit, IconBack} from '../Icons';
+import React, {Component} from "react";
+import {Redirect} from "react-router-dom"
+import {ajax} from "rxjs/ajax";
+import {paths} from "../../constants/paths";
+import {IconName, IconEmail, IconPassword, IconExit, IconBack} from "../Icons";
 import {Modal} from "react-bootstrap";
 import FilterLink from "../../containers/FilterModalLink";
 import {modalVisibilityFilters} from "../../constants/modalVisibiltyFilters";
-import Form from 'react-validation/build/form';
-import Input from 'react-validation/build/input';
+import Form from "react-validation/build/form";
+import Input from "react-validation/build/input";
 import FormValidator from "../../validation/FormValidator";
 
 
@@ -18,64 +18,64 @@ class RegisterRestaurantowner extends Component  {
 
       this.validator = new FormValidator([
       {
-          field: 'email',
-          method: 'isEmpty',
+          field: "email",
+          method: "isEmpty",
           validWhen: false,
-          message: 'E-mail is required.'
+          message: "E-mail is required."
       },
       {
-          field: 'email',
-          method: 'isEmail',
+          field: "email",
+          method: "isEmail",
           validWhen: true,
-          message: 'That is not a valid email.'
+          message: "That is not a valid email."
       },
       {
-          field: 'username',
-          method: 'isEmpty',
+          field: "username",
+          method: "isEmpty",
           validWhen: false,
-          message: 'Username is required.'
+          message: "Username is required."
       },
       {
-          field: 'firstName',
-          method: 'isEmpty',
+          field: "firstName",
+          method: "isEmpty",
           validWhen: false,
-          message: 'First name is required.'
+          message: "First name is required."
       },
       {
-          field: 'surname',
-          method: 'isEmpty',
+          field: "surname",
+          method: "isEmpty",
           validWhen: false,
-          message: 'Surname is required.'
+          message: "Surname is required."
       },
       {
-          field: 'password',
-          method: 'isEmpty',
+          field: "password",
+          method: "isEmpty",
           validWhen: false,
-          message: 'Password is required.'
+          message: "Password is required."
       },
       {
-          field: 'confirmPassword',
-          method: 'isEmpty',
+          field: "confirmPassword",
+          method: "isEmpty",
           validWhen: false,
-          message: 'Password confirmation is required.'
+          message: "Password confirmation is required."
       },
       {
-          field: 'confirmPassword',
+          field: "confirmPassword",
           method: this.passwordMatch,
           validWhen: true,
-          message: 'Confirm password has to be identical to the password.'
+          message: "Confirm password has to be identical to the password."
       }
   ]);
 
       this.state = {
-          email:'',
-          username: '',
-          firstName:'',
-          surname:'',
-          password:'',
-          confirmPassword: '',
+          email:"",
+          username: "",
+          firstName:"",
+          surname:"",
+          password:"",
+          confirmPassword: "",
           validation: this.validator.valid(),
-          serverMessage: ''
+          serverMessage: ""
       };
 
       this.submitted = false;
@@ -104,9 +104,9 @@ class RegisterRestaurantowner extends Component  {
                 if (validation.isValid) {
                     let thisTemp = this;
                     ajax({
-                        url: paths['restApi']['registrationRestaurantOwner'],
-                        method: 'POST',
-                        headers: {'Content-Type': 'application/json'},
+                        url: paths["restApi"]["registrationRestaurantOwner"],
+                        method: "POST",
+                        headers: {"Content-Type": "application/json"},
                         body: {
                             email: this.state.email,
                             password:this.state.password,
@@ -132,19 +132,19 @@ class RegisterRestaurantowner extends Component  {
                             }
                         },
                         (complete) => {
-                            thisTemp.setState({ serverMessage: <Redirect to={{pathname: '/Mainpage/'}}/>});
+                            thisTemp.setState({ serverMessage: <Redirect to={{pathname: "/Mainpage/"}}/>});
                             thisTemp.props.onHide();
                         }
                     );
                 }
             }
             );
-    }
+    };
 
     render() {
         let validation = this.submitted ?                         // if the form has been submitted at least once
             this.validator.validate(this.state) :               // then check validity every time we render
-            this.state.validation
+            this.state.validation;
         return (
         <Modal.Body>
             <span className="back"> <FilterLink filter={modalVisibilityFilters.SHOW_CHOOSE_ROLE}><IconBack /></FilterLink></span>

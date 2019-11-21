@@ -1,15 +1,112 @@
-import React, {Component} from 'react';
-import {IconName, IconLocation, IconBirthday, IconExit, IconBack} from '../Icons';
+//<editor-fold desc="React">
+import React, {Component} from "react";
+//</editor-fold>
+//<editor-fold desc="Bootstrap">
 import {Modal} from "react-bootstrap";
-import FilterLink from "../../containers/FilterModalLink";
-import {modalVisibilityFilters} from "../../constants/modalVisibiltyFilters";
-import Form from 'react-validation/build/form';
-import Input from 'react-validation/build/input';
-import Button from 'react-validation/build/button';
-import Textarea from 'react-validation/build/textarea';
+//</editor-fold>
+//<editor-fold desc="RxJs">
+import {ajax} from "rxjs/ajax";
+//</editor-fold>
+//<editor-fold desc="Validator">
+import Form from "react-validation/build/form";
+import Input from "react-validation/build/input";
+import Button from "react-validation/build/button";
+import Textarea from "react-validation/build/textarea";
+//</editor-fold>
+
+//<editor-fold desc="Icons">
+import {IconExit} from "../Icons";
+import {bindCallback, of, throwError} from "rxjs";
+import {exhaustMap, map, take} from "rxjs/operators";
+//</editor-fold>
 
 
 class AddMenuModal extends Component {
+    //<editor-fold desc="Constructor">
+    constructor(props)
+    {
+        super(props);
+
+        this.handleSubmit = this.handleSubmit.bind(this);
+
+        this.state = {
+            name: "",
+            description: "",
+            tags: "",
+            serverMessage: "",
+            submitted: false
+        };
+    }
+
+    //</editor-fold>
+
+    //<editor-fold desc="Bussiness Logic">
+    handleSubmit = (event) => {
+        event.preventDefault();
+
+        const thisTemp = this;
+        of(1)
+            .pipe(map((event) => {
+                return thisTemp.form.getValues();
+            }))
+            .pipe(exhaustMap((values) => {
+                return bindCallback(thisTemp.setState).call(thisTemp, {
+                    name: values.name,
+                    description: values.description,
+                    tags: values.tags,
+                    serverMessage: null
+                });
+            }))
+            .pipe(exhaustMap((event) => {
+                return bindCallback(thisTemp.setState).call(thisTemp, {
+                    submitted: true
+                });
+            }))
+            .pipe(exhaustMap((event) => {
+                if (true) {
+                    return ajax({
+                        url: "http://localhost:8080/api/user/owner/restaurant/menu",
+                        method: "POST",
+                        headers: {"Content-Type": "application/json"},
+                        body: {
+                            name: thisTemp.state.name,
+                            description: thisTemp.state.description,
+                            tags: thisTemp.state.tags,
+                            menuItems: []
+                        }
+                    })
+                } else {
+                    return throwError({status: 0});
+                }
+            }))
+            .pipe(take(1))
+            .subscribe(
+                (next) => {
+                    console.log(next);
+                    thisTemp.props.onHide();
+                },
+                (error) => {
+                    console.log(error);
+                    switch (error.status) {
+                        case 400:
+                            thisTemp.setState({serverMessage: "Access denied"});
+                            break;
+                        case 404:
+                            thisTemp.setState({serverMessage: "No connection to the server"});
+                            break;
+                        case 0:
+                            thisTemp.setState({serverMessage: ""});
+                            break;
+                        default:
+                            thisTemp.setState({serverMessage: "General error"});
+                            break;
+                    }
+                }
+            );
+    };
+    //</editor-fold>
+
+    //<editor-fold desc="Render">
     render() {
         return (
             <Modal.Body>
@@ -19,8 +116,8 @@ class AddMenuModal extends Component {
                         <h2 className="title">Create menu</h2>
 
                         <div className="input-field">
-                            <label>Menu Name</label>
-                            <Input type="text" name="restaurantName" placeholder="Restaurant name"/>
+                            <label>Name</label>
+                            <Input type="text" name="name" placeholder="Name"/>
                         </div>
 
                         <div className="input-field">
@@ -40,6 +137,7 @@ class AddMenuModal extends Component {
             </Modal.Body>
         )
     }
+    //</editor-fold>
 }
 
 export default AddMenuModal;

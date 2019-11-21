@@ -1,15 +1,23 @@
+//<editor-fold desc="React">
 import React, {Component} from 'react';
-import {IconName, IconLocation, IconBirthday, IconExit, IconBack} from '../Icons';
+//</editor-fold>
+//<editor-fold desc="Bootstrap">
 import {Modal} from "react-bootstrap";
-import FilterLink from "../../containers/FilterModalLink";
-import {modalVisibilityFilters} from "../../constants/modalVisibiltyFilters";
+//</editor-fold>
+//<editor-fold desc="Validator">
 import Form from 'react-validation/build/form';
 import Input from 'react-validation/build/input';
 import Button from 'react-validation/build/button';
-import Textarea from "react-validation/build/textarea";
+import Textarea from 'react-validation/build/textarea';
+//</editor-fold>
+
+//<editor-fold desc="Icons">
+import {IconExit} from '../Icons';
+//</editor-fold>
 
 
 class EditMenuModal extends Component {
+    //<editor-fold desc="Render">
     render() {
         return (
             <Modal.Body>
@@ -43,6 +51,7 @@ class EditMenuModal extends Component {
             </Modal.Body>
         )
     }
+    //</editor-fold>
 }
 
 export default EditMenuModal;

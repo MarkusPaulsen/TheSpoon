@@ -6,6 +6,7 @@ import {connect} from 'react-redux'
 import {setModalVisibilityFilterAction} from '../actionCreators/modalVisibilityFilterActionCreators'
 //</editor-fold>
 
+
 //<editor-fold desc="Business Logic">
 const FilterModalLink = ({children, onClick}) => {
     return (

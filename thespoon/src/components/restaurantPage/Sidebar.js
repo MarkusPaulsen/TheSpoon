@@ -1,13 +1,23 @@
+//<editor-fold desc="React">
 import React, {Component} from 'react';
-import {IconLocationTurqoise, IconHoursTurqoise, IconEditPink} from '../Icons.js';
-import FilterLink from "../../containers/FilterModalLink";
+//</editor-fold>
+
+//<editor-fold desc="Constants">
 import {modalVisibilityFilters} from "../../constants/modalVisibiltyFilters";
+//</editor-fold>
+//<editor-fold desc="Containers">
+import FilterLink from "../../containers/FilterModalLink";
+//</editor-fold>
+//<editor-fold desc="Icons">
+import {IconLocationTurqoise, IconHoursTurqoise, IconEditPink} from '../Icons.js';
+//</editor-fold>
 
 class Sidebar extends Component {
     constructor(props) {
         super(props)
     }
 
+    //<editor-fold desc="Render">
     render() {
         return (
             <div className="sidebar">
@@ -42,6 +52,7 @@ class Sidebar extends Component {
             </div>
         );
     }
+    //</editor-fold>
 }
 
 export default Sidebar;
