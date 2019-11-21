@@ -93,19 +93,30 @@ router.get('/', auth, isOwner, findRestaurant, async (req, res) => {
         //Map through the menus of the restaurant
         const menuWithItems = menus.map( async m => {
             //Find tags associated with the menu.
-            const tagsOnMenu = await TaggedMenu.findAll({
+            let menuTags = await TaggedMenu.findAll({
                 attributes: ['Tag'],
                 where: {
-                    Menu_ID: m.dataValues.menuID
+                    Menu_ID: m.dataValues.Menu_ID
                 }
             });
 
-            //Formating the tags
-            const tags = await tagsOnMenu.map( m => { return m.dataValues.Tag });
+            // Retrieve the color of the tag
+            menuTags = await menuTags.map( async t => {
+                const tag = await Tag.findOne({
+                    where: {
+                        Name: t.dataValues.Tag
+                    }
+                });
+                return {
+                    name: tag.dataValues.Name,
+                    color: tag.dataValues.Color
+                }
+            });
+            const tags = await Promise.all(menuTags);
+
 
             //Find items on the menu
             const menuItemsWithoutTags = await MenuItem.findAll({
-                attributes: ['Name', 'Description', 'Type', 'Price', 'ImageLink'],
                 where: {
                     Menu_ID: m.dataValues.Menu_ID
                 }
@@ -113,17 +124,26 @@ router.get('/', auth, isOwner, findRestaurant, async (req, res) => {
 
             //Map through the items to find the tags connected to the item
             const menuItemsWithTags = menuItemsWithoutTags.map(async mi => {
-                const tagsOnItem = await TaggedItem.findAll({
+                let tagsOnItem = await TaggedItem.findAll({
                     attributes: ['Tag'],
                     where: {
                         MI_ID: mi.dataValues.MI_ID
                     }
                 });
 
-                //Just for formating
-                const tags = await tagsOnItem.map(m => {
-                    return m.dataValues.Tag
+                tagsOnItem = await tagsOnItem.map( async t => {
+                    const tag = await Tag.findOne({
+                        where: {
+                            Name: t.dataValues.Tag
+                        }
+                    });
+                    return {
+                        name: tag.dataValues.Name,
+                        color: tag.dataValues.Color
+                    }
                 });
+                const tags = await Promise.all(tagsOnItem);
+
 
                 //Return the specific menuItem with the right format.
                 return {

@@ -10,7 +10,8 @@ const TaggedMenu = require('../models/taggedMenu.js');
 const Restaurant = require('../models/restaurants.js');
 const Tag = require('../models/tag.js');
 
-
+// TODO: Aggregate the rating of the menu
+// TODO: Aggregate thte rating of each item
 
 router.get('/:menuID', async (req, res) => {
     try {
@@ -29,32 +30,26 @@ router.get('/:menuID', async (req, res) => {
                 Restaurant_ID: menuInfo.dataValues.Restaurant_ID
             }
         });
-        /*
-        const menuTags = await TaggedMenu.findAll({
+        let menuTags = await TaggedMenu.findAll({
             attributes: ['Tag'],
             where: {
                 Menu_ID: req.params.menuID
             }
         });
 
-        /*
         // Retrieve the color of the tag
-        const tags = await menuTags.map( async t => {
+        menuTags = await menuTags.map( async t => {
             const tag = await Tag.findOne({
-                attributes: ['Color'],
                 where: {
                     Name: t.dataValues.Tag
                 }
             });
-            /*
             return {
-                name: t.dataValues.Name,
+                name: tag.dataValues.Name,
                 color: tag.dataValues.Color
             }
-
-            return tag
         });
-        */
+        const tags = await Promise.all(menuTags);
 
         const menuItemsWithoutTags= await MenuItem.findAll({
             where: {
@@ -63,13 +58,25 @@ router.get('/:menuID', async (req, res) => {
         });
 
         const promises = menuItemsWithoutTags.map(async menuItems => {
-            const tagsOnItem = await TaggedItem.findAll({
+            let tagsOnItem = await TaggedItem.findAll({
                 attributes: ['Tag'],
                 where: {
                     MI_ID: menuItems.dataValues.MI_ID
                 }
             });
-            const tags = await tagsOnItem.map( m => { return m.dataValues.Tag });
+
+            tagsOnItem = await tagsOnItem.map( async t => {
+                const tag = await Tag.findOne({
+                    where: {
+                        Name: t.dataValues.Tag
+                    }
+                });
+                return {
+                    name: tag.dataValues.Name,
+                    color: tag.dataValues.Color
+                }
+            });
+            const tags = await Promise.all(tagsOnItem);
 
             return {
                 name: menuItems.dataValues.Name,
@@ -77,7 +84,8 @@ router.get('/:menuID', async (req, res) => {
                 type: menuItems.dataValues.Type,
                 priceEuros: menuItems.dataValues.Price,
                 imageLink: menuItems.dataValues.ImageLink,
-                tags}
+                tags
+            }
         });
         const menuItems = await Promise.all(promises);
 
@@ -93,7 +101,7 @@ router.get('/:menuID', async (req, res) => {
             menuName: menuInfo.dataValues.Name,
             description:  menuInfo.dataValues.Description,
             menuRating: '',
-            //tags,
+            tags,
             menuItems
         });
     } catch (error){

@@ -1,7 +1,5 @@
 const Sequelize = require('sequelize');
 const db = require('../sequelizeSettings');
-const Tags = require('./tag');
-const Menu = require('./menu');
 
 const TaggedMenu = db.define('TaggedMenu', {
     Menu_ID: {
@@ -11,18 +9,6 @@ const TaggedMenu = db.define('TaggedMenu', {
     Tag: {
         type: Sequelize.STRING,
         primaryKey: true
-    }
-},
-    {
-    classMethods: {
-        associate: () => {
-            TaggedMenu.hasMany(Tags, {
-                foreignKey: 'Tag'
-            });
-            TaggedMenu.hasMany(Menu, {
-                foreignKey: 'Menu_ID'
-            })
-        }
     }
 },
 {
