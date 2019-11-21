@@ -12,6 +12,9 @@ const auth = require('../middleware/authorizationMiddleware.js');
 const isOwner = require('../middleware/checkIfOwnerMiddleware.js');
 const findRestaurant = require('../middleware/findRestaurantOfOwnerMiddleware.js');
 
+const menuItem = require('./menuItem.js');
+
+//Add an empty menu to a restaurant
 router.post('/', auth, isOwner, findRestaurant, async (req, res) => {
     //only tags already present in the database, in the table Tag, are allowed to used
     //so first check if the tags of the menu and the tags of the menuItems are in the database
@@ -75,5 +78,23 @@ router.post('/', auth, isOwner, findRestaurant, async (req, res) => {
     //send the response
     res.status(200).send({menuID: menuCreated.dataValues.Menu_ID});
 });
+
+//Return all the menus of the restaurant
+router.get('/', auth, isOwner, findRestaurant, async (req, res) => {
+
+});
+
+//Edit a menu's information (not its items)
+router.put('/:menuID', auth, isOwner, findRestaurant, async (req,res) => {
+
+});
+
+//Delete a menu
+router.delete('/:menuID', auth, isOwner, findRestaurant, async (req,res) => {
+
+});
+
+//this is required in order to route the request to the endpoints that manage the menu items
+router.use('/', menuItem);
 
 module.exports = router;
