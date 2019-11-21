@@ -95,8 +95,8 @@ router.get('/:menuID', async (req, res) => {
                 address: restaurantInfo.dataValues.Address,
                 city: restaurantInfo.dataValues.City,
                 country: restaurantInfo.dataValues.Country,
-                latitude: restaurantInfo.dataValues.latitude,
-                longitude: restaurantInfo.dataValues.longitude
+                latitude: restaurantInfo.dataValues.Latitude,
+                longitude: restaurantInfo.dataValues.Longitude
             },
             menuName: menuInfo.dataValues.Name,
             description:  menuInfo.dataValues.Description,

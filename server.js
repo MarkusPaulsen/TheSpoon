@@ -30,7 +30,7 @@ const image = require('./routes/image-upload.js');
 const searchByMenuItem = require('./routes/searchByMenuItem.js');
 const manageMenuInformation = require('./routes/manageMenuInformation.js');
 const searchMenu = require('./routes/searchMenu.js');
-
+const getRestaurant = require('./routes/getRestaurant.js');
 
 app.use('/api/user/login', login);
 app.use('/api/user/customer/register', registrationCustomer);
@@ -39,6 +39,7 @@ app.use('/api/image',image);
 app.use('/api/user/customer/menu/searchByMenuItem', searchByMenuItem);
 app.use('/api/user/owner/restaurant/menu', manageMenuInformation);
 app.use('/api/user/customer/menu/', searchMenu);
+app.use('/api/user/owner/restaurant', getRestaurant);
 
 
 
@@ -67,7 +68,7 @@ app.get("*", (req, res) => {
 
 //END OF THE REQUIRED CODE TO MAKE THE DEPLOY WORK
 
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 80;
 
 app.listen(port, () => console.log('Server started on port ' + port));
 
