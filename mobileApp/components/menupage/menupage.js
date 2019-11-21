@@ -7,44 +7,21 @@ import {
   ScrollView,
   SafeAreaView,
   TouchableOpacity,
-  FlatList,
-  ListView,
-  TextInput,
-  Dimensions
+  FlatList
 } from "react-native";
 import MapView from "react-native-maps";
-
-function Dishes() {
-  return (
-    <View>
-      <Text style={styles.thinText}> DISHES </Text>
-      <View style={styles.underline} />
-      <MenuItem />
-      <View style={styles.underline} />
-      <MenuItem />
-      <View style={styles.underline} />
-    </View>
-  );
-}
-
-function Drinks() {
-  return (
-    <View>
-      <Text style={styles.thinText}> DRINKS </Text>
-      <View style={styles.underline} />
-      <MenuItem />
-      <View style={styles.underline} />
-      <MenuItem />
-      <View style={styles.underline} />
-    </View>
-  );
-}
+import stylesheet from "../../modules/fontstyles";
 
 function Map() {
   return (
     <View>
       <MapView
-        style={{ width: 300, height: 300, marginBottom: 20 }}
+        style={{
+          width: 360,
+          height: 270,
+          alignSelf: "center",
+          marginBottom: 200
+        }}
         initialRegion={{
           latitude: 45.4688346,
           longitude: 9.2212227,
@@ -73,13 +50,26 @@ function MenuItem({
 }) {
   return (
     <View>
-      <View style={{ flexDirection: "row" /*top: 20*/ }}>
-        <View style={{ flexDirection: "column", left: 10 }}>
+      <View
+        style={{
+          flexDirection: "row",
+          flex: 1,
+          marginHorizontal: 15,
+          height: 80
+        }}
+      >
+        <View
+          style={{
+            flexDirection: "column",
+            width: 80,
+            alignItems: "center"
+          }}
+        >
           <Image
             source={require("../../assets/no_image.png")}
-            style={styles.imageCircle}
+            style={[styles.imageCircle, { alignSelf: "center" }]}
           />
-          <View style={{ flexDirection: "row", left: 8 }}>
+          <View style={{ flexDirection: "row" }}>
             <Image source={require("../../assets/icon-star.png")} />
             <Text style={styles.smallTextBlack}> {score} </Text>
           </View>
@@ -88,18 +78,25 @@ function MenuItem({
         <View
           style={{
             flexDirection: "column",
-            left: 20,
-            justifyContent: "space-between"
+            width: 190
           }}
         >
-          <Text style={styles.smallTextBlack}> {menuItemName} </Text>
-          <Text style={styles.smallThinText2}> {menuItemDescription} </Text>
-          <Text style={styles.smallTextBlack}> {tag1} </Text>
-          <Text style={styles.smallTextBlack}> {tag2} </Text>
+          <Text style={[styles.smallTextBlack, { marginVertical: 5 }]}>
+            {menuItemName}
+          </Text>
+          <Text style={styles.smallThinText2}>
+            {menuItemDescription}
+          </Text>
+          <Text style={[styles.smallTextBlack, {marginTop: 5}]}>
+            {tag1} {tag2}
+          </Text>
         </View>
 
-        <View style={{ flexDirection: "column", left: 100 }}>
-          <Text style={styles.smallTextBlack}> {priceEuros}</Text>
+        <View style={{ width: 30}}>
+          <Text style={[styles.smallTextBlack, { alignSelf: "flex-end" }]}>
+            {" "}
+            {priceEuros}
+          </Text>
         </View>
       </View>
       <View style={styles.underline} />
@@ -174,27 +171,31 @@ export default class Menu extends Component {
           }}
         >
           <View>
-            <Image source={require("../../assets/auum.png")} />
-          </View>
-          <SafeAreaView style={styles.infoBox}>
-            <Text style={styles.h3}>{this.state.menuInfo.menuName}</Text>
-            <View style={{ flexDirection: "row" }}>
-              <Text style={styles.smallTextBlack}> by </Text>
-              <Text style={styles.smallTextPink}>
-                {this.state.menuInfo.restaurantName}
-              </Text>
+            <View>
+              <Image source={require("../../assets/auum.png")} />
             </View>
-            <Text> Stars </Text>
-            <Text style={styles.smallThinText}>
-              {this.state.menuInfo.menuDescription}
-            </Text>
-          </SafeAreaView>
-          <View style={{ bottom: 50 }}>
+            <SafeAreaView style={styles.infoBox}>
+              <Text style={styles.h3}>{this.state.menuInfo.menuName}</Text>
+              <View style={{ flexDirection: "row" }}>
+                <Text style={styles.smallTextBlack}> by </Text>
+                <Text style={styles.smallTextPink}>
+                  {this.state.menuInfo.restaurantName}
+                </Text>
+              </View>
+              <Text> Stars </Text>
+              <Text style={styles.smallThinText}>
+                {this.state.menuInfo.menuDescription}
+              </Text>
+            </SafeAreaView>
+          </View>
+          <SafeAreaView style={{ marginTop: 160, alignItems: "center" }}>
             <Text style={styles.thinText}> DISHES </Text>
             <View style={styles.underline} />
             <FlatList
-              scrollEnabled={false}
               data={this.state.menuItems}
+              contentContainerStyle={{
+                flexGrow: 1
+              }}
               renderItem={({ item }) => (
                 <MenuItem
                   menuId={item.menuItemName}
@@ -211,8 +212,10 @@ export default class Menu extends Component {
             />
             <Text style={styles.thinText}> DRINKS </Text>
             <View style={styles.underline} />
-
             <FlatList
+              contentContainerStyle={{
+                flexGrow: 1
+              }}
               data={this.state.menuItems}
               renderItem={({ item }) => (
                 <MenuItem
@@ -228,8 +231,8 @@ export default class Menu extends Component {
               )}
               keyExtractor={item => item.menuId}
             />
-          </View>
-          <Map />
+            <Map />
+          </SafeAreaView>
         </ScrollView>
       </SafeAreaView>
     );
@@ -252,10 +255,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.5,
     shadowRadius: 1,
     elevation: 3,
-    //position: "absolute",
+    position: "absolute",
     alignItems: "center",
     justifyContent: "center",
-    bottom: 70
+    marginTop: 110,
+    alignSelf: "center"
   },
   containerResults: {
     backgroundColor: "#FFFFFF",
@@ -284,7 +288,8 @@ const styles = StyleSheet.create({
   smallTextBlack: {
     fontFamily: "roboto",
     fontSize: 12,
-    color: "#000000"
+    color: "#000000",
+    fontWeight: "500"
   },
   smallTextPink: {
     fontFamily: "roboto",
@@ -304,7 +309,7 @@ const styles = StyleSheet.create({
     borderBottomColor: "#E7E5E5",
     borderBottomWidth: 1,
     //textAlign: "center",
-    width: 300,
+    width: 320,
     margin: 10
   },
   smallThinText: {
