@@ -2,10 +2,10 @@
 
 
 /**
- * Add a menu to a restaurant
- * Add a menu to a restaurant of a restaurant owner, which needs to be logged in
+ * Add an empty menu to a restaurant
+ * Add a menu to a restaurant of a restaurant owner, which needs to be logged in. The menuItems are not meant to be added to the menu through this endpoint.
  *
- * body Menu Menu data
+ * body MenuWithoutItems Menu data
  * returns MenuID
  **/
 exports.addMenu = function(body) {
@@ -13,6 +13,46 @@ exports.addMenu = function(body) {
     var examples = {};
     examples['application/json'] = {
   "menuID" : 2
+};
+    if (Object.keys(examples).length > 0) {
+      resolve(examples[Object.keys(examples)[0]]);
+    } else {
+      resolve();
+    }
+  });
+}
+
+
+/**
+ * Add a menuItem to a menu
+ * Add a menuItem to the menu with given menuID. Authentication required.
+ *
+ * menuID Integer ID of the menu
+ * body MenuItem Menu data
+ * returns Menu
+ **/
+exports.addMenuItem = function(menuID,body) {
+  return new Promise(function(resolve, reject) {
+    var examples = {};
+    examples['application/json'] = {
+  "name" : "Emilio's menu of the day",
+  "description" : "Our special menu of today",
+  "tags" : [ "Italian", "Mediterranean" ],
+  "menuItems" : [ {
+    "name" : "Spaghetti alla carbonara",
+    "description" : "Fantastic italian dish made of spaghetti, pig cheek, eggs, black pepper, pecorino romano",
+    "type" : "dish",
+    "priceEuros" : 10,
+    "tags" : [ "Mediterranean", "Pasta", "Italian" ],
+    "imageLink" : "www.cloudStorage.com/Carbonara"
+  }, {
+    "name" : "Polpette al sugo",
+    "description" : "Meatballs with tomato sauce",
+    "type" : "dish",
+    "priceEuros" : 7,
+    "tags" : [ "Mediterranean", "Meat", "Italian" ],
+    "imageLink" : "www.cloudStorage.com/Meatballs"
+  } ]
 };
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);
@@ -68,11 +108,40 @@ exports.createOwner = function(body) {
 
 
 /**
- * Edit a menu
- * Edits a given menu. To identify the menu, the menuID needs to be given. When the get that returns all the menus of the restaurant is performed, the menuID of each menu is also returned, so the menuID can be taken from there. Authentication is required.
+ * Delete a menu
+ * Delete a menu of the restaurant. Authentication is required
  *
  * menuID Integer ID of the menu to be edited
- * body Menu Data of the menu to be saved
+ * no response value expected for this operation
+ **/
+exports.deleteMenu = function(menuID) {
+  return new Promise(function(resolve, reject) {
+    resolve();
+  });
+}
+
+
+/**
+ * Delete a menuItem
+ * Delete the menuItem with given menuItemID of the menu with given menuID. Authentication required.
+ *
+ * menuID Integer ID of the menu
+ * menuItemID Integer ID of the menuItem
+ * no response value expected for this operation
+ **/
+exports.deleteMenuItem = function(menuID,menuItemID) {
+  return new Promise(function(resolve, reject) {
+    resolve();
+  });
+}
+
+
+/**
+ * Edit a menu
+ * Edit a given menu (but not its menuItems). To identify the menu, the menuID needs to be given. Authentication is required.
+ *
+ * menuID Integer ID of the menu to be edited
+ * body MenuWithoutItems Data of the menu to be saved
  * returns MenuID
  **/
 exports.editMenu = function(menuID,body) {
@@ -91,13 +160,15 @@ exports.editMenu = function(menuID,body) {
 
 
 /**
- * Return data of a specific menu of the owner
- * Returns all the data about the menu with given menuID, even the menu items inside it. The photos of the menu items are saved in the Amazon s3 storage, so the links to the cloud storage are also returned. The frontend will directly download them from the cloud storage, they won't be sent by the backend with this endpoint.  The menuID should be related to a menu of the restaurant owned by the authenticated restaurant owner, otherwise an error response will be received.
+ * Edit a menuItem
+ * Edit the menuItem with given menuItemID of the menu with given menuID. Authentication required.
  *
- * menuID Integer ID of the menu to be returned
+ * menuID Integer ID of the menu
+ * menuItemID Integer ID of the menuItem
+ * body MenuItem Data of the menuItem
  * returns Menu
  **/
-exports.getMenuOwner = function(menuID) {
+exports.editMenuItem = function(menuID,menuItemID,body) {
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = {
@@ -107,12 +178,14 @@ exports.getMenuOwner = function(menuID) {
   "menuItems" : [ {
     "name" : "Spaghetti alla carbonara",
     "description" : "Fantastic italian dish made of spaghetti, pig cheek, eggs, black pepper, pecorino romano",
+    "type" : "dish",
     "priceEuros" : 10,
     "tags" : [ "Mediterranean", "Pasta", "Italian" ],
     "imageLink" : "www.cloudStorage.com/Carbonara"
   }, {
     "name" : "Polpette al sugo",
     "description" : "Meatballs with tomato sauce",
+    "type" : "dish",
     "priceEuros" : 7,
     "tags" : [ "Mediterranean", "Meat", "Italian" ],
     "imageLink" : "www.cloudStorage.com/Meatballs"
@@ -129,7 +202,7 @@ exports.getMenuOwner = function(menuID) {
 
 /**
  * Returns all the menus of the restaurant
- * Returns all the menus of the restaurant. Since authentication is required, the backend is able to get which restaurant is involved from the authentication token. It also returns the ID of each menu, that can be in the post and in the get of the endpoint /api/user/owner/restaurant/menu/{menuID}.  It's important to underline that this endpoint doesn't provide the menu items of the menus. In order to receive them a get to the other mentioned endpoint is necessary.
+ * Returns all the menus of the restaurant. Since authentication is required, the backend is able to get which restaurant is involved from the authentication token.
  *
  * returns List
  **/
@@ -140,13 +213,77 @@ exports.getOwnMenus = function() {
   "menuID" : 2,
   "name" : "Emilio's menu of the day",
   "description" : "Our special menu of today",
-  "tags" : [ "Italian", "Mediterranean" ]
+  "tags" : [ "Italian", "Mediterranean" ],
+  "menuItems" : [ {
+    "name" : "Spaghetti alla carbonara",
+    "description" : "Fantastic italian dish made of spaghetti, pig cheek, eggs, black pepper, pecorino romano",
+    "type" : "dish",
+    "priceEuros" : 10,
+    "tags" : [ "Mediterranean", "Pasta", "Italian" ],
+    "imageLink" : "www.cloudStorage.com/Carbonara"
+  }, {
+    "name" : "Polpette al sugo",
+    "description" : "Meatballs with tomato sauce",
+    "type" : "dish",
+    "priceEuros" : 7,
+    "tags" : [ "Mediterranean", "Meat", "Italian" ],
+    "imageLink" : "www.cloudStorage.com/Meatballs"
+  } ]
 }, {
   "menuID" : 2,
   "name" : "Emilio's menu of the day",
   "description" : "Our special menu of today",
-  "tags" : [ "Italian", "Mediterranean" ]
+  "tags" : [ "Italian", "Mediterranean" ],
+  "menuItems" : [ {
+    "name" : "Spaghetti alla carbonara",
+    "description" : "Fantastic italian dish made of spaghetti, pig cheek, eggs, black pepper, pecorino romano",
+    "type" : "dish",
+    "priceEuros" : 10,
+    "tags" : [ "Mediterranean", "Pasta", "Italian" ],
+    "imageLink" : "www.cloudStorage.com/Carbonara"
+  }, {
+    "name" : "Polpette al sugo",
+    "description" : "Meatballs with tomato sauce",
+    "type" : "dish",
+    "priceEuros" : 7,
+    "tags" : [ "Mediterranean", "Meat", "Italian" ],
+    "imageLink" : "www.cloudStorage.com/Meatballs"
+  } ]
 } ];
+    if (Object.keys(examples).length > 0) {
+      resolve(examples[Object.keys(examples)[0]]);
+    } else {
+      resolve();
+    }
+  });
+}
+
+
+/**
+ * Get data of own restaurant
+ * Get the data of the restaurant of authenticated owner, so that it can be showed in the 'Your Restaurant' page.
+ *
+ * returns RestaurantReceived
+ **/
+exports.getRestaurant = function() {
+  return new Promise(function(resolve, reject) {
+    var examples = {};
+    examples['application/json'] = {
+  "name" : "Emilio's Pizza",
+  "address" : "André route 45",
+  "city" : "Rome",
+  "country" : "Italy",
+  "imageLink" : "www.cloudStorage.com/Restaurant",
+  "openingHours" : [ {
+    "day" : "Monday",
+    "openTime" : "12.00",
+    "closeTime" : "15.00"
+  }, {
+    "day" : "Saturday",
+    "openTime" : "19.00",
+    "closeTime" : "23.59"
+  } ]
+};
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);
     } else {
