@@ -1,7 +1,7 @@
 swagger: "2.0"
 info:
   description: "This is the API reference of The Spoon project.\n \n VERSIONING: The version number works in this way: it's composed of two numbers separated by a point. The first number identifies the Sprint, so for example the version 2.1 of the API reference is related to the Sprint number 2. The second number starts from 0 and has to be increased by one each time the file is modified. The person who modifies this document is responsible for increasing the number.\n \n GROUPING OF ENDPOINTS: The endpoints are grouped by dividing them into customers' operations and owners' operations. All the endpoints that are not strictly related to customers nor owners remain inside the default group.\n \n AUTHENTICATION/AUTHORIZATION: The json web token returned when the login is performed is supposed to be put into x-auth-token header in the endpoints that require authorization"
-  version: "3.3"
+  version: "3.5"
   title: "The Spoon API reference"
 tags:
   - name: "customer"
@@ -61,6 +61,8 @@ paths:
           description: "Username or email already taken"
   /api/user/login:
     post:
+      tags:
+        - "generic user"
       summary: "Logs user into the system"
       description: "Logs user into the system. This endpoint is used both for restaurant owner and customer login. In order to distinguish them, in the request json there's the flag ''isRestaurantOwner''.\n If the login succeeds, returns the json web token that is supposed to be stored on the frontend application (for example in the local storage of the web browser). Each time the frontend application needs to access an endpoint that requires authentication, that token will be put in the header of the request."
       operationId: "loginUser"
@@ -86,6 +88,7 @@ paths:
     post:
       tags:
         - "owner"
+        - "Matej"
       summary: "Configure data of the restaurant"
       description: "Save the data of the restaurant given by the owner. Authentication is needed.\n One of the parameter to be passed is the imageID, this is the flow:\n 1. The restaurant owner is in the page in which he can input the restaurant data. He will upload the photo of the restaurant while he is writing all the fields of the form.\n 2. The uploading of the photo is done by sending the photo to the /api/image endpoint. While the restaurant owner is still writing the fields of the form, the message to that endpoint is sent and the imageID is received as a response.\n 3. When the restaurant owner finishes writing the fields of the form and click the send button, the photo was actually already been ent in the point 2 and he doesn't have to wait for the upload (if he was fast compiling the form and the upload isn't finished yet, at least he has to wait less because it was already started). The imageID received as a response by the /api/image endpoint will be sent to this endpoint with the data of the form in a json, because the backend needs it in order to associate the json to the previously uploaded photo."
       operationId: "configureRestaurant"
@@ -114,6 +117,7 @@ paths:
     get:
       tags:
         - "owner"
+        - "Matej"
       summary: "Get data of own restaurant"
       description: "Get the data of the restaurant of authenticated owner, so that it can be showed in the 'Your Restaurant' page."
       operationId: "getRestaurant"
@@ -134,6 +138,7 @@ paths:
     post:
       tags:
         - "owner"
+        - "Emilio"
       summary: "Add an empty menu to a restaurant"
       description: "Add a menu to a restaurant of a restaurant owner, which needs to be logged in. The menuItems are not meant to be added to the menu through this endpoint."
       operationId: "addMenu"
@@ -162,8 +167,9 @@ paths:
     get:
       tags:
         - "owner"
-      summary: "Returns all the menus of the restaurant"
-      description: "Returns all the menus of the restaurant. Since authentication is required, the backend is able to get which restaurant is involved from the authentication token."
+        - "Frikk"
+      summary: "Return all the menus of the restaurant"
+      description: "Return all the menus of the restaurant. Since authentication is required, the backend is able to get which restaurant is involved from the authentication token."
       operationId: "getOwnMenus"
       produces:
         - "application/json"
@@ -184,7 +190,8 @@ paths:
     put:
       tags:
         - "owner"
-      summary: "Edit a menu"
+        - "Emilio"
+      summary: "Edit a menu's information (not its items)"
       description: "Edit a given menu (but not its menuItems). To identify the menu, the menuID needs to be given. Authentication is required."
       operationId: "editMenu"
       consumes:
@@ -219,6 +226,7 @@ paths:
     delete:
       tags:
         - "owner"
+        - "Emilio"
       summary: "Delete a menu"
       description: "Delete a menu of the restaurant. Authentication is required"
       operationId: "deleteMenu"
@@ -242,6 +250,7 @@ paths:
     get:
       tags:
         - "customer"
+        - "Frikk"
       summary: "Search by menu item"
       description: "Returns all the menus with given menu item (dish/drink) with menuID. It also returns the names of the associated restaurants with restaurantID.\n The menu items inside every menu are not returned. It will be needed to access the endpoint /api/user/customer/menu/{menuID} to get the menu items of a specific menu (the menuID passed can be obtained from the response of this endpoint, since it returns the menuID of every menu)."
       operationId: "searchByMenuItem"
@@ -264,6 +273,7 @@ paths:
     get:
       tags:
         - "customer"
+        - "Frikk"
       summary: "Return data of a specific menu"
       description: "Returns all the data about the menu with given menuID, even the menu items inside it. The photos of the menu items are saved in the Amazon s3 storage, so the links to the cloud storage are also returned. The frontend will directly download them from the cloud storage, they won't be sent by the backend with this endpoint."
       operationId: "getMenuCustomer"
@@ -282,6 +292,9 @@ paths:
             $ref: "#/definitions/MenuRetrievedToCustomer"
   /api/image:
     post:
+      tags:
+        - "generic user"
+        - "Marin"
       summary: "Upload an image"
       description: "This endpoint is used in order to upload EVERY image. For example, when a restaurant owner is registering his restaurant data, he will need to upload an image. Both this endpoint and the dedicated endpoint (POST /api/user/owner/restaurant) will be used. This endpoint to upload the image, the other one to upload all the other textual data (with a json). The images will be stored using Amazon s3. The ID of the image is returned.\n For more information, this is used as a reference:  https://stackoverflow.com/questions/33279153/rest-api-file-ie-images-processing-best-practices \n This endpoint requires authentication: we don't want anyone to update images but only authenticated users."
       operationId: "uploadImage"
@@ -305,6 +318,7 @@ paths:
     post:
       tags:
         - "owner"
+        - "Marin"
       summary: "Add a menuItem to a menu"
       description: "Add a menuItem to the menu with given menuID. Authentication required."
       operationId: "addMenuItem"
@@ -323,7 +337,7 @@ paths:
           description: "Menu data"
           required: true
           schema:
-            $ref: "#/definitions/MenuItem"
+            $ref: "#/definitions/MenuItemWithoutColors"
       responses:
         200:
           description: "Successful operation"
@@ -339,6 +353,7 @@ paths:
     put:
       tags:
         - "owner"
+        - "Marin"
       summary: "Edit a menuItem"
       description: "Edit the menuItem with given menuItemID of the menu with given menuID. Authentication required."
       operationId: "editMenuItem"
@@ -362,7 +377,7 @@ paths:
           description: "Data of the menuItem"
           required: true
           schema:
-            $ref: "#/definitions/MenuItem"
+            $ref: "#/definitions/MenuItemWithoutColors"
       responses:
         200:
           description: "Successful operation"
@@ -377,6 +392,7 @@ paths:
     delete:
       tags:
         - "owner"
+        - "Marin"
       summary: "Delete a menuItem"
       description: "Delete the menuItem with given menuItemID of the menu with given menuID. Authentication required."
       operationId: "deleteMenuItem"
@@ -550,6 +566,30 @@ definitions:
       priceEuros: 10
       tags: [{"name": "Mediterranean", "color": "#FFBC8C"}, {"name": "Pasta", "color": "#99C99B"}, {"name": "Italian", "color": "#FFBC8C"}]
       imageLink: "www.cloudStorage.com/Carbonara"
+  MenuItemWithoutColors:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+      description:
+        type: "string"
+      type:
+        type: "string"
+      priceEuros:
+        type: "number"
+      tags:
+        type: "array"
+        items:
+          type: "string"
+      imageLink:
+        type: "string"
+    example:
+      name: "Spaghetti alla carbonara"
+      description: "Fantastic italian dish made of spaghetti, pig cheek, eggs, black pepper, pecorino romano"
+      type: "dish"
+      priceEuros: 10
+      tags: ["Mediterranean", "Pasta", "Italian"]
+      imageLink: "www.cloudStorage.com/Carbonara"
   MenuID:
     type: "object"
     properties:
@@ -670,11 +710,11 @@ definitions:
       tags:
         type: "array"
         items:
-          $ref: "#/definitions/Tag"
+          type: "string"
     example:
       name: "Emilio's menu of the day"
       description: "Our special menu of today"
-      tags: [{"name": "Italian", "color": "#FFBC8C"}, {"name": "Mediterranean", "color": "#FFBC8C"}]
+      tags: ["Italian", "Mediterranean"]
   MenuRetrievedToCustomer:
     type: "object"
     properties:
