@@ -38,6 +38,18 @@ function Map() {
     </View>
   );
 }
+// TODO: connect to score from DB
+function Rating (score){
+  let stars = [];
+  for( let i=0; i< 4; i++) {
+    stars.push(<Image source={require("../../assets/icon-star.png")}/>);
+  }
+  return (
+      <View style={{flexDirection:"row"}}>
+        {stars}
+      </View>
+  )
+}
 
 function MenuItem({
   menuItemName,
@@ -66,6 +78,8 @@ function MenuItem({
           }}
         >
           <Image
+              // USE THIS WHEN DB HAS REAL LINKS
+              //source={{uri:menuItemImage}}
             source={require("../../assets/no_image.png")}
             style={[styles.imageCircle, { alignSelf: "center" }]}
           />
@@ -171,24 +185,26 @@ export default class Menu extends Component {
           }}
         >
           <View>
-            <View>
-              <Image source={require("../../assets/auum.png")} />
-            </View>
-            <SafeAreaView style={styles.infoBox}>
-              <Text style={styles.h3}>{this.state.menuInfo.menuName}</Text>
-              <View style={{ flexDirection: "row" }}>
-                <Text style={styles.smallTextBlack}> by </Text>
-                <Text style={styles.smallTextPink}>
-                  {this.state.menuInfo.restaurantName}
-                </Text>
-              </View>
-              <Text> Stars </Text>
-              <Text style={styles.smallThinText}>
-                {this.state.menuInfo.menuDescription}
-              </Text>
-            </SafeAreaView>
+          <View>
+            <Image source={require("../../assets/auum.png")} />
           </View>
-          <SafeAreaView style={{ marginTop: 160, alignItems: "center" }}>
+          <SafeAreaView style={styles.infoBox}>
+            <Text style={styles.h3}>{this.state.menuInfo.menuName}</Text>
+            <View style={{ flexDirection: "row" }}>
+              <Text style={styles.smallTextBlack}> by </Text>
+              <Text style={styles.smallTextPink}>
+                {this.state.menuInfo.restaurantName}
+              </Text>
+            </View>
+           <View style={{flexDirection:"row"}}>
+             <Rating/>
+           </View>
+            <Text style={styles.smallThinText}>
+              {this.state.menuInfo.menuDescription}
+            </Text>
+          </SafeAreaView>
+        </View>
+            <SafeAreaView style={{ marginTop: 160, alignItems: "center" }}>
             <Text style={styles.thinText}> DISHES </Text>
             <View style={styles.underline} />
             <FlatList
