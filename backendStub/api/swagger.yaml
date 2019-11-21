@@ -12,7 +12,7 @@ info:
     \ to customers nor owners remain inside the default group.\n \n AUTHENTICATION/AUTHORIZATION:\
     \ The json web token returned when the login is performed is supposed to be put\
     \ into x-auth-token header in the endpoints that require authorization"
-  version: "3.2"
+  version: "3.3"
   title: "The Spoon API reference"
 tags:
 - name: "customer"
@@ -865,6 +865,8 @@ definitions:
         address: "André route 45"
         city: "Rome"
         country: "Italy"
+        latitude: 48.42813508029149716094252653419971466064453125
+        longitude: -110.07925421970850266006891615688800811767578125
       menuName: "Emilio's menu of the day"
       description: "Our special menu of today"
       tags:
@@ -927,3 +929,7 @@ definitions:
         type: "string"
       country:
         type: "string"
+      latitude:
+        type: "number"
+      longitude:
+        type: "number"
