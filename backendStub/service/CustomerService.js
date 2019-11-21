@@ -38,7 +38,9 @@ exports.getMenuCustomer = function(menuID) {
     "restaurantName" : "Emilio's Pizza",
     "address" : "André route 45",
     "city" : "Rome",
-    "country" : "Italy"
+    "country" : "Italy",
+    "latitude" : 48.4281350802915,
+    "longitude" : -110.0792542197085
   },
   "menuName" : "Emilio's menu of the day",
   "description" : "Our special menu of today",
