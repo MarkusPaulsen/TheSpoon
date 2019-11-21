@@ -16,9 +16,9 @@ export default class Search extends Component {
         >
           <Text style={styles.bigText}>What</Text>
           <View style={styles.smallText}>
-            <Text style={{ color: "#000000" }}>do you want to </Text>
-            <Text style={{ color: "#F3A3A3" }}>eat </Text>
-            <Text style={{ color: "#000000" }}>today </Text>
+            <Text style={{color: "#000000" }}>do you want to </Text>
+            <Text style={{color: "#F3A3A3" }}>eat </Text>
+            <Text style={{color: "#000000" }}>today </Text>
           </View>
           <Image source={SearchIcon} />
         </View>

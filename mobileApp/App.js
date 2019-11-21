@@ -43,7 +43,7 @@ export default class App extends Component {
       roboto: require("./assets/fonts/roboto-regular.ttf")
     });
 
-    this.setState({ fontLoaded: true });
+    this.setState({fontLoaded: true });
   }
   render() {
     if (this.state.fontLoaded) {

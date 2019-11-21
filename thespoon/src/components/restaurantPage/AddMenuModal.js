@@ -18,6 +18,7 @@ import Textarea from "react-validation/build/textarea";
 import {IconExit} from "../Icons";
 import {bindCallback, of, throwError} from "rxjs";
 import {exhaustMap, map, take} from "rxjs/operators";
+import {connect} from "react-redux";
 //</editor-fold>
 
 
@@ -46,7 +47,7 @@ class AddMenuModal extends Component {
 
         const thisTemp = this;
         of(1)
-            .pipe(map((event) => {
+            .pipe(map(() => {
                 return thisTemp.form.getValues();
             }))
             .pipe(exhaustMap((values) => {
@@ -57,22 +58,21 @@ class AddMenuModal extends Component {
                     serverMessage: null
                 });
             }))
-            .pipe(exhaustMap((event) => {
+            .pipe(exhaustMap(() => {
                 return bindCallback(thisTemp.setState).call(thisTemp, {
                     submitted: true
                 });
             }))
-            .pipe(exhaustMap((event) => {
+            .pipe(exhaustMap(() => {
                 if (true) {
                     return ajax({
-                        url: "http://localhost:8080/api/user/owner/restaurant/menu",
+                        url: "http://localhost/api/user/owner/restaurant/menu",
                         method: "POST",
-                        headers: {"Content-Type": "application/json"},
+                        headers: {"Content-Type": "application/json", 'X-Auth-Token': thisTemp.props.token},
                         body: {
                             name: thisTemp.state.name,
                             description: thisTemp.state.description,
-                            tags: thisTemp.state.tags,
-                            menuItems: []
+                            tags: thisTemp.state.tags
                         }
                     })
                 } else {
@@ -112,7 +112,7 @@ class AddMenuModal extends Component {
             <Modal.Body>
                 <button className="exit" onClick={this.props.onHide}><IconExit /></button>
                 <div className="modal-wrapper add-menu">
-                    <Form ref={ (c) => { this.form = c; }} onSubmit={(e) => this.handleSubmit(e)}>
+                    <Form ref={(c) => {this.form = c; }} onSubmit={(e) => this.handleSubmit(e)}>
                         <h2 className="title">Create menu</h2>
 
                         <div className="input-field">
@@ -140,4 +140,12 @@ class AddMenuModal extends Component {
     //</editor-fold>
 }
 
-export default AddMenuModal;
+//<editor-fold desc="Redux">
+const mapStateToProps = (state) => {
+    return {
+        token: state.logInRegisterReducer.token
+    };
+};
+
+export default connect(mapStateToProps, null)(AddMenuModal);
+//</editor-fold>

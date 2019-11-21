@@ -95,10 +95,10 @@ class RegisterRestaurantowner extends Component  {
             surname: values.surname,
             password:values.password,
             confirmPassword: values.confirmPassword
-        }, () => { //because setstate is asynchronus, further action must be taken on callback
+        }, () => {//because setstate is asynchronus, further action must be taken on callback
 
                 const validation = this.validator.validate(this.state);
-                this.setState({ validation });
+                this.setState({validation });
                 this.submitted = true;
 
                 if (validation.isValid) {
@@ -116,23 +116,23 @@ class RegisterRestaurantowner extends Component  {
                         }
                     }).subscribe(
                         (next) => {
-                            thisTemp.setState({ serverMessage: "Login is processing..." });
+                            thisTemp.setState({serverMessage: "Login is processing..." });
                         },
                         (error) => {
                             switch (error.status) {
                                 case 400:
-                                    thisTemp.setState({ serverMessage: "Username or email already taken" });
+                                    thisTemp.setState({serverMessage: "Username or email already taken" });
                                     break;
                                 case 404:
-                                    thisTemp.setState({ serverMessage: "No connection to the server" });
+                                    thisTemp.setState({serverMessage: "No connection to the server" });
                                     break;
                                 default:
-                                    thisTemp.setState({ serverMessage: "General error" });
+                                    thisTemp.setState({serverMessage: "General error" });
                                     break;
                             }
                         },
                         (complete) => {
-                            thisTemp.setState({ serverMessage: <Redirect to={{pathname: "/Mainpage/"}}/>});
+                            thisTemp.setState({serverMessage: <Redirect to={{pathname: "/Mainpage/"}}/>});
                             thisTemp.props.onHide();
                         }
                     );
@@ -150,7 +150,7 @@ class RegisterRestaurantowner extends Component  {
             <span className="back"> <FilterLink filter={modalVisibilityFilters.SHOW_CHOOSE_ROLE}><IconBack /></FilterLink></span>
             <button className="exit" onClick={this.props.onHide}><IconExit /></button>
             <div className="modal-wrapper ">
-                <Form ref={ (c) => { this.form = c; }} onSubmit={(e) => this.handleSubmit(e)}>
+                <Form ref={(c) => {this.form = c; }} onSubmit={(e) => this.handleSubmit(e)}>
                     <h2>Sign up</h2>
                     <div className="account-type">
                         <h4>as a <span className="role">{this.props.role}</span></h4>
