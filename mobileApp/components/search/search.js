@@ -33,10 +33,10 @@ function ResultItem({ menuName, restaurantName, tag1, tag2, score }) {
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
           <View style={{ flexDirection: "row" }}>
             <View style={styles.bgLabel}>
-              <Text style={Typography.FONT_TAG}>{tag1}</Text>
+              <Text style={[Typography.FONT_TAG, { marginHorizontal: 10 }]}>{tag1}</Text>
             </View>
             <View style={styles.bgLabel}>
-              <Text style={Typography.FONT_TAG}>{tag2}</Text>
+              <Text style={[Typography.FONT_TAG, { marginHorizontal: 10 }]}>{tag2}</Text>
             </View>
           </View>
           <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
