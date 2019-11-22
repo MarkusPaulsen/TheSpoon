@@ -12,5 +12,7 @@ branches:
     - travis
     - dev
     - master
+notifications:
+  slack: dsd2019thespoon:7SFtEzMgqGVWfBxAIPayUXa7
 script:
   - echo "Temporary message"
