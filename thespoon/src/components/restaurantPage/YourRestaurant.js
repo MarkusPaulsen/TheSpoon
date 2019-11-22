@@ -37,20 +37,21 @@ class YourRestaurant extends Component {
     componentDidMount() {
         const thisTemp = this;
         this.data$ = zip(
-            ajax.getJSON(
-                "http://localhost/api/user/owner/restaurant",
-                {"Content-Type": "application/json", 'X-Auth-Token': thisTemp.props.token}
-                ),
-            ajax.getJSON(
-                "http://localhost/api/user/owner/restaurant/menu",
-                {"Content-Type": "application/json", 'X-Auth-Token': thisTemp.props.token}
-                )
+            ajax({
+                url: "http://localhost:8080/api/user/owner/restaurant",
+                method: "GET",
+                headers: {"Content-Type": "application/json", 'X-Auth-Token': thisTemp.props.token}
+            }),
+            ajax({
+                url: "http://localhost:8080/api/user/owner/restaurant/menu",
+                method: "GET",
+                headers: {"Content-Type": "application/json", 'X-Auth-Token': thisTemp.props.token}
+            })
         )
         .pipe(exhaustMap((values) => {
-            console.log(values)
             return bindCallback(thisTemp.setState).call(thisTemp, {
-                restaurant:values[0],
-                menus:values[1]
+                restaurant: values[0],
+                menus: values[1]
             });
         }))
         .pipe(exhaustMap(() => {
@@ -58,7 +59,11 @@ class YourRestaurant extends Component {
                 finishedLoading: true
             });
         }))
-        .subscribe();
+        .subscribe(() => {
+            console.log(this.state)
+        }, () => {
+            console.log(this.state)
+        });
     }
 
     componentWillUnmount() {
@@ -88,22 +93,21 @@ class YourRestaurant extends Component {
                                 <div className="col-sm-8">
                                     <h3 className="title">Your menus</h3>
                                     <div className="no-menus">
-                                        <label>Your restaurant doesn"t have any menus yet...</label>
                                         <button className="wide"><FilterLink filter={modalVisibilityFilters.SHOW_ADD_MENU}>Create new menu</FilterLink></button>
                                     </div>
-                                    {this.state.menus.length > 1 ?
-                                        this.state.menus.map(menu => {
-                                            return (
-                                                <Menu key={menu.menuID}
-                                                      name={menu.name}
-                                                      tags={menu.tags}
-                                                      description={menu.description}
-                                                />
-                                            )})
+                                    {
+                                        (typeof(this.state.menus) !== "undefined" && this.state.menus.length > 1) ?
+                                            this.state.menus.map(menu => {
+                                                return (
+                                                    <Menu key={menu.menuID}
+                                                          name={menu.name}
+                                                          tags={menu.tags}
+                                                          description={menu.description}
+                                                    />
+                                                )})
                                         :
                                         <div className="no-menus">
-                                            <label>Your restaurant doesn"t have any menus yet...</label>
-                                            <button className="wide"><FilterLink filter={modalVisibilityFilters.SHOW_ADD_MENU}>Create new menu</FilterLink></button>
+                                            <label>Your restaurant doesnt have any menus yet...</label>
                                         </div>
                                     }
                                 </div>

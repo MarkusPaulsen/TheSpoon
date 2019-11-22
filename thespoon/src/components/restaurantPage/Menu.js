@@ -26,7 +26,7 @@ class Menu extends Component {
                 <div className="tags">
                     {this.props.tags.map(tag => {
                         return (
-                            <div className="tag" key={tag}>{tag}</div>
+                            <div className="tag" key={tag.color}>{tag.name}</div>
                         )})}
                 </div>
                 <div className="modal-button">
