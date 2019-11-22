@@ -348,6 +348,120 @@ header {
       }
     }
 
+    &.restaurant-info {
+      label {
+        display: inline-block;
+        width: 80%;
+      }
+
+      input {
+        margin-left: 18px;
+      }
+
+      .opening-hours {
+
+        .hours-selector {
+          position: relative;
+          padding-bottom: 38px;
+          margin-left: calc(22px + 1rem);
+          margin-bottom: 0.5rem;
+          .days {
+            width: 40%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            border-bottom: 1px solid var(--pink);
+            &:focus, &:active {
+              outline: none;
+            }
+          }
+
+          .hours {
+            width: calc(30% - 5px);
+            position: absolute;
+            top: 0;
+            left: calc(40% + 5px);
+            &.end {
+              right: 0;
+              left: auto;
+            }
+          }
+
+          .css-1wa3eu0-placeholder {
+            font-size: 15px;
+            line-height: 18px;
+          }
+
+          .css-1okebmr-indicatorSeparator {
+            display: none;
+          }
+
+          .css-1uccc91-singleValue {
+            font-size: 15px;
+            font-weight: 500;
+          }
+
+          .css-144g6cj-Menu {
+              border-left: 1px solid var(--pink);
+              border-right: 1px solid var(--pink);       
+          }
+
+          .css-yk16xz-control {
+            border: none;
+          }
+
+          .css-1pahdxg-control {
+            &, &:active, &:focus {
+              border: none;
+              outline: none;
+              box-shadow: none;
+            }
+          }
+
+        }
+
+        .add-button {
+          text-align: right;
+          width: 92%;
+          button {
+            padding: 0px 20px;
+            margin: 0;
+            height: 20px;
+          }
+        }
+
+        .selected-hours {
+          margin-left: calc(22px + 1rem);
+          > * {
+            text-align: left;
+            font-size: 15px;
+            font-weight: 500;
+            line-height: 1.2;
+            padding: .25rem 0;
+            border-bottom: 1px solid var(--light-grey);
+            &:first-child {
+              border-top: 1px solid var(--light-grey);
+              margin-top: 1rem;
+            }
+          }
+
+          .remove-button {
+            float: right;
+            font-weight: 500;
+            color: var(--light-grey);
+            &:hover {
+              cursor: pointer;
+            }
+          }
+        }
+      }
+
+      .days, .hours {   
+        border-bottom: 1px solid var(--pink);
+      }
+
+    }
+
     &.choose-role {
       button {
         margin: 0 0 2rem;
