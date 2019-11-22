@@ -99,13 +99,11 @@ class FillRestaurantInfo extends Component {
                     </div>
 
                     <div className="input-field">
-                        <IconName />
                         <label>Name</label>
                         <Input type="text" name="restaurantName" placeholder="Restaurant name"/>
                     </div>
 
                     <div className="input-field image">
-                        <IconName />
                         <label>Image</label>
                         <input type="file" name="file" id="file" className="inputfile" onChange={this.fileSelectedHandler}/>
                         <label htmlFor="file">+ Upload image</label>
@@ -122,25 +120,21 @@ class FillRestaurantInfo extends Component {
                     </div>
 
                     <div className="input-field">
-                        <IconLocation />
                         <label>Address</label>
                         <Input type="text" name="address" placeholder="Address"/>
                     </div>
 
                     <div className="input-field">
-                        <IconLocation />
                         <label>City</label>
                         <Input type="text" name="city" placeholder="City"/>
                     </div>
 
                     <div className="input-field">
-                        <IconLocation />
                         <label>Country</label>
                         <Input type="text" name="country" placeholder="Country"/>
                     </div>
 
                     <div className="input-field opening-hours">
-                            <IconBirthday />
                             <label>Openening hours</label>
                         <div className="hours-selector">
                             <Select options={days} 
