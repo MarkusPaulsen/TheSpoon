@@ -8,7 +8,6 @@ import {Modal} from "react-bootstrap";
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import Button from "react-validation/build/button";
-import Textarea from "react-validation/build/textarea";
 //</editor-fold>
 
 //<editor-fold desc="Icons">
@@ -16,6 +15,7 @@ import {IconExit} from "../Icons";
 import {bindCallback, of, throwError} from "rxjs";
 import {exhaustMap, map, take} from "rxjs/operators";
 import {ajax} from "rxjs/ajax";
+import {connect} from "react-redux";
 //</editor-fold>
 
 
@@ -29,8 +29,11 @@ class EditRestaurantInfoModal extends Component {
 
         this.state = {
             name: "",
-            description: "",
-            tags: "",
+            imageID: 0,
+            address: "",
+            city: "",
+            country: "",
+            description:"",
             serverMessage: "",
             submitted: false
         };
@@ -44,43 +47,40 @@ class EditRestaurantInfoModal extends Component {
 
         const thisTemp = this;
         of(1)
-            .pipe(map((event) => {
+            .pipe(map(() => {
                 return thisTemp.form.getValues();
             }))
             .pipe(exhaustMap((values) => {
                 return bindCallback(thisTemp.setState).call(thisTemp, {
-                    latitude: thisTemp.state.latitude,
-                    longitude: thisTemp.state.longitude,
-
                     name: values.name,
-                    imageID: values.imageID,
-
                     address: values.address,
                     city: values.city,
                     country: values.country,
-                    description: values.description,
-                    serverMessage: null
+                    imageID: values.imageID,
+                    openingHours: values.openingHours,
+                    serverMessage: "",
                 });
             }))
-            .pipe(exhaustMap((event) => {
+            .pipe(exhaustMap(() => {
                 return bindCallback(thisTemp.setState).call(thisTemp, {
                     submitted: true
                 });
             }))
-            .pipe(exhaustMap((event) => {
+            .pipe(exhaustMap(() => {
                 if (true) {
                     return ajax({
                         url: "http://localhost:8080/api/user/owner/restaurant",
                         method: "POST",
-                        headers: {"Content-Type": "application/json"},
+                        headers: {"Content-Type": "application/json", "X-Auth-Token": this.props.token},
                         body: {
                             name: thisTemp.state.name,
                             address: thisTemp.state.address,
                             city: thisTemp.state.city,
                             country: thisTemp.state.country,
-                            latitude: thisTemp.state.latitude,
-                            longitude: thisTemp.state.longitude,
-                            imageID: thisTemp.state.imageID
+                            latitude: 0,
+                            longitude: 0,
+                            imageID: thisTemp.state.imageID,
+                            openingHours: []
                         }
                     })
                 } else {
@@ -89,12 +89,10 @@ class EditRestaurantInfoModal extends Component {
             }))
             .pipe(take(1))
             .subscribe(
-                (next) => {
-                    console.log(next);
+                () => {
                     thisTemp.props.onHide();
                 },
                 (error) => {
-                    console.log(error);
                     switch (error.status) {
                         case 400:
                             thisTemp.setState({serverMessage: "Access denied"});
@@ -128,25 +126,27 @@ class EditRestaurantInfoModal extends Component {
 
                         <div className="input-field">
                             <label>Name</label>
-                            <Input type="text" name="restaurantName" placeholder="Restaurant name"/>
+                            <Input type="text" name="name" placeholder="Name"/>
+                        </div>
+
+                        <div className="input-field name">
+                            <label>Address</label>
+                            <Input type="text" name="address" placeholder="Address"/>
+                        </div>
+
+                        <div className="input-field name">
+                            <label>City</label>
+                            <Input type="text" name="city" placeholder="City"/>
+                        </div>
+
+                        <div className="input-field name">
+                            <label>Country</label>
+                            <Input type="country" name="country" placeholder="Country"/>
                         </div>
 
                         <div className="input-field">
                             <label>Image</label>
                             <Input type="text" name="image" placeholder="Image"/>
-                        </div>
-
-                        <div className="input-field name">
-                            <label>Street address</label>
-                            <Input type="text" name="city" placeholder="Street address"/>
-                        </div>
-                        <div className="input-field name">
-                            <label>City</label>
-                            <Input type="text" name="city" placeholder="City"/>
-                        </div>
-                        <div className="input-field name">
-                            <label>Country</label>
-                            <Input type="country" name="country" placeholder="Country"/>
                         </div>
 
                         <div className="input-field">
@@ -158,10 +158,6 @@ class EditRestaurantInfoModal extends Component {
                             </div>
                         </div>
 
-                        <div className="input-field">
-                            <Input type="tags" name="tags" placeholder="Tags"/>
-                        </div>
-
                         <Button type="submit" className="normal">Save</Button>
                     </Form>
                 </div>
@@ -171,4 +167,12 @@ class EditRestaurantInfoModal extends Component {
     //</editor-fold>
 }
 
-export default EditRestaurantInfoModal;
+//<editor-fold desc="Redux">
+const mapStateToProps = (state) => {
+    return {
+        token: state.logInRegisterReducer.token
+    };
+};
+
+export default connect(mapStateToProps, null)(EditRestaurantInfoModal);
+//</editor-fold>

@@ -66,13 +66,13 @@ class AddMenuModal extends Component {
             .pipe(exhaustMap(() => {
                 if (true) {
                     return ajax({
-                        url: "http://localhost/api/user/owner/restaurant/menu",
+                        url: "http://localhost:8080/api/user/owner/restaurant/menu",
                         method: "POST",
-                        headers: {"Content-Type": "application/json", 'X-Auth-Token': thisTemp.props.token},
+                        headers: {"Content-Type": "application/json", "X-Auth-Token": this.props.token},
                         body: {
                             name: thisTemp.state.name,
                             description: thisTemp.state.description,
-                            tags: thisTemp.state.tags
+                            tags: [{"name": thisTemp.state.tags, "color": "#FFFFFF"}]
                         }
                     })
                 } else {
@@ -81,12 +81,10 @@ class AddMenuModal extends Component {
             }))
             .pipe(take(1))
             .subscribe(
-                (next) => {
-                    console.log(next);
+                () => {
                     thisTemp.props.onHide();
                 },
                 (error) => {
-                    console.log(error);
                     switch (error.status) {
                         case 400:
                             thisTemp.setState({serverMessage: "Access denied"});
@@ -132,6 +130,9 @@ class AddMenuModal extends Component {
                         </div>
 
                         <Button type="submit" className="normal">Create</Button>
+                        <div className="error-block">
+                            <small>{this.state.serverMessage}</small>
+                        </div>
                     </Form>
                 </div>
             </Modal.Body>

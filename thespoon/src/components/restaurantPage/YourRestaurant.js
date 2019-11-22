@@ -39,19 +39,17 @@ class YourRestaurant extends Component {
         this.data$ = zip(
             ajax({
                 url: "http://localhost:8080/api/user/owner/restaurant",
-                method: "GET",
-                headers: {"Content-Type": "application/json", 'X-Auth-Token': thisTemp.props.token}
+                method: "GET"
             }),
             ajax({
                 url: "http://localhost:8080/api/user/owner/restaurant/menu",
-                method: "GET",
-                headers: {"Content-Type": "application/json", 'X-Auth-Token': thisTemp.props.token}
+                method: "GET"
             })
         )
         .pipe(exhaustMap((values) => {
             return bindCallback(thisTemp.setState).call(thisTemp, {
-                restaurant: values[0],
-                menus: values[1]
+                restaurant: values[0].response,
+                menus: values[1].response
             });
         }))
         .pipe(exhaustMap(() => {
@@ -60,9 +58,7 @@ class YourRestaurant extends Component {
             });
         }))
         .subscribe(() => {
-            console.log(this.state)
         }, () => {
-            console.log(this.state)
         });
     }
 
