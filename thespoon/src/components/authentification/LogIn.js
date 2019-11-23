@@ -1,33 +1,35 @@
-//<editor-fold desc="React Import">
+//<editor-fold desc="React">
 import React, {Component} from "react";
 import {Redirect} from "react-router-dom"
 import {paths} from "../../constants/paths";
 //</editor-fold>
-//<editor-fold desc="Redux import">
+//<editor-fold desc="Redux">
 import {connect} from "react-redux";
 import {logIn, failLogIn, successLogIn} from "../../actionCreators/logInRegisterActionCreators";
 //</editor-fold>
-//<editor-fold desc="RxJs import">
+//<editor-fold desc="RxJs">
 import {bindCallback, throwError, of} from "rxjs";
 import {ajax} from "rxjs/ajax";
 import {take, map, exhaustMap} from "rxjs/operators";
 //</editor-fold>
-//<editor-fold desc="Bootstrap import">
-import {Modal, ButtonToolbar, ToggleButtonGroup, ToggleButton} from "react-bootstrap";
+//<editor-fold desc="Bootstrap">
+import {Modal} from "react-bootstrap";
 //</editor-fold>
 //<editor-fold desc="Validator">
-import Form from "react-validation/build/form";
-import Input from "react-validation/build/input";
-import Button from "react-validation/build/button";
+import Form from 'react-validation/build/form';
+import Input from 'react-validation/build/input';
+import Button from 'react-validation/build/button';
 import FormValidator from "../../validation/FormValidator";
 //</editor-fold>
 
-//<editor-fold desc="Containers">
-import FilterLink from "../../containers/FilterModalLink";
+//<editor-fold desc="Constants">
 import {modalVisibilityFilters} from "../../constants/modalVisibiltyFilters";
 //</editor-fold>
+//<editor-fold desc="Containers">
+import FilterLink from "../../containers/FilterModalLink";
+//</editor-fold>
 //<editor-fold desc="Icons">
-import {IconExit, IconEmail, IconPassword} from "../Icons";
+import {IconExit, IconEmail, IconPassword} from '../Icons';
 //</editor-fold>
 
 
@@ -55,12 +57,10 @@ class LogIn extends Component {
     ]);
 
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.changeRole = this.changeRole.bind(this);
 
     this.state = {
-      username: "",
-      password: "",
-      isRestaurantOwner: true,
+      username:'',
+      password:'',
       validation: this.validator.valid(),
       serverMessage: "",
       submitted: false
@@ -75,7 +75,7 @@ class LogIn extends Component {
 
     const thisTemp = this;
     of(1)
-        .pipe(map((event) => {
+        .pipe(map(() => {
           return thisTemp.form.getValues();
         }))
         .pipe(exhaustMap((values) => {
@@ -91,9 +91,9 @@ class LogIn extends Component {
             serverMessage: ""
           });
         }))
-        .pipe(exhaustMap((event) => {
+        .pipe(exhaustMap(() => {
           if (thisTemp.state.validation.isValid) {
-            thisTemp.props.logIn(thisTemp.state.username, thisTemp.state.isRestaurantOwner);
+            thisTemp.props.logIn(thisTemp.state.username);
             return ajax({
               url: paths["restApi"]["login"],
               method: "POST",
@@ -101,7 +101,7 @@ class LogIn extends Component {
               body: {
                 username: thisTemp.state.username,
                 password: thisTemp.state.password,
-                isRestaurantOwner: thisTemp.state.isRestaurantOwner,
+                isRestaurantOwner: true,
               }
             })
           }
@@ -135,69 +135,6 @@ class LogIn extends Component {
               }
             }
         );
-
-    /*const values = this.form.getValues();
-
-    const nextFunction = (next) => {
-      this.props.successLogIn(next.response.token);
-      this.setState(
-          {serverMessage: <Redirect to={{pathname: "/Mainpage/"}}/>}
-      );
-      this.props.onHide();
-    };
-
-    const errorFunction = (error) => {
-      this.props.failLogIn();
-      switch (error.status) {
-        case 400:
-          this.setState({serverMessage: "Invalid username or password" });
-          break;
-        case 404:
-          this.setState({serverMessage: "No connection to the server" });
-          break;
-        case 0:
-          this.setState({serverMessage: "" });
-          break;
-        default:
-          this.setState({serverMessage: "General error" });
-          break;
-      }
-    };
-    this.setState({
-          username:values.username,
-          password:values.password,
-          serverMessage: null
-        }, () => {//because setstate is asynchronus, further action must be taken on callback
-
-          const validation = this.validator.validate(this.state);
-          this.setState({
-            validation: validation,
-            submitted: true
-          }, () => {
-            if (validation.isValid) {
-              this.props.logIn(this.state.username, this.state.isRestaurantOwner);
-              ajax({
-                url: paths["restApi"]["login"],
-                method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: {
-                  username: this.state.username,
-                  password: this.state.password,
-                  isRestaurantOwner: this.state.isRestaurantOwner,
-                }
-              }).pipe(take(1)).subscribe(nextFunction, errorFunction)
-            }
-              }
-          );
-    })*/
-  };
-
-  changeRole = (role) => {
-    if (role === 1) {
-      this.setState({isRestaurantOwner: false });
-    } else {
-      this.setState({isRestaurantOwner: true });
-    }
   };
   //</editor-fold>
 
@@ -212,15 +149,6 @@ class LogIn extends Component {
             <div className="modal-wrapper ">
               <Form ref={(c) => {this.form = c; }} onSubmit={this.handleSubmit}>
                 <h2 className="title">Log in</h2>
-
-                <div className="input-field">
-                  <ButtonToolbar>
-                    <ToggleButtonGroup type="radio" name="role" defaultValue={0} onChange={this.changeRole}>
-                      <ToggleButton value={0}>Restaurant Owner</ToggleButton>
-                      <ToggleButton value={1}>Customer</ToggleButton>
-                    </ToggleButtonGroup>
-                  </ButtonToolbar>
-                </div>
 
                 <div className="input-field">
                   <IconEmail />
@@ -258,7 +186,7 @@ class LogIn extends Component {
 //<editor-fold desc="Redux">
 const mapDispatchToProps = (dispatch) => {
   return {
-    logIn: (username, password) => dispatch(logIn(username, password)),
+    logIn: (username) => dispatch(logIn(username)),
     failLogIn: () => dispatch(failLogIn()),
     successLogIn: (token) => dispatch(successLogIn(token))
   };

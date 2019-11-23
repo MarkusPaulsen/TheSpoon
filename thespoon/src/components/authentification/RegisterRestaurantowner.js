@@ -1,146 +1,168 @@
-import React, {Component} from "react";
+//<editor-fold desc="React">
+import React, {Component} from 'react';
 import {Redirect} from "react-router-dom"
-import {ajax} from "rxjs/ajax";
-import {paths} from "../../constants/paths";
-import {IconName, IconEmail, IconPassword, IconExit, IconBack} from "../Icons";
+//</editor-fold>
+//<editor-fold desc="Redux">
+import {connect} from "react-redux";
+import {setModalVisibilityFilterAction} from "../../actions/modalVisibilityFilterActions";
+import {failLogIn, logIn, register, successLogIn} from "../../actionCreators/logInRegisterActionCreators";
+//</editor-fold>
+//<editor-fold desc="RxJs">
+import {bindCallback, of, throwError} from "rxjs";
+import {exhaustMap, map, take} from "rxjs/operators";
+//</editor-fold>
+//<editor-fold desc="Bootstrap">
 import {Modal} from "react-bootstrap";
-import FilterLink from "../../containers/FilterModalLink";
-import {modalVisibilityFilters} from "../../constants/modalVisibiltyFilters";
-import Form from "react-validation/build/form";
-import Input from "react-validation/build/input";
+//</editor-fold>
+//<editor-fold desc="Validator">
+import Form from 'react-validation/build/form';
+import Input from 'react-validation/build/input';
 import FormValidator from "../../validation/FormValidator";
+//</editor-fold>
+
+//<editor-fold desc="Constants">
+import {modalVisibilityFilters} from "../../constants/modalVisibiltyFilters";
+//</editor-fold>
+//<editor-fold desc="Containers">
+import FilterLink from "../../containers/FilterModalLink";
+//</editor-fold>
+//<editor-fold desc="Icons">
+import {IconName, IconEmail, IconPassword, IconExit, IconBack} from '../Icons';
+import Button from "react-validation/build/button";
+import {ajax} from "rxjs/ajax";
+import paths from "../../constants/paths";
+//</editor-fold>
+
 
 
 class RegisterRestaurantowner extends Component  {
-  constructor(props)
-  {
-    super(props);
+    //<editor-fold desc="Constructor">
+    constructor(props) {
+        super(props);
 
-      this.validator = new FormValidator([
-      {
-          field: "email",
-          method: "isEmpty",
-          validWhen: false,
-          message: "E-mail is required."
-      },
-      {
-          field: "email",
-          method: "isEmail",
-          validWhen: true,
-          message: "That is not a valid email."
-      },
-      {
-          field: "username",
-          method: "isEmpty",
-          validWhen: false,
-          message: "Username is required."
-      },
-      {
-          field: "firstName",
-          method: "isEmpty",
-          validWhen: false,
-          message: "First name is required."
-      },
-      {
-          field: "surname",
-          method: "isEmpty",
-          validWhen: false,
-          message: "Surname is required."
-      },
-      {
-          field: "password",
-          method: "isEmpty",
-          validWhen: false,
-          message: "Password is required."
-      },
-      {
-          field: "confirmPassword",
-          method: "isEmpty",
-          validWhen: false,
-          message: "Password confirmation is required."
-      },
-      {
-          field: "confirmPassword",
-          method: this.passwordMatch,
-          validWhen: true,
-          message: "Confirm password has to be identical to the password."
-      }
-  ]);
+          this.validator = new FormValidator([{
+              field: 'email',
+              method: 'isEmpty',
+              validWhen: false,
+              message: 'E-mail is required.'
+          }, {
+              field: 'email',
+              method: 'isEmail',
+              validWhen: true,
+              message: 'That is not a valid email.'
+          }, {
+              field: 'username',
+              method: 'isEmpty',
+              validWhen: false,
+              message: 'Username is required.'
+          }, {
+              field: 'name',
+              method: 'isEmpty',
+              validWhen: false,
+              message: 'Name is required.'
+          },
+          {
+              field: 'surname',
+              method: 'isEmpty',
+              validWhen: false,
+              message: 'Surname is required.'
+          }, {
+              field: 'password',
+              method: 'isEmpty',
+              validWhen: false,
+              message: 'Password is required.'
+          }, {
+              field: 'confirmPassword',
+              method: 'isEmpty',
+              validWhen: false,
+              message: 'Password confirmation is required.'
+          }, {
+              field: 'confirmPassword',
+              method: this.passwordMatch,
+              validWhen: true,
+              message: 'Confirm password has to be identical to the password.'
+          }]);
+
+      this.handleSubmit = this.handleSubmit.bind(this);
 
       this.state = {
-          email:"",
-          username: "",
-          firstName:"",
-          surname:"",
-          password:"",
-          confirmPassword: "",
+          email:'',
+          username: '',
+          name:'',
+          surname:'',
+          password:'',
+          confirmPassword: '',
           validation: this.validator.valid(),
-          serverMessage: ""
+          serverMessage: '',
+          submitted: false
       };
-
-      this.submitted = false;
-      this.handleSubmit = this.handleSubmit.bind(this);
   }
+    //</editor-fold>
 
+    //<editor-fold desc="Business Logic">
     passwordMatch = (confirmation, state) => (state.password === confirmation);
 
     handleSubmit = event => {
         event.preventDefault();
-        const values = this.form.getValues();
 
-        this.setState({
-            email:values.email,
-            username: values.username,
-            firstName: values.firstName,
-            surname: values.surname,
-            password:values.password,
-            confirmPassword: values.confirmPassword
-        }, () => {//because setstate is asynchronus, further action must be taken on callback
-
-                const validation = this.validator.validate(this.state);
-                this.setState({validation });
-                this.submitted = true;
-
-                if (validation.isValid) {
-                    let thisTemp = this;
-                    ajax({
-                        url: paths["restApi"]["registrationRestaurantOwner"],
-                        method: "POST",
-                        headers: {"Content-Type": "application/json"},
+        const thisTemp = this;
+        of(1)
+            .pipe(map(() => {
+                return thisTemp.form.getValues();
+            }))
+            .pipe(exhaustMap((values) => {
+                return bindCallback(this.setState).call(thisTemp, {
+                    email:values.email,
+                    username: values.username,
+                    name: values.name,
+                    surname: values.surname,
+                    password:values.password,
+                    confirmPassword: values.confirmPassword,
+                    serverMessage: null
+                });
+            }))
+            .pipe(exhaustMap(() => {
+                return bindCallback(this.setState).call(thisTemp, {
+                    validation: thisTemp.validator.validate(this.state),
+                    submitted: true
+                });
+            }))
+            .pipe(exhaustMap(() => {
+                if (thisTemp.state.validation.isValid) {
+                    return ajax({
+                        url: paths['restApi']['login'],
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
                         body: {
-                            email: this.state.email,
-                            password:this.state.password,
                             username: this.state.username,
-                            name:this.state.firstName,
-                            surname:this.state.surname
+                            password: this.state.password,
+                            isRestaurantOwner: true,
                         }
-                    }).subscribe(
-                        (next) => {
-                            thisTemp.setState({serverMessage: "Login is processing..." });
-                        },
-                        (error) => {
-                            switch (error.status) {
-                                case 400:
-                                    thisTemp.setState({serverMessage: "Username or email already taken" });
-                                    break;
-                                case 404:
-                                    thisTemp.setState({serverMessage: "No connection to the server" });
-                                    break;
-                                default:
-                                    thisTemp.setState({serverMessage: "General error" });
-                                    break;
-                            }
-                        },
-                        (complete) => {
-                            thisTemp.setState({serverMessage: <Redirect to={{pathname: "/Mainpage/"}}/>});
-                            thisTemp.props.onHide();
-                        }
-                    );
+                    })
                 }
-            }
+                else {
+                    return throwError({ status: 0});
+                }
+            }))
+            .pipe(take(1))
+            .subscribe(
+                () => {
+                    console.log(this.state)
+                    this.props.register(
+                        thisTemp.state.username,
+                        thisTemp.state.email,
+                        thisTemp.state.name,
+                        thisTemp.state.surname,
+                        thisTemp.state.password
+                    );
+                    this.props.changeToShowRestaurantInformation();
+                },
+                () => {}
             );
     };
+    //</editor-fold>
 
+    //<editor-fold desc="Render">
     render() {
         let validation = this.submitted ?                         // if the form has been submitted at least once
             this.validator.validate(this.state) :               // then check validity every time we render
@@ -150,7 +172,7 @@ class RegisterRestaurantowner extends Component  {
             <span className="back"> <FilterLink filter={modalVisibilityFilters.SHOW_CHOOSE_ROLE}><IconBack /></FilterLink></span>
             <button className="exit" onClick={this.props.onHide}><IconExit /></button>
             <div className="modal-wrapper ">
-                <Form ref={(c) => {this.form = c; }} onSubmit={(e) => this.handleSubmit(e)}>
+                <Form ref={ (c) => { this.form = c; }} onSubmit={this.handleSubmit}>
                     <h2>Sign up</h2>
                     <div className="account-type">
                         <h4>as a <span className="role">{this.props.role}</span></h4>
@@ -160,41 +182,51 @@ class RegisterRestaurantowner extends Component  {
                         <IconEmail />
                         <Input type="email" name="email" placeholder="E-mail"/>
                     </div>
+                    <div className="error-block">
+                        <small>{validation.email.message}</small>
+                    </div>
 
                     <div className="input-field">
                         <IconName />
                         <Input type="text" name="username" placeholder="Username"/>
                     </div>
+                    <div className="error-block">
+                        <small>{validation.username.message}</small>
+                    </div>
 
-                      <div className="input-field name">
+                    <div className="input-field name">
                         <IconName />
-                        <Input type="text" name="firstName" placeholder="First name"/>
+                        <Input type="text" name="name" placeholder="Name"/>
                         <Input type="text" name="surname" placeholder="Surname"/>
-                      </div>
+                    </div>
+                    <div className="error-block">
+                        <small>{validation.name.message}</small>
+                        <small>{validation.surname.message}</small>
+                    </div>
 
                     <div className="input-field">
                         <IconPassword />
                         <Input type="password" name="password" placeholder="Password"/>
+                    </div>
+                    <div className="error-block">
+                        <small>{validation.password.message}</small>
                     </div>
 
                     <div className="input-field">
                         <IconPassword />
                         <Input type="password" id="confirm-password" name="confirmPassword" placeholder="Confirm password"/>
                     </div>
-
                     <div className="error-block">
-                        <small>{validation.email.message}</small>
-                        <small>{validation.username.message}</small>
-                        <small>{validation.firstName.message}</small>
-                        <small>{validation.surname.message}</small>
-                        <small>{validation.password.message}</small>
                         <small>{validation.confirmPassword.message}</small>
-                        <small>{this.state.serverMessage}</small>
                     </div>
 
-                    <button className="normal">
+                    <Button type="submit" className="normal">Log in</Button>
+                    {/*<button className="normal">
                         <FilterLink filter={modalVisibilityFilters.SHOW_RESTAURANT_INFORMATION}>Continue</FilterLink>
-                    </button>
+                    </button>*/}
+                    <div className="error-block">
+                        <small>{this.state.serverMessage}</small>
+                    </div>
 
                 </Form>
                 <div className="link-wrapper">
@@ -204,6 +236,17 @@ class RegisterRestaurantowner extends Component  {
         </Modal.Body>
     );
   }
+    //</editor-fold>
 }
 
-export default RegisterRestaurantowner;
+//<editor-fold desc="Redux">
+const mapDispatchToProps = (dispatch) => ({
+    logIn: (username, password) => dispatch(logIn(username, password)),
+    failLogIn: () => dispatch(failLogIn()),
+    successLogIn: (token) => dispatch(successLogIn(token))
+    changeToShowRestaurantInformation: () => dispatch(setModalVisibilityFilterAction(modalVisibilityFilters.SHOW_RESTAURANT_INFORMATION)),
+    register: (username, email, name, surname, password) => dispatch(register(username, email, name, surname, password))
+});
+
+export default connect(null, mapDispatchToProps)(RegisterRestaurantowner);
+//</editor-fold>

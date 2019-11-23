@@ -1,5 +1,12 @@
+//<editor-fold desc="React">
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
+import {Redirect} from "react-router";
+//</editor-fold>
+//<editor-fold desc="Redux">
+import {connect} from "react-redux";
+import {logIn, failLogIn, successLogIn} from '../../actionCreators/logInRegisterActionCreators';
+//</editor-fold>
 import {IconName, IconLocation, IconBirthday, IconExit, IconBack} from '../Icons';
 import {Modal} from "react-bootstrap";
 import FilterLink from "../../containers/FilterModalLink";
@@ -7,9 +14,16 @@ import {modalVisibilityFilters} from "../../constants/modalVisibiltyFilters";
 import Form from 'react-validation/build/form';
 import Input from 'react-validation/build/input';
 import Button from 'react-validation/build/button';
-import Select from 'react-select'
+import Select from 'react-select';
 import {days} from "../../constants/days";
 import {hours} from "../../constants/hours";
+import {bindCallback, of, throwError} from "rxjs";
+import {exhaustMap, map, take} from "rxjs/operators";
+//<editor-fold desc="RxJs">
+import {ajax} from "rxjs/ajax";
+//</editor-fold>
+import paths from "../../constants/paths";
+
 
 
 const selectStyles = {
@@ -33,56 +47,126 @@ class FillRestaurantInfo extends Component {
         this.removeHours = this.removeHours.bind(this);
         this.fileSelectedHandler = this.fileSelectedHandler.bind(this);
         this.removeFile = this.removeFile.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
         
         this.state = {
             selectedFile: null,
             selectedOpeningHours: [],
             selectedDay: null,
             selectedOpenTime: null,
-            selectedCloseTime: null
+            selectedCloseTime: null,
+            address: "",
+            city: "",
+            country: "",
+            restaurantName: "",
+            serverMessage: ""
         }
     }
 
     handleChangeDay = (selectedDay) => {
       this.setState({ selectedDay });
-    }
+    };
 
     handleChangeOpenTime = (selectedOpenTime) => {
       this.setState({ selectedOpenTime });
-    }
+    };
 
      handleChangeCloseTime = (selectedCloseTime) => {
       this.setState({ selectedCloseTime });
-    }
+    };
 
     addHours = () => {
         const newOpeningHours =  {
             day: this.state.selectedDay,
             openTime: this.state.selectedOpenTime,
             closeTime: this.state.selectedCloseTime
-        }
+        };
        
        this.setState({ selectedOpeningHours: [...this.state.selectedOpeningHours, newOpeningHours] });
-    }
+    };
 
     removeHours = (openingHour) => {
        this.setState({selectedOpeningHours: this.state.selectedOpeningHours.filter(oH => { 
           return oH !== openingHour
         })});
-    }
+    };
 
     fileSelectedHandler = (event) => {
       this.setState({ selectedFile: event.target.files[0]})
-    }
+    };
 
     removeFile = () => {
       this.setState({ selectedFile: null })
-    }
+    };
 
     handleSubmit = (event) => {
         event.preventDefault();
-        console.log(this.state);
-    }
+
+        const thisTemp = this;
+        of(1)
+            .pipe(map(() => {
+                return thisTemp.form.getValues();
+            }))
+            .pipe(exhaustMap((values) => {
+                return bindCallback(this.setState).call(thisTemp, {
+                    address: values.address,
+                    city: values.city,
+                    country: values.country,
+                    restaurantName: values.restaurantName,
+                    serverMessage: ""
+                });
+            }))
+            .subscribe(() => {
+                console.log(thisTemp.state)
+            });
+
+            /*
+            .pipe(exhaustMap(() => {
+                if (thisTemp.state.validation.isValid) {
+                    thisTemp.props.logIn(thisTemp.state.username, thisTemp.state.isRestaurantOwner);
+                    return ajax({
+                        url: paths['restApi']['login'],
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: {
+                            username: this.state.username,
+                            password: this.state.password,
+                            isRestaurantOwner: true,
+                        }
+                    })
+                }
+                else {
+                    return throwError({ status: 0});
+                }
+            }))
+            .pipe(take(1))
+            .subscribe(
+                (next) => {
+                    this.props.successLogIn(next.response.token);
+                    this.setState(
+                        { serverMessage: <Redirect to={{pathname: '/Mainpage/'}}/>}
+                    );
+                    this.props.onHide();
+                },
+                (error) => {
+                    this.props.failLogIn();
+                    switch (error.status) {
+                        case 400:
+                            this.setState({ serverMessage: "Invalid username or password" });
+                            break;
+                        case 404:
+                            this.setState({ serverMessage: "No connection to the server" });
+                            break;
+                        case 0:
+                            this.setState({ serverMessage: "" });
+                            break;
+                        default:
+                            this.setState({ serverMessage: "General error" });
+                            break;
+                    }
+                }
+            );*/
+    };
 
 
     render() {
@@ -183,4 +267,16 @@ class FillRestaurantInfo extends Component {
     }
 }
 
-export default FillRestaurantInfo;
+//<editor-fold desc="Redux">
+const mapStateToProps = (state) => {
+    return {
+        username: state.username,
+        email: state.email,
+        name: state.name,
+        surname: state.surname,
+        password: state.password
+    };
+};
+
+export default connect(mapStateToProps, null)(FillRestaurantInfo);
+//</editor-fold>

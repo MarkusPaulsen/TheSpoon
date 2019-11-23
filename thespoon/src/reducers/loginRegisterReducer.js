@@ -6,7 +6,10 @@ const loginRegisterReducer = (state = initialStateLoginRegisterReducer, action) 
         case LogInRegisterActions.REGISTERING_ATTEMPTING:
             return Object.assign({}, state, {
                 username: action.username,
-                role: action.role,
+                email: action.email,
+                name: action.name,
+                surname: action.surname,
+                password: action.password,
                 loginStatus: 'logging in'
             });
         case LogInRegisterActions.REGISTERING_FAILING:

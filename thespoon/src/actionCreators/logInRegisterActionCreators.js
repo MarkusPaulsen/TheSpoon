@@ -1,12 +1,20 @@
 import * as logInRegisterActions from "../actions/logInRegisterActions";
 
 //<editor-fold desc="Register Action Creators">
-export const register = (username, role) => {
+export const register = (username, email, name, surname, password) => {
+    console.log(username)
+    console.log(email)
+    console.log(name)
+    console.log(surname)
+    console.log(password)
     return {
         type: logInRegisterActions.REGISTERING_ATTEMPTING,
         username: username,
-        role: role
-    };
+        email: email,
+        name: name,
+        surname: surname,
+        password: password
+    }
 };
 
 export const failRegister = () => {
