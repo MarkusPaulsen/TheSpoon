@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, {Component} from "react";
 import {
   View,
   Text,
@@ -69,11 +69,11 @@ this.setState({invalidError: true});          }
   }
 
   handleUsernameChange = username => {
-    this.setState({ username: username.trim() });
+    this.setState({username: username.trim() });
   };
 
   handlePasswordChange = password => {
-    this.setState({ password: password.trim() });
+    this.setState({password: password.trim() });
   };
 
 
@@ -81,9 +81,9 @@ this.setState({invalidError: true});          }
     return (
       <View style={styles.container}>
         <Text style={styles.text}>Log in</Text>
-        <View style={{ flex: 2, justifyContent: "space-around" }}>
-          <View style={{ flexDirection: "row" }}>
-            <Image source={UsernameIcon} style={{ alignSelf: "center" }} />
+        <View style={{flex: 2, justifyContent: "space-around" }}>
+          <View style={{flexDirection: "row" }}>
+            <Image source={UsernameIcon} style={{alignSelf: "center" }} />
             <TextInput
               value={this.state.username}
               onChangeText={this.handleUsernameChange}
@@ -95,12 +95,12 @@ this.setState({invalidError: true});          }
               error={this.state.usernameError}
               style={styles.textInput}
             />
-            <Text style={{ color: "#F3A3A3" }}>
+            <Text style={{color: "#F3A3A3" }}>
               {this.state.usernameError ? "*" : null}
             </Text>
           </View>
-          <View style={{ flexDirection: "row", marginBottom: 90 }}>
-            <Image source={PasswordIcon} style={{ alignSelf: "center" }} />
+          <View style={{flexDirection: "row", marginBottom: 90 }}>
+            <Image source={PasswordIcon} style={{alignSelf: "center" }} />
             <TextInput
               onChangeText={this.handlePasswordChange}
               value={this.state.password}
@@ -113,22 +113,22 @@ this.setState({invalidError: true});          }
               secureTextEntry={true}
               style={styles.textInput}
             />
-            <Text style={{ color: "#F3A3A3" }}>
+            <Text style={{color: "#F3A3A3" }}>
               {this.state.passwordError ? "*" : null}
             </Text>
           </View>
-          <Text style={{ color: "#F3A3A3", alignSelf: "center"}}>
+          <Text style={{color: "#F3A3A3", alignSelf: "center"}}>
             {this.state.usernameError || this.state.passwordError
               ? "All fields must be filled out"
               : null}
           </Text>
-            <Text style={{ color: "#F3A3A3", alignSelf: "center"}}>
+            <Text style={{color: "#F3A3A3", alignSelf: "center"}}>
                 {this.state.invalidError
                     ? "Invalid username or password"
                     : null}
             </Text>
         </View>
-        <View style={{ flex: 1 }}>
+        <View style={{flex: 1 }}>
           <TouchableOpacity
             activeOpacity={0.8}
             onPress={this.register}

@@ -30,7 +30,7 @@ router.get('/:menuID', async (req, res) => {
                 Menu_ID: req.params.menuID
             }
         });
-        const tags = await menuTags.map( m => { return m.dataValues.Tag });
+        const tags = await menuTags.map( m => {return m.dataValues.Tag });
 
         const promises =  menuItemsWithoutTags.map(async menuItems => {
             const tagsOnItem = await TaggedItem.findAll({
@@ -39,7 +39,7 @@ router.get('/:menuID', async (req, res) => {
                     MI_ID: menuItems.dataValues.MI_ID
                 }
             });
-            const tags = await tagsOnItem.map( m => { return m.dataValues.Tag });
+            const tags = await tagsOnItem.map( m => {return m.dataValues.Tag });
 
 
             return {

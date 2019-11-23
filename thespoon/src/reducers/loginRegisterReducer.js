@@ -1,6 +1,7 @@
 import * as LogInRegisterActions from "../actions/logInRegisterActions";
+import {initialStateLoginRegisterReducer} from "./initialStateLoginRegisterReducer"
 
-const loginRegisterReducer = (state, action) => {
+const loginRegisterReducer = (state = initialStateLoginRegisterReducer, action) => {
     switch(action.type) {
         case LogInRegisterActions.REGISTERING_ATTEMPTING:
             return Object.assign({}, state, {
@@ -37,9 +38,7 @@ const loginRegisterReducer = (state, action) => {
                 loginStatus: 'not logged in'
             });
         default:
-            return Object.assign({}, state, {
-                loginStatus: 'not logged in'
-            });
+            return Object.assign({}, state, {});
     }
 };
 

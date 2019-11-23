@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import MainHeader from './MainHeader'
 
 class Layout extends Component {

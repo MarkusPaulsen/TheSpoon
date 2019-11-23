@@ -1,13 +1,23 @@
-import React, {Component} from "react";
-import FilterLink from "../../containers/FilterModalLink";
+//<editor-fold desc="React">
+import React, {Component} from 'react';
+//</editor-fold>
+
+//<editor-fold desc="Constants">
 import {modalVisibilityFilters} from "../../constants/modalVisibiltyFilters";
+//</editor-fold>
+//<editor-fold desc="Containers">
+import FilterLink from "../../containers/FilterModalLink";
+//</editor-fold>
+//<editor-fold desc="Icons">
 import {IconEditPink} from "../Icons";
+//</editor-fold>
 
 class Menu extends Component {
     constructor(props) {
         super(props)
     }
 
+    //<editor-fold desc="Render">
     render() {
         return (
             <div className="menu">
@@ -16,7 +26,7 @@ class Menu extends Component {
                 <div className="tags">
                     {this.props.tags.map(tag => {
                         return (
-                            <div className="tag" key={tag}>{tag}</div>
+                            <div className="tag" key={tag.color}>{tag.name}</div>
                         )})}
                 </div>
                 <div className="modal-button">
@@ -25,6 +35,7 @@ class Menu extends Component {
             </div>
         );
     }
+    //</editor-fold>
 }
 
 

@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import { IconExit } from '../Icons';
-import { Modal } from 'react-bootstrap';
+import React, {Component} from 'react';
+import {IconExit} from '../Icons';
+import {Modal} from 'react-bootstrap';
 import {modalVisibilityFilters} from "../../constants/modalVisibiltyFilters";
 import FilterLink from "../../containers/FilterModalLink";
 

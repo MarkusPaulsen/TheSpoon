@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, {Component} from "react";
 import {
   View,
   Text,
@@ -19,7 +19,7 @@ export default class LandingPage extends Component {
       <View>
         <ImageBackground
           source={SpoonBackground}
-          style={{ width: "100%", height: "100%" }}
+          style={{width: "100%", height: "100%" }}
         >
           <View style={styles.container}>
             <View style={styles.logo}>

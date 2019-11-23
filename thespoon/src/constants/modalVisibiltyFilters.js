@@ -8,4 +8,4 @@ export const modalVisibilityFilters = {
     SHOW_ADD_MENU: 'SHOW_ADD_MENU',
     SHOW_EDIT_MENU: 'SHOW_EDIT_MENU',
     HIDE_ALL: 'HIDE_ALL'
-}
+};

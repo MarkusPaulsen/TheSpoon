@@ -1,12 +1,14 @@
-import {modalVisibilityFilters} from "../constants/modalVisibiltyFilters";
+import * as ModalVisibiltyFilterActions from "../actions/modalVisibilityFilterActions";
+import {initialStateModalVisabilityFilterReducer} from "./initialStateModalVisabilityFilterReducer";
 
-const mdalVisibiltyFilterReducer = (state = modalVisibilityFilters.HIDE_ALL, action) => {
-    switch (action.type) {
-        case 'SET_MODAL_VISIBILITY_FILTER':
-            return action.filter
-        default:
-            return state
+const modalVisibiltyFilterReducer = (state = initialStateModalVisabilityFilterReducer, action) => {
+    if (action.type === ModalVisibiltyFilterActions.SET_MODAL_VISIBILITY_FILTER) {
+        return Object.assign({}, state, {
+            modalVisibilityFilter: action.filter
+        });
+    } else {
+        return Object.assign({}, state, {});
     }
-}
+};
 
-export default mdalVisibiltyFilterReducer
+export default modalVisibiltyFilterReducer;

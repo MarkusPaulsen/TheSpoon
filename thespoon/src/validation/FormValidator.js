@@ -1,11 +1,16 @@
+//<editor-fold desc="Validator">
 import validator from 'validator';
+//</editor-fold>
 
 class FormValidator {
+    //<editor-fold desc="Constructor">
     constructor(validations) {
         // validations is an array of validation rules specific to a form
         this.validations = validations;
     }
+    //</editor-fold>
 
+    //<editor-fold desc="Business Logic">
     validate(state) {
         // start out assuming valid
         let validation = this.valid();
@@ -22,7 +27,7 @@ class FormValidator {
                 const validation_method =
                     typeof rule.method === 'string' ?
                         validator[rule.method] :
-                        rule.method
+                        rule.method;
 
                 // call the validation_method with the current field value as the first
                 // argument, any additional arguments, and the whole state as a final
@@ -30,7 +35,7 @@ class FormValidator {
                 // then modify the validation object for the field and set the isValid
                 // field to false
                 if(validation_method(field_value, ...args, state) !== rule.validWhen) {
-                    validation[rule.field] = { isInvalid: true, message: rule.message }
+                    validation[rule.field] = {isInvalid: true, message: rule.message };
                     validation.isValid = false;
                 }
             }
@@ -40,14 +45,15 @@ class FormValidator {
     }
 
     valid() {
-        const validation = {}
+        const validation = {};
 
         this.validations.map(rule => (
-            validation[rule.field] = { isInvalid: false, message: '' }
+            validation[rule.field] = {isInvalid: false, message: '' }
         ));
 
-        return { isValid: true, ...validation };
+        return {isValid: true, ...validation };
     }
+    //</editor-fold>
 }
 
 export default FormValidator;
