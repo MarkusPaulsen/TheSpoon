@@ -1,28 +1,38 @@
 //<editor-fold desc="React">
 import React, {Component} from 'react';
-import ReactDOM from 'react-dom';
-import {Redirect} from "react-router";
+import Select from 'react-select';
 //</editor-fold>
 //<editor-fold desc="Redux">
 import {connect} from "react-redux";
-import {logIn, failLogIn, successLogIn} from '../../actionCreators/logInRegisterActionCreators';
+import {setRestaurantID} from "../../actionCreators/restaurantActionCreators";
 //</editor-fold>
-import {IconName, IconLocation, IconBirthday, IconExit, IconBack} from '../Icons';
+//<editor-fold desc="RxJs">
+import {bindCallback, of, throwError} from "rxjs";
+import {catchError, exhaustMap, map, take} from "rxjs/operators";
+import {ajax} from "rxjs/ajax";
+//</editor-fold>
+//<editor-fold desc="Bootstrap">
 import {Modal} from "react-bootstrap";
-import FilterLink from "../../containers/FilterModalLink";
-import {modalVisibilityFilters} from "../../constants/modalVisibiltyFilters";
+//</editor-fold>
+//<editor-fold desc="Validator">
 import Form from 'react-validation/build/form';
 import Input from 'react-validation/build/input';
 import Button from 'react-validation/build/button';
-import Select from 'react-select';
+//</editor-fold>
+
+//<editor-fold desc="Constants">
 import {days} from "../../constants/days";
 import {hours} from "../../constants/hours";
-import {bindCallback, of, throwError} from "rxjs";
-import {exhaustMap, map, take} from "rxjs/operators";
-//<editor-fold desc="RxJs">
-import {ajax} from "rxjs/ajax";
+import {paths} from "../../constants/paths";
+import {modalVisibilityFilters} from "../../constants/modalVisibiltyFilters";
 //</editor-fold>
-import paths from "../../constants/paths";
+//<editor-fold desc="Containers">
+import FilterLink from "../../containers/FilterModalLink";
+//</editor-fold>
+//<editor-fold desc="Icons">
+import {IconExit, IconBack} from '../Icons';
+import {failLogIn, logIn, successLogIn} from "../../actionCreators/logInActionCreators";
+//</editor-fold>
 
 
 
@@ -33,10 +43,11 @@ const selectStyles = {
     textAlign: "left",
     backgroundColor: "#ffffff"
   })
-}
+};
 
 class FillRestaurantInfo extends Component {
 
+    //<editor-fold desc="Constructor">
     constructor(props) {
         super(props);
 
@@ -55,14 +66,19 @@ class FillRestaurantInfo extends Component {
             selectedDay: null,
             selectedOpenTime: null,
             selectedCloseTime: null,
+            name: "",
+            imageID: "",
             address: "",
             city: "",
             country: "",
             restaurantName: "",
+            imageMessage: "",
             serverMessage: ""
         }
     }
+    //</editor-fold>
 
+    //<editor-fold desc="Business Logic">
     handleChangeDay = (selectedDay) => {
       this.setState({ selectedDay });
     };
@@ -86,13 +102,39 @@ class FillRestaurantInfo extends Component {
     };
 
     removeHours = (openingHour) => {
-       this.setState({selectedOpeningHours: this.state.selectedOpeningHours.filter(oH => { 
+        this.setState({selectedOpeningHours: this.state.selectedOpeningHours.filter(oH => {
           return oH !== openingHour
         })});
     };
 
     fileSelectedHandler = (event) => {
-      this.setState({ selectedFile: event.target.files[0]})
+        const thisTemp = this;
+        thisTemp.setState({ imageMessage: "", selectedFile: null });
+        let file = event.target.files[0];
+        if(["image/png","image/jpeg"].includes(file.type)) {
+            let reader = new FileReader();
+            reader.onload = (readerEvent) => {
+                ajax({
+                    url: paths["restApi"]["image"],
+                    method: "POST",
+                    headers: {"Content-Type": file.type},
+                    body: readerEvent.target.result
+                })
+                    .pipe(take(1))
+                    .subscribe((reply) => {
+                        thisTemp.setState({ imageID: reply.response.imageID, selectedFile: file});
+                    }, () => {
+                        thisTemp.setState({ imageMessage: (file.name + " could not be uploaded.")});
+                    });
+            };
+            reader.onerror = () => {
+                thisTemp.setState({ imageMessage: (file.name + " could not be read.")});
+            };
+            reader.readAsText(file);
+        }
+        else {
+            thisTemp.setState({ imageMessage: (file.type + " is not supported.<br/> Please use image/png or image/jpeg.")});
+        }
     };
 
     removeFile = () => {
@@ -116,40 +158,55 @@ class FillRestaurantInfo extends Component {
                     serverMessage: ""
                 });
             }))
-            .subscribe(() => {
-                console.log(thisTemp.state)
-            });
-
-            /*
             .pipe(exhaustMap(() => {
-                if (thisTemp.state.validation.isValid) {
-                    thisTemp.props.logIn(thisTemp.state.username, thisTemp.state.isRestaurantOwner);
+                return ajax({
+                    url: "https://nominatim.openstreetmap.org/search?q="
+                        + thisTemp.state.address
+                        + "+" + thisTemp.state.city
+                        + "+" + thisTemp.state.country
+                        + "&format=json",
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                });
+            }))
+            .pipe(exhaustMap((osmData) => {
+                console.log(osmData)
+                if (Array.isArray(osmData.response) && osmData.response.length > 0) {
                     return ajax({
-                        url: paths['restApi']['login'],
+                        url: paths['restApi']['restaurant'],
                         method: 'POST',
                         headers: {'Content-Type': 'application/json'},
                         body: {
-                            username: this.state.username,
-                            password: this.state.password,
-                            isRestaurantOwner: true,
+                            name: thisTemp.state.name,
+                            address: thisTemp.state.address,
+                            city: thisTemp.state.city,
+                            country: thisTemp.state.country,
+                            latitude: parseFloat(osmData.response[0].lat),
+                            longitude: parseFloat(osmData.response[0].lon),
+                            imageID: thisTemp.state.imageID,
+                            openingHours: thisTemp.state.selectedOpeningHours.map((selectedOpeningHour) => {
+                                return {
+                                    day: selectedOpeningHour.day.value,
+                                    openTime: selectedOpeningHour.openTime.value,
+                                    closeTime: selectedOpeningHour.closeTime.value
+                                }
+                            })
                         }
                     })
                 }
                 else {
                     return throwError({ status: 0});
                 }
+            }), catchError(error => {
+                return throwError({ status: error.status});
             }))
             .pipe(take(1))
             .subscribe(
-                (next) => {
-                    this.props.successLogIn(next.response.token);
-                    this.setState(
-                        { serverMessage: <Redirect to={{pathname: '/Mainpage/'}}/>}
-                    );
-                    this.props.onHide();
+                (reply) => {
+                    thisTemp.props.setRestaurantID(reply.response.restaurantID)
+                    thisTemp.props.onHide();
                 },
                 (error) => {
-                    this.props.failLogIn();
                     switch (error.status) {
                         case 400:
                             this.setState({ serverMessage: "Invalid username or password" });
@@ -165,12 +222,12 @@ class FillRestaurantInfo extends Component {
                             break;
                     }
                 }
-            );*/
+            );
     };
+    //</editor-fold>
 
-
+    //<editor-fold desc="Render">
     render() {
-
         return (
             <Modal.Body>
                 <span className="back"> <FilterLink filter={modalVisibilityFilters.SHOW_REGISTER_RESTAURANT_OWNER}><IconBack /></FilterLink></span>
@@ -201,6 +258,9 @@ class FillRestaurantInfo extends Component {
                             {this.state.selectedFile.name }
                           </label>
                         }
+                    </div>
+                    <div className="error-block">
+                        <small>{this.state.imageMessage}</small>
                     </div>
 
                     <div className="input-field">
@@ -265,6 +325,7 @@ class FillRestaurantInfo extends Component {
             </Modal.Body>
         )
     }
+    //</editor-fold>
 }
 
 //<editor-fold desc="Redux">
@@ -278,5 +339,11 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps, null)(FillRestaurantInfo);
+const mapDispatchToProps = (dispatch) => {
+    return {
+        setRestaurantID: (restaurantID) => dispatch(setRestaurantID(restaurantID))
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(FillRestaurantInfo);
 //</editor-fold>

@@ -5,7 +5,7 @@ import {paths} from "../../constants/paths";
 //</editor-fold>
 //<editor-fold desc="Redux">
 import {connect} from "react-redux";
-import {logIn, failLogIn, successLogIn} from "../../actionCreators/logInRegisterActionCreators";
+import {logIn, failLogIn, successLogIn} from "../../actionCreators/logInActionCreators";
 //</editor-fold>
 //<editor-fold desc="RxJs">
 import {bindCallback, throwError, of} from "rxjs";
@@ -84,7 +84,7 @@ class LogIn extends Component {
             password:values.password
           });
         }))
-        .pipe(exhaustMap((event) => {
+        .pipe(exhaustMap(() => {
           return bindCallback(thisTemp.setState).call(thisTemp, {
             validation: thisTemp.validator.validate(thisTemp.state),
             submitted: true,

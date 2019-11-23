@@ -21,7 +21,7 @@ class MainPage extends Component {
                             <div className="container">
                                 <div className="row">
                                     <div className="col-sm-8">
-                                        <h1 className="title">Hello {this.props.role ? "Restaurant owner" : "Customer"} {this.props.username}</h1>
+                                        <h1 className="title">Hello {this.props.username}</h1>
                                     </div>
                                 </div>
                             </div>
@@ -43,9 +43,9 @@ class MainPage extends Component {
 //<editor-fold desc="Redux">
 const mapStateToProps = (state) => {
     return {
-        role: state.logInRegisterReducer.role,
-        username: state.logInRegisterReducer.username,
-        loginStatus: state.logInRegisterReducer.loginStatus
+        role: state.logInReducer.role,
+        username: state.logInReducer.username,
+        loginStatus: state.logInReducer.loginStatus
     };
 };
 

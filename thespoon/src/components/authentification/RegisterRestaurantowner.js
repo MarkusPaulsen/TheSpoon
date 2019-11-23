@@ -1,15 +1,14 @@
 //<editor-fold desc="React">
 import React, {Component} from 'react';
-import {Redirect} from "react-router-dom"
 //</editor-fold>
 //<editor-fold desc="Redux">
 import {connect} from "react-redux";
-import {setModalVisibilityFilterAction} from "../../actions/modalVisibilityFilterActions";
-import {failLogIn, logIn, register, successLogIn} from "../../actionCreators/logInRegisterActionCreators";
+import {setModalVisibilityFilterAction} from "../../actionCreators/modalVisibilityFilterActionCreators";
+import {failLogIn, logIn, successLogIn} from "../../actionCreators/logInActionCreators";
 //</editor-fold>
 //<editor-fold desc="RxJs">
 import {bindCallback, of, throwError} from "rxjs";
-import {exhaustMap, map, take} from "rxjs/operators";
+import {exhaustMap, map, take, catchError} from "rxjs/operators";
 //</editor-fold>
 //<editor-fold desc="Bootstrap">
 import {Modal} from "react-bootstrap";
@@ -30,7 +29,8 @@ import FilterLink from "../../containers/FilterModalLink";
 import {IconName, IconEmail, IconPassword, IconExit, IconBack} from '../Icons';
 import Button from "react-validation/build/button";
 import {ajax} from "rxjs/ajax";
-import paths from "../../constants/paths";
+import {paths} from "../../constants/paths";
+
 //</editor-fold>
 
 
@@ -111,53 +111,78 @@ class RegisterRestaurantowner extends Component  {
                 return thisTemp.form.getValues();
             }))
             .pipe(exhaustMap((values) => {
-                return bindCallback(this.setState).call(thisTemp, {
+                return bindCallback(thisTemp.setState).call(thisTemp, {
                     email:values.email,
                     username: values.username,
                     name: values.name,
                     surname: values.surname,
                     password:values.password,
                     confirmPassword: values.confirmPassword,
-                    serverMessage: null
+                    serverMessage: ""
                 });
             }))
             .pipe(exhaustMap(() => {
-                return bindCallback(this.setState).call(thisTemp, {
-                    validation: thisTemp.validator.validate(this.state),
+                return bindCallback(thisTemp.setState).call(thisTemp, {
+                    validation: thisTemp.validator.validate(thisTemp.state),
                     submitted: true
                 });
             }))
             .pipe(exhaustMap(() => {
                 if (thisTemp.state.validation.isValid) {
                     return ajax({
-                        url: paths['restApi']['login'],
+                        url: paths['restApi']['registrationRestaurantOwner'],
                         method: 'POST',
                         headers: {'Content-Type': 'application/json'},
                         body: {
-                            username: this.state.username,
-                            password: this.state.password,
-                            isRestaurantOwner: true,
+                            username: thisTemp.state.username,
+                            name: thisTemp.state.name,
+                            surname: thisTemp.state.surname,
+                            email: thisTemp.state.email,
+                            password: thisTemp.state.password
                         }
-                    })
+                    });
                 }
                 else {
                     return throwError({ status: 0});
                 }
             }))
+            .pipe(exhaustMap((reply) => {
+                thisTemp.props.logIn(reply.response.username);
+                return ajax({
+                    url: paths["restApi"]["login"],
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: {
+                        username: reply.response.username,
+                        password: thisTemp.state.password,
+                        isRestaurantOwner: true,
+                    }
+                });
+            }), catchError(error => {
+                return throwError({ status: error.status});
+            }))
             .pipe(take(1))
             .subscribe(
-                () => {
-                    console.log(this.state)
-                    this.props.register(
-                        thisTemp.state.username,
-                        thisTemp.state.email,
-                        thisTemp.state.name,
-                        thisTemp.state.surname,
-                        thisTemp.state.password
-                    );
+                (next) => {
+                    thisTemp.props.successLogIn(next.response.token);
                     this.props.changeToShowRestaurantInformation();
-                },
-                () => {}
+                }, (error) => {
+                    thisTemp.props.failLogIn();
+                    switch (error.status) {
+                        case 400:
+                            thisTemp.setState({serverMessage: "Invalid username or password" });
+                            break;
+                        case 404:
+                            thisTemp.setState({serverMessage: "No connection to the server" });
+                            break;
+                        case 0:
+                            thisTemp.setState({serverMessage: "" });
+                            break;
+                        default:
+                            thisTemp.setState({serverMessage: "General error" });
+                            break;
+                    }
+                }
             );
     };
     //</editor-fold>
@@ -175,7 +200,7 @@ class RegisterRestaurantowner extends Component  {
                 <Form ref={ (c) => { this.form = c; }} onSubmit={this.handleSubmit}>
                     <h2>Sign up</h2>
                     <div className="account-type">
-                        <h4>as a <span className="role">{this.props.role}</span></h4>
+                        <h4>as a <span className="role">Restaurant Owner</span></h4>
                     </div>
 
                     <div className="input-field">
@@ -243,9 +268,8 @@ class RegisterRestaurantowner extends Component  {
 const mapDispatchToProps = (dispatch) => ({
     logIn: (username, password) => dispatch(logIn(username, password)),
     failLogIn: () => dispatch(failLogIn()),
-    successLogIn: (token) => dispatch(successLogIn(token))
-    changeToShowRestaurantInformation: () => dispatch(setModalVisibilityFilterAction(modalVisibilityFilters.SHOW_RESTAURANT_INFORMATION)),
-    register: (username, email, name, surname, password) => dispatch(register(username, email, name, surname, password))
+    successLogIn: (token) => dispatch(successLogIn(token)),
+    changeToShowRestaurantInformation: () => dispatch(setModalVisibilityFilterAction(modalVisibilityFilters.SHOW_RESTAURANT_INFORMATION))
 });
 
 export default connect(null, mapDispatchToProps)(RegisterRestaurantowner);

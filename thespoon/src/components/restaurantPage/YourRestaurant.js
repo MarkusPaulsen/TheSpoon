@@ -120,7 +120,7 @@ class YourRestaurant extends Component {
 //<editor-fold desc="Redux">
 const mapStateToProps = (state) => {
     return {
-        token: state.logInRegisterReducer.token
+        token: state.logInReducer.token
     };
 };
 
