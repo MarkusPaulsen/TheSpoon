@@ -111,7 +111,7 @@ exports.searchByMenuItem = function(menuItemName) {
     "restaurantImageLink" : "www.cloudStorage.com/Restaurant"
   },
   "menu" : {
-    "menuID" : 2,
+    "menuID" : 1,
     "name" : "Emilio's menu of the day",
     "description" : "Our special menu of today",
     "tags" : [ {
