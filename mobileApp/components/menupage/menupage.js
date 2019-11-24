@@ -13,32 +13,6 @@ import MapView from "react-native-maps";
 import * as Typography from "../../styles/typography";
 import * as Colors from "../../styles/colors";
 
-function Map() {
-  return (
-    <View>
-      <MapView
-        style={{
-          width: 360,
-          height: 270,
-          alignSelf: "center",
-          marginTop: 30
-        }}
-        initialRegion={{
-          latitude: 45.4688346,
-          longitude: 9.2212227,
-          latitudeDelta: 0.009,
-          longitudeDelta: 0.009
-        }}
-      >
-        <MapView.Marker
-          coordinate={{ latitude: 45.4688346, longitude: 9.2212227 }}
-          title={"Emilio's Pizza"}
-          description={"Piazzale Susa, 20129 Milano"}
-        />
-      </MapView>
-    </View>
-  );
-}
 // TODO: connect to score from DB
 function Rating(score) {
   let stars = [];
@@ -148,7 +122,9 @@ export default class Menu extends Component {
     this.state = {
       menuInfo: "",
       menuItems: "",
-      searchResults: null
+      restaurantInfo: "",
+      searchResults: null,
+      isLoading: true
     };
   }
 
@@ -166,7 +142,7 @@ export default class Menu extends Component {
     try {
       //change to port 80 if not using the stub
       const response = await fetch(
-        `http://192.168.1.101:8080/api/user/customer/menu/${menuId}`,
+        `http://192.168.1.103:8080/api/user/customer/menu/${menuId}`,
         {
           method: "GET",
           accept: "application/json"
@@ -193,7 +169,14 @@ export default class Menu extends Component {
         // TODO: Add right rating-score
         score: "4.6"
       }));
-      this.setState({ menuInfo, menuItems });
+      const restaurantInfo = {
+        latitude: responseJson["restaurant"]["latitude"],
+        longitude: responseJson["restaurant"]["longitude"],
+        address: responseJson["restaurant"]["address"],
+        city: responseJson["restaurant"]["city"],
+        country: responseJson["restaurant"]["country"]
+      };
+      this.setState({ menuInfo, menuItems, restaurantInfo, isLoading: false });
     } catch (e) {
       console.error(e);
     }
@@ -267,8 +250,7 @@ export default class Menu extends Component {
                 { marginTop: 10, textAlign: "center" }
               ]}
             >
-              {" "}
-              DISHES{" "}
+              DISHES
             </Text>
             <View style={styles.underline} />
             <FlatList
@@ -291,8 +273,7 @@ export default class Menu extends Component {
               keyExtractor={item => item.menuId}
             />
             <Text style={[Typography.FONT_REGULAR_THIN, { marginTop: 15 }]}>
-              {" "}
-              DRINKS{" "}
+              DRINKS
             </Text>
             <View style={styles.underline} />
             <FlatList
@@ -314,7 +295,43 @@ export default class Menu extends Component {
               )}
               keyExtractor={item => item.menuId}
             />
-            <Map />
+            <Text> {this.state.restaurantInfo.longitude} </Text>
+            <Text> {this.state.restaurantInfo.latitude} </Text>
+            <View>
+              {this.state.isLoading ? (
+                <Text> No map to display </Text>
+              ) : (
+                <MapView
+                  initialRegion={{
+                    longitude: this.state.restaurantInfo.longitude,
+                    latitude: this.state.restaurantInfo.latitude,
+                    latitudeDelta: 0.009,
+                    longitudeDelta: 0.009
+                  }}
+                  style={{
+                    width: 360,
+                    height: 270,
+                    alignSelf: "center",
+                    marginTop: 30
+                  }}
+                >
+                  <MapView.Marker
+                    coordinate={{
+                      longitude: this.state.restaurantInfo.longitude,
+                      latitude: this.state.restaurantInfo.latitude
+                    }}
+                    title={this.state.menuInfo.restaurantName + ""}
+                    description={
+                      this.state.restaurantInfo.address +
+                      ", " +
+                      this.state.restaurantInfo.city +
+                      ", " +
+                      this.state.restaurantInfo.country
+                    }
+                  />
+                </MapView>
+              )}
+            </View>
           </SafeAreaView>
         </ScrollView>
       </SafeAreaView>
