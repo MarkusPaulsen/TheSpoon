@@ -16,14 +16,25 @@ import * as Typography from "../../styles/typography";
 import * as Colors from "../../styles/colors";
 
 function ResultItem({ menuName, restaurantName, tags, score }) {
-  let tagsView = [];
+  let tags1Row = [];
+  let tags2Row = [];
   for (let i = 0; i < tags.length; i++) {
     const color = tags[i]["color"];
-    tagsView.push(
-        <View style={[styles.bgLabel, {backgroundColor:color}]}>
-          <Text style={[Typography.FONT_TAG, { marginHorizontal: 10 }]}>{tags[i]["tag"]}</Text>
-        </View>
-    );
+    if(i < 2){
+      tags1Row.push(
+          <View style={[styles.bgLabel, {backgroundColor:color}]}>
+            <Text style={[Typography.FONT_TAG, { marginHorizontal: 10 }]}>{tags[i]["tag"]}</Text>
+          </View>
+      );
+    }
+    if(i > 1){
+      tags2Row.push(
+          <View style={[styles.bgLabel, {backgroundColor:color}]}>
+            <Text style={[Typography.FONT_TAG, { marginHorizontal: 10 }]}>{tags[i]["tag"]}</Text>
+          </View>
+      );
+    }
+
   }
 
   return (
@@ -41,13 +52,15 @@ function ResultItem({ menuName, restaurantName, tags, score }) {
           <Text style={Typography.FONT_SMALL_PINK}>{restaurantName}</Text>
         </View>
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                <View style={{flexDirection:"row"}}>{
-                    tagsView}
-                </View>
+          <View style={{flexDirection:"row"}}>{tags1Row}</View>
           <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
             <Image source={require("../../assets/icon-star.png")} />
             <Text style={Typography.FONT_SMALL_BLACK}>{score}</Text>
           </View>
+
+        </View>
+        <View>
+        <View style={{flexDirection:"row"}}>{tags2Row}</View>
         </View>
       </View>
     </View>
@@ -253,7 +266,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 0,
     borderRadius: 20,
     width: 322,
-    height: 203,
     shadowColor: Colors.BLACK,
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.5,
@@ -268,7 +280,8 @@ const styles = StyleSheet.create({
     height: 15,
     backgroundColor: "#7DC0FE",
     borderRadius: 5,
-    marginRight: 4
+    marginRight: 5,
+    marginBottom:6,
   },
   imageBox: {
     width: 322,
