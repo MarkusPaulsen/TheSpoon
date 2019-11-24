@@ -12,7 +12,7 @@ info:
     \ to customers nor owners remain inside the default group.\n \n AUTHENTICATION/AUTHORIZATION:\
     \ The json web token returned when the login is performed is supposed to be put\
     \ into x-auth-token header in the endpoints that require authorization"
-  version: "3.5"
+  version: "4.0"
   title: "The Spoon API reference"
 tags:
 - name: "customer"
@@ -697,8 +697,8 @@ definitions:
         type: "array"
         items:
           type: "string"
-      imageLink:
-        type: "string"
+      imageID:
+        type: "integer"
     example:
       name: "Spaghetti alla carbonara"
       description: "Fantastic italian dish made of spaghetti, pig cheek, eggs, black\
@@ -709,7 +709,7 @@ definitions:
       - "Mediterranean"
       - "Pasta"
       - "Italian"
-      imageLink: "www.cloudStorage.com/Carbonara"
+      imageID: 5
   MenuID:
     type: "object"
     properties:
