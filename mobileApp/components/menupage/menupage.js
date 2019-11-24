@@ -247,14 +247,12 @@ export default class Menu extends Component {
               <View style={{ flexDirection: "row" }}>
                 <View style={[styles.bgLabel, { backgroundColor: "#F3A3A3" }]}>
                   <Text style={[Typography.FONT_TAG, { marginHorizontal: 10 }]}>
-                    {" "}
-                    Italian{" "}
+                    Italian
                   </Text>
                 </View>
                 <View style={[styles.bgLabel, { backgroundColor: "#99C99B" }]}>
                   <Text style={[Typography.FONT_TAG, { marginHorizontal: 10 }]}>
-                    {" "}
-                    Pizza{" "}
+                    Pizza
                   </Text>
                 </View>
               </View>
