@@ -41,7 +41,9 @@ function ResultItem({ menuName, restaurantName, tags, score }) {
           <Text style={Typography.FONT_SMALL_PINK}>{restaurantName}</Text>
         </View>
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                <View style={{flexDirection:"row"}}>{tagsView}</View>
+                <View style={{flexDirection:"row"}}>{
+                    tagsView}
+                </View>
           <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
             <Image source={require("../../assets/icon-star.png")} />
             <Text style={Typography.FONT_SMALL_BLACK}>{score}</Text>

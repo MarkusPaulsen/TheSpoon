@@ -36,11 +36,11 @@ exports.getMenuCustomer = function(menuID) {
     examples['application/json'] = {
   "restaurant" : {
     "restaurantName" : "Emilio's Pizza",
-    "address" : "André route 45",
-    "city" : "Rome",
+    "address" : " Piazzale Susa",
+    "city" : "Milan",
     "country" : "Italy",
-    "latitude" : 48.4281350802915,
-    "longitude" : -110.0792542197085
+    "latitude" : 45.4688346,
+    "longitude" : 9.2234114
   },
   "menuName" : "Emilio's menu of the day",
   "description" : "Our special menu of today",
@@ -66,7 +66,11 @@ exports.getMenuCustomer = function(menuID) {
     }, {
       "name" : "Italian",
       "color" : "#FFBC8C"
-    } ],
+    },
+      {
+        "name" : "Dinner",
+        "color" : "#99C99B"
+      }],
     "imageLink" : "www.cloudStorage.com/Carbonara"
   }, {
     "name" : "Polpette al sugo",
@@ -74,15 +78,19 @@ exports.getMenuCustomer = function(menuID) {
     "type" : "dish",
     "priceEuros" : 7,
     "tags" : [ {
-      "name" : "Mediterranean",
+      "name" : "Italian",
       "color" : "#FFBC8C"
     }, {
       "name" : "Meat",
       "color" : "#FFBC8C"
     }, {
-      "name" : "Italian",
+      "name" : "Mediterranean",
       "color" : "#FFBC8C"
-    } ],
+    },
+      {
+        "name" : "Burger",
+        "color" : "#97C8F5"
+      }],
     "imageLink" : "www.cloudStorage.com/Meatballs"
   } ]
 };
@@ -115,12 +123,16 @@ exports.searchByMenuItem = function(menuItemName) {
     "name" : "Emilio's menu of the day",
     "description" : "Our special menu of today",
     "tags" : [ {
-      "name" : "Italian",
+      "name" : "Seafood",
       "color" : "#FFBC8C"
     }, {
       "name" : "Mediterranean",
-      "color" : "#FFBC8C"
-    } ],
+      "color" : "#97C8F5"
+    },
+      {
+        "name" : "Italian",
+        "color" : "#99C99B"
+      }],
     "rating" : 5
   }
 }, {
@@ -133,12 +145,20 @@ exports.searchByMenuItem = function(menuItemName) {
     "name" : "Emilio's menu of the day",
     "description" : "Our special menu of today",
     "tags" : [ {
-      "name" : "Italian",
+      "name" : "American",
       "color" : "#FFBC8C"
     }, {
       "name" : "Mediterranean",
-      "color" : "#FFBC8C"
-    } ],
+      "color" : "#99C99B"
+    },
+      {
+        "name" : "Vegetarian",
+        "color" : "#F3A3A3"
+      },
+      {
+        "name" : "Mediterranean",
+        "color" : "#FFBC8C"
+      }],
     "rating" : 5
   }
 } ];
