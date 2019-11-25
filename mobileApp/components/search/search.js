@@ -20,21 +20,24 @@ function ResultItem({ menuName, restaurantName, tags, score }) {
   let tags2Row = [];
   for (let i = 0; i < tags.length; i++) {
     const color = tags[i]["color"];
-    if(i < 2){
+    if (i < 2) {
       tags1Row.push(
-          <View style={[styles.bgLabel, {backgroundColor:color}]}>
-            <Text style={[Typography.FONT_TAG, { marginHorizontal: 10 }]}>{tags[i]["tag"]}</Text>
-          </View>
+        <View style={[styles.bgLabel, { backgroundColor: color }]}>
+          <Text style={[Typography.FONT_TAG, { marginHorizontal: 10 }]}>
+            {tags[i]["name"]}
+          </Text>
+        </View>
       );
     }
-    if(i > 1){
+    if (i > 1) {
       tags2Row.push(
-          <View style={[styles.bgLabel, {backgroundColor:color}]}>
-            <Text style={[Typography.FONT_TAG, { marginHorizontal: 10 }]}>{tags[i]["tag"]}</Text>
-          </View>
+        <View style={[styles.bgLabel, { backgroundColor: color }]}>
+          <Text style={[Typography.FONT_TAG, { marginHorizontal: 10 }]}>
+            {tags[i]["name"]}
+          </Text>
+        </View>
       );
     }
-
   }
 
   return (
@@ -52,15 +55,14 @@ function ResultItem({ menuName, restaurantName, tags, score }) {
           <Text style={Typography.FONT_SMALL_PINK}>{restaurantName}</Text>
         </View>
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-          <View style={{flexDirection:"row"}}>{tags1Row}</View>
+          <View style={{ flexDirection: "row" }}>{tags1Row}</View>
           <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
             <Image source={require("../../assets/icon-star.png")} />
             <Text style={Typography.FONT_SMALL_BLACK}>{score}</Text>
           </View>
-
         </View>
         <View>
-        <View style={{flexDirection:"row"}}>{tags2Row}</View>
+          <View style={{ flexDirection: "row" }}>{tags2Row}</View>
         </View>
       </View>
     </View>
@@ -107,13 +109,13 @@ export default class Search extends Component {
       );
       const responseJson = await response.json();
       if (response.ok) {
-          const searchResults = responseJson.map(index => ({
-            menuId: index.menu.menuID.toString(),
-            menuName: index.menu.name,
-            restaurantName: index.restaurantData.restaurantName,
-            tags: this.getTagsInfo(index),
-            score: index.menu.rating
-          }));
+        const searchResults = responseJson.map(index => ({
+          menuId: index.menu.menuID.toString(),
+          menuName: index.menu.name,
+          restaurantName: index.restaurantData.restaurantName,
+          tags: this.getTagsInfo(index),
+          score: index.menu.rating
+        }));
         this.setState({ searchResults });
       }
       if (!response.ok) {
@@ -125,17 +127,16 @@ export default class Search extends Component {
     }
   }
 
-  getTagsInfo(index){
-      const tagsObject = [];
-      const numberOfTags = index.menu.tags.length;
-      for (let i=0; i<numberOfTags; i++){
-        tagsObject.push({
-          tag: index.menu.tags[i]["name"],
-          color: index.menu.tags[i]["color"]
-        },)}
-      return (tagsObject);
-
-
+  getTagsInfo(index) {
+    const tagsObject = [];
+    const numberOfTags = index.menu.tags.length;
+    for (let i = 0; i < numberOfTags; i++) {
+      tagsObject.push({
+        name: index.menu.tags[i]["name"],
+        color: index.menu.tags[i]["color"]
+      });
+    }
+    return tagsObject;
   }
   render() {
     return (
@@ -184,7 +185,6 @@ export default class Search extends Component {
                   renderItem={({ item }) => (
                     <TouchableOpacity
                       onPress={() => {
-                        console.log(item);
                         this.props.navigation.navigate("Menu", {
                           menuId: item.menuId,
                           restaurantName: item.restaurantName
@@ -281,7 +281,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#7DC0FE",
     borderRadius: 5,
     marginRight: 5,
-    marginBottom:6,
+    marginBottom: 6
   },
   imageBox: {
     width: 322,
