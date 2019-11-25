@@ -199,7 +199,7 @@ export default class Menu extends Component {
               >
                 <TouchableOpacity
                   onPress={() => {
-                    alert("You tapped the button!");
+                    this.props.navigation.goBack();
                   }}
                 >
                   <Image source={require("../../assets/go-back.png")} />
@@ -295,8 +295,6 @@ export default class Menu extends Component {
               )}
               keyExtractor={item => item.menuId}
             />
-            <Text> {this.state.restaurantInfo.longitude} </Text>
-            <Text> {this.state.restaurantInfo.latitude} </Text>
             <View>
               {this.state.isLoading ? (
                 <Text> No map to display </Text>
