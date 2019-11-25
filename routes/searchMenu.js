@@ -9,10 +9,9 @@ const TaggedItem = require('../models/taggedItem.js');
 const TaggedMenu = require('../models/taggedMenu.js');
 const Restaurant = require('../models/restaurants.js');
 const Tag = require('../models/tag.js');
+const ItemReview = require('../models/itemReview.js');
 
-// TODO: Aggregate the rating of the menu
-// TODO: Aggregate thte rating of each item
-
+// TODO: Aggregate the rating of the menu OR aggregate the average score of the menuItem-ratings
 router.get('/:menuID', async (req, res) => {
     try {
 
@@ -76,6 +75,14 @@ router.get('/:menuID', async (req, res) => {
                     color: tag.dataValues.Color
                 }
             });
+
+            const ratings = await ItemReview.findAll({
+                attributes: ['Rating'],
+                where: {
+                    MI_ID: menuItems.dataValues.MI_ID
+                }
+            });
+            const average = await aggregateRating(ratings);
             const tags = await Promise.all(tagsOnItem);
 
             return {
@@ -84,6 +91,7 @@ router.get('/:menuID', async (req, res) => {
                 type: menuItems.dataValues.Type,
                 priceEuros: menuItems.dataValues.Price,
                 imageLink: menuItems.dataValues.ImageLink,
+                rating: average,
                 tags
             }
         });
@@ -108,5 +116,16 @@ router.get('/:menuID', async (req, res) => {
         res.status(400).send(error);
     }
 });
+
+
+const aggregateRating = (ratings) => {
+    let sum = 0;
+    for (let i = 0; i < ratings.length; i++) {
+        sum += parseInt(ratings[i].dataValues.Rating)
+    }
+    return (sum/ratings.length).toFixed(1);
+};
+
+
 
 module.exports = router;

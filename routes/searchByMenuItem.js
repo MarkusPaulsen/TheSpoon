@@ -8,7 +8,6 @@ const MenuItem = require('../models/menuItem.js');
 const Restaurant = require('../models/restaurants.js');
 const TaggedMenu = require('../models/taggedMenu.js');
 
-
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
@@ -48,6 +47,7 @@ router.get('/', async (req, res) => {
                  }
              });
              const tags = await tagsOnMenu.map( m => { return m.dataValues.Tag });
+
 
              const menu = {
                  menuID: mi.dataValues.Menu_ID,

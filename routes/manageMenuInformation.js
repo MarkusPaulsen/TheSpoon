@@ -114,7 +114,6 @@ router.get('/', auth, isOwner, findRestaurant, async (req, res) => {
                 });
                 const tags = await Promise.all(tagsOnItem);
 
-
                 //Return the specific menuItem with the right format.
                 return {
                     name: mi.dataValues.Name,
