@@ -1,7 +1,7 @@
 swagger: "2.0"
 info:
   description: "This is the API reference of The Spoon project.\n \n VERSIONING: The version number works in this way: it's composed of two numbers separated by a point. The first number identifies the Sprint, so for example the version 2.1 of the API reference is related to the Sprint number 2. The second number starts from 0 and has to be increased by one each time the file is modified. The person who modifies this document is responsible for increasing the number.\n \n GROUPING OF ENDPOINTS: The endpoints are grouped by dividing them into customers' operations and owners' operations. All the endpoints that are not strictly related to customers nor owners remain inside the default group.\n \n AUTHENTICATION/AUTHORIZATION: The json web token returned when the login is performed is supposed to be put into x-auth-token header in the endpoints that require authorization"
-  version: "4.0"
+  version: "4.1"
   title: "The Spoon API reference"
 tags:
   - name: "customer"
@@ -177,9 +177,7 @@ paths:
         200:
           description: "Successful operation"
           schema:
-            type: "array"
-            items:
-              $ref: "#/definitions/MenuCompleteWithID"
+            $ref: "#/definitions/MenuCompleteWithIDArray"
         401:
           description: "Access denied"
       security:
@@ -266,9 +264,9 @@ paths:
         200:
           description: "Successful operation"
           schema:
-            type: "array"
-            items:
-              $ref: "#/definitions/MenuAndRestaurant"
+            $ref: "#/definitions/MenuAndRestaurantArray"
+        404:
+          description: "No menu item found"
   /api/user/customer/menu/{menuID}:
     get:
       tags:
@@ -508,11 +506,11 @@ definitions:
           $ref: "#/definitions/OpenInterval"
     example:
       name: "Emilio's Pizza"
-      address: "André route 45"
-      city: "Rome"
+      address: "Piazzale Susa"
+      city: "Milan"
       country: "Italy"
-      latitude: 48.4281350802915
-      longitude: -110.0792542197085
+      latitude: 45.4688346
+      longitude: 9.2234114
       imageID: 5
       openingHours: [{"day": "Monday", "openTime": "12.00", "closeTime": "15.00"}, {"day": "Saturday", "openTime": "19.00", "closeTime": "23.59"}]
   RestaurantID:
@@ -560,6 +558,33 @@ definitions:
       imageLink:
         type: "string"
     example:
+      name: "Spaghetti alla carbonara"
+      description: "Fantastic italian dish made of spaghetti, pig cheek, eggs, black pepper, pecorino romano"
+      type: "dish"
+      priceEuros: 10
+      tags: [{"name": "Mediterranean", "color": "#FFBC8C"}, {"name": "Pasta", "color": "#99C99B"}, {"name": "Italian", "color": "#FFBC8C"}]
+      imageLink: "www.cloudStorage.com/Carbonara"
+  MenuItemWithID:
+    type: "object"
+    properties:
+      menuItemID:
+        type: "integer"
+      name:
+        type: "string"
+      description:
+        type: "string"
+      type:
+        type: "string"
+      priceEuros:
+        type: "number"
+      tags:
+        type: "array"
+        items:
+          $ref: "#/definitions/Tag"
+      imageLink:
+        type: "string"
+    example:
+      menuItemID: 8
       name: "Spaghetti alla carbonara"
       description: "Fantastic italian dish made of spaghetti, pig cheek, eggs, black pepper, pecorino romano"
       type: "dish"
@@ -633,6 +658,11 @@ definitions:
     example:
       restaurantData: {"restaurantName": "Emilio's Pizza", "restaurantImageLink": "www.cloudStorage.com/Restaurant"}
       menu: {"menuID": 2, "name": "Emilio's menu of the day", "description": "Our special menu of today", "tags": [{"name": "Italian", "color": "#FFBC8C"}, {"name": "Mediterranean", "color": "#FFBC8C"}], "rating": 5}
+  MenuAndRestaurantArray:
+    type: "array"
+    items:
+      $ref: "#/definitions/MenuAndRestaurant"
+    example: [{"restaurantData": {"restaurantName": "Emilio's Pizza", "restaurantImageLink": "www.cloudStorage.com/Restaurant"}, "menu": {"menuID": 50, "name": "Emilio's menu of the day", "description": "Our special menu of today", "tags": [{"name": "Italian", "color": "#FFBC8C"}, {"name": "Mediterranean", "color": "#FFBC8C"}], "rating": 5}}, {"restaurantData": {"restaurantName": "Emilio's Pizza", "restaurantImageLink": "www.cloudStorage.com/Restaurant"}, "menu": {"menuID": 51, "name": "Emilio's menu of the day", "description": "Our special menu of today", "tags": [{"name": "Italian", "color": "#FFBC8C"}, {"name": "Mediterranean", "color": "#FFBC8C"}], "rating": 5}}]
   ImageID:
     type: "object"
     properties:
@@ -672,8 +702,8 @@ definitions:
           $ref: "#/definitions/OpenInterval"
     example:
       name: "Emilio's Pizza"
-      address: "André route 45"
-      city: "Rome"
+      address: "Piazzale Susa"
+      city: "Milan"
       country: "Italy"
       imageLink: "www.cloudStorage.com/Restaurant"
       openingHours: [{"day": "Monday", "openTime": "12.00", "closeTime": "15.00"}, {"day": "Saturday", "openTime": "19.00", "closeTime": "23.59"}]
@@ -700,6 +730,11 @@ definitions:
       description: "Our special menu of today"
       tags: [{"name": "Italian", "color": "#FFBC8C"}, {"name": "Mediterranean", "color": "#FFBC8C"}]
       menuItems: [{"name": "Spaghetti alla carbonara", "description": "Fantastic italian dish made of spaghetti, pig cheek, eggs, black pepper, pecorino romano", "type": "dish", "priceEuros": 10, "tags": [{"name": "Mediterranean", "color": "#FFBC8C"}, {"name": "Pasta", "color": "#99C99B"}, {"name": "Italian", "color": "#FFBC8C"}], "imageLink": "www.cloudStorage.com/Carbonara"}, {"name": "Polpette al sugo", "description": "Meatballs with tomato sauce", "type": "dish", "priceEuros": 7, "tags": [{"name": "Mediterranean", "color": "#FFBC8C"}, {"name": "Meat", "color": "#FFBC8C"}, {"name": "Italian", "color": "#FFBC8C"}], "imageLink": "www.cloudStorage.com/Meatballs"}]
+  MenuCompleteWithIDArray:
+    type: "array"
+    items:
+      $ref: "#/definitions/MenuCompleteWithID"
+    example: [{"menuID": 50, "name": "Emilio's menu of the day", "description": "Our special menu of today", "tags": [{"name": "Italian", "color": "#FFBC8C"}, {"name": "Mediterranean", "color": "#FFBC8C"}], "menuItems": [{"name": "Spaghetti alla carbonara", "description": "Fantastic italian dish made of spaghetti, pig cheek, eggs, black pepper, pecorino romano", "type": "dish", "priceEuros": 10, "tags": [{"name": "Mediterranean", "color": "#FFBC8C"}, {"name": "Pasta", "color": "#99C99B"}, {"name": "Italian", "color": "#FFBC8C"}], "imageLink": "www.cloudStorage.com/Carbonara"}, {"name": "Polpette al sugo", "description": "Meatballs with tomato sauce", "type": "dish", "priceEuros": 7, "tags": [{"name": "Mediterranean", "color": "#FFBC8C"}, {"name": "Meat", "color": "#FFBC8C"}, {"name": "Italian", "color": "#FFBC8C"}], "imageLink": "www.cloudStorage.com/Meatballs"}]}, {"menuID": 51, "name": "Emilio's menu of the day", "description": "Our special menu of today", "tags": [{"name": "Italian", "color": "#FFBC8C"}, {"name": "Mediterranean", "color": "#FFBC8C"}], "menuItems": [{"name": "Spaghetti alla carbonara", "description": "Fantastic italian dish made of spaghetti, pig cheek, eggs, black pepper, pecorino romano", "type": "dish", "priceEuros": 10, "tags": [{"name": "Mediterranean", "color": "#FFBC8C"}, {"name": "Pasta", "color": "#99C99B"}, {"name": "Italian", "color": "#FFBC8C"}], "imageLink": "www.cloudStorage.com/Carbonara"}, {"name": "Polpette al sugo", "description": "Meatballs with tomato sauce", "type": "dish", "priceEuros": 7, "tags": [{"name": "Mediterranean", "color": "#FFBC8C"}, {"name": "Meat", "color": "#FFBC8C"}, {"name": "Italian", "color": "#FFBC8C"}], "imageLink": "www.cloudStorage.com/Meatballs"}]}]
   MenuWithoutItems:
     type: "object"
     properties:
@@ -746,14 +781,14 @@ definitions:
       menuItems:
         type: "array"
         items:
-          $ref: "#/definitions/MenuItem"
+          $ref: "#/definitions/MenuItemWithID"
     example:
-      restaurant: {"restaurantName": "Emilio's Pizza", "address": "André route 45", "city": "Rome", "country": "Italy", "latitude": 48.4281350802915, "longitude": -110.0792542197085}
+      restaurant: {"restaurantName": "Emilio's Pizza", "address": "Piazzale Susa", "city": "Milan", "country": "Italy", "latitude": 45.4688346, "longitude": 9.2234114}
       menuName: "Emilio's menu of the day"
       description: "Our special menu of today"
       tags: [{"name": "Italian", "color": "#FFBC8C"}, {"name": "Mediterranean", "color": "#FFBC8C"}]
       menuRating: 5
-      menuItems: [{"name": "Spaghetti alla carbonara", "description": "Fantastic italian dish made of spaghetti, pig cheek, eggs, black pepper, pecorino romano", "type": "dish", "priceEuros": 10, "tags": [{"name": "Mediterranean", "color": "#FFBC8C"}, {"name": "Pasta", "color": "#99C99B"}, {"name": "Italian", "color": "#FFBC8C"}], "imageLink": "www.cloudStorage.com/Carbonara"}, {"name": "Polpette al sugo", "description": "Meatballs with tomato sauce", "type": "dish", "priceEuros": 7, "tags": [{"name": "Mediterranean", "color": "#FFBC8C"}, {"name": "Meat", "color": "#FFBC8C"}, {"name": "Italian", "color": "#FFBC8C"}], "imageLink": "www.cloudStorage.com/Meatballs"}]
+      menuItems: [{"menuItemID": 20, "name": "Spaghetti alla carbonara", "description": "Fantastic italian dish made of spaghetti, pig cheek, eggs, black pepper, pecorino romano", "type": "dish", "priceEuros": 10, "tags": [{"name": "Mediterranean", "color": "#FFBC8C"}, {"name": "Pasta", "color": "#99C99B"}, {"name": "Italian", "color": "#FFBC8C"},{ "name": "Dinner", "color": "#99C99B"}], "imageLink": "www.cloudStorage.com/Carbonara"}, {"menuItemID": 21, "name": "Polpette al sugo", "description": "Meatballs with tomato sauce", "type": "dish", "priceEuros": 7, "tags": [{"name": "Mediterranean", "color": "#FFBC8C"}, {"name": "Meat", "color": "#FFBC8C"}, {"name": "Italian", "color": "#FFBC8C"}], "imageLink": "www.cloudStorage.com/Meatballs"}]
   Tag:
     type: "object"
     properties:
