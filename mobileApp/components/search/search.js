@@ -16,27 +16,19 @@ import * as Typography from "../../styles/typography";
 import * as Colors from "../../styles/colors";
 
 function ResultItem({ menuName, restaurantName, tags, score }) {
-  let tags1Row = [];
-  let tags2Row = [];
+  const tags1Row = [];
+  const tags2Row = [];
   for (let i = 0; i < tags.length; i++) {
     const color = tags[i]["color"];
-    if (i < 2) {
-      tags1Row.push(
-        <View style={[styles.bgLabel, { backgroundColor: color }]}>
-          <Text style={[Typography.FONT_TAG, { marginHorizontal: 10 }]}>
-            {tags[i]["name"]}
-          </Text>
-        </View>
-      );
-    }
-    if (i > 1) {
-      tags2Row.push(
-        <View style={[styles.bgLabel, { backgroundColor: color }]}>
-          <Text style={[Typography.FONT_TAG, { marginHorizontal: 10 }]}>
-            {tags[i]["name"]}
-          </Text>
-        </View>
-      );
+    const tag = [
+      <View style={[styles.bgLabel, { backgroundColor: color }]}>
+        <Text style={[Typography.FONT_TAG, { marginHorizontal: 10 }]}>
+          {tags[i]["name"]}
+        </Text>
+      </View>
+    ];
+    {
+      i < 2 ? tags1Row.push(tag) : tags2Row.push(tag);
     }
   }
 
