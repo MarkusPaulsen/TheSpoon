@@ -3,6 +3,8 @@ const router = express();
 router.use(express.json());
 
 const bcrypt = require('bcrypt');
+const config = require('config');
+const jwt = require('jsonwebtoken');
 
 const Owner = require('../models/owner.js');
 const inputValidator = require('../middleware/inputValidationMiddleware.js');
@@ -30,8 +32,9 @@ router.post('/', inputValidator(validationSchema.registrationOwnerValidation), a
             Email: req.body.email,
             Password: hashed
         });
-        //send username of created owner as confirmation
-        res.status(201).send({username: createdOwner.dataValues.Username});
+        //send username of created owner as confirmation and the authentication token, so that the owner is already logged in
+        const token = jwt.sign({username: req.body.username}, config.get('jwtPrivateKey'), {expiresIn: config.get('jwtExpirationTime')});
+        res.status(201).send({username: createdOwner.dataValues.Username, token: token});
     } catch (error) {
         res.status(400).send(error);
     }

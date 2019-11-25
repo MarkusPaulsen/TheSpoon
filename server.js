@@ -5,10 +5,9 @@ const db = require('./sequelizeSettings');
 const app = express();
 app.use(express.json());
 
-const config = require('config');
+const isEnvironmentSet = require('./utils/environmentVariablesCheck.js');
 
-if (!config.get('jwtPrivateKey')){
-    console.error('FATAL ERROR: jwtPrivateKey is not defined');
+if (!isEnvironmentSet()){
     process.exit(1);
 }
 

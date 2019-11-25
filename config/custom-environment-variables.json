@@ -1,3 +1,6 @@
 {
-  "jwtPrivateKey": "theSpoon_jwtPrivateKey"
+  "jwtPrivateKey": "theSpoon_jwtPrivateKey",
+  "jwtExpirationTime": "theSpoon_jwtExpirationTime",
+  "AWS_ACCESS_KEY_ID": "theSpoon_AWS_ACCESS_KEY_ID",
+  "AWS_SECRET_ACCESS_KEY": "theSpoon_AWS_SECRET_ACCESS_KEY"
 }
