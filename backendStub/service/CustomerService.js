@@ -36,11 +36,11 @@ exports.getMenuCustomer = function(menuID) {
     examples['application/json'] = {
   "restaurant" : {
     "restaurantName" : "Emilio's Pizza",
-    "address" : "André route 45",
-    "city" : "Rome",
+    "address" : "Piazzale Susa",
+    "city" : "Milan",
     "country" : "Italy",
-    "latitude" : 48.4281350802915,
-    "longitude" : -110.0792542197085
+    "latitude" : 45.4688346,
+    "longitude" : 9.2234114
   },
   "menuName" : "Emilio's menu of the day",
   "description" : "Our special menu of today",
@@ -53,6 +53,7 @@ exports.getMenuCustomer = function(menuID) {
   } ],
   "menuRating" : 5,
   "menuItems" : [ {
+    "menuItemID" : 20,
     "name" : "Spaghetti alla carbonara",
     "description" : "Fantastic italian dish made of spaghetti, pig cheek, eggs, black pepper, pecorino romano",
     "type" : "dish",
@@ -66,9 +67,13 @@ exports.getMenuCustomer = function(menuID) {
     }, {
       "name" : "Italian",
       "color" : "#FFBC8C"
+    }, {
+      "name" : "Dinner",
+      "color" : "#99C99B"
     } ],
     "imageLink" : "www.cloudStorage.com/Carbonara"
   }, {
+    "menuItemID" : 21,
     "name" : "Polpette al sugo",
     "description" : "Meatballs with tomato sauce",
     "type" : "dish",
@@ -129,7 +134,7 @@ exports.searchByMenuItem = function(menuItemName) {
     "restaurantImageLink" : "www.cloudStorage.com/Restaurant"
   },
   "menu" : {
-    "menuID" : 2,
+    "menuID" : 3,
     "name" : "Emilio's menu of the day",
     "description" : "Our special menu of today",
     "tags" : [ {

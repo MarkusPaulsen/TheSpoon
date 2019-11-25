@@ -12,7 +12,7 @@ info:
     \ to customers nor owners remain inside the default group.\n \n AUTHENTICATION/AUTHORIZATION:\
     \ The json web token returned when the login is performed is supposed to be put\
     \ into x-auth-token header in the endpoints that require authorization"
-  version: "4.0"
+  version: "4.2"
   title: "The Spoon API reference"
 tags:
 - name: "customer"
@@ -326,6 +326,8 @@ paths:
             type: "array"
             items:
               $ref: "#/definitions/MenuAndRestaurant"
+        "404":
+          description: "No menu item found"
       x-swagger-router-controller: "Customer"
   /api/user/customer/menu/{menuID}:
     get:
@@ -582,11 +584,11 @@ definitions:
           $ref: "#/definitions/OpenInterval"
     example:
       name: "Emilio's Pizza"
-      address: "André route 45"
-      city: "Rome"
+      address: "Piazzale Susa"
+      city: "Milan"
       country: "Italy"
-      latitude: 48.42813508029149716094252653419971466064453125
-      longitude: -110.07925421970850266006891615688800811767578125
+      latitude: 45.46883460000000098943928605876863002777099609375
+      longitude: 9.223411399999999815690898685716092586517333984375
       imageID: 5
       openingHours:
       - day: "Monday"
@@ -669,6 +671,40 @@ definitions:
       imageLink:
         type: "string"
     example:
+      name: "Spaghetti alla carbonara"
+      description: "Fantastic italian dish made of spaghetti, pig cheek, eggs, black\
+        \ pepper, pecorino romano"
+      type: "dish"
+      priceEuros: 10
+      tags:
+      - name: "Mediterranean"
+        color: "#FFBC8C"
+      - name: "Pasta"
+        color: "#99C99B"
+      - name: "Italian"
+        color: "#FFBC8C"
+      imageLink: "www.cloudStorage.com/Carbonara"
+  MenuItemWithID:
+    type: "object"
+    properties:
+      menuItemID:
+        type: "integer"
+      name:
+        type: "string"
+      description:
+        type: "string"
+      type:
+        type: "string"
+      priceEuros:
+        type: "number"
+      tags:
+        type: "array"
+        items:
+          $ref: "#/definitions/Tag"
+      imageLink:
+        type: "string"
+    example:
+      menuItemID: 8
       name: "Spaghetti alla carbonara"
       description: "Fantastic italian dish made of spaghetti, pig cheek, eggs, black\
         \ pepper, pecorino romano"
@@ -802,8 +838,8 @@ definitions:
           $ref: "#/definitions/OpenInterval"
     example:
       name: "Emilio's Pizza"
-      address: "André route 45"
-      city: "Rome"
+      address: "Piazzale Susa"
+      city: "Milan"
       country: "Italy"
       imageLink: "www.cloudStorage.com/Restaurant"
       openingHours:
@@ -900,15 +936,15 @@ definitions:
       menuItems:
         type: "array"
         items:
-          $ref: "#/definitions/MenuItem"
+          $ref: "#/definitions/MenuItemWithID"
     example:
       restaurant:
         restaurantName: "Emilio's Pizza"
-        address: "André route 45"
-        city: "Rome"
+        address: "Piazzale Susa"
+        city: "Milan"
         country: "Italy"
-        latitude: 48.42813508029149716094252653419971466064453125
-        longitude: -110.07925421970850266006891615688800811767578125
+        latitude: 45.46883460000000098943928605876863002777099609375
+        longitude: 9.223411399999999815690898685716092586517333984375
       menuName: "Emilio's menu of the day"
       description: "Our special menu of today"
       tags:
@@ -918,7 +954,8 @@ definitions:
         color: "#FFBC8C"
       menuRating: 5
       menuItems:
-      - name: "Spaghetti alla carbonara"
+      - menuItemID: 20
+        name: "Spaghetti alla carbonara"
         description: "Fantastic italian dish made of spaghetti, pig cheek, eggs, black\
           \ pepper, pecorino romano"
         type: "dish"
@@ -930,8 +967,11 @@ definitions:
           color: "#99C99B"
         - name: "Italian"
           color: "#FFBC8C"
+        - name: "Dinner"
+          color: "#99C99B"
         imageLink: "www.cloudStorage.com/Carbonara"
-      - name: "Polpette al sugo"
+      - menuItemID: 21
+        name: "Polpette al sugo"
         description: "Meatballs with tomato sauce"
         type: "dish"
         priceEuros: 7

@@ -34,8 +34,8 @@ exports.getRestaurant = function() {
     var examples = {};
     examples['application/json'] = {
   "name" : "Emilio's Pizza",
-  "address" : "André route 45",
-  "city" : "Rome",
+  "address" : "Piazzale Susa",
+  "city" : "Milan",
   "country" : "Italy",
   "imageLink" : "www.cloudStorage.com/Restaurant",
   "openingHours" : [ {

@@ -302,7 +302,7 @@ exports.getOwnMenus = function() {
     "imageLink" : "www.cloudStorage.com/Meatballs"
   } ]
 }, {
-  "menuID" : 2,
+  "menuID" : 3,
   "name" : "Emilio's menu of the day",
   "description" : "Our special menu of today",
   "tags" : [ {
@@ -366,8 +366,8 @@ exports.getRestaurant = function() {
     var examples = {};
     examples['application/json'] = {
   "name" : "Emilio's Pizza",
-  "address" : "André route 45",
-  "city" : "Rome",
+  "address" : "Piazzale Susa",
+  "city" : "Milan",
   "country" : "Italy",
   "imageLink" : "www.cloudStorage.com/Restaurant",
   "openingHours" : [ {
