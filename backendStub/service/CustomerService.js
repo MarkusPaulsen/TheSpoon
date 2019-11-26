@@ -6,13 +6,14 @@
  * Creates a new customer profile. This endpoint is used only for customer registration.  The endpoint, if the registration succeeds, returns the username of the account as a confirmation.
  *
  * body Customer Customer that needs to register
- * returns Username
+ * returns UsernameAndToken
  **/
 exports.createCustomer = function(body) {
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = {
-  "username" : "xXEmilioXx"
+  "username" : "xXEmilioXx",
+  "token" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOjI5LCJpYXQiOjE1NjE5OTg2NjB9.SWYMJXTTM8pe6NQw1QwS-d8Btt6Isuzzk5JtH775uV0"
 };
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);
