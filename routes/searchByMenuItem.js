@@ -8,11 +8,10 @@ const MenuItem = require('../models/menuItem.js');
 const Restaurant = require('../models/restaurants.js');
 const TaggedMenu = require('../models/taggedMenu.js');
 
-
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
-
+// TODO: Aggregate rating of the menus
 
 router.get('/', async (req, res) => {
     try {
@@ -36,7 +35,7 @@ router.get('/', async (req, res) => {
                 }
             });
             const restaurantData = await Restaurant.findOne({
-                attributes: ['Name'],
+                attributes: ['Name', 'ImageLink'],
                 where: {
                     Restaurant_ID: menuInfo.Restaurant_ID
                 }
@@ -49,16 +48,18 @@ router.get('/', async (req, res) => {
              });
              const tags = await tagsOnMenu.map( m => { return m.dataValues.Tag });
 
+
              const menu = {
                  menuID: mi.dataValues.Menu_ID,
                  name: menuInfo.dataValues.Name,
                  description: menuInfo.dataValues.Description,
+                 rating: '',
                  tags
              };
              return {
                  restaurantData: {
-                     restaurantID: menuInfo.dataValues.Restaurant_ID,
                      restaurantName: restaurantData.dataValues.Name,
+                     restaurantImageLink: restaurantData.dataValues.ImageLink
                  },
                  menu}
         });

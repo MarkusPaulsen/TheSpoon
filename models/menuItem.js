@@ -23,6 +23,9 @@ const MenuItem = db.define('MenuItem', {
     },
     ImageLink: {
         type: Sequelize.STRING
+    },
+    Type: {
+        type: Sequelize.STRING
     }
 }, {
     freezeTableName: true,

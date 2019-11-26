@@ -28,7 +28,7 @@ exports.addMenu = function(body) {
  * Add a menuItem to the menu with given menuID. Authentication required.
  *
  * menuID Integer ID of the menu
- * body MenuItem Menu data
+ * body MenuItemWithoutColors Menu data
  * returns Menu
  **/
 exports.addMenuItem = function(menuID,body) {
@@ -161,7 +161,7 @@ exports.deleteMenuItem = function(menuID,menuItemID) {
 
 
 /**
- * Edit a menu
+ * Edit a menu's information (not its items)
  * Edit a given menu (but not its menuItems). To identify the menu, the menuID needs to be given. Authentication is required.
  *
  * menuID Integer ID of the menu to be edited
@@ -189,7 +189,7 @@ exports.editMenu = function(menuID,body) {
  *
  * menuID Integer ID of the menu
  * menuItemID Integer ID of the menuItem
- * body MenuItem Data of the menuItem
+ * body MenuItemWithoutColors Data of the menuItem
  * returns Menu
  **/
 exports.editMenuItem = function(menuID,menuItemID,body) {
@@ -249,8 +249,8 @@ exports.editMenuItem = function(menuID,menuItemID,body) {
 
 
 /**
- * Returns all the menus of the restaurant
- * Returns all the menus of the restaurant. Since authentication is required, the backend is able to get which restaurant is involved from the authentication token.
+ * Return all the menus of the restaurant
+ * Return all the menus of the restaurant. Since authentication is required, the backend is able to get which restaurant is involved from the authentication token.
  *
  * returns List
  **/
@@ -302,7 +302,7 @@ exports.getOwnMenus = function() {
     "imageLink" : "www.cloudStorage.com/Meatballs"
   } ]
 }, {
-  "menuID" : 2,
+  "menuID" : 3,
   "name" : "Emilio's menu of the day",
   "description" : "Our special menu of today",
   "tags" : [ {
@@ -366,8 +366,8 @@ exports.getRestaurant = function() {
     var examples = {};
     examples['application/json'] = {
   "name" : "Emilio's Pizza",
-  "address" : "André route 45",
-  "city" : "Rome",
+  "address" : "Piazzale Susa",
+  "city" : "Milan",
   "country" : "Italy",
   "imageLink" : "www.cloudStorage.com/Restaurant",
   "openingHours" : [ {
