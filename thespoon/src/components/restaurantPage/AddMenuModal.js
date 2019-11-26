@@ -55,7 +55,7 @@ class AddMenuModal extends Component {
                     name: values.name,
                     description: values.description,
                     tags: values.tags,
-                    serverMessage: null
+                    serverMessage: ""
                 });
             }))
             .pipe(exhaustMap(() => {
@@ -72,7 +72,7 @@ class AddMenuModal extends Component {
                         body: {
                             name: thisTemp.state.name,
                             description: thisTemp.state.description,
-                            tags: [{"name": thisTemp.state.tags, "color": "#FFFFFF"}]
+                            tags: thisTemp.state.tags
                         }
                     })
                 } else {

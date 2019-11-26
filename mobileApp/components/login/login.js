@@ -1,12 +1,12 @@
 import React, {Component} from "react";
 import {
-  View,
-  Text,
-  TextInput,
-  Linking,
-  TouchableOpacity,
-  Image,
-  StyleSheet
+    View,
+    Text,
+    TextInput,
+    Linking,
+    TouchableOpacity,
+    Image,
+    StyleSheet
 } from "react-native";
 import UsernameIcon from "../../assets/login-email.png";
 import PasswordIcon from "../../assets/login-password.png";
@@ -14,59 +14,63 @@ import Validate from "./validation.js";
 import validate from "./validation";
 
 export default class LoginScreen extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      username: "",
-      usernameError: "",
-      password: "",
-      passwordError: "",
-      token: "",
-        invalidError: false
-    };
-    this.register = this.register.bind(this);
-  }
-  async handleLogin() {
-      try {
-          let data = JSON.stringify({username: this.state.username,
-              password: this.state.password,
-              isRestaurantOwner: false})
-          ;
-          let res = await fetch('http://thespoon.herokuapp.com/api/user/login/', {
-              method: 'POST',
-              headers: {
-                  Accept: 'application/json',
-                  'Content-Type': 'application/json',
-              },
-              body: data,
-          });
-          let responseText = await res.text();
-          console.log("The response is: ", responseText);
-          if(res.ok){
-              let jsonResponse = JSON.parse(responseText);
-              this.setState({token:jsonResponse.token });
-              console.log("Token is set to: ", this.state.token);
-              this.props.navigation.navigate("Search");
-          }
-          if(!res.ok){
-this.setState({invalidError: true});          }
-      } catch (e) {
-          console.error(e);
-      }
-  }
-
-  register() {
-    const usernameError = Validate("username", this.state.username);
-    const passwordError = Validate("password", this.state.password);
-
-    this.setState({
-      usernameError: usernameError,
-      passwordError: passwordError
-    });
-    if (!usernameError && !passwordError) {
-      this.handleLogin();
+    constructor(props) {
+        super(props);
+        this.state = {
+            username: "",
+            usernameError: "",
+            password: "",
+            passwordError: "",
+            token: "",
+            invalidError: false
+        };
+        this.register = this.register.bind(this);
     }
-  }
+
+    async handleLogin() {
+        try {
+            let data = JSON.stringify({
+                    username: this.state.username,
+                    password: this.state.password,
+                    isRestaurantOwner: false
+                })
+            ;
+            let res = await fetch('http://192.168.1.110:5000/api/user/login/', {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: data,
+            });
+            let responseText = await res.text();
+            console.log("The response is: ", responseText);
+            if (res.ok) {
+                let jsonResponse = JSON.parse(responseText);
+                this.setState({token: jsonResponse.token});
+                console.log("Token is set to: ", this.state.token);
+                this.props.navigation.navigate("Search");
+            }
+            if (!res.ok) {
+                this.setState({invalidError: true});
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    register() {
+        const usernameError = Validate("username", this.state.username);
+        const passwordError = Validate("password", this.state.password);
+
+        this.setState({
+            usernameError: usernameError,
+            passwordError: passwordError
+        });
+        if (!usernameError && !passwordError) {
+            this.handleLogin();
+        }
+    }
 
   handleUsernameChange = username => {
     this.setState({username: username.trim() });
@@ -151,57 +155,59 @@ this.setState({invalidError: true});          }
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#FFFFFF",
-    alignItems: "center"
-  },
-  text: {
-    fontSize: 48,
-    fontFamily: "roboto",
-    marginTop: 150,
-    flex: 1
-    //justifyContent: 'center'
-  },
-  textInput: {
-    width: 224,
-    height: 42,
-    color: "#000000",
-    fontFamily: "roboto",
-    borderBottomColor: "#F3A3A3",
-    borderBottomWidth: 1.5,
-    //marginTop: 99,
-    alignSelf: "center"
-  },
-  loginButton: {
-    width: 203,
-    height: 38,
-    borderRadius: 20,
-    backgroundColor: "#F3A3A3",
-    marginTop: 6,
-    alignSelf: "center"
-    //marginBottom: 50
-  },
-  registrationButton: {
-    //width: 100,
-    //height: 36,
-    color: "#A5DED0",
-    //marginTop: 45,
-    //alignSelf: "center"
-    marginLeft: 5
-  },
-  registration: {
-    //textAlign: 'center',
-    justifyContent: 'space-between',
-    flexDirection: "row",
-    flex: 1
-    //marginTop: 50
-  },
-  buttonText: {
-    color: "#000000",
-    alignSelf: "center",
-    marginTop: 9,
-    fontFamily: "roboto",
-    fontSize: 14
-  }
+    container: {
+        flex: 1,
+        backgroundColor: "#FFFFFF",
+        alignItems: "center"
+    },
+    text: {
+        fontSize: 48,
+        fontFamily: "roboto",
+        marginTop: 150,
+        flex: 1
+        //justifyContent: 'center'
+    },
+    textInput: {
+        width: 224,
+        height: 42,
+        color: "#000000",
+        fontFamily: "roboto",
+        borderBottomColor: "#F3A3A3",
+        borderBottomWidth: 1.5,
+        //marginTop: 99,
+        alignSelf: "center",
+        marginLeft: 7,
+        fontSize: 15
+    },
+    loginButton: {
+        width: 203,
+        height: 38,
+        borderRadius: 20,
+        backgroundColor: "#F3A3A3",
+        marginTop: 6,
+        alignSelf: "center"
+        //marginBottom: 50
+    },
+    registrationButton: {
+        //width: 100,
+        //height: 36,
+        color: "#A5DED0",
+        //marginTop: 45,
+        //alignSelf: "center"
+        marginLeft: 5
+    },
+    registration: {
+        //textAlign: 'center',
+        justifyContent: 'space-between',
+        flexDirection: "row",
+        flex: 1
+        //marginTop: 50
+    },
+    buttonText: {
+        color: "#000000",
+        alignSelf: "center",
+        marginTop: 9,
+        fontFamily: "roboto",
+        fontSize: 14
+    }
 });

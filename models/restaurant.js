@@ -27,6 +27,9 @@ const Restaurant = db.define('Restaurant', {
     },
     Longitude: {
         type: Sequelize.FLOAT
+    },
+    ImageLink: {
+        type: Sequelize.STRING
     }
 }, {
     freezeTableName: true,

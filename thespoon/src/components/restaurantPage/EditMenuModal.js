@@ -65,12 +65,12 @@ class EditMenuModal extends Component {
                 if (true) {
                     return ajax({
                         url: "http://localhost:8080/api/user/owner/restaurant/menu/${this.props.menuID}",
-                        method: "POST",
+                        method: "PUT",
                         headers: {"Content-Type": "application/json", 'X-Auth-Token': this.props.token},
                         body: {
                             name: thisTemp.state.name,
                             description: thisTemp.state.description,
-                            tags: [{"name": thisTemp.state.tags, "color": "#FFBC8C"}]
+                            tags: thisTemp.state.tags
                         }
                     })
                 } else {
