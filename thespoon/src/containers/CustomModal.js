@@ -71,7 +71,7 @@ class CustomModal extends Component {
                 return (
                     <EditMenuModal
                         onHide={() => this.props.handleClose()}
-                        menuId={ itemId }/>
+                        menuID={ itemId }/>
                 );
             default:
                 return null;
