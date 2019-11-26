@@ -1,3 +1,4 @@
+//TO REMOVE
 import React, {Component} from 'react';
 import {Redirect} from 'react-router-dom'
 import {ajax} from 'rxjs/ajax';

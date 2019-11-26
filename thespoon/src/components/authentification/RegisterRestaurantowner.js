@@ -105,6 +105,7 @@ class RegisterRestaurantowner extends Component  {
     handleSubmit = event => {
         event.preventDefault();
 
+        //thisTemp is the this of RxJS
         const thisTemp = this;
         of(1)
             .pipe(map(() => {
@@ -146,6 +147,7 @@ class RegisterRestaurantowner extends Component  {
                     return throwError({ status: 0});
                 }
             }))
+            //Login directly after SignUp
             .pipe(exhaustMap((reply) => {
                 thisTemp.props.logIn(reply.response.username);
                 return ajax({
@@ -194,7 +196,6 @@ class RegisterRestaurantowner extends Component  {
             this.state.validation;
         return (
         <Modal.Body>
-            <span className="back"> <FilterLink filter={modalVisibilityFilters.SHOW_CHOOSE_ROLE}><IconBack /></FilterLink></span>
             <button className="exit" onClick={this.props.onHide}><IconExit /></button>
             <div className="modal-wrapper ">
                 <Form ref={ (c) => { this.form = c; }} onSubmit={this.handleSubmit}>
@@ -245,7 +246,7 @@ class RegisterRestaurantowner extends Component  {
                         <small>{validation.confirmPassword.message}</small>
                     </div>
 
-                    <Button type="submit" className="normal">Log in</Button>
+                    <Button type="submit" className="normal">Sign up</Button>
                     {/*<button className="normal">
                         <FilterLink filter={modalVisibilityFilters.SHOW_RESTAURANT_INFORMATION}>Continue</FilterLink>
                     </button>*/}

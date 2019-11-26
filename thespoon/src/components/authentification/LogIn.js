@@ -29,7 +29,7 @@ import {modalVisibilityFilters} from "../../constants/modalVisibiltyFilters";
 import FilterLink from "../../containers/FilterModalLink";
 //</editor-fold>
 //<editor-fold desc="Icons">
-import {IconExit, IconEmail, IconPassword} from '../Icons';
+import {IconExit, IconName, IconEmail, IconPassword} from '../Icons';
 //</editor-fold>
 
 
@@ -94,6 +94,7 @@ class LogIn extends Component {
         .pipe(exhaustMap(() => {
           if (thisTemp.state.validation.isValid) {
             thisTemp.props.logIn(thisTemp.state.username);
+            thisTemp.setState({serverMessage: "Login is processing"});
             return ajax({
               url: paths["restApi"]["login"],
               method: "POST",
@@ -151,7 +152,7 @@ class LogIn extends Component {
                 <h2 className="title">Log in</h2>
 
                 <div className="input-field">
-                  <IconEmail />
+                  <IconName />
                   <Input type="username" name="username" placeholder="Username" id = "loginFormUsername"/>
                 </div>
                 <div className="error-block">
@@ -173,7 +174,7 @@ class LogIn extends Component {
               </Form>
 
               <div className="link-wrapper">
-                <small>Don"t have an account? <FilterLink filter={modalVisibilityFilters.SHOW_CHOOSE_ROLE}>Register now</FilterLink></small>
+                <small>Don"t have an account? <FilterLink filter={modalVisibilityFilters.SHOW_REGISTER_RESTAURANT_OWNER}>Register now</FilterLink></small>
               </div>
             </div>
         </Modal.Body>

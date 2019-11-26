@@ -23,7 +23,7 @@ const Header = () => {
                             <FilterLink filter={modalVisibilityFilters.SHOW_LOGIN}>Log in</FilterLink>
                         </li>
                         <li>
-                            <FilterLink filter={modalVisibilityFilters.SHOW_CHOOSE_ROLE}>Sign up</FilterLink>
+                            <FilterLink filter={modalVisibilityFilters.SHOW_REGISTER_RESTAURANT_OWNER}>Sign up</FilterLink>
                         </li>
                     </ul>
                 </nav> 
