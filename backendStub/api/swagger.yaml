@@ -12,7 +12,7 @@ info:
     \ to customers nor owners remain inside the default group.\n \n AUTHENTICATION/AUTHORIZATION:\
     \ The json web token returned when the login is performed is supposed to be put\
     \ into x-auth-token header in the endpoints that require authorization"
-  version: "3.3"
+  version: "4.2"
   title: "The Spoon API reference"
 tags:
 - name: "customer"
@@ -78,6 +78,8 @@ paths:
       x-swagger-router-controller: "Owner"
   /api/user/login:
     post:
+      tags:
+      - "generic user"
       summary: "Logs user into the system"
       description: "Logs user into the system. This endpoint is used both for restaurant\
         \ owner and customer login. In order to distinguish them, in the request json\
@@ -105,11 +107,12 @@ paths:
             $ref: "#/definitions/Token"
         "400":
           description: "Invalid username or password"
-      x-swagger-router-controller: "Default"
+      x-swagger-router-controller: "GenericUser"
   /api/user/owner/restaurant:
     get:
       tags:
       - "owner"
+      - "Matej"
       summary: "Get data of own restaurant"
       description: "Get the data of the restaurant of authenticated owner, so that\
         \ it can be showed in the 'Your Restaurant' page."
@@ -132,6 +135,7 @@ paths:
     post:
       tags:
       - "owner"
+      - "Matej"
       summary: "Configure data of the restaurant"
       description: "Save the data of the restaurant given by the owner. Authentication\
         \ is needed.\n One of the parameter to be passed is the imageID, this is the\
@@ -177,10 +181,11 @@ paths:
     get:
       tags:
       - "owner"
-      summary: "Returns all the menus of the restaurant"
-      description: "Returns all the menus of the restaurant. Since authentication\
-        \ is required, the backend is able to get which restaurant is involved from\
-        \ the authentication token."
+      - "Frikk"
+      summary: "Return all the menus of the restaurant"
+      description: "Return all the menus of the restaurant. Since authentication is\
+        \ required, the backend is able to get which restaurant is involved from the\
+        \ authentication token."
       operationId: "getOwnMenus"
       produces:
       - "application/json"
@@ -202,6 +207,7 @@ paths:
     post:
       tags:
       - "owner"
+      - "Emilio"
       summary: "Add an empty menu to a restaurant"
       description: "Add a menu to a restaurant of a restaurant owner, which needs\
         \ to be logged in. The menuItems are not meant to be added to the menu through\
@@ -234,7 +240,8 @@ paths:
     put:
       tags:
       - "owner"
-      summary: "Edit a menu"
+      - "Emilio"
+      summary: "Edit a menu's information (not its items)"
       description: "Edit a given menu (but not its menuItems). To identify the menu,\
         \ the menuID needs to be given. Authentication is required."
       operationId: "editMenu"
@@ -271,6 +278,7 @@ paths:
     delete:
       tags:
       - "owner"
+      - "Emilio"
       summary: "Delete a menu"
       description: "Delete a menu of the restaurant. Authentication is required"
       operationId: "deleteMenu"
@@ -294,6 +302,7 @@ paths:
     get:
       tags:
       - "customer"
+      - "Frikk"
       summary: "Search by menu item"
       description: "Returns all the menus with given menu item (dish/drink) with menuID.\
         \ It also returns the names of the associated restaurants with restaurantID.\n\
@@ -317,11 +326,14 @@ paths:
             type: "array"
             items:
               $ref: "#/definitions/MenuAndRestaurant"
+        "404":
+          description: "No menu item found"
       x-swagger-router-controller: "Customer"
   /api/user/customer/menu/{menuID}:
     get:
       tags:
       - "customer"
+      - "Frikk"
       summary: "Return data of a specific menu"
       description: "Returns all the data about the menu with given menuID, even the\
         \ menu items inside it. The photos of the menu items are saved in the Amazon\
@@ -345,6 +357,9 @@ paths:
       x-swagger-router-controller: "Customer"
   /api/image:
     post:
+      tags:
+      - "generic user"
+      - "Marin"
       summary: "Upload an image"
       description: "This endpoint is used in order to upload EVERY image. For example,\
         \ when a restaurant owner is registering his restaurant data, he will need\
@@ -373,11 +388,12 @@ paths:
       - Bearer: []
       x-security-scopes:
       - "user"
-      x-swagger-router-controller: "Default"
+      x-swagger-router-controller: "GenericUser"
   /api/user/owner/restaurant/menu/{menuID}/menuItem:
     post:
       tags:
       - "owner"
+      - "Marin"
       summary: "Add a menuItem to a menu"
       description: "Add a menuItem to the menu with given menuID. Authentication required."
       operationId: "addMenuItem"
@@ -396,7 +412,7 @@ paths:
         description: "Menu data"
         required: true
         schema:
-          $ref: "#/definitions/MenuItem"
+          $ref: "#/definitions/MenuItemWithoutColors"
       responses:
         "200":
           description: "Successful operation"
@@ -413,6 +429,7 @@ paths:
     put:
       tags:
       - "owner"
+      - "Marin"
       summary: "Edit a menuItem"
       description: "Edit the menuItem with given menuItemID of the menu with given\
         \ menuID. Authentication required."
@@ -437,7 +454,7 @@ paths:
         description: "Data of the menuItem"
         required: true
         schema:
-          $ref: "#/definitions/MenuItem"
+          $ref: "#/definitions/MenuItemWithoutColors"
       responses:
         "200":
           description: "Successful operation"
@@ -453,6 +470,7 @@ paths:
     delete:
       tags:
       - "owner"
+      - "Marin"
       summary: "Delete a menuItem"
       description: "Delete the menuItem with given menuItemID of the menu with given\
         \ menuID. Authentication required."
@@ -566,11 +584,11 @@ definitions:
           $ref: "#/definitions/OpenInterval"
     example:
       name: "Emilio's Pizza"
-      address: "André route 45"
-      city: "Rome"
+      address: "Piazzale Susa"
+      city: "Milan"
       country: "Italy"
-      latitude: 48.42813508029149716094252653419971466064453125
-      longitude: -110.07925421970850266006891615688800811767578125
+      latitude: 45.46883460000000098943928605876863002777099609375
+      longitude: 9.223411399999999815690898685716092586517333984375
       imageID: 5
       openingHours:
       - day: "Monday"
@@ -666,6 +684,68 @@ definitions:
       - name: "Italian"
         color: "#FFBC8C"
       imageLink: "www.cloudStorage.com/Carbonara"
+  MenuItemWithID:
+    type: "object"
+    properties:
+      menuItemID:
+        type: "integer"
+      name:
+        type: "string"
+      description:
+        type: "string"
+      type:
+        type: "string"
+      priceEuros:
+        type: "number"
+      tags:
+        type: "array"
+        items:
+          $ref: "#/definitions/Tag"
+      imageLink:
+        type: "string"
+    example:
+      menuItemID: 8
+      name: "Spaghetti alla carbonara"
+      description: "Fantastic italian dish made of spaghetti, pig cheek, eggs, black\
+        \ pepper, pecorino romano"
+      type: "dish"
+      priceEuros: 10
+      tags:
+      - name: "Mediterranean"
+        color: "#FFBC8C"
+      - name: "Pasta"
+        color: "#99C99B"
+      - name: "Italian"
+        color: "#FFBC8C"
+      imageLink: "www.cloudStorage.com/Carbonara"
+  MenuItemWithoutColors:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+      description:
+        type: "string"
+      type:
+        type: "string"
+      priceEuros:
+        type: "number"
+      tags:
+        type: "array"
+        items:
+          type: "string"
+      imageID:
+        type: "integer"
+    example:
+      name: "Spaghetti alla carbonara"
+      description: "Fantastic italian dish made of spaghetti, pig cheek, eggs, black\
+        \ pepper, pecorino romano"
+      type: "dish"
+      priceEuros: 10
+      tags:
+      - "Mediterranean"
+      - "Pasta"
+      - "Italian"
+      imageID: 5
   MenuID:
     type: "object"
     properties:
@@ -758,8 +838,8 @@ definitions:
           $ref: "#/definitions/OpenInterval"
     example:
       name: "Emilio's Pizza"
-      address: "André route 45"
-      city: "Rome"
+      address: "Piazzale Susa"
+      city: "Milan"
       country: "Italy"
       imageLink: "www.cloudStorage.com/Restaurant"
       openingHours:
@@ -831,15 +911,13 @@ definitions:
       tags:
         type: "array"
         items:
-          $ref: "#/definitions/Tag"
+          type: "string"
     example:
       name: "Emilio's menu of the day"
       description: "Our special menu of today"
       tags:
-      - name: "Italian"
-        color: "#FFBC8C"
-      - name: "Mediterranean"
-        color: "#FFBC8C"
+      - "Italian"
+      - "Mediterranean"
   MenuRetrievedToCustomer:
     type: "object"
     properties:
@@ -858,15 +936,15 @@ definitions:
       menuItems:
         type: "array"
         items:
-          $ref: "#/definitions/MenuItem"
+          $ref: "#/definitions/MenuItemWithID"
     example:
       restaurant:
         restaurantName: "Emilio's Pizza"
-        address: "André route 45"
-        city: "Rome"
+        address: "Piazzale Susa"
+        city: "Milan"
         country: "Italy"
-        latitude: 48.42813508029149716094252653419971466064453125
-        longitude: -110.07925421970850266006891615688800811767578125
+        latitude: 45.46883460000000098943928605876863002777099609375
+        longitude: 9.223411399999999815690898685716092586517333984375
       menuName: "Emilio's menu of the day"
       description: "Our special menu of today"
       tags:
@@ -876,7 +954,8 @@ definitions:
         color: "#FFBC8C"
       menuRating: 5
       menuItems:
-      - name: "Spaghetti alla carbonara"
+      - menuItemID: 20
+        name: "Spaghetti alla carbonara"
         description: "Fantastic italian dish made of spaghetti, pig cheek, eggs, black\
           \ pepper, pecorino romano"
         type: "dish"
@@ -888,8 +967,11 @@ definitions:
           color: "#99C99B"
         - name: "Italian"
           color: "#FFBC8C"
+        - name: "Dinner"
+          color: "#99C99B"
         imageLink: "www.cloudStorage.com/Carbonara"
-      - name: "Polpette al sugo"
+      - menuItemID: 21
+        name: "Polpette al sugo"
         description: "Meatballs with tomato sauce"
         type: "dish"
         priceEuros: 7

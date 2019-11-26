@@ -1,5 +1,6 @@
 {
-  "jwtPrivateKey": "theSpoon_jwtPrivateKey",
-  "AWS_ACCESS_KEY_ID": "AKIAIDONB4F32DQEY4QQ",
-  "AWS_SECRET_ACCESS_KEY": "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"
+  "jwtPrivateKey": "",
+  "jwtExpirationTime": "",
+  "AWS_ACCESS_KEY_ID": "",
+  "AWS_SECRET_ACCESS_KEY": ""
 }
