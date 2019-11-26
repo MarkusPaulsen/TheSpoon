@@ -108,7 +108,7 @@ class EditMenuModal extends Component {
                 <button className="exit" onClick={this.props.onHide}><IconExit /></button>
                 <div className="modal-wrapper add-menu">
                     <Form ref={(c) => {this.form = c; }} onSubmit={(e) => this.handleSubmit(e)}>
-                        <h2>Edit</h2>
+                        <h2>Edit {this.props.menuId}</h2>
                         <div className="account-type">
                             <h4><span className="role">Menu</span></h4>
                         </div>

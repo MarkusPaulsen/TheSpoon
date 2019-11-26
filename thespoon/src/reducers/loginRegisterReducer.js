@@ -1,7 +1,7 @@
 import * as LogInRegisterActions from "../actions/logInRegisterActions";
-import {initialStateLoginRegisterReducer} from "./initialStateLoginRegisterReducer"
+import initialState from "./initialState"
 
-const loginRegisterReducer = (state = initialStateLoginRegisterReducer, action) => {
+const loginRegisterReducer = (state = initialState.loginRegister, action) => {
     switch(action.type) {
         case LogInRegisterActions.REGISTERING_ATTEMPTING:
             return Object.assign({}, state, {

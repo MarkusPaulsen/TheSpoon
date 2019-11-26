@@ -1,4 +1,5 @@
 'use strict';
+let express = require("express");
 
 var fs = require('fs'),
     path = require('path'),
@@ -34,6 +35,8 @@ swaggerTools.initializeMiddleware(swaggerDoc, function (middleware) {
 
   // Serve the Swagger documents and Swagger UI
   app.use(middleware.swaggerUi());
+
+  app.use(express.static('../thespoon/build'));
 
   // Start the server
   http.createServer(app).listen(serverPort, function () {
