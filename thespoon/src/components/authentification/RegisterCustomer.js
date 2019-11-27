@@ -88,6 +88,7 @@ class RegisterCustomer extends Component  {
                 this.submitted = true;
 
                 if (validation.isValid) {
+                    thisTemp.setState({serverMessage: "Sign up is processing"});
                     let thisTemp = this;
                     ajax({
                         url: paths['restApi']['registrationCustomer'],

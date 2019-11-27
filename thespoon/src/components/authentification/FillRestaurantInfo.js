@@ -18,6 +18,7 @@ import {Modal} from "react-bootstrap";
 import Form from 'react-validation/build/form';
 import Input from 'react-validation/build/input';
 import Button from 'react-validation/build/button';
+import FormValidator from "../../validation/FormValidator";
 //</editor-fold>
 
 //<editor-fold desc="Constants">
@@ -50,6 +51,9 @@ class FillRestaurantInfo extends Component {
     //<editor-fold desc="Constructor">
     constructor(props) {
         super(props);
+
+        //this.validator = new FormValidator([]);
+
 
         this.handleChangeDay = this.handleChangeDay.bind(this);
         this.handleChangeOpenTime = this.handleChangeOpenTime.bind(this);
@@ -113,6 +117,7 @@ class FillRestaurantInfo extends Component {
         let file = event.target.files[0];
         if(["image/png","image/jpeg"].includes(file.type)) {
             let reader = new FileReader();
+            thisTemp.setState({serverMessage: "Image upload is processing"});
             reader.onload = (readerEvent) => {
                 ajax({
                     url: paths["restApi"]["image"],
@@ -133,7 +138,9 @@ class FillRestaurantInfo extends Component {
             reader.readAsText(file);
         }
         else {
-            thisTemp.setState({ imageMessage: (file.type + " is not supported.<br/> Please use image/png or image/jpeg.")});
+            //thisTemp.setState({ imageMessage: (file.type + " is not supported.\n Please use image/png or image/jpeg.")});
+            // \n does not work in a state
+            thisTemp.setState({ imageMessage: ("Please use .jpeg or .png format")});
         }
     };
 
@@ -172,6 +179,7 @@ class FillRestaurantInfo extends Component {
             .pipe(exhaustMap((osmData) => {
                 console.log(osmData)
                 if (Array.isArray(osmData.response) && osmData.response.length > 0) {
+                    thisTemp.setState({serverMessage: "Restaurant information post is processing"});
                     return ajax({
                         url: paths['restApi']['restaurant'],
                         method: 'POST',
@@ -230,8 +238,6 @@ class FillRestaurantInfo extends Component {
     render() {
         return (
             <Modal.Body>
-                <span className="back"> <FilterLink filter={modalVisibilityFilters.SHOW_REGISTER_RESTAURANT_OWNER}><IconBack /></FilterLink></span>
-                <button className="exit" onClick={this.props.onHide}><IconExit /></button>
                 <div className="modal-wrapper restaurant-info">
                     <Form ref={ (c) => { this.form = c; }} onSubmit={(e) => this.handleSubmit(e)}>
                     <h2>Sign up</h2>
@@ -316,11 +322,8 @@ class FillRestaurantInfo extends Component {
                         </div>
                     </div>
 
-                    <Button type="submit" className="normal">Sign up</Button>
+                    <Button type="submit" className="normal">Done</Button>
                     </Form>
-                    <div className="link-wrapper">
-                        <small>Already have an account? <FilterLink filter={modalVisibilityFilters.SHOW_LOGIN}>Log in</FilterLink></small>
-                    </div>
                 </div>
             </Modal.Body>
         )
