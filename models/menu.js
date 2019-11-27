@@ -3,6 +3,7 @@ const db = require('../sequelizeSettings');
 
 const MenuItem = require('./menuItem');
 const Restaurant =  require('./restaurants');
+const TaggedMenu = require('./taggedMenu');
 
 
 const Menu = db.define('Menu', {
@@ -28,11 +29,14 @@ const Menu = db.define('Menu', {
     classMethods: {
         associate: () => {
             Menu.hasMany(MenuItem, {
-                foreignKey: 'Menu_ID',
+                foreignKey: 'Menu_ID'
             });
             Menu.belongsTo(Restaurant, {
-                foreignKey: 'Restaurant_ID',
+                foreignKey: 'Restaurant_ID'
             });
+            Menu.hasMany(TaggedMenu, {
+                foreignKey: 'Menu_ID'
+            })
         }
     }
 }

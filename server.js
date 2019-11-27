@@ -5,10 +5,9 @@ const db = require('./sequelizeSettings');
 const app = express();
 app.use(express.json());
 
-const config = require('config');
+const isEnvironmentSet = require('./utils/environmentVariablesCheck.js');
 
-if (!config.get('jwtPrivateKey')){
-    console.error('FATAL ERROR: jwtPrivateKey is not defined');
+if (!isEnvironmentSet()){
     process.exit(1);
 }
 
@@ -28,17 +27,18 @@ const registrationCustomer = require('./routes/registrationCustomer.js');
 const registrationOwner = require('./routes/registrationOwner.js');
 const image = require('./routes/image-upload.js');
 const searchByMenuItem = require('./routes/searchByMenuItem.js');
-const addMenu = require('./routes/addMenu.js');
+const manageMenuInformation = require('./routes/manageMenuInformation.js');
 const searchMenu = require('./routes/searchMenu.js');
-
+const getRestaurant = require('./routes/getRestaurant.js');
 
 app.use('/api/user/login', login);
 app.use('/api/user/customer/register', registrationCustomer);
 app.use('/api/user/owner/register', registrationOwner);
 app.use('/api/image',image);
 app.use('/api/user/customer/menu/searchByMenuItem', searchByMenuItem);
-app.use('/api/user/owner/restaurant/menu', addMenu);
+app.use('/api/user/owner/restaurant/menu', manageMenuInformation);
 app.use('/api/user/customer/menu/', searchMenu);
+app.use('/api/user/owner/restaurant', getRestaurant);
 
 
 
@@ -51,7 +51,6 @@ app.use(bodyParser.json());
 
 
 //START OF THE REQUIRED CODE TO MAKE THE DEPLOY WORK
-//NOTE: currently not working, since build doesn't work
 
 const path = require("path");
 

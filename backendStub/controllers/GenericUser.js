@@ -1,11 +1,11 @@
 'use strict';
 
 var utils = require('../utils/writer.js');
-var Default = require('../service/DefaultService');
+var GenericUser = require('../service/GenericUserService');
 
 module.exports.loginUser = function loginUser (req, res, next) {
   var body = req.swagger.params['body'].value;
-  Default.loginUser(body)
+  GenericUser.loginUser(body)
     .then(function (response) {
       utils.writeJson(res, response);
     })
@@ -15,7 +15,7 @@ module.exports.loginUser = function loginUser (req, res, next) {
 };
 
 module.exports.uploadImage = function uploadImage (req, res, next) {
-  Default.uploadImage()
+  GenericUser.uploadImage()
     .then(function (response) {
       utils.writeJson(res, response);
     })

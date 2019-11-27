@@ -3,6 +3,8 @@ const router = express();
 router.use(express.json());
 
 const bcrypt = require('bcrypt');
+const config = require('config');
+const jwt = require('jsonwebtoken');
 
 const Customer = require('../models/customer.js');
 const inputValidator = require('../middleware/inputValidationMiddleware.js');
@@ -29,7 +31,8 @@ router.post('/', inputValidator(validationSchema.registrationCustomerValidation)
             Password: hashed,
         });
         //send username of created customer as confirmation
-        res.status(201).send({username: createdCustomer.dataValues.Username});
+        const token = jwt.sign({username: req.body.username}, config.get('jwtPrivateKey'), {expiresIn: config.get('jwtExpirationTime')});
+        res.status(201).send({username: createdCustomer.dataValues.Username, token: token});
     } catch (error) {
         res.status(400).send(error);
     }
