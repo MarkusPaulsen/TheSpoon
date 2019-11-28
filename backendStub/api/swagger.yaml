@@ -12,7 +12,7 @@ info:
     \ to customers nor owners remain inside the default group.\n \n AUTHENTICATION/AUTHORIZATION:\
     \ The json web token returned when the login is performed is supposed to be put\
     \ into x-auth-token header in the endpoints that require authorization"
-  version: "4.2"
+  version: "4.3"
   title: "The Spoon API reference"
 tags:
 - name: "customer"
@@ -44,7 +44,7 @@ paths:
         "201":
           description: "Customer registered"
           schema:
-            $ref: "#/definitions/Username"
+            $ref: "#/definitions/UsernameAndToken"
         "400":
           description: "Username or email already taken"
       x-swagger-router-controller: "Customer"
@@ -72,7 +72,7 @@ paths:
         "201":
           description: "Restaurant owner registered"
           schema:
-            $ref: "#/definitions/Username"
+            $ref: "#/definitions/UsernameAndToken"
         "400":
           description: "Username or email already taken"
       x-swagger-router-controller: "Owner"
@@ -541,13 +541,16 @@ definitions:
       surname: "Imperiali"
       email: "user@gmail.com"
       password: "123456"
-  Username:
+  UsernameAndToken:
     type: "object"
     properties:
       username:
         type: "string"
+      token:
+        type: "string"
     example:
       username: "xXEmilioXx"
+      token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOjI5LCJpYXQiOjE1NjE5OTg2NjB9.SWYMJXTTM8pe6NQw1QwS-d8Btt6Isuzzk5JtH775uV0"
   UserLogin:
     type: "object"
     properties:
