@@ -93,7 +93,7 @@ export default class Search extends Component {
       const searchString = this.state.searchWord;
       //change to port 80 if not using the stub
       const response = await fetch(
-        "http://192.168.1.110:8080/api/user/customer/menu/searchByMenuItem?menuItemName={searchString}",
+        "http://192.168.1.103:8080/api/user/customer/menu/searchByMenuItem?menuItemName={searchString}",
         {
           method: "GET",
           accept: "application/json"
@@ -258,6 +258,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 0,
     borderRadius: 20,
     width: 322,
+    height: 203,
     shadowColor: Colors.BLACK,
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.5,
@@ -269,11 +270,11 @@ const styles = StyleSheet.create({
     marginRight: 20
   },
   bgLabel: {
+    width: 60,
     height: 15,
     backgroundColor: "#7DC0FE",
     borderRadius: 5,
-    marginRight: 5,
-    marginBottom: 6
+    marginRight: 4
   },
   imageBox: {
     width: 322,
