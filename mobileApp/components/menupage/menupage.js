@@ -42,10 +42,26 @@ function MenuItem({
   menuItemDescription,
   priceEuros,
   menuItemImage,
-  tag1,
-  tag2,
+  tags,
   score
 }) {
+  const tags1Row = [];
+  const tags2Row = [];
+
+  for (let i = 0; i < tags.length; i++) {
+    const color = tags[i]["color"];
+    const tag = [
+      <View style={[styles.bgLabel, { backgroundColor: color }]}>
+        <Text style={[Typography.FONT_TAG, { marginHorizontal: 10 }]}>
+          {tags[i]["name"]}
+        </Text>
+      </View>
+    ];
+    {
+      i < 2 ? tags1Row.push(tag) : tags2Row.push(tag);
+    }
+  }
+
   return (
     <View>
       <View
@@ -90,18 +106,8 @@ function MenuItem({
             <Text style={[Typography.FONT_SMALL_THIN, { textAlign: "left" }]}>
               {menuItemDescription}
             </Text>
-            <View style={{ flexDirection: "row", marginTop: 15 }}>
-              <View style={[styles.bgLabel, { backgroundColor: "#FFBC8C" }]}>
-                <Text style={[Typography.FONT_TAG, { marginHorizontal: 10 }]}>
-                  {tag1}
-                </Text>
-              </View>
-              <View style={[styles.bgLabel, { backgroundColor: "#97C8F5" }]}>
-                <Text style={[Typography.FONT_TAG, { marginHorizontal: 10 }]}>
-                  {tag2}
-                </Text>
-              </View>
-            </View>
+            <View style={{ flexDirection: "row" }}>{tags1Row}</View>
+            <View style={{ flexDirection: "row" }}>{tags2Row}</View>
           </View>
           <View style={{ width: 40 }}>
             <Text style={[Typography.FONT_BOLD, { alignSelf: "flex-end" }]}>
@@ -142,20 +148,21 @@ export default class Menu extends Component {
     try {
       //change to port 80 if not using the stub
       const response = await fetch(
-        `http://192.168.1.103:8080/api/user/customer/menu/${menuId}`,
+        `http://192.168.1.110:8080/api/user/customer/menu/${menuId}`,
         {
           method: "GET",
           accept: "application/json"
         }
       );
       const responseJson = await response.json();
+      const tags = this.getMenuTagsInfo(responseJson);
+      this.setMenuInfoTags(tags);
       const menuInfo = {
         id: menuId,
         restaurantName,
         menuName: responseJson["menuName"],
         menuDescription: responseJson["description"],
-        tag1: responseJson["tags"][0]["name"],
-        tag2: responseJson["tags"][1]["name"],
+        tags: tags,
         score: responseJson["menuRating"]
       };
       const menuItems = responseJson["menuItems"].map(index => ({
@@ -163,9 +170,7 @@ export default class Menu extends Component {
         menuItemDescription: index["description"],
         priceEuros: index["priceEuros"],
         menuItemImage: index["imageLink"],
-        // TODO: Handle number of tags
-        tag1: index["tags"][0]["name"],
-        tag2: index["tags"][1]["name"],
+        tags: this.getMenuItemTagsInfo(index),
         // TODO: Add right rating-score
         score: "4.6"
       }));
@@ -179,6 +184,46 @@ export default class Menu extends Component {
       this.setState({ menuInfo, menuItems, restaurantInfo, isLoading: false });
     } catch (e) {
       console.error(e);
+    }
+  }
+  getMenuTagsInfo(responseJson) {
+    const tagsObject = [];
+    for (let i = 0; i < responseJson.tags.length; i++) {
+      tagsObject.push({
+        name: responseJson.tags[i]["name"],
+        color: responseJson.tags[i]["color"]
+      });
+    }
+    return tagsObject;
+  }
+
+  getMenuItemTagsInfo(index) {
+    const tagsObject = [];
+    const numberOfTags = index.tags.length;
+    for (let i = 0; i < numberOfTags; i++) {
+      tagsObject.push({
+        name: index.tags[i]["name"],
+        color: index.tags[i]["color"]
+      });
+    }
+    return tagsObject;
+  }
+  tags1Row = [];
+  tags2Row = [];
+
+  setMenuInfoTags(tags) {
+    for (let i = 0; i < tags.length; i++) {
+      const color = tags[i]["color"];
+      const tag = [
+        <View style={[styles.bgLabel, { backgroundColor: color }]}>
+          <Text style={[Typography.FONT_TAG, { marginHorizontal: 10 }]}>
+            {tags[i]["name"]}
+          </Text>
+        </View>
+      ];
+      {
+        i < 2 ? this.tags1Row.push(tag) : this.tags2Row.push(tag);
+      }
     }
   }
 
@@ -227,16 +272,12 @@ export default class Menu extends Component {
               >
                 {this.state.menuInfo.menuDescription}
               </Text>
-              <View style={{ flexDirection: "row" }}>
-                <View style={[styles.bgLabel, { backgroundColor: "#F3A3A3" }]}>
-                  <Text style={[Typography.FONT_TAG, { marginHorizontal: 10 }]}>
-                    Italian
-                  </Text>
+              <View style={{ flexDirection: "column" }}>
+                <View style={{ flexDirection: "row", marginBottom: 3 }}>
+                  {this.tags1Row}
                 </View>
-                <View style={[styles.bgLabel, { backgroundColor: "#99C99B" }]}>
-                  <Text style={[Typography.FONT_TAG, { marginHorizontal: 10 }]}>
-                    Pizza
-                  </Text>
+                <View style={{ flexDirection: "row", marginBottom: 3 }}>
+                  {this.tags2Row}
                 </View>
               </View>
             </SafeAreaView>
@@ -265,8 +306,7 @@ export default class Menu extends Component {
                   menuItemDescription={item.menuItemDescription}
                   priceEuros={item.priceEuros + " €"}
                   menuItemImage={item.menuItemImage}
-                  tag1={item.tag1}
-                  tag2={item.tag2}
+                  tags={item.tags}
                   score={item.score}
                 />
               )}
@@ -288,8 +328,7 @@ export default class Menu extends Component {
                   menuItemDescription={item.menuItemDescription}
                   priceEuros={item.priceEuros + " €"}
                   menuItemImage={item.menuItemImage}
-                  tag1={item.tag1}
-                  tag2={item.tag2}
+                  tags={item.tags}
                   score={item.score}
                 />
               )}
@@ -386,7 +425,8 @@ const styles = StyleSheet.create({
   },
   bgLabel: {
     borderRadius: 5,
-    marginRight: 4,
+    marginRight: 5,
+    marginTop: 6,
     justifyContent: "center"
   }
 });

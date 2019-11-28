@@ -15,7 +15,23 @@ import { TouchableWithoutFeedback } from "react-native-web";
 import * as Typography from "../../styles/typography";
 import * as Colors from "../../styles/colors";
 
-function ResultItem({ menuName, restaurantName, tag1, tag2, score }) {
+function ResultItem({ menuName, restaurantName, tags, score }) {
+  const tags1Row = [];
+  const tags2Row = [];
+  for (let i = 0; i < tags.length; i++) {
+    const color = tags[i]["color"];
+    const tag = [
+      <View style={[styles.bgLabel, { backgroundColor: color }]}>
+        <Text style={[Typography.FONT_TAG, { marginHorizontal: 10 }]}>
+          {tags[i]["name"]}
+        </Text>
+      </View>
+    ];
+    {
+      i < 2 ? tags1Row.push(tag) : tags2Row.push(tag);
+    }
+  }
+
   return (
     <View style={styles.resultsItem}>
       <View style={styles.imageBox}>
@@ -31,18 +47,14 @@ function ResultItem({ menuName, restaurantName, tag1, tag2, score }) {
           <Text style={Typography.FONT_SMALL_PINK}>{restaurantName}</Text>
         </View>
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-          <View style={{ flexDirection: "row" }}>
-            <View style={styles.bgLabel}>
-              <Text style={[Typography.FONT_TAG, { marginHorizontal: 10 }]}>{tag1}</Text>
-            </View>
-            <View style={styles.bgLabel}>
-              <Text style={[Typography.FONT_TAG, { marginHorizontal: 10 }]}>{tag2}</Text>
-            </View>
-          </View>
+          <View style={{ flexDirection: "row" }}>{tags1Row}</View>
           <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
             <Image source={require("../../assets/icon-star.png")} />
             <Text style={Typography.FONT_SMALL_BLACK}>{score}</Text>
           </View>
+        </View>
+        <View>
+          <View style={{ flexDirection: "row" }}>{tags2Row}</View>
         </View>
       </View>
     </View>
@@ -81,7 +93,7 @@ export default class Search extends Component {
       const searchString = this.state.searchWord;
       //change to port 80 if not using the stub
       const response = await fetch(
-        "http://192.168.1.101:8080/api/user/customer/menu/searchByMenuItem?menuItemName={searchString}",
+        "http://192.168.1.110:8080/api/user/customer/menu/searchByMenuItem?menuItemName={searchString}",
         {
           method: "GET",
           accept: "application/json"
@@ -93,10 +105,7 @@ export default class Search extends Component {
           menuId: index.menu.menuID.toString(),
           menuName: index.menu.name,
           restaurantName: index.restaurantData.restaurantName,
-          // TODO: Handle number of tags
-          tag1: index.menu.tags[0]["name"],
-          tag2: index.menu.tags[1]["name"],
-          // TODO: Add right rating-score
+          tags: this.getTagsInfo(index),
           score: index.menu.rating
         }));
         this.setState({ searchResults });
@@ -108,6 +117,18 @@ export default class Search extends Component {
     } catch (e) {
       console.error(e);
     }
+  }
+
+  getTagsInfo(index) {
+    const tagsObject = [];
+    const numberOfTags = index.menu.tags.length;
+    for (let i = 0; i < numberOfTags; i++) {
+      tagsObject.push({
+        name: index.menu.tags[i]["name"],
+        color: index.menu.tags[i]["color"]
+      });
+    }
+    return tagsObject;
   }
   render() {
     return (
@@ -156,7 +177,6 @@ export default class Search extends Component {
                   renderItem={({ item }) => (
                     <TouchableOpacity
                       onPress={() => {
-                        console.log(item);
                         this.props.navigation.navigate("Menu", {
                           menuId: item.menuId,
                           restaurantName: item.restaurantName
@@ -167,8 +187,7 @@ export default class Search extends Component {
                         menuId={item.menuId}
                         menuName={item.menuName}
                         restaurantName={item.restaurantName}
-                        tag1={item.tag1}
-                        tag2={item.tag2}
+                        tags={item.tags}
                         score={item.score}
                       />
                     </TouchableOpacity>
@@ -239,7 +258,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 0,
     borderRadius: 20,
     width: 322,
-    height: 203,
     shadowColor: Colors.BLACK,
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.5,
@@ -251,11 +269,11 @@ const styles = StyleSheet.create({
     marginRight: 20
   },
   bgLabel: {
-    width: 60,
     height: 15,
     backgroundColor: "#7DC0FE",
     borderRadius: 5,
-    marginRight: 4
+    marginRight: 5,
+    marginBottom: 6
   },
   imageBox: {
     width: 322,
