@@ -28,19 +28,14 @@ const Restaurant = db.define('Restaurant', {
         },
         Longitude: {
             type: Sequelize.FLOAT
+        },
+        ImageLink: {
+            type: Sequelize.STRING
         }
     },{
         freezeTableName: true,
         timestamps: false
     }
-    ,{
-        classMethods: {
-            associate: () => {
-                Restaurant.hasMany(Menu, {
-                    foreignKey: 'Restaurant_ID',
-                })
-            }
-        }}
 );
 
 module.exports = Restaurant;

@@ -12,6 +12,38 @@ const findRestaurant = require('../middleware/findRestaurantOfOwnerMiddleware.js
 
 router.get('/', auth, isOwner, findRestaurant, async (req, res) => {
     try {
+        let restaurant = await Restaurant.findOne({
+            where: {
+                Restaurant_ID: req.restaurant.Restaurant_ID
+            },
+            include: [{
+                model: OpeningHours
+            }]
+        });
+        let openingHours = await restaurant.OpeningHours.map( o => {
+            return {
+                day: o.Day,
+                openTime: o.OpenTime,
+                closeTime: o.CloseTime
+            };
+        });
+        restaurant = {
+            name: restaurant.Name,
+            address: restaurant.Address,
+            city: restaurant.City,
+            country: restaurant.Country,
+            imageLink: restaurant.ImageLink,
+            openingHours: openingHours
+        };
+        res.status(200).send(restaurant);
+    } catch (error) {
+        res.status(400).send(error+ ' :(');
+    }
+});
+
+/*
+router.get('/', auth, isOwner, findRestaurant, async (req, res) => {
+    try {
         const restaurant = await Restaurant.findOne ({
             where: {
                 Restaurant_ID: req.restaurant.Restaurant_ID
@@ -35,6 +67,8 @@ router.get('/', auth, isOwner, findRestaurant, async (req, res) => {
             city: restaurant.dataValues.City,
             country: restaurant.dataValues.Country,
             imageLink: restaurant.dataValues.ImageLink,
+            Latitude: restaurant.dataValues.Latitude,
+            Longitude: restaurant.dataValues.Longitude,
             openingHours: openingHours
         });
     } catch (error) {
@@ -42,4 +76,6 @@ router.get('/', auth, isOwner, findRestaurant, async (req, res) => {
     }
 });
 
+
+ */
 module.exports = router;
