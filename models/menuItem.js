@@ -1,7 +1,8 @@
 const Sequelize = require('sequelize');
 const db = require('../sequelizeSettings');
 
-const Menu = require('./menu');
+const TaggedItem=require('./taggedItem.js');
+const Tag=require('./tag.js');
 
 const MenuItem = db.define('MenuItem', {
     MI_ID: {
@@ -23,19 +24,23 @@ const MenuItem = db.define('MenuItem', {
     },
     ImageLink: {
         type: Sequelize.STRING
+    },
+    Type: {
+        type: Sequelize.STRING
     }
 }, {
     freezeTableName: true,
     timestamps: false
-} ,
-    {
-    classMethods: {
-        associate: () => {
-            MenuItem.belongsTo(Menu), {
-                foreignKey: 'Menu_ID',
-            };
-        }
-    }
 });
+
+MenuItem.hasMany(TaggedItem, {
+    foreignKey: 'MI_ID'
+});
+
+TaggedItem.belongsTo(Tag, {
+    foreignKey: 'Tag',
+    as: 'Tags'
+});
+
 
 module.exports = MenuItem;

@@ -28,7 +28,7 @@ exports.addMenu = function(body) {
  * Add a menuItem to the menu with given menuID. Authentication required.
  *
  * menuID Integer ID of the menu
- * body MenuItem Menu data
+ * body MenuItemWithoutColors Menu data
  * returns Menu
  **/
 exports.addMenuItem = function(menuID,body) {
@@ -114,13 +114,14 @@ exports.configureRestaurant = function(body) {
  * Creates a new restaurant owner profile. This endpoint is used only for restaurant owner registration.  The endpoint, if the registration succeeds, returns the username of the account as a confirmation.
  *
  * body Owner Restaurant owner that needs to register
- * returns Username
+ * returns UsernameAndToken
  **/
 exports.createOwner = function(body) {
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = {
-  "username" : "xXEmilioXx"
+  "username" : "xXEmilioXx",
+  "token" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOjI5LCJpYXQiOjE1NjE5OTg2NjB9.SWYMJXTTM8pe6NQw1QwS-d8Btt6Isuzzk5JtH775uV0"
 };
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);
@@ -161,7 +162,7 @@ exports.deleteMenuItem = function(menuID,menuItemID) {
 
 
 /**
- * Edit a menu
+ * Edit a menu's information (not its items)
  * Edit a given menu (but not its menuItems). To identify the menu, the menuID needs to be given. Authentication is required.
  *
  * menuID Integer ID of the menu to be edited
@@ -189,7 +190,7 @@ exports.editMenu = function(menuID,body) {
  *
  * menuID Integer ID of the menu
  * menuItemID Integer ID of the menuItem
- * body MenuItem Data of the menuItem
+ * body MenuItemWithoutColors Data of the menuItem
  * returns Menu
  **/
 exports.editMenuItem = function(menuID,menuItemID,body) {
@@ -249,8 +250,8 @@ exports.editMenuItem = function(menuID,menuItemID,body) {
 
 
 /**
- * Returns all the menus of the restaurant
- * Returns all the menus of the restaurant. Since authentication is required, the backend is able to get which restaurant is involved from the authentication token.
+ * Return all the menus of the restaurant
+ * Return all the menus of the restaurant. Since authentication is required, the backend is able to get which restaurant is involved from the authentication token.
  *
  * returns List
  **/
@@ -302,7 +303,7 @@ exports.getOwnMenus = function() {
     "imageLink" : "www.cloudStorage.com/Meatballs"
   } ]
 }, {
-  "menuID" : 2,
+  "menuID" : 3,
   "name" : "Emilio's menu of the day",
   "description" : "Our special menu of today",
   "tags" : [ {
@@ -366,8 +367,8 @@ exports.getRestaurant = function() {
     var examples = {};
     examples['application/json'] = {
   "name" : "Emilio's Pizza",
-  "address" : "André route 45",
-  "city" : "Rome",
+  "address" : "Piazzale Susa",
+  "city" : "Milan",
   "country" : "Italy",
   "imageLink" : "www.cloudStorage.com/Restaurant",
   "openingHours" : [ {

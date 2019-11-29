@@ -7,53 +7,108 @@ const Menu = require('../models/menu.js');
 const MenuItem = require('../models/menuItem.js');
 const TaggedItem = require('../models/taggedItem.js');
 const TaggedMenu = require('../models/taggedMenu.js');
+const Restaurant = require('../models/restaurants.js');
+const Tag = require('../models/tag.js');
+const ItemReview = require('../models/itemReview.js');
 
-
-
+// TODO: Aggregate the rating of the menu OR aggregate the average score of the menuItem-ratings
 router.get('/:menuID', async (req, res) => {
     try {
 
         const menuInfo = await Menu.findOne({
-            attributes: ['Name', 'Description', 'Menu_ID'],
+            attributes: ['Name', 'Description', 'Menu_ID', 'Restaurant_ID'],
             where: {
                 Menu_ID: req.params.menuID
             }
         });
-        const menuTags = await TaggedMenu.findAll({
+
+        //Find coordinates
+        const restaurantInfo = await Restaurant.findOne({
+            attributes: ['Name', 'Address', 'City', 'Country', 'Latitude', 'Longitude'],
+            where: {
+                Restaurant_ID: menuInfo.dataValues.Restaurant_ID
+            }
+        });
+        let menuTags = await TaggedMenu.findAll({
             attributes: ['Tag'],
             where: {
                 Menu_ID: req.params.menuID
             }
         });
+
+        // Retrieve the color of the tag
+        menuTags = await menuTags.map( async t => {
+            const tag = await Tag.findOne({
+                where: {
+                    Name: t.dataValues.Tag
+                }
+            });
+            return {
+                name: tag.dataValues.Name,
+                color: tag.dataValues.Color
+            }
+        });
+        const tags = await Promise.all(menuTags);
+
         const menuItemsWithoutTags= await MenuItem.findAll({
             where: {
                 Menu_ID: req.params.menuID
             }
         });
-        const tags = await menuTags.map( m => {return m.dataValues.Tag });
 
-        const promises =  menuItemsWithoutTags.map(async menuItems => {
-            const tagsOnItem = await TaggedItem.findAll({
+        const promises = menuItemsWithoutTags.map(async menuItems => {
+            let tagsOnItem = await TaggedItem.findAll({
                 attributes: ['Tag'],
                 where: {
                     MI_ID: menuItems.dataValues.MI_ID
                 }
             });
-            const tags = await tagsOnItem.map( m => {return m.dataValues.Tag });
 
+            tagsOnItem = await tagsOnItem.map( async t => {
+                const tag = await Tag.findOne({
+                    where: {
+                        Name: t.dataValues.Tag
+                    }
+                });
+                return {
+                    name: tag.dataValues.Name,
+                    color: tag.dataValues.Color
+                }
+            });
+
+            const ratings = await ItemReview.findAll({
+                attributes: ['Rating'],
+                where: {
+                    MI_ID: menuItems.dataValues.MI_ID
+                }
+            });
+            const average = await aggregateRating(ratings);
+            const tags = await Promise.all(tagsOnItem);
 
             return {
                 name: menuItems.dataValues.Name,
                 description: menuItems.dataValues.Description,
+                type: menuItems.dataValues.Type,
                 priceEuros: menuItems.dataValues.Price,
                 imageLink: menuItems.dataValues.ImageLink,
-                tags}
+                rating: average,
+                tags
+            }
         });
         const menuItems = await Promise.all(promises);
 
         res.status(200).send({
-            name: menuInfo.dataValues.Name,
+            restaurant: {
+                restaurantName: restaurantInfo.dataValues.Name,
+                address: restaurantInfo.dataValues.Address,
+                city: restaurantInfo.dataValues.City,
+                country: restaurantInfo.dataValues.Country,
+                latitude: restaurantInfo.dataValues.Latitude,
+                longitude: restaurantInfo.dataValues.Longitude
+            },
+            menuName: menuInfo.dataValues.Name,
             description:  menuInfo.dataValues.Description,
+            menuRating: '',
             tags,
             menuItems
         });
@@ -61,5 +116,16 @@ router.get('/:menuID', async (req, res) => {
         res.status(400).send(error);
     }
 });
+
+
+const aggregateRating = (ratings) => {
+    let sum = 0;
+    for (let i = 0; i < ratings.length; i++) {
+        sum += parseInt(ratings[i].dataValues.Rating)
+    }
+    return (sum/ratings.length).toFixed(1);
+};
+
+
 
 module.exports = router;

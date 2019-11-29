@@ -10,7 +10,8 @@ const TaggedMenu = db.define('TaggedMenu', {
         type: Sequelize.STRING,
         primaryKey: true
     }
-}, {
+},
+{
     freezeTableName: true,
     timestamps: false
 });
