@@ -22,6 +22,8 @@ import MainLayout from "../layout/MainLayout.js";
 import Sidebar from "./Sidebar";
 import Menu from "./Menu";
 import { exhaustMap } from "rxjs/operators";
+import {failLogIn, logIn, successLogIn} from "../../actionCreators/logInActionCreators";
+import {setModalVisibilityFilterAction} from "../../actionCreators/modalVisibilityFilterActionCreators";
 //</editor-fold>
 
 class YourRestaurant extends Component {
@@ -61,10 +63,7 @@ class YourRestaurant extends Component {
           });
         })
       )
-      .subscribe(
-        () => {},
-        () => {}
-      );
+      .subscribe();
   }
 
   componentWillUnmount() {

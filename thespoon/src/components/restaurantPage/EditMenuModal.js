@@ -1,22 +1,27 @@
 //<editor-fold desc="React">
-import React, {Component} from 'react';
+import React, {Component} from "react";
+import {Redirect} from "react-router";
+//</editor-fold>
+//<editor-fold desc="Redux">
+import {connect} from "react-redux";
+//</editor-fold>
+//<editor-fold desc="RxJs">
+import {bindCallback, of, throwError} from "rxjs";
+import {ajax} from "rxjs/ajax";
+import {take, exhaustMap, map} from "rxjs/operators";
 //</editor-fold>
 //<editor-fold desc="Bootstrap">
 import {Modal} from "react-bootstrap";
 //</editor-fold>
 //<editor-fold desc="Validator">
+import Textarea from "react-validation/build/textarea";
 import Form from 'react-validation/build/form';
 import Input from 'react-validation/build/input';
 import Button from 'react-validation/build/button';
-import Textarea from 'react-validation/build/textarea';
 //</editor-fold>
 
 //<editor-fold desc="Icons">
-import {IconExit} from '../Icons';
-import {bindCallback, of, throwError} from "rxjs";
-import {exhaustMap, map, take} from "rxjs/operators";
-import {ajax} from "rxjs/ajax";
-import {connect} from "react-redux";
+import {IconExit} from "../Icons";
 //</editor-fold>
 
 
@@ -52,17 +57,20 @@ class EditMenuModal extends Component {
                 return bindCallback(thisTemp.setState).call(thisTemp, {
                     name: values.name,
                     description: values.description,
-                    tags: values.tags,
-                    serverMessage: null
+                    tags: values.tags.split(",")
                 });
             }))
             .pipe(exhaustMap(() => {
                 return bindCallback(thisTemp.setState).call(thisTemp, {
-                    submitted: true
+                    submitted: true,
+                    serverMessage: ""
                 });
             }))
             .pipe(exhaustMap(() => {
+                console.log(this.props)
+                console.log(this.state)
                 if (true) {
+                    thisTemp.setState({serverMessage: "Menu is edited"});
                     return ajax({
                         url: "/api/user/owner/restaurant/menu/${this.props.menuID}",
                         method: "PUT",
@@ -74,6 +82,7 @@ class EditMenuModal extends Component {
                         }
                     })
                 } else {
+                    thisTemp.setState({serverMessage: "Menu is not valid"});
                     return throwError({status: 0});
                 }
             }))
@@ -91,7 +100,6 @@ class EditMenuModal extends Component {
                             thisTemp.setState({serverMessage: "No connection to the server"});
                             break;
                         case 0:
-                            thisTemp.setState({serverMessage: ""});
                             break;
                         default:
                             thisTemp.setState({serverMessage: "General error"});

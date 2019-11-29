@@ -104,7 +104,6 @@ class CustomModal extends Component {
 
 //<editor-fold desc="Redux">
 const mapStateToProps = (state) => {
-    console.log(state)
     return {
         modalVisibilityFilter: state.modalVisibiltyFilterReducer.modalVisibilityFilter,
         currentMenuId: state.modalVisibiltyFilterReducer.currentMenuId

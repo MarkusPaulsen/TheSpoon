@@ -53,15 +53,6 @@ class FillRestaurantInfo extends Component {
                 validWhen: false,
                 message: "Restaurant name required"
             },
-
-            /*
-            {
-                field: "Image",
-                method: "isEmpty",
-                validWhen: false,
-                message: "Image required"
-            },
-             */
             {
                 field: "address",
                 method: "isEmpty",
@@ -79,14 +70,7 @@ class FillRestaurantInfo extends Component {
                 method: "isEmpty",
                 validWhen: false,
                 message: "Country name required"
-            },
-            /*
-            {
-                field: "selected-hours",
-                method: "isEmpty",
-                validWhen: false,
-                message: "You need at least one opening day"
-            }*/
+            }
 
         ]);
 
@@ -107,12 +91,10 @@ class FillRestaurantInfo extends Component {
             city: "",
             country: "",
             selectedOpeningHours: [],
-            //selectedFile: null,
+            selectedOpeningHoursMessage: "",
             selectedDay: null,
             selectedOpenTime: null,
             selectedCloseTime: null,
-            //name: "",
-
             imageID: "",
             imageMessage: "",
             validation: this.validator.valid(),
@@ -156,8 +138,6 @@ class FillRestaurantInfo extends Component {
         thisTemp.setState({ imageMessage: "", selectedFile: null });
         let file = event.target.files[0];
         if(["image/png","image/jpeg"].includes(file.type)) {
-            console.log("fill resto");
-            console.log(thisTemp.props.token);
             let reader = new FileReader();
             thisTemp.setState({serverMessage: "Image upload is processing"});
             reader.onload = (readerEvent) => {
@@ -169,7 +149,7 @@ class FillRestaurantInfo extends Component {
                 })
                     .pipe(take(1))
                     .subscribe((reply) => {
-                        thisTemp.setState({ imageID: reply.response.imageID, selectedFile: file});
+                        thisTemp.setState({ imageID: reply.response.imageID, selectedFile: file, serverMessage: ""});
                     }, () => {
                         thisTemp.setState({ imageMessage: (file.name + " could not be uploaded.")});
                     });
@@ -210,11 +190,13 @@ class FillRestaurantInfo extends Component {
                 return bindCallback(thisTemp.setState).call(thisTemp, {
                     validation: thisTemp.validator.validate(thisTemp.state),
                     submitted: true,
-                    serverMessage:""
+                    serverMessage:"",
+                    selectedOpeningHoursMessage: "",
+                    imageMessage: "",
                 });
             }))
             .pipe(exhaustMap(() => {
-                if (thisTemp.state.validation.isValid){
+                if (thisTemp.state.validation.isValid && thisTemp.state.selectedOpeningHours.length > 0 && thisTemp.state.imageID !== ""){
                     thisTemp.setState({serverMessage: "Latitude and longitude are calculated"});
                     return ajax({
                         url: "https://nominatim.openstreetmap.org/search?q="
@@ -227,6 +209,14 @@ class FillRestaurantInfo extends Component {
                     });
                 }
                 else {
+                    if(thisTemp.state.selectedOpeningHours.length === 0) {
+                        thisTemp.setState({selectedOpeningHoursMessage: "No opening hours selected!"});
+
+                    }
+                    if(thisTemp.state.imageID === "") {
+                        thisTemp.setState({imageMessage: "No image uploaded!"});
+
+                    }
                     thisTemp.setState({serverMessage: ""});
                     return throwError({ status: 0});
                 }
@@ -270,6 +260,9 @@ class FillRestaurantInfo extends Component {
             .subscribe(
                 (reply) => {
                     thisTemp.props.setRestaurantID(reply.response.restaurantID);
+                    thisTemp.setState(
+                        {serverMessage: <Redirect to={{pathname: "/YourRestaurant"}}/>}
+                    );
                     thisTemp.props.onHide();
                 },
                 (error) => {
@@ -323,7 +316,7 @@ class FillRestaurantInfo extends Component {
                                 className="remove-button">
                                 X
                             </span>
-                            {this.state.selectedFile.name }
+                            {this.state.selectedFile.name}
                           </label>
                         }
                     </div>
@@ -391,6 +384,9 @@ class FillRestaurantInfo extends Component {
                                     </span>
                                 </div>) 
                             }
+                        </div>
+                        <div className="error-block">
+                            <small>{this.state.selectedOpeningHoursMessage}</small>
                         </div>
                     </div>
 
