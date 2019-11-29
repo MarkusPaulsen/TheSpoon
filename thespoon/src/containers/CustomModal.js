@@ -23,6 +23,7 @@ import EditRestaurantInfoModal from "../components/restaurantPage/EditRestaurant
 import AddMenuModal from "../components/restaurantPage/AddMenuModal";
 import EditMenuModal from "../components/restaurantPage/EditMenuModal";
 import {setCurrentMenuId} from "../actionCreators/CurrentMenuIdActionCreators";
+import modalVisibiltyFilterReducer from "../reducers/modalVisibilityFilterReducer";
 //</editor-fold>
 
 class CustomModal extends Component {
@@ -103,9 +104,10 @@ class CustomModal extends Component {
 
 //<editor-fold desc="Redux">
 const mapStateToProps = (state) => {
+    console.log(state)
     return {
-        modalVisibilityFilter: state.modalVisibilityFilter,
-        currentMenuId: state.currentMenuId
+        modalVisibilityFilter: state.modalVisibiltyFilterReducer.modalVisibilityFilter,
+        currentMenuId: state.modalVisibiltyFilterReducer.currentMenuId
     }
 };
 

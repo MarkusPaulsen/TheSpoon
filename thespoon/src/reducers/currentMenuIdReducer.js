@@ -1,12 +1,14 @@
 import * as menuActions from "../actions/CurrentMenuIdActions";
-import initialState from "./initialState";
+import {initialStateCurrentMenuIdReducer} from "./initialStateCurrentMenuIdReducer";
 
-const currentMenuIdReducer = (state = initialState, action) => {
+const currentMenuIdReducer = (state = initialStateCurrentMenuIdReducer, action) => {
   switch (action.type) {
     case menuActions.SET_CURRENT_MENU_ID:
-      return action.currentMenuId;
+      return Object.assign({}, state, {
+        currentMenuId: action.currentMenuId
+      });
     default:
-      return null;
+      return Object.assign({}, state, {});
   }
 };
 

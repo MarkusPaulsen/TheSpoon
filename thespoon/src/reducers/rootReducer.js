@@ -4,7 +4,7 @@ import logInReducer from "./loginReducer";
 import restaurantReducer from "./restaurantReducer";
 
 const rootReducer = combineReducers({
-    modalVisibilityFilter: modalVisibiltyFilterReducer,
+    modalVisibiltyFilterReducer: modalVisibiltyFilterReducer,
     logInReducer: logInReducer,
     restaurantReducer: restaurantReducer
 });

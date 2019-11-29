@@ -1,8 +1,8 @@
-import * as types from "../actions/CurrentMenuIdActions";
+import * as currentMenuIdActions from "../actions/CurrentMenuIdActions";
 
-export const setCurrentMenuId = id => {
+export const setCurrentMenuId = (currentMenuId) => {
   return {
-    type: types.SET_CURRENT_MENU_ID,
-    currentMenuId: id
+    type: currentMenuIdActions.SET_CURRENT_MENU_ID,
+    currentMenuId: currentMenuId
   };
 };
