@@ -34,10 +34,13 @@ class CustomModal extends Component {
                 return (
                     <LogIn onHide={() => this.props.handleClose()} />
                 );
+
+                /*TO REMOVE
             case modalVisibilityFilters.SHOW_CHOOSE_ROLE:
                 return (
                     <ChooseRoleModal onHide={() => this.props.handleClose()} />
-                );
+                );*/
+
             case modalVisibilityFilters.SHOW_REGISTER_RESTAURANT_OWNER:
                 return (
                     <RegisterRestaurantowner
@@ -51,12 +54,15 @@ class CustomModal extends Component {
                         onHide={() => this.props.handleClose()}
                         />
                 );
+
+                /*TO REMOVE
             case modalVisibilityFilters.SHOW_REGISTER_CUSTOMER:
                 return (
                     <RegisterCustomer
                         role={roles.CUSTOMER}
                         onHide={() => this.props.handleClose()}/>
-                );
+                );*/
+
             case modalVisibilityFilters.SHOW_EDIT_RESTAURANT_INFORMATION:
                 return (
                     <EditRestaurantInfoModal

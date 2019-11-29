@@ -1,6 +1,19 @@
-import React, {Component} from "react";
-import {View, Text, StyleSheet, Image} from "react-native";
-import SearchIcon from "../../assets/search.png";
+import React, { Component } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  Image,
+  FlatList,
+  SafeAreaView,
+  TouchableOpacity,
+  Keyboard
+} from "react-native";
+import Validate from "./searchvalidation.js";
+import { TouchableWithoutFeedback } from "react-native-web";
+import * as Typography from "../../styles/typography";
+import * as Colors from "../../styles/colors";
 
 function ResultItem({ menuName, restaurantName, tags, score }) {
   const tags1Row = [];
@@ -119,20 +132,15 @@ export default class Search extends Component {
   }
   render() {
     return (
-      <View style={styles.container}>
-        <View
-          style={{
-            flexDirection: "column",
-            flex: 1,
-            marginLeft: 50,
-            marginTop: 100
-          }}
-        >
-          <Text style={styles.bigText}>What</Text>
-          <View style={styles.smallText}>
-            <Text style={{color: "#000000" }}>do you want to </Text>
-            <Text style={{color: "#F3A3A3" }}>eat </Text>
-            <Text style={{color: "#000000" }}>today </Text>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={styles.container}>
+          <View style={styles.text}>
+            <Text style={Typography.FONT_H2_PINK}>What</Text>
+            <View style={{ flexDirection: "row" }}>
+              <Text style={Typography.FONT_H4_BLACK}>do you want to </Text>
+              <Text style={Typography.FONT_H4_PINK}>eat </Text>
+              <Text style={Typography.FONT_H4_BLACK}>today </Text>
+            </View>
           </View>
           <View style={[styles.searchBar, { marginTop: 20 }]}>
             <TouchableOpacity

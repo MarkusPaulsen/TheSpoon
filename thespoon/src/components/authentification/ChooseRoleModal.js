@@ -1,3 +1,4 @@
+//TO REMOVE
 import React, {Component} from 'react';
 import {IconExit} from '../Icons';
 import {Modal} from 'react-bootstrap';

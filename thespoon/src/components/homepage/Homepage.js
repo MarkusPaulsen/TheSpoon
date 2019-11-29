@@ -50,7 +50,7 @@ class Homepage extends Component {
 //<editor-fold desc="Redux">
 const mapStateToProps = (state) => {
     return {
-        loginStatus: state.logInRegisterReducer.loginStatus
+        loginStatus: state.logInReducer.loginStatus
     };
 };
 

@@ -21,7 +21,7 @@ class Dashboard extends Component {
                             <div className="container">
                                 <div className="row">
                                     <div className="col-sm-8">
-                                        <h1 className="title">This is your dashboard {this.props.role ? "Restaurant owner" : "Customer"} {this.props.username}</h1>
+                                        <h1 className="title">This is your dashboard  {this.props.username}</h1>
                                         <Link to="/" className="logo">
                                             <text>Back to Homepage</text>
                                         </Link>
@@ -45,9 +45,8 @@ class Dashboard extends Component {
 //<editor-fold desc="Redux">
 const mapStateToProps = (state) => {
     return {
-        role: state.logInRegisterReducer.role,
-        username: state.logInRegisterReducer.username,
-        loginStatus: state.logInRegisterReducer.loginStatus
+        username: state.logInReducer.username,
+        loginStatus: state.logInReducer.loginStatus
     };
 };
 

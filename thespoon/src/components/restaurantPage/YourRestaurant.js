@@ -130,10 +130,10 @@ class YourRestaurant extends Component {
 }
 
 //<editor-fold desc="Redux">
-const mapStateToProps = state => {
-  return {
-    token: state.logInRegisterReducer.token
-  };
+const mapStateToProps = (state) => {
+    return {
+        token: state.logInReducer.token
+    };
 };
 
 export default connect(mapStateToProps, null)(YourRestaurant);

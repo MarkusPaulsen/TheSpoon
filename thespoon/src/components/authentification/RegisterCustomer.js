@@ -1,3 +1,4 @@
+//TO REMOVE
 import React, {Component} from 'react';
 import {Redirect} from 'react-router-dom'
 import {ajax} from 'rxjs/ajax';
@@ -87,6 +88,7 @@ class RegisterCustomer extends Component  {
                 this.submitted = true;
 
                 if (validation.isValid) {
+                    thisTemp.setState({serverMessage: "Sign up is processing"});
                     let thisTemp = this;
                     ajax({
                         url: paths['restApi']['registrationCustomer'],
