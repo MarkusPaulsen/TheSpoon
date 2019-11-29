@@ -1,5 +1,4 @@
 'use strict';
-let express = require("express");
 
 var fs = require('fs'),
     path = require('path'),
