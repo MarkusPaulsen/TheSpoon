@@ -8,11 +8,13 @@ import {Modal} from "react-bootstrap";
 import {ajax} from "rxjs/ajax";
 //</editor-fold>
 //<editor-fold desc="Validator">
-import Form from "react-validation/build/form";
-import Input from "react-validation/build/input";
-import Button from "react-validation/build/button";
 import Textarea from "react-validation/build/textarea";
 //</editor-fold>
+
+import Form from 'react-validation/build/form';
+import Input from 'react-validation/build/input';
+import Button from 'react-validation/build/button';
+import FormValidator from "../../validation/FormValidator";
 
 //<editor-fold desc="Icons">
 import {IconExit} from "../Icons";
@@ -28,6 +30,27 @@ class AddMenuModal extends Component {
     {
         super(props);
 
+        this.validator = new FormValidator([
+            {
+                field: "name",
+                method: "is empty",
+                validWhen: false,
+                message: "Menu name is required"
+            },
+            {
+                field: "description",
+                method: "is empty",
+                validWhen: false,
+                message: "Description name is required"
+            },
+            {
+                field: "tags",
+                method: "is empty",
+                validWhen: false,
+                message: "Tags are required"
+            }
+        ]);
+
         this.handleSubmit = this.handleSubmit.bind(this);
 
         this.state = {
@@ -42,7 +65,7 @@ class AddMenuModal extends Component {
     //</editor-fold>
 
     //<editor-fold desc="Bussiness Logic">
-    handleSubmit = (event) => {
+    handleSubmit = event => {
         event.preventDefault();
 
         const thisTemp = this;
@@ -55,16 +78,18 @@ class AddMenuModal extends Component {
                     name: values.name,
                     description: values.description,
                     tags: values.tags,
-                    serverMessage: ""
                 });
             }))
             .pipe(exhaustMap(() => {
                 return bindCallback(thisTemp.setState).call(thisTemp, {
-                    submitted: true
+                    validation: thisTemp.validator.validate(thisTemp.state),
+                    submitted: true,
+                    serverMessage: ""
                 });
             }))
             .pipe(exhaustMap(() => {
-                if (true) {
+                if (thisTemp.state.validation.isValid) {
+                    thisTemp.setState({serverMessage: "Menu is created"});
                     return ajax({
                         url: "/api/user/owner/restaurant/menu",
                         method: "POST",
@@ -94,7 +119,6 @@ class AddMenuModal extends Component {
                             thisTemp.setState({serverMessage: "No connection to the server"});
                             break;
                         case 0:
-                            thisTemp.setState({serverMessage: ""});
                             break;
                         default:
                             thisTemp.setState({serverMessage: "General error"});
@@ -107,6 +131,9 @@ class AddMenuModal extends Component {
 
     //<editor-fold desc="Render">
     render() {
+        let validation = this.submitted ?                         // if the form has been submitted at least once
+            this.validator.validate(this.state) :               // then check validity every time we render
+            this.state.validation;
         return (
             <Modal.Body>
                 <button className="exit" onClick={this.props.onHide}><IconExit /></button>
@@ -118,16 +145,24 @@ class AddMenuModal extends Component {
                             <label>Name</label>
                             <Input type="text" name="name" placeholder="Name"/>
                         </div>
+                        <div className="error-block">
+                            <small>{validation.name.message}</small>
+                        </div>
 
                         <div className="input-field">
                             <label>Description</label>
                             <Textarea name="description"/>
                         </div>
-
+                        <div className="error-block">
+                            <small>{validation.description.message}</small>
+                        </div>
 
                         <div className="input-field">
                             <label>Tags</label>
                             <Input type="tags" name="tags" placeholder="Search"/>
+                        </div>
+                        <div className="error-block">
+                            <small>{validation.tags.message}</small>
                         </div>
 
                         <Button type="submit" className="normal">Create</Button>
