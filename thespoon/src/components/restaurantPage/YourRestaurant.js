@@ -38,11 +38,11 @@ class YourRestaurant extends Component {
     const thisTemp = this;
     this.data$ = zip(
       ajax({
-        url: "http://localhost:8080/api/user/owner/restaurant",
+        url: "/api/user/owner/restaurant",
         method: "GET"
       }),
       ajax({
-        url: "http://localhost:8080/api/user/owner/restaurant/menu",
+        url: "/api/user/owner/restaurant/menu",
         method: "GET"
       })
     )

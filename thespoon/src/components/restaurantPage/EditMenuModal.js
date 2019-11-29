@@ -64,7 +64,7 @@ class EditMenuModal extends Component {
             .pipe(exhaustMap(() => {
                 if (true) {
                     return ajax({
-                        url: "http://localhost:8080/api/user/owner/restaurant/menu/${this.props.menuID}",
+                        url: "/api/user/owner/restaurant/menu/${this.props.menuID}",
                         method: "PUT",
                         headers: {"Content-Type": "application/json", 'X-Auth-Token': this.props.token},
                         body: {

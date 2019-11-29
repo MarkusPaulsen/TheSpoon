@@ -66,7 +66,7 @@ class AddMenuModal extends Component {
             .pipe(exhaustMap(() => {
                 if (true) {
                     return ajax({
-                        url: "http://localhost:8080/api/user/owner/restaurant/menu",
+                        url: "/api/user/owner/restaurant/menu",
                         method: "POST",
                         headers: {"Content-Type": "application/json", "X-Auth-Token": this.props.token},
                         body: {
@@ -82,6 +82,7 @@ class AddMenuModal extends Component {
             .pipe(take(1))
             .subscribe(
                 () => {
+
                     thisTemp.props.onHide();
                 },
                 (error) => {
