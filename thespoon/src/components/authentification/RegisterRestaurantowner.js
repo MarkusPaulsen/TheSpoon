@@ -161,7 +161,7 @@ class RegisterRestaurantowner extends Component  {
                     }
                 });
             }), catchError(error => {
-                return throwError({ status: error.status});
+                return throwError(error);
             }))
             .pipe(take(1))
             .subscribe(
@@ -172,7 +172,7 @@ class RegisterRestaurantowner extends Component  {
                     thisTemp.props.failLogIn();
                     switch (error.status) {
                         case 400:
-                            thisTemp.setState({serverMessage: "Invalid username or password" });
+                            thisTemp.setState({serverMessage: "Username is already taken" });
                             break;
                         case 404:
                             thisTemp.setState({serverMessage: "No connection to the server" });
@@ -269,7 +269,8 @@ class RegisterRestaurantowner extends Component  {
 const mapDispatchToProps = (dispatch) => ({
     logIn: (username, password) => dispatch(logIn(username, password)),
     failLogIn: () => dispatch(failLogIn()),
-    successLogIn: (token) => dispatch(successLogIn(token)),
+    successLogIn: (token) => {
+        dispatch(successLogIn(token))},
     changeToShowRestaurantInformation: () => dispatch(setModalVisibilityFilterAction(modalVisibilityFilters.SHOW_RESTAURANT_INFORMATION))
 });
 

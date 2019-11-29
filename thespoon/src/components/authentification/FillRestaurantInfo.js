@@ -1,5 +1,6 @@
 //<editor-fold desc="React">
 import React, {Component} from 'react';
+import {Redirect} from "react-router-dom"
 import Select from 'react-select';
 //</editor-fold>
 //<editor-fold desc="Redux">
@@ -25,15 +26,8 @@ import FormValidator from "../../validation/FormValidator";
 import {days} from "../../constants/days";
 import {hours} from "../../constants/hours";
 import {paths} from "../../constants/paths";
-import {modalVisibilityFilters} from "../../constants/modalVisibiltyFilters";
 //</editor-fold>
-//<editor-fold desc="Containers">
-import FilterLink from "../../containers/FilterModalLink";
-//</editor-fold>
-//<editor-fold desc="Icons">
-import {IconExit, IconBack} from '../Icons';
-import {failLogIn, logIn, successLogIn} from "../../actionCreators/logInActionCreators";
-//</editor-fold>
+
 
 
 
@@ -52,7 +46,49 @@ class FillRestaurantInfo extends Component {
     constructor(props) {
         super(props);
 
-        //this.validator = new FormValidator([]);
+        this.validator = new FormValidator([
+            {
+                field: "name",
+                method: "isEmpty",
+                validWhen: false,
+                message: "Restaurant name required"
+            },
+
+            /*
+            {
+                field: "Image",
+                method: "isEmpty",
+                validWhen: false,
+                message: "Image required"
+            },
+             */
+            {
+                field: "address",
+                method: "isEmpty",
+                validWhen: false,
+                message: "Adress is required"
+            },
+            {
+                field: "city",
+                method: "isEmpty",
+                validWhen: false,
+                message: "City name required"
+            },
+            {
+                field: "country",
+                method: "isEmpty",
+                validWhen: false,
+                message: "Country name required"
+            },
+            /*
+            {
+                field: "selected-hours",
+                method: "isEmpty",
+                validWhen: false,
+                message: "You need at least one opening day"
+            }*/
+
+        ]);
 
 
         this.handleChangeDay = this.handleChangeDay.bind(this);
@@ -65,19 +101,23 @@ class FillRestaurantInfo extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         
         this.state = {
-            selectedFile: null,
-            selectedOpeningHours: [],
-            selectedDay: null,
-            selectedOpenTime: null,
-            selectedCloseTime: null,
+
             name: "",
-            imageID: "",
             address: "",
             city: "",
             country: "",
-            restaurantName: "",
+            selectedOpeningHours: [],
+            //selectedFile: null,
+            selectedDay: null,
+            selectedOpenTime: null,
+            selectedCloseTime: null,
+            //name: "",
+
+            imageID: "",
             imageMessage: "",
-            serverMessage: ""
+            validation: this.validator.valid(),
+            serverMessage: "",
+            submitted: false
         }
     }
     //</editor-fold>
@@ -116,13 +156,15 @@ class FillRestaurantInfo extends Component {
         thisTemp.setState({ imageMessage: "", selectedFile: null });
         let file = event.target.files[0];
         if(["image/png","image/jpeg"].includes(file.type)) {
+            console.log("fill resto");
+            console.log(thisTemp.props.token);
             let reader = new FileReader();
             thisTemp.setState({serverMessage: "Image upload is processing"});
             reader.onload = (readerEvent) => {
                 ajax({
                     url: paths["restApi"]["image"],
                     method: "POST",
-                    headers: {"Content-Type": file.type},
+                    headers: {"Content-Type": file.type , "X-Auth-Token": thisTemp.props.token},
                     body: readerEvent.target.result
                 })
                     .pipe(take(1))
@@ -148,7 +190,7 @@ class FillRestaurantInfo extends Component {
       this.setState({ selectedFile: null })
     };
 
-    handleSubmit = (event) => {
+    handleSubmit = event => {
         event.preventDefault();
 
         const thisTemp = this;
@@ -157,35 +199,49 @@ class FillRestaurantInfo extends Component {
                 return thisTemp.form.getValues();
             }))
             .pipe(exhaustMap((values) => {
-                return bindCallback(this.setState).call(thisTemp, {
+                return bindCallback(thisTemp.setState).call(thisTemp, {
+                    name: values.name,
                     address: values.address,
                     city: values.city,
-                    country: values.country,
-                    restaurantName: values.restaurantName,
-                    serverMessage: ""
+                    country: values.country
                 });
             }))
             .pipe(exhaustMap(() => {
-                return ajax({
-                    url: "https://nominatim.openstreetmap.org/search?q="
-                        + thisTemp.state.address
-                        + "+" + thisTemp.state.city
-                        + "+" + thisTemp.state.country
-                        + "&format=json",
-                    method: "POST",
-                    headers: {"Content-Type": "application/json"},
+                return bindCallback(thisTemp.setState).call(thisTemp, {
+                    validation: thisTemp.validator.validate(thisTemp.state),
+                    submitted: true,
+                    serverMessage:""
                 });
             }))
+            .pipe(exhaustMap(() => {
+                if (thisTemp.state.validation.isValid){
+                    thisTemp.setState({serverMessage: "Latitude and longitude are calculated"});
+                    return ajax({
+                        url: "https://nominatim.openstreetmap.org/search?q="
+                            + thisTemp.state.address
+                            + "+" + thisTemp.state.city
+                            + "+" + thisTemp.state.country
+                            + "&format=json",
+                        method: "POST",
+                        headers: {"Content-Type": "application/json"},
+                    });
+                }
+                else {
+                    thisTemp.setState({serverMessage: ""});
+                    return throwError({ status: 0});
+                }
+
+            }))
             .pipe(exhaustMap((osmData) => {
-                console.log(osmData)
                 if (Array.isArray(osmData.response) && osmData.response.length > 0) {
-                    thisTemp.setState({serverMessage: "Restaurant information post is processing"});
+                    thisTemp.setState({serverMessage: "Restaurant information publication is processed"});
                     return ajax({
                         url: paths['restApi']['restaurant'],
                         method: 'POST',
                         headers: {'Content-Type': 'application/json'},
                         body: {
-                            name: thisTemp.state.name,
+                            //restaurantName
+                            name: thisTemp.state.restaurantName,
                             address: thisTemp.state.address,
                             city: thisTemp.state.city,
                             country: thisTemp.state.country,
@@ -203,15 +259,17 @@ class FillRestaurantInfo extends Component {
                     })
                 }
                 else {
+                    thisTemp.setState({serverMessage: "Location data cannot be calculated"});
                     return throwError({ status: 0});
                 }
             }), catchError(error => {
                 return throwError({ status: error.status});
             }))
-            .pipe(take(1))
+
+            //not sure
             .subscribe(
                 (reply) => {
-                    thisTemp.props.setRestaurantID(reply.response.restaurantID)
+                    thisTemp.props.setRestaurantID(reply.response.restaurantID);
                     thisTemp.props.onHide();
                 },
                 (error) => {
@@ -223,7 +281,6 @@ class FillRestaurantInfo extends Component {
                             this.setState({ serverMessage: "No connection to the server" });
                             break;
                         case 0:
-                            this.setState({ serverMessage: "" });
                             break;
                         default:
                             this.setState({ serverMessage: "General error" });
@@ -232,23 +289,32 @@ class FillRestaurantInfo extends Component {
                 }
             );
     };
+
     //</editor-fold>
 
     //<editor-fold desc="Render">
     render() {
+        let validation = this.submitted ?                         // if the form has been submitted at least once
+            this.validator.validate(this.state) :               // then check validity every time we render
+            this.state.validation;
         return (
             <Modal.Body>
                 <div className="modal-wrapper restaurant-info">
-                    <Form ref={ (c) => { this.form = c; }} onSubmit={(e) => this.handleSubmit(e)}>
+                    <Form ref={ (c) => { this.form = c; }} onSubmit={this.handleSubmit}>
                     <h2>Sign up</h2>
                     <div className="account-type">
-                        <h4>as a <span className="role">{this.props.role}</span></h4>
+                        <h4>as a <span className="role">Restaurant Owner</span></h4>
                     </div>
 
+
                     <div className="input-field">
-                        <label>Name</label>
-                        <Input type="text" name="restaurantName" placeholder="Restaurant name"/>
+                        <label>Restaurant name</label>
+                        <Input type="text" name="name" placeholder="Restaurant name"/>
                     </div>
+                    <div className="error-block">
+                            <small>{validation.name.message}</small>
+                    </div>
+
 
                     <div className="input-field image">
                         <label>Image</label>
@@ -273,19 +339,29 @@ class FillRestaurantInfo extends Component {
                         <label>Address</label>
                         <Input type="text" name="address" placeholder="Address"/>
                     </div>
+                    <div className="error-block">
+                        <small>{validation.address.message}</small>
+                    </div>
 
                     <div className="input-field">
                         <label>City</label>
                         <Input type="text" name="city" placeholder="City"/>
+                    </div>
+                    <div className="error-block">
+                            <small>{validation.city.message}</small>
                     </div>
 
                     <div className="input-field">
                         <label>Country</label>
                         <Input type="text" name="country" placeholder="Country"/>
                     </div>
+                    <div className="error-block">
+                            <small>{validation.country.message}</small>
+                    </div>
+
 
                     <div className="input-field opening-hours">
-                            <label>Openening hours</label>
+                            <label>Opening hours</label>
                         <div className="hours-selector">
                             <Select options={days} 
                                 onChange={this.handleChangeDay} 
@@ -323,6 +399,9 @@ class FillRestaurantInfo extends Component {
                     </div>
 
                     <Button type="submit" className="normal">Done</Button>
+                    <div className="error-block">
+                        <small>{this.state.serverMessage}</small>
+                    </div>
                     </Form>
                 </div>
             </Modal.Body>
@@ -334,13 +413,10 @@ class FillRestaurantInfo extends Component {
 //<editor-fold desc="Redux">
 const mapStateToProps = (state) => {
     return {
-        username: state.username,
-        email: state.email,
-        name: state.name,
-        surname: state.surname,
-        password: state.password
+        token: state.logInReducer.token
     };
 };
+
 
 const mapDispatchToProps = (dispatch) => {
     return {
