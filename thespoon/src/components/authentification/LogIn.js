@@ -115,7 +115,7 @@ class LogIn extends Component {
             (next) => {
               thisTemp.props.successLogIn(next.response.token);
               thisTemp.setState(
-                  {serverMessage: <Redirect to={{pathname: "/Mainpage/"}}/>}
+                  {serverMessage: <Redirect to={{pathname: "/Mainpage"}}/>}
               );
               thisTemp.props.onHide();
             }, (error) => {

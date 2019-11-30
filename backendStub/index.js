@@ -35,6 +35,9 @@ swaggerTools.initializeMiddleware(swaggerDoc, function (middleware) {
 
   // Serve the Swagger documents and Swagger UI
   app.use(middleware.swaggerUi());
+  app.use(express.static('../thespoon/build'));
+
+  app.use(express.static('../thespoon/build'));
 
   app.use(express.static('../thespoon/build'));
 

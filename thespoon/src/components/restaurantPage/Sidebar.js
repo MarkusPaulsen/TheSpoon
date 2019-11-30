@@ -49,7 +49,7 @@ class Sidebar extends Component {
                     </ul>
                 </div>
                 <div className="modal-button">
-                    <FilterLink filter={modalVisibilityFilters.SHOW_EDIT_RESTAURANT_INFORMATION}><IconEditPink/> Edit informations</FilterLink>
+                    <FilterLink filter={modalVisibilityFilters.SHOW_RESTAURANT_INFORMATION}><IconEditPink/>Edit information</FilterLink>
                 </div>
             </div>
         );
