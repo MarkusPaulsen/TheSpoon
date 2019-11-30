@@ -56,6 +56,7 @@ class AddMenuModal extends Component {
             name: "",
             description: "",
             tags: "",
+            validation: this.validator.valid(),
             serverMessage: "",
             submitted: false
         };
@@ -100,7 +101,7 @@ class AddMenuModal extends Component {
                         }
                     })
                 } else {
-                    thisTemp.setState({serverMessage: "Menu is not valid"});
+                    thisTemp.setState({serverMessage: ""});
                     return throwError({status: 0});
                 }
             }))
@@ -133,7 +134,7 @@ class AddMenuModal extends Component {
 
     //<editor-fold desc="Render">
     render() {
-        let validation = this.submitted ?                         // if the form has been submitted at least once
+        let validation = this.state.submitted ?                         // if the form has been submitted at least once
             this.validator.validate(this.state) :               // then check validity every time we render
             this.state.validation;
         return (
@@ -147,25 +148,25 @@ class AddMenuModal extends Component {
                             <label>Name</label>
                             <Input type="text" name="name" placeholder="Name"/>
                         </div>
-                        {/*<div className="error-block">
+                        <div className="error-block">
                             <small>{validation.name.message}</small>
-                        </div>*/}
+                        </div>
 
                         <div className="input-field">
                             <label>Description</label>
                             <Textarea name="description"/>
                         </div>
-                        {/*<div className="error-block">
+                        <div className="error-block">
                             <small>{validation.description.message}</small>
-                        </div>*/}
+                        </div>
 
                         <div className="input-field">
                             <label>Tags</label>
                             <Input type="tags" name="tags" placeholder="Search"/>
                         </div>
-                        {/*<div className="error-block">
+                        <div className="error-block">
                             <small>{validation.tags.message}</small>
-                        </div>*/}
+                        </div>
 
                         <Button type="submit" className="normal">Create</Button>
                         <div className="error-block">

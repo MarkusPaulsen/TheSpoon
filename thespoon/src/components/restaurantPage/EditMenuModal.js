@@ -67,8 +67,6 @@ class EditMenuModal extends Component {
                 });
             }))
             .pipe(exhaustMap(() => {
-                console.log(this.props)
-                console.log(this.state)
                 if (true) {
                     thisTemp.setState({serverMessage: "Menu is edited"});
                     return ajax({
@@ -82,7 +80,7 @@ class EditMenuModal extends Component {
                         }
                     })
                 } else {
-                    thisTemp.setState({serverMessage: "Menu is not valid"});
+                    thisTemp.setState({serverMessage: ""});
                     return throwError({status: 0});
                 }
             }))

@@ -88,6 +88,8 @@ class CustomModal extends Component {
 
     //<editor-fold desc="Render">
     render() {
+        console.log("FilterModalLink");
+        console.log(this.props);
         if(this.props.modalVisibilityFilter !== modalVisibilityFilters.HIDE_ALL) {
             return(
                 <Modal show={true} onHide={() => this.props.handleClose()} centered>
