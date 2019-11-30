@@ -1,3 +1,3 @@
 export const initialStateRestaurantReducer = {
-    restaurantID: ''
+    restaurantID: ""
 };

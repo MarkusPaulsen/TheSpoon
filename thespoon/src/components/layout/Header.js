@@ -1,6 +1,6 @@
 //<editor-fold desc="React">
-import React from 'react';
-import {Link} from 'react-router-dom';
+import React from "react";
+import {Link} from "react-router-dom";
 //</editor-fold>
 
 //<editor-fold desc="Constants">

@@ -1,7 +1,6 @@
 //<editor-fold desc="React">
-import React, {Component} from 'react';
-import {Redirect} from "react-router-dom"
-import Select from 'react-select';
+import React, {Component} from "react";
+import Select from "react-select";
 //</editor-fold>
 //<editor-fold desc="Redux">
 import {connect} from "react-redux";
@@ -16,9 +15,9 @@ import {ajax} from "rxjs/ajax";
 import {Modal} from "react-bootstrap";
 //</editor-fold>
 //<editor-fold desc="Validator">
-import Form from 'react-validation/build/form';
-import Input from 'react-validation/build/input';
-import Button from 'react-validation/build/button';
+import Form from "react-validation/build/form";
+import Input from "react-validation/build/input";
+import Button from "react-validation/build/button";
 import FormValidator from "../../validation/FormValidator";
 //</editor-fold>
 
@@ -99,20 +98,15 @@ class FillRestaurantInfo extends Component {
         this.fileSelectedHandler = this.fileSelectedHandler.bind(this);
         this.removeFile = this.removeFile.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-        
         this.state = {
-
             name: "",
             address: "",
             city: "",
             country: "",
             selectedOpeningHours: [],
-            //selectedFile: null,
             selectedDay: null,
             selectedOpenTime: null,
             selectedCloseTime: null,
-            //name: "",
-
             imageID: "",
             imageMessage: "",
             validation: this.validator.valid(),
@@ -141,7 +135,6 @@ class FillRestaurantInfo extends Component {
             openTime: this.state.selectedOpenTime,
             closeTime: this.state.selectedCloseTime
         };
-       
        this.setState({ selectedOpeningHours: [...this.state.selectedOpeningHours, newOpeningHours] });
     };
 
@@ -236,9 +229,9 @@ class FillRestaurantInfo extends Component {
                 if (Array.isArray(osmData.response) && osmData.response.length > 0) {
                     thisTemp.setState({serverMessage: "Restaurant information publication is processed"});
                     return ajax({
-                        url: paths['restApi']['restaurant'],
-                        method: 'POST',
-                        headers: {'Content-Type': 'application/json'},
+                        url: paths["restApi"]["restaurant"],
+                        method: "POST",
+                        headers: {"Content-Type": "application/json"},
                         body: {
                             //restaurantName
                             name: thisTemp.state.restaurantName,

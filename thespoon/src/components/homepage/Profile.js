@@ -1,12 +1,12 @@
 //<editor-fold desc="React Import">
-import React, {Component} from 'react';
-import {Link, Redirect} from 'react-router-dom';
+import React, {Component} from "react";
+import {Link, Redirect} from "react-router-dom";
 //</editor-fold>
 //<editor-fold desc="Redux import">
 import {connect} from "react-redux";
 //</editor-fold>
 //<editor-fold desc="Layout">
-import MainLayout from '../layout/MainLayout.js'
+import MainLayout from "../layout/MainLayout.js"
 //</editor-fold>
 
 class Profile extends Component {
@@ -34,7 +34,7 @@ class Profile extends Component {
         }
         else {
             return(
-                <Redirect to={{pathname: '/'}}/>
+                <Redirect to={{pathname: "/"}}/>
             );
         }
     }

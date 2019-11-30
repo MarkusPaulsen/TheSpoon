@@ -1,18 +1,18 @@
 //<editor-fold desc="React">
-import React, {Component} from 'react';
+import React, {Component} from "react";
 //</editor-fold>
 //<editor-fold desc="Bootstrap">
 import {Modal} from "react-bootstrap";
 //</editor-fold>
 //<editor-fold desc="Validator">
-import Form from 'react-validation/build/form';
-import Input from 'react-validation/build/input';
-import Button from 'react-validation/build/button';
-import Textarea from 'react-validation/build/textarea';
+import Form from "react-validation/build/form";
+import Input from "react-validation/build/input";
+import Button from "react-validation/build/button";
+import Textarea from "react-validation/build/textarea";
 //</editor-fold>
 
 //<editor-fold desc="Icons">
-import {IconExit} from '../Icons';
+import {IconExit} from "../Icons";
 import {bindCallback, of, throwError} from "rxjs";
 import {exhaustMap, map, take} from "rxjs/operators";
 import {ajax} from "rxjs/ajax";
@@ -66,7 +66,7 @@ class EditMenuModal extends Component {
                     return ajax({
                         url: "http://localhost:8080/api/user/owner/restaurant/menu/${this.props.menuID}",
                         method: "POST",
-                        headers: {"Content-Type": "application/json", 'X-Auth-Token': this.props.token},
+                        headers: {"Content-Type": "application/json", "X-Auth-Token": this.props.token},
                         body: {
                             name: thisTemp.state.name,
                             description: thisTemp.state.description,

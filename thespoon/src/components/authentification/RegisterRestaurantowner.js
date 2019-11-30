@@ -1,5 +1,5 @@
 //<editor-fold desc="React">
-import React, {Component} from 'react';
+import React, {Component} from "react";
 //</editor-fold>
 //<editor-fold desc="Redux">
 import {connect} from "react-redux";
@@ -14,8 +14,8 @@ import {exhaustMap, map, take, catchError} from "rxjs/operators";
 import {Modal} from "react-bootstrap";
 //</editor-fold>
 //<editor-fold desc="Validator">
-import Form from 'react-validation/build/form';
-import Input from 'react-validation/build/input';
+import Form from "react-validation/build/form";
+import Input from "react-validation/build/input";
 import FormValidator from "../../validation/FormValidator";
 //</editor-fold>
 
@@ -26,7 +26,7 @@ import {modalVisibilityFilters} from "../../constants/modalVisibiltyFilters";
 import FilterLink from "../../containers/FilterModalLink";
 //</editor-fold>
 //<editor-fold desc="Icons">
-import {IconName, IconEmail, IconPassword, IconExit, IconBack} from '../Icons';
+import {IconName, IconEmail, IconPassword, IconExit} from "../Icons";
 import Button from "react-validation/build/button";
 import {ajax} from "rxjs/ajax";
 import {paths} from "../../constants/paths";
@@ -41,59 +41,59 @@ class RegisterRestaurantowner extends Component  {
         super(props);
 
           this.validator = new FormValidator([{
-              field: 'email',
-              method: 'isEmpty',
+              field: "email",
+              method: "isEmpty",
               validWhen: false,
-              message: 'E-mail is required.'
+              message: "E-mail is required."
           }, {
-              field: 'email',
-              method: 'isEmail',
+              field: "email",
+              method: "isEmail",
               validWhen: true,
-              message: 'That is not a valid email.'
+              message: "That is not a valid email."
           }, {
-              field: 'username',
-              method: 'isEmpty',
+              field: "username",
+              method: "isEmpty",
               validWhen: false,
-              message: 'Username is required.'
+              message: "Username is required."
           }, {
-              field: 'name',
-              method: 'isEmpty',
+              field: "name",
+              method: "isEmpty",
               validWhen: false,
-              message: 'Name is required.'
+              message: "Name is required."
           },
           {
-              field: 'surname',
-              method: 'isEmpty',
+              field: "surname",
+              method: "isEmpty",
               validWhen: false,
-              message: 'Surname is required.'
+              message: "Surname is required."
           }, {
-              field: 'password',
-              method: 'isEmpty',
+              field: "password",
+              method: "isEmpty",
               validWhen: false,
-              message: 'Password is required.'
+              message: "Password is required."
           }, {
-              field: 'confirmPassword',
-              method: 'isEmpty',
+              field: "confirmPassword",
+              method: "isEmpty",
               validWhen: false,
-              message: 'Password confirmation is required.'
+              message: "Password confirmation is required."
           }, {
-              field: 'confirmPassword',
+              field: "confirmPassword",
               method: this.passwordMatch,
               validWhen: true,
-              message: 'Confirm password has to be identical to the password.'
+              message: "Confirm password has to be identical to the password."
           }]);
 
       this.handleSubmit = this.handleSubmit.bind(this);
 
       this.state = {
-          email:'',
-          username: '',
-          name:'',
-          surname:'',
-          password:'',
-          confirmPassword: '',
+          email:"",
+          username: "",
+          name:"",
+          surname:"",
+          password:"",
+          confirmPassword: "",
           validation: this.validator.valid(),
-          serverMessage: '',
+          serverMessage: "",
           submitted: false
       };
   }
@@ -131,9 +131,9 @@ class RegisterRestaurantowner extends Component  {
             .pipe(exhaustMap(() => {
                 if (thisTemp.state.validation.isValid) {
                     return ajax({
-                        url: paths['restApi']['registrationRestaurantOwner'],
-                        method: 'POST',
-                        headers: {'Content-Type': 'application/json'},
+                        url: paths["restApi"]["registrationRestaurantOwner"],
+                        method: "POST",
+                        headers: {"Content-Type": "application/json"},
                         body: {
                             username: thisTemp.state.username,
                             name: thisTemp.state.name,
@@ -146,22 +146,6 @@ class RegisterRestaurantowner extends Component  {
                 else {
                     return throwError({ status: 0});
                 }
-            }))
-            //Login directly after SignUp
-            .pipe(exhaustMap((reply) => {
-                thisTemp.props.logIn(reply.response.username);
-                return ajax({
-                    url: paths["restApi"]["login"],
-                    method: "POST",
-                    headers: {"Content-Type": "application/json"},
-                    body: {
-                        username: reply.response.username,
-                        password: thisTemp.state.password,
-                        isRestaurantOwner: true,
-                    }
-                });
-            }), catchError(error => {
-                return throwError(error);
             }))
             .pipe(take(1))
             .subscribe(
@@ -196,7 +180,7 @@ class RegisterRestaurantowner extends Component  {
             this.state.validation;
         return (
         <Modal.Body>
-            <button className="exit" onClick={this.props.onHide}><IconExit /></button>
+            <button className="exit" onClick={this.props.onHide}><IconExit/></button>
             <div className="modal-wrapper ">
                 <Form ref={ (c) => { this.form = c; }} onSubmit={this.handleSubmit}>
                     <h2>Sign up</h2>

@@ -2,8 +2,8 @@
 import React from "react";
 //</editor-fold>
 //<editor-fold desc="Redux">
-import {connect} from 'react-redux'
-import {setModalVisibilityFilterAction} from '../actionCreators/modalVisibilityFilterActionCreators'
+import {connect} from "react-redux"
+import {setModalVisibilityFilterAction} from "../actionCreators/modalVisibilityFilterActionCreators"
 //</editor-fold>
 
 

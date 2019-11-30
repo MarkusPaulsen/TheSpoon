@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 
 export const IconName = () => {
@@ -9,7 +9,7 @@ export const IconName = () => {
             </svg>
         </i>    
     )
-}
+};
 
 
 export const IconLocation = () => {
@@ -20,7 +20,7 @@ export const IconLocation = () => {
             </svg>
         </i>
     )
-}
+};
 
 
 export const IconBirthday = () => {
@@ -31,7 +31,7 @@ export const IconBirthday = () => {
             </svg>
         </i>
     )
-}
+};
 
 
 export const IconEmail = () => {
@@ -42,7 +42,7 @@ export const IconEmail = () => {
             </svg>
         </i>      
     )
-}
+};
 
 
 
@@ -54,7 +54,7 @@ export const IconPassword = () => {
             </svg>
         </i>
     )
-}
+};
 
 
 export const IconExit = () => {
@@ -65,7 +65,7 @@ export const IconExit = () => {
             </svg>
         </i>
     )
-}
+};
 
 export const IconBack = () => {
     return (
@@ -75,7 +75,7 @@ export const IconBack = () => {
             </svg>
         </i>
     )
-}
+};
 
 export const IconEditPink = () => {
     return (
@@ -85,7 +85,7 @@ export const IconEditPink = () => {
             </svg>
         </i>
     )
-}
+};
 
 
 
@@ -97,7 +97,7 @@ export const IconDashboard = () => {
             </svg>
         </i>
     )
-}
+};
 
 export const IconYourRestaurant = () => {
     return (
@@ -107,7 +107,7 @@ export const IconYourRestaurant = () => {
             </svg>
         </i>
     )
-}
+};
 
 
 export const IconNameDark = () => {
@@ -118,7 +118,7 @@ export const IconNameDark = () => {
             </svg>
         </i>
     )
-}
+};
 
 
 export const IconLocationTurqoise = () => {
@@ -129,7 +129,7 @@ export const IconLocationTurqoise = () => {
             </svg>
         </i>
     )
-}
+};
 
 export const IconHoursTurqoise = () => {
     return (
@@ -139,7 +139,7 @@ export const IconHoursTurqoise = () => {
             </svg>
         </i>
     )
-}
+};
 
 
 

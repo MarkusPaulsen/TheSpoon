@@ -14,11 +14,9 @@ import {modalVisibilityFilters} from "../constants/modalVisibiltyFilters";
 import {roles} from "../constants/roles";
 //</editor-fold>
 //<editor-fold desc="Modals">
-import ChooseRoleModal from "../components/authentification/ChooseRoleModal";
 import LogIn from "../components/authentification/LogIn";
 import RegisterRestaurantowner from "../components/authentification/RegisterRestaurantowner";
 import FillRestaurantInfo from "../components/authentification/FillRestaurantInfo"
-import RegisterCustomer from "../components/authentification/RegisterCustomer";
 import EditRestaurantInfoModal from "../components/restaurantPage/EditRestaurantInfoModal";
 import AddMenuModal from "../components/restaurantPage/AddMenuModal";
 import EditMenuModal from "../components/restaurantPage/EditMenuModal";
