@@ -118,14 +118,14 @@ class RegisterRestaurantowner extends Component  {
                     name: values.name,
                     surname: values.surname,
                     password:values.password,
-                    confirmPassword: values.confirmPassword,
-                    serverMessage: ""
+                    confirmPassword: values.confirmPassword
                 });
             }))
             .pipe(exhaustMap(() => {
                 return bindCallback(thisTemp.setState).call(thisTemp, {
                     validation: thisTemp.validator.validate(thisTemp.state),
-                    submitted: true
+                    submitted: true,
+                    serverMessage: ""
                 });
             }))
             .pipe(exhaustMap(() => {
@@ -151,7 +151,7 @@ class RegisterRestaurantowner extends Component  {
             .subscribe(
                 (next) => {
                     thisTemp.props.successLogIn(next.response.token);
-                    this.props.changeToShowRestaurantInformation();
+                    this.props.changeToShowRestaurantInformationModal();
                 }, (error) => {
                     thisTemp.props.failLogIn();
                     switch (error.status) {
@@ -255,7 +255,7 @@ const mapDispatchToProps = (dispatch) => ({
     failLogIn: () => dispatch(failLogIn()),
     successLogIn: (token) => {
         dispatch(successLogIn(token))},
-    changeToShowRestaurantInformation: () => dispatch(setModalVisibilityFilterAction(modalVisibilityFilters.SHOW_RESTAURANT_INFORMATION))
+    changeToShowRestaurantInformationModal: () => dispatch(setModalVisibilityFilterAction(modalVisibilityFilters.SHOW_RESTAURANT_INFORMATION))
 });
 
 export default connect(null, mapDispatchToProps)(RegisterRestaurantowner);

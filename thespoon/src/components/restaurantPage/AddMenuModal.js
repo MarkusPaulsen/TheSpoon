@@ -1,32 +1,54 @@
 //<editor-fold desc="React">
 import React, {Component} from "react";
+import {Redirect} from "react-router";
+//</editor-fold>
+//<editor-fold desc="Redux">
+import {connect} from "react-redux";
+//</editor-fold>
+//<editor-fold desc="RxJs">
+import {bindCallback, of, throwError} from "rxjs";
+import {ajax} from "rxjs/ajax";
+import {take, exhaustMap, map} from "rxjs/operators";
 //</editor-fold>
 //<editor-fold desc="Bootstrap">
 import {Modal} from "react-bootstrap";
 //</editor-fold>
-//<editor-fold desc="RxJs">
-import {ajax} from "rxjs/ajax";
-//</editor-fold>
 //<editor-fold desc="Validator">
-import Form from "react-validation/build/form";
-import Input from "react-validation/build/input";
-import Button from "react-validation/build/button";
 import Textarea from "react-validation/build/textarea";
+import Form from 'react-validation/build/form';
+import Input from 'react-validation/build/input';
+import Button from 'react-validation/build/button';
+import FormValidator from "../../validation/FormValidator";
 //</editor-fold>
 
 //<editor-fold desc="Icons">
 import {IconExit} from "../Icons";
-import {bindCallback, of, throwError} from "rxjs";
-import {exhaustMap, map, take} from "rxjs/operators";
-import {connect} from "react-redux";
 //</editor-fold>
 
 
 class AddMenuModal extends Component {
     //<editor-fold desc="Constructor">
-    constructor(props)
-    {
+    constructor(props) {
         super(props);
+
+        this.validator = new FormValidator([{
+                field: "name",
+                method: "isEmpty",
+                validWhen: false,
+                message: "Menu name is required"
+            },
+            {
+                field: "description",
+                method: "isEmpty",
+                validWhen: false,
+                message: "Description name is required"
+            },
+            {
+                field: "tags",
+                method: "isEmpty",
+                validWhen: false,
+                message: "Tags are required"
+            }]);
 
         this.handleSubmit = this.handleSubmit.bind(this);
 
@@ -34,6 +56,7 @@ class AddMenuModal extends Component {
             name: "",
             description: "",
             tags: "",
+            validation: this.validator.valid(),
             serverMessage: "",
             submitted: false
         };
@@ -54,34 +77,41 @@ class AddMenuModal extends Component {
                 return bindCallback(thisTemp.setState).call(thisTemp, {
                     name: values.name,
                     description: values.description,
-                    tags: values.tags,
-                    serverMessage: null
+                    tags: values.tags.split(","),
                 });
             }))
             .pipe(exhaustMap(() => {
                 return bindCallback(thisTemp.setState).call(thisTemp, {
-                    submitted: true
+                    validation: thisTemp.validator.validate(thisTemp.state),
+                    submitted: true,
+                    serverMessage: ""
                 });
             }))
             .pipe(exhaustMap(() => {
-                if (true) {
+                console.log(thisTemp.state)
+                if (thisTemp.state.validation.isValid) {
+                    thisTemp.setState({serverMessage: "Menu is created"});
                     return ajax({
-                        url: "http://localhost:8080/api/user/owner/restaurant/menu",
+                        url: "/api/user/owner/restaurant/menu",
                         method: "POST",
                         headers: {"Content-Type": "application/json", "X-Auth-Token": this.props.token},
                         body: {
                             name: thisTemp.state.name,
                             description: thisTemp.state.description,
-                            tags: [{"name": thisTemp.state.tags, "color": "#FFFFFF"}]
+                            tags: thisTemp.state.tags
                         }
                     })
                 } else {
+                    thisTemp.setState({serverMessage: ""});
                     return throwError({status: 0});
                 }
             }))
             .pipe(take(1))
             .subscribe(
                 () => {
+                    thisTemp.setState(
+                        {serverMessage: <Redirect to={{pathname: "/Mainpage"}}/>}
+                    );
                     thisTemp.props.onHide();
                 },
                 (error) => {
@@ -93,7 +123,6 @@ class AddMenuModal extends Component {
                             thisTemp.setState({serverMessage: "No connection to the server"});
                             break;
                         case 0:
-                            thisTemp.setState({serverMessage: ""});
                             break;
                         default:
                             thisTemp.setState({serverMessage: "General error"});
@@ -106,6 +135,9 @@ class AddMenuModal extends Component {
 
     //<editor-fold desc="Render">
     render() {
+        let validation = this.state.submitted ?                         // if the form has been submitted at least once
+            this.validator.validate(this.state) :               // then check validity every time we render
+            this.state.validation;
         return (
             <Modal.Body>
                 <button className="exit" onClick={this.props.onHide}><IconExit /></button>
@@ -117,16 +149,24 @@ class AddMenuModal extends Component {
                             <label>Name</label>
                             <Input type="text" name="name" placeholder="Name"/>
                         </div>
+                        <div className="error-block">
+                            <small>{validation.name.message}</small>
+                        </div>
 
                         <div className="input-field">
                             <label>Description</label>
                             <Textarea name="description"/>
                         </div>
-
+                        <div className="error-block">
+                            <small>{validation.description.message}</small>
+                        </div>
 
                         <div className="input-field">
                             <label>Tags</label>
                             <Input type="tags" name="tags" placeholder="Search"/>
+                        </div>
+                        <div className="error-block">
+                            <small>{validation.tags.message}</small>
                         </div>
 
                         <Button type="submit" className="normal">Create</Button>

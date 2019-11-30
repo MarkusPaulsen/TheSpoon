@@ -1,6 +1,6 @@
 import {modalVisibilityFilters} from "../constants/modalVisibiltyFilters";
 
-export const initialStateModalVisabilityFilterReducer = {
+export const initialStateModalVisibilityFilterReducer = {
     modalVisibilityFilter: modalVisibilityFilters.HIDE_ALL,
     users: []
 };
