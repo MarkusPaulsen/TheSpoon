@@ -47,7 +47,7 @@ class Menu extends Component {
                     <div className="col"><hr/></div>
                 </div>
                 <div className="modal-button">
-                    <FilterLink filter={modalVisibilityFilters.SHOW_EDIT_MENU}><IconAddPink/> Add drink</FilterLink>
+                    <FilterLink filter={modalVisibilityFilters.SHOW_ADD_DRINK}><IconAddPink/> Add drink</FilterLink>
                 </div>
             </div>
         );

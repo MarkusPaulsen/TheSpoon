@@ -20,7 +20,7 @@ import {connect} from "react-redux";
 //</editor-fold>
 
 
-class AddDishModal extends Component {
+class AddDrinkModal extends Component {
     //<editor-fold desc="Constructor">
     constructor(props)
     {
@@ -117,12 +117,12 @@ class AddDishModal extends Component {
                     <Form ref={(c) => {this.form = c; }} onSubmit={(e) => this.handleSubmit(e)}>
                         <h2>Add</h2>
                         <div className="account-type">
-                            <h4><span className="role">Dish</span></h4>
+                            <h4><span className="role">Drink</span></h4>
                         </div>
 
                         <div className="input-field">
-                            <label>Dish name</label>
-                            <Input type="text" name="dishName" placeholder="Dish name"/>
+                            <label>Drink name</label>
+                            <Input type="text" name="drinkName" placeholder="Drink name"/>
                         </div>
 
                         <div className="input-field">
@@ -173,5 +173,5 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps, null)(AddDishModal);
+export default connect(mapStateToProps, null)(AddDrinkModal);
 //</editor-fold>
