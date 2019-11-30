@@ -9,7 +9,7 @@ import {modalVisibilityFilters} from "../../constants/modalVisibiltyFilters";
 import FilterLink from "../../containers/FilterModalLink";
 //</editor-fold>
 //<editor-fold desc="Icons">
-import {IconEditPink} from "../Icons";
+import {IconEditPink, IconAddPink} from "../Icons";
 //</editor-fold>
 
 class Menu extends Component {
@@ -21,8 +21,8 @@ class Menu extends Component {
     render() {
         return (
             <div className="menu">
-                <h4 className="title">{this.props.name}</h4>
-                <div className="description">{this.props.description}</div>
+                <h4 className="title">Lunch menu: {this.props.name}</h4>
+                <div className="description">This is a short description of the menu: {this.props.description}</div>
                 <div className="tags">
                     {this.props.tags.map(tag => {
                         return (
@@ -30,7 +30,24 @@ class Menu extends Component {
                         )})}
                 </div>
                 <div className="modal-button">
-                    <FilterLink filter={modalVisibilityFilters.SHOW_EDIT_MENU}><IconEditPink/> Edit informations</FilterLink>
+                    <FilterLink filter={modalVisibilityFilters.SHOW_EDIT_MENU}><IconEditPink/> Edit menu</FilterLink>
+                </div>
+                <div className="row">
+                    <div className="col"><hr/></div>
+                        <div className="categoryTitle">DISHES</div>
+                    <div className="col"><hr/></div>
+                </div>
+                <div className="modal-button">
+                    <FilterLink filter={modalVisibilityFilters.SHOW_EDIT_MENU}><IconAddPink/> Add dish</FilterLink>
+                </div>
+
+                <div className="row">
+                    <div className="col"><hr/></div>
+                    <div className="categoryTitle">DRINKS</div>
+                    <div className="col"><hr/></div>
+                </div>
+                <div className="modal-button">
+                    <FilterLink filter={modalVisibilityFilters.SHOW_EDIT_MENU}><IconAddPink/> Add drink</FilterLink>
                 </div>
             </div>
         );

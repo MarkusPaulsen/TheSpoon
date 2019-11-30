@@ -88,9 +88,11 @@ class YourRestaurant extends Component {
                                 </div>
                                 <div className="col-sm-8">
                                     <h3 className="title">Your menus</h3>
+                                    {/*
                                     <div className="no-menus">
                                         <button className="wide"><FilterLink filter={modalVisibilityFilters.SHOW_ADD_MENU}>Create new menu</FilterLink></button>
                                     </div>
+                                    */}
                                     {
                                         (typeof(this.state.menus) !== "undefined" && this.state.menus.length > 1) ?
                                             this.state.menus.map(menu => {

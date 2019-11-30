@@ -669,6 +669,16 @@ header {
   text-align: center;
   font-size: 0.75rem;
 
+  .categoryTitle {
+    font-weight: 500;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+  .col {
+    align-items: center;
+  }
+
   > * {
     margin-bottom: 1.25rem;
   }
