@@ -75,7 +75,7 @@ export default class LoginScreen extends Component {
     handleUsernameChange = username => {
         this.setState({username: username.trim()});
     };
-    
+
     handlePasswordChange = password => {
         this.setState({password: password.trim()});
     };
