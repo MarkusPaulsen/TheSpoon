@@ -20,6 +20,7 @@ import FillRestaurantInfo from "../components/authentification/FillRestaurantInf
 import EditRestaurantInfoModal from "../components/restaurantPage/EditRestaurantInfoModal";
 import AddMenuModal from "../components/restaurantPage/AddMenuModal";
 import EditMenuModal from "../components/restaurantPage/EditMenuModal";
+import AddDishModal from "../components/restaurantPage/AddDishModal";
 //</editor-fold>
 
 class CustomModal extends Component {
@@ -73,6 +74,12 @@ class CustomModal extends Component {
             case modalVisibilityFilters.SHOW_EDIT_MENU:
                 return (
                     <EditMenuModal
+                        onHide={() => this.props.handleClose()}/>
+                );
+
+            case modalVisibilityFilters.SHOW_ADD_DISH:
+                return (
+                    <AddDishModal
                         onHide={() => this.props.handleClose()}/>
                 );
             default:
