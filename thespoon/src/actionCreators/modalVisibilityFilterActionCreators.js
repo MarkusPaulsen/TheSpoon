@@ -1,8 +1,9 @@
-import * as modalVisibilityFilterActions from "../actions/modalVisibilityFilterActions";
+
+import {SET_MODAL_VISIBILITY_FILTER} from "../actions/modalVisibilityFilterActions";
 
 export const setModalVisibilityFilterAction = (modalVisibilityFilter) => {
   return {
-    type: modalVisibilityFilterActions.SET_MODAL_VISIBILITY_FILTER,
+    type: SET_MODAL_VISIBILITY_FILTER,
     modalVisibilityFilter: modalVisibilityFilter
   };
 };

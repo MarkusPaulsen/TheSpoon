@@ -1,6 +1,6 @@
-import {Localization} from "expo";
+import { Localization } from "expo";
 import i18n from "i18next";
-import {reactI18nextModule} from "react-i18next";
+import { reactI18nextModule } from "react-i18next";
 
 const resources = {
   no: {

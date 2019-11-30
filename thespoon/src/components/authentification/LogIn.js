@@ -16,9 +16,9 @@ import {take, map, exhaustMap} from "rxjs/operators";
 import {Modal} from "react-bootstrap";
 //</editor-fold>
 //<editor-fold desc="Validator">
-import Form from 'react-validation/build/form';
-import Input from 'react-validation/build/input';
-import Button from 'react-validation/build/button';
+import Form from "react-validation/build/form";
+import Input from "react-validation/build/input";
+import Button from "react-validation/build/button";
 import FormValidator from "../../validation/FormValidator";
 //</editor-fold>
 
@@ -29,7 +29,7 @@ import {modalVisibilityFilters} from "../../constants/modalVisibiltyFilters";
 import FilterLink from "../../containers/FilterModalLink";
 //</editor-fold>
 //<editor-fold desc="Icons">
-import {IconExit, IconName, IconEmail, IconPassword} from '../Icons';
+import {IconExit, IconName, IconPassword} from "../Icons";
 //</editor-fold>
 
 
@@ -59,8 +59,8 @@ class LogIn extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
 
     this.state = {
-      username:'',
-      password:'',
+      username:"",
+      password:"",
       validation: this.validator.valid(),
       serverMessage: "",
       submitted: false

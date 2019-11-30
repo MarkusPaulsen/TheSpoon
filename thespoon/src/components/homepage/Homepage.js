@@ -1,6 +1,6 @@
 //<editor-fold desc="React Import">
-import React, {Component} from 'react';
-import {Redirect} from 'react-router-dom';
+import React, {Component} from "react";
+import {Redirect} from "react-router-dom";
 //</editor-fold>
 //<editor-fold desc="Redux import">
 import {connect} from "react-redux";
@@ -13,7 +13,7 @@ import {modalVisibilityFilters} from "../../constants/modalVisibiltyFilters";
 import FilterLink from "../../containers/FilterModalLink";
 //</editor-fold>
 //<editor-fold desc="Layout">
-import Layout from './../layout/Layout.js'
+import Layout from "./../layout/Layout.js"
 //</editor-fold>
 
 
@@ -22,7 +22,7 @@ class Homepage extends Component {
     render() {
         if(typeof this.props.loginStatus != "undefined" && this.props.loginStatus === "logged in"){
             return(
-                <Redirect to={{pathname: '/Mainpage/'}}/>
+                <Redirect to={{pathname: "/Mainpage/"}}/>
             );
         }
         else {

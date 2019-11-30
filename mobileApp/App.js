@@ -1,5 +1,5 @@
-import React, {Component} from "react";
-import {StyleSheet, Text, View} from "react-native";
+import React, { Component } from "react";
+import { StyleSheet, Text, View } from "react-native";
 import LoginScreen from "./components/login/login";
 import SearchPage from "./components/search/search";
 import LandingPage from "./components/landingpage/landingpage";
@@ -45,7 +45,7 @@ export default class App extends Component {
       roboto: require("./assets/fonts/roboto-regular.ttf")
     });
 
-    this.setState({fontLoaded: true });
+    this.setState({ fontLoaded: true });
   }
   render() {
     if (this.state.fontLoaded) {

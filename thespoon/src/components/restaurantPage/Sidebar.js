@@ -1,5 +1,5 @@
 //<editor-fold desc="React">
-import React, {Component} from 'react';
+import React, {Component} from "react";
 //</editor-fold>
 
 //<editor-fold desc="Constants">
@@ -9,7 +9,7 @@ import {modalVisibilityFilters} from "../../constants/modalVisibiltyFilters";
 import FilterLink from "../../containers/FilterModalLink";
 //</editor-fold>
 //<editor-fold desc="Icons">
-import {IconLocationTurqoise, IconHoursTurqoise, IconEditPink} from '../Icons.js';
+import {IconLocationTurqoise, IconHoursTurqoise, IconEditPink} from "../Icons.js";
 //</editor-fold>
 
 class Sidebar extends Component {
