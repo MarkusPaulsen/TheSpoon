@@ -1,5 +1,5 @@
 //<editor-fold desc="React">
-import React, { Component } from "react";
+import React, {Component} from "react";
 //</editor-fold>
 //<editor-fold desc="Redux import">
 import { connect } from "react-redux";

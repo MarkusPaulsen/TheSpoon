@@ -65,7 +65,7 @@ class AddMenuModal extends Component {
     //</editor-fold>
 
     //<editor-fold desc="Bussiness Logic">
-    handleSubmit = event => {
+    handleSubmit = (event) => {
         event.preventDefault();
 
         const thisTemp = this;

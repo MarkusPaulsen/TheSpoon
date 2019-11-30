@@ -12,8 +12,8 @@ import {ajax} from "rxjs/ajax";
 import {take, exhaustMap} from "rxjs/operators";
 //</editor-fold>
 //<editor-fold desc="Validator">
-import Form from 'react-validation/build/form';
-import Button from 'react-validation/build/button';
+import Form from "react-validation/build/form";
+import Button from "react-validation/build/button";
 //</editor-fold>
 
 //<editor-fold desc="Constants">
