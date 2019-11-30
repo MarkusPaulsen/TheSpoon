@@ -1,13 +1,15 @@
-import React, { Component } from 'react';
-import { ajax } from 'rxjs/ajax';
-import paths from '../../constants/paths';
-import {IconName, IconEmail, IconPassword, IconExit, IconBack} from '../Icons';
+//TO REMOVE
+import React, {Component} from "react";
+import {Redirect} from "react-router-dom"
+import {ajax} from "rxjs/ajax";
+import {paths} from "../../constants/paths";
+import {IconName, IconEmail, IconPassword, IconExit, IconBack} from "../Icons";
 import {Modal} from "react-bootstrap";
 import FilterLink from "../../containers/FilterModalLink";
-import {authentificationModalVisibilityFilters} from "../../constants/authentificationModalVisibiltyFilters";
-import Form from 'react-validation/build/form';
-import Input from 'react-validation/build/input';
-import Button from 'react-validation/build/button';
+import {modalVisibilityFilters} from "../../constants/modalVisibiltyFilters";
+import Form from "react-validation/build/form";
+import Input from "react-validation/build/input";
+import Button from "react-validation/build/button";
 import FormValidator from "../../validation/FormValidator";
 
 
@@ -18,50 +20,51 @@ class RegisterCustomer extends Component  {
 
       this.validator = new FormValidator([
       {
-          field: 'email',
-          method: 'isEmpty',
+          field: "email",
+          method: "isEmpty",
           validWhen: false,
-          message: 'E-mail is required.'
+          message: "E-mail is required."
       },
       {
-          field: 'email',
-          method: 'isEmail',
+          field: "email",
+          method: "isEmail",
           validWhen: true,
-          message: 'That is not a valid email.'
+          message: "That is not a valid email."
       },
       {
-          field: 'username',
-          method: 'isEmpty',
+          field: "username",
+          method: "isEmpty",
           validWhen: false,
-          message: 'Username is required.'
+          message: "Username is required."
       },
       {
-          field: 'password',
-          method: 'isEmpty',
+          field: "password",
+          method: "isEmpty",
           validWhen: false,
-          message: 'Password is required.'
+          message: "Password is required."
       },
       {
-          field: 'confirmPassword',
-          method: 'isEmpty',
+          field: "confirmPassword",
+          method: "isEmpty",
           validWhen: false,
-          message: 'Password confirmation is required.'
+          message: "Password confirmation is required."
       },
       {
-          field: 'confirmPassword',
+          field: "confirmPassword",
           method: this.passwordMatch,
           validWhen: true,
-          message: 'Confirm password has to be identical to the password.'
+          message: "Confirm password has to be identical to the password."
       }
   ]);
 
       this.state = {
-          email:'',
-          username: '',
-          password:'',
-          confirmPassword: '',
+          email:"",
+          username: "",
+          password:"",
+          confirmPassword: "",
           validation: this.validator.valid(),
-      }
+          serverMessage: ""
+      };
 
       this.submitted = false;
       this.handleSubmit = this.handleSubmit.bind(this);
@@ -71,6 +74,7 @@ class RegisterCustomer extends Component  {
 
     handleSubmit = event => {
         event.preventDefault();
+        const thisTemp = this;
         const values = this.form.getValues();
 
         this.setState({
@@ -78,52 +82,61 @@ class RegisterCustomer extends Component  {
             username: values.username,
             password:values.password,
             confirmPassword: values.confirmPassword
-        }, () => { //because setstate is asynchronus, further action must be taken on callback
+        }, () => {//because setstate is asynchronus, further action must be taken on callback
 
                 const validation = this.validator.validate(this.state);
-                this.setState({ validation });
+                this.setState({validation });
                 this.submitted = true;
 
                 if (validation.isValid) {
+                    thisTemp.setState({serverMessage: "Sign up is processing"});
                     let thisTemp = this;
                     ajax({
-                        url: paths['restApi']['registrationCustomer'],
-                        method: 'POST',
-                        headers: {'Content-Type': 'application/json'},
+                        url: paths["restApi"]["registrationCustomer"],
+                        method: "POST",
+                        headers: {"Content-Type": "application/json"},
                         body: {
                             email: this.state.email,
                             password:this.state.password,
                             username:this.state.username
                         }
                     }).subscribe(
-                        function (next) {
-                            console.log("Ajax step");
+                        () => {
+                            thisTemp.setState({serverMessage: "Login is processing..." });
                         },
-                        function (error) {
-                            alert("An error happened!");
+                        (error) => {
+                            switch (error.status) {
+                                case 400:
+                                    thisTemp.setState({serverMessage: "Username or email already taken" });
+                                    break;
+                                case 404:
+                                    thisTemp.setState({serverMessage: "No connection to the server" });
+                                    break;
+                                default:
+                                    thisTemp.setState({serverMessage: "General error" });
+                                    break;
+                            }
                         },
-                        function (complete) {
-                            console.log("you passed our validation");
+                        () => {
+                            thisTemp.setState({serverMessage: <Redirect to={{pathname: "/Mainpage/"}}/>});
                             thisTemp.props.onHide();
                         }
                     );
-                    console.log("you passed our validation");
-                    this.props.onHide();
                 }
             }
             );
-    }
+    };
 
     render() {
         let validation = this.submitted ?                         // if the form has been submitted at least once
             this.validator.validate(this.state) :               // then check validity every time we render
-            this.state.validation
+            this.state.validation;
         return (
         <Modal.Body>
-            <span className="back"> <FilterLink filter={authentificationModalVisibilityFilters.SHOW_CHOOSE_ROLE}><IconBack /></FilterLink></span>
+            <span className="back"> <FilterLink filter={modalVisibilityFilters.SHOW_CHOOSE_ROLE}><IconBack /></FilterLink></span>
             <button className="exit" onClick={this.props.onHide}><IconExit /></button>
-            <div className="sign-up">
-                <Form ref={ (c) => { this.form = c; }} onSubmit={(e) => this.handleSubmit(e)}>
+            <div className="modal-wrapper ">
+                <Form ref={(c) => {this.form = c; }} onSubmit={(e) => this.handleSubmit(e)}>
                     <h2>Sign up</h2>
                     <div className="account-type">
                         <h4>as a <span className="role">{this.props.role}</span></h4>
@@ -154,13 +167,14 @@ class RegisterCustomer extends Component  {
                         <small>{validation.username.message}</small>
                         <small>{validation.password.message}</small>
                         <small>{validation.confirmPassword.message}</small>
+                        <small>{this.state.serverMessage}</small>
                     </div>
 
                   <Button type="submit" className="normal" >Sign up</Button>
                 </Form>
-                <label className="link-wrapper">
-                    <small>Already have an account? <FilterLink filter={authentificationModalVisibilityFilters.SHOW_LOGIN}>Log in</FilterLink></small>
-                </label>
+                <div className="link-wrapper">
+                    <small>Already have an account? <FilterLink filter={modalVisibilityFilters.SHOW_LOGIN}>Log in</FilterLink></small>
+                </div>
             </div>
         </Modal.Body>
     );

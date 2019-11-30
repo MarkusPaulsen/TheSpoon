@@ -1,26 +1,34 @@
-import { connect } from 'react-redux'
-import { setAuthentificatonModalVisibilityFilterAction } from '../actions/authentificationModalAction'
+//<editor-fold desc="React">
 import React from "react";
+//</editor-fold>
+//<editor-fold desc="Redux">
+import {connect} from "react-redux"
+import {setModalVisibilityFilterAction} from "../actionCreators/modalVisibilityFilterActionCreators"
+//</editor-fold>
 
 
-const mapStateToProps = (state, ownProps) => ({
-    active: ownProps.filter === state.authentificationModalVisibilityFilter
-})
+//<editor-fold desc="Business Logic">
+const FilterModalLink = ({children, onClick}) => {
+    return (
+        <span onClick={onClick} >
+            {children}
+        </span>
+    );
+};
+//</editor-fold>
 
-const mapDispatchToProps = (dispatch, ownProps) => ({
-    onClick: () => dispatch(setAuthentificatonModalVisibilityFilterAction(ownProps.filter))
-})
+//<editor-fold desc="Redux">
+const mapStateToProps = (state, ownProps) => {
+    return {
+        active: ownProps.filter === state.modalVisibilityFilter
+    };
+};
 
-const FilterModalLink = ({ active, children, onClick }) => (
-    <span
-        onClick={onClick}
-    >
-        {children}
-    </span>
-)
+const mapDispatchToProps = (dispatch, ownProps) => {
+    return {
+        onClick: () => dispatch(setModalVisibilityFilterAction(ownProps.filter))
+    };
+};
 
-
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(FilterModalLink)
+export default connect(mapStateToProps, mapDispatchToProps)(FilterModalLink)
+//</editor-fold>

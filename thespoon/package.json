@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "engines": {
-    "node": "12.13.0",
+    "node": "10.17.0",
     "npm": "6.12.0"
   },
   "dependencies": {
@@ -13,10 +13,13 @@
     "react-bootstrap": "^1.0.0-beta.14",
     "react-dom": "^16.11.0",
     "react-redux": "^7.1.3",
+    "react-router": "^5.1.2",
     "react-router-dom": "^5.1.2",
     "react-scripts": "3.2.0",
+    "react-select": "^3.0.8",
     "react-validation": "^3.0.7",
     "redux": "latest",
+    "rx-jquery": "^1.1.7",
     "rxjs": "latest",
     "rxjs-compat": "^6.5.3",
     "validator": "^12.0.0"

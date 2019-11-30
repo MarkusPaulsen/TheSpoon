@@ -1,4 +1,4 @@
-const express = require('express');
+let express = require('express');
 const bodyParser = require('body-parser');
 const db = require('./sequelizeSettings');
 
@@ -54,7 +54,9 @@ app.use(bodyParser.json());
 
 const path = require("path");
 
-app.use(express.static(path.join(__dirname, "thespoon", "build")));
+//app.use(express.static(path.join(__dirname, "thespoon", "build")));
+
+app.use(express.static('./thespoon/build'));
 
 /*
 app.get("*", (req, res) => {

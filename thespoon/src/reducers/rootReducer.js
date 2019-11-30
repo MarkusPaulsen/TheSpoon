@@ -1,10 +1,12 @@
-import { combineReducers } from 'redux';
-import authentificationModalVisibiltyFilterReducer from "./authentificationModalVisibilityFilterReducer";
-import logInRegisterReducer from "./loginRegisterReducer";
+import {combineReducers} from "redux";
+import modalVisibiltyFilterReducer from "./modalVisibilityFilterReducer";
+import logInReducer from "./loginReducer";
+import restaurantReducer from "./restaurantReducer";
 
 const rootReducer = combineReducers({
-    authentificationModalVisibilityFilter: authentificationModalVisibiltyFilterReducer,
-    logInRegisterReducer: logInRegisterReducer
+    modalVisibilityFilter: modalVisibiltyFilterReducer,
+    logInReducer: logInReducer,
+    restaurantReducer: restaurantReducer
 });
 
 export default rootReducer;
