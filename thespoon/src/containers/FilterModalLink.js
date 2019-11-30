@@ -4,7 +4,7 @@ import React from "react";
 //<editor-fold desc="Redux">
 import { connect } from "react-redux";
 import { setModalVisibilityFilterAction } from "../actionCreators/modalVisibilityFilterActionCreators";
-import { setCurrentMenuId } from "../actionCreators/CurrentMenuIdActionCreators";
+import { setCurrentMenu } from "../actionCreators/CurrentMenuActionCreators";
 //</editor-fold>
 
 //<editor-fold desc="Business Logic">
@@ -22,8 +22,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
   return {
     onClick: () => {
       dispatch(setModalVisibilityFilterAction(ownProps.filter));
-      ownProps.currentMenuId &&
-        dispatch(setCurrentMenuId(ownProps.currentMenuId));
+      ownProps.currentMenu &&
+        dispatch(setCurrentMenu(ownProps.currentMenu));
     }
   };
 };

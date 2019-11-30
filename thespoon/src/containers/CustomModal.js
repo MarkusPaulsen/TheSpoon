@@ -22,14 +22,14 @@ import RegisterCustomer from "../components/authentification/RegisterCustomer";
 import EditRestaurantInfoModal from "../components/restaurantPage/EditRestaurantInfoModal";
 import AddMenuModal from "../components/restaurantPage/AddMenuModal";
 import EditMenuModal from "../components/restaurantPage/EditMenuModal";
-import {setCurrentMenuId} from "../actionCreators/CurrentMenuIdActionCreators";
+import {setCurrentMenu} from "../actionCreators/CurrentMenuActionCreators";
 import modalVisibiltyFilterReducer from "../reducers/modalVisibilityFilterReducer";
 //</editor-fold>
 
 class CustomModal extends Component {
 
     //<editor-fold desc="Business Logic">
-    getVisibleModal = (filter, itemId) => {
+    getVisibleModal = (filter, item) => {
         switch (filter) {
             case modalVisibilityFilters.SHOW_LOGIN:
                 return (
@@ -78,7 +78,7 @@ class CustomModal extends Component {
                 return (
                     <EditMenuModal
                         onHide={() => this.props.handleClose()}
-                        menuID={ itemId }/>
+                        menu={ item }/>
                 );
             default:
                 return null;
@@ -88,12 +88,10 @@ class CustomModal extends Component {
 
     //<editor-fold desc="Render">
     render() {
-        console.log("FilterModalLink");
-        console.log(this.props);
         if(this.props.modalVisibilityFilter !== modalVisibilityFilters.HIDE_ALL) {
             return(
                 <Modal show={true} onHide={() => this.props.handleClose()} centered>
-                    {this.getVisibleModal(this.props.modalVisibilityFilter, this.props.currentMenuId)}
+                    {this.getVisibleModal(this.props.modalVisibilityFilter, this.props.currentMenu)}
                 </Modal>
             );
         }
@@ -108,7 +106,7 @@ class CustomModal extends Component {
 const mapStateToProps = (state) => {
     return {
         modalVisibilityFilter: state.modalVisibiltyFilterReducer.modalVisibilityFilter,
-        currentMenuId: state.modalVisibiltyFilterReducer.currentMenuId
+        currentMenu: state.currentMenuReducer.currentMenu
     }
 };
 
@@ -116,7 +114,7 @@ const mapDispatchToProps = (dispatch) => {
     return {
         handleClose: () => {
             dispatch(setModalVisibilityFilterAction(modalVisibilityFilters.HIDE_ALL))
-            dispatch(setCurrentMenuId(null))
+            dispatch(setCurrentMenu(null))
         }
     }
 };

@@ -35,7 +35,7 @@ class Menu extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
 
         this.state = {
-            serverMessage: "ASDF"
+            serverMessage: ""
         };
     }
 
@@ -87,7 +87,7 @@ class Menu extends Component {
     render() {
         return (
             <div className="menu">
-                <h4 className="title">{this.props.name} {this.props.id}</h4>
+                <h4 className="title">{this.props.name}</h4>
                 <div className="description">{this.props.description}</div>
                 <div className="tags">
                     {this.props.tags.map(tag => {
@@ -99,7 +99,7 @@ class Menu extends Component {
                     })}
                 </div>
                 <div className="modal-button">
-                    <FilterLink filter={modalVisibilityFilters.SHOW_EDIT_MENU} currentMenuId={this.props.id}>
+                    <FilterLink filter={modalVisibilityFilters.SHOW_EDIT_MENU} currentMenu={this.props}>
                         <IconEditPink/> Edit informations
                     </FilterLink>
                     <Form ref={(c) => {this.form = c; }} onSubmit={this.handleSubmit}>

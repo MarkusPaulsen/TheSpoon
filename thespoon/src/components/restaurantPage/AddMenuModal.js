@@ -88,6 +88,7 @@ class AddMenuModal extends Component {
                 });
             }))
             .pipe(exhaustMap(() => {
+                console.log(thisTemp.state)
                 if (thisTemp.state.validation.isValid) {
                     thisTemp.setState({serverMessage: "Menu is created"});
                     return ajax({

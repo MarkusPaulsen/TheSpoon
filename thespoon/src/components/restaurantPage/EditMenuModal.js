@@ -18,6 +18,7 @@ import Textarea from "react-validation/build/textarea";
 import Form from 'react-validation/build/form';
 import Input from 'react-validation/build/input';
 import Button from 'react-validation/build/button';
+import FormValidator from "../../validation/FormValidator";
 //</editor-fold>
 
 //<editor-fold desc="Icons">
@@ -27,9 +28,27 @@ import {IconExit} from "../Icons";
 
 class EditMenuModal extends Component {
     //<editor-fold desc="Constructor">
-    constructor(props)
-    {
+    constructor(props) {
         super(props);
+
+        this.validator = new FormValidator([{
+            field: "name",
+            method: "isEmpty",
+            validWhen: false,
+            message: "Menu name is required"
+        },
+            {
+                field: "description",
+                method: "isEmpty",
+                validWhen: false,
+                message: "Description name is required"
+            },
+            {
+                field: "tags",
+                method: "isEmpty",
+                validWhen: false,
+                message: "Tags are required"
+            }]);
 
         this.handleSubmit = this.handleSubmit.bind(this);
 
@@ -37,6 +56,7 @@ class EditMenuModal extends Component {
             name: "",
             description: "",
             tags: "",
+            validation: this.validator.valid(),
             serverMessage: "",
             submitted: false
         };
@@ -45,7 +65,7 @@ class EditMenuModal extends Component {
     //</editor-fold>
 
     //<editor-fold desc="Bussiness Logic">
-    handleSubmit = (event) => {
+    handleSubmit = event => {
         event.preventDefault();
 
         const thisTemp = this;
@@ -57,22 +77,23 @@ class EditMenuModal extends Component {
                 return bindCallback(thisTemp.setState).call(thisTemp, {
                     name: values.name,
                     description: values.description,
-                    tags: values.tags.split(",")
+                    tags: values.tags.split(","),
                 });
             }))
             .pipe(exhaustMap(() => {
                 return bindCallback(thisTemp.setState).call(thisTemp, {
+                    validation: thisTemp.validator.validate(thisTemp.state),
                     submitted: true,
                     serverMessage: ""
                 });
             }))
             .pipe(exhaustMap(() => {
-                if (true) {
+                if (thisTemp.state.validation.isValid) {
                     thisTemp.setState({serverMessage: "Menu is edited"});
                     return ajax({
-                        url: "/api/user/owner/restaurant/menu/${this.props.menuID}",
+                        url: `/api/user/owner/restaurant/menu/${this.props.menu.id}`,
                         method: "PUT",
-                        headers: {"Content-Type": "application/json", 'X-Auth-Token': this.props.token},
+                        headers: {"Content-Type": "application/json", "X-Auth-Token": this.props.token},
                         body: {
                             name: thisTemp.state.name,
                             description: thisTemp.state.description,
@@ -87,6 +108,9 @@ class EditMenuModal extends Component {
             .pipe(take(1))
             .subscribe(
                 () => {
+                    thisTemp.setState(
+                        {serverMessage: <Redirect to={{pathname: "/Mainpage"}}/>}
+                    );
                     thisTemp.props.onHide();
                 },
                 (error) => {
@@ -107,35 +131,53 @@ class EditMenuModal extends Component {
             );
     };
     //</editor-fold>
+
     //<editor-fold desc="Render">
     render() {
+        let validation = this.state.submitted ?                         // if the form has been submitted at least once
+            this.validator.validate(this.state) :               // then check validity every time we render
+            this.state.validation;
+
+        let tagsString = "";
+        this.props.menu.tags.map(tag => {
+            tagsString += tag.name + ", ";
+        })
+        tagsString = tagsString.slice(0, -2);
         return (
             <Modal.Body>
                 <button className="exit" onClick={this.props.onHide}><IconExit /></button>
                 <div className="modal-wrapper add-menu">
                     <Form ref={(c) => {this.form = c; }} onSubmit={(e) => this.handleSubmit(e)}>
-                        <h2>Edit</h2>
-                        <div className="account-type">
-                            <h4><span className="role">Menu</span></h4>
-                        </div>
+                        <h2 className="title">Edit menu</h2>
 
                         <div className="input-field">
-                            <label>Menu Name</label>
-                            <Input type="text" name="restaurantName" placeholder="Restaurant name"/>
+                            <label>Name</label>
+                            <Input type="text" name="name" value={this.props.menu.name}/>
+                        </div>
+                        <div className="error-block">
+                            <small>{validation.name.message}</small>
                         </div>
 
                         <div className="input-field">
                             <label>Description</label>
-                            <Textarea name="description"/>
+                            <Textarea name="description" value={this.props.menu.description}/>
                         </div>
-
+                        <div className="error-block">
+                            <small>{validation.description.message}</small>
+                        </div>
 
                         <div className="input-field">
                             <label>Tags</label>
-                            <Input type="tags" name="tags" placeholder="Search"/>
+                            <Input type="tags" name="tags" value={tagsString}/>
+                        </div>
+                        <div className="error-block">
+                            <small>{validation.tags.message}</small>
                         </div>
 
                         <Button type="submit" className="normal">Save</Button>
+                        <div className="error-block">
+                            <small>{this.state.serverMessage}</small>
+                        </div>
                     </Form>
                 </div>
             </Modal.Body>
