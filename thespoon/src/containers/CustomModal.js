@@ -35,6 +35,7 @@ class CustomModal extends Component {
                 return (
                     <LogIn onHide={() => this.props.handleClose()} />
                 );
+
             case modalVisibilityFilters.SHOW_LOGOUT:
                 return (
                     <LogOut onHide={() => this.props.handleClose()} />
@@ -59,15 +60,6 @@ class CustomModal extends Component {
                         onHide={() => this.props.handleClose()}
                         />
                 );
-
-                /*TO REMOVE
-            case modalVisibilityFilters.SHOW_REGISTER_CUSTOMER:
-                return (
-                    <RegisterCustomer
-                        role={roles.CUSTOMER}
-                        onHide={() => this.props.handleClose()}/>
-                );*/
-
             case modalVisibilityFilters.SHOW_EDIT_RESTAURANT_INFORMATION:
                 return (
                     <EditRestaurantInfoModal
