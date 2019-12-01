@@ -125,6 +125,17 @@ button {
     width: 8.333333333333334rem;
   }
 
+  &.delete-button {
+    width: 8.333333333333334rem;
+    background: var(--white);
+    color: black;
+    text-transform: none;
+    text-decoration: underline;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+  }
+
   &.wide {
     width: 12.708333333333334rem;
   }

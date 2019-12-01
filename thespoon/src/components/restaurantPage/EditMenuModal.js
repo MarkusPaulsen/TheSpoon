@@ -176,6 +176,7 @@ class EditMenuModal extends Component {
                         </div>
 
                         <Button type="submit" className="normal">Save</Button>
+                        <Button type="submit" className="delete-button">Delete Menu</Button>
                         <div className="error-block">
                             <small>{this.state.serverMessage}</small>
                         </div>

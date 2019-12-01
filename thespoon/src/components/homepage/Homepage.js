@@ -34,7 +34,7 @@ class Homepage extends Component {
                                 <div className="row">
                                     <div className="col-sm-8">
                                         <h1 className="title">Share your menus</h1>
-                                        <button className="normal"><FilterLink filter={modalVisibilityFilters.SHOW_CHOOSE_ROLE}>Get started</FilterLink></button>
+                                        <button className="normal"><FilterLink filter={modalVisibilityFilters.SHOW_REGISTER_RESTAURANT_OWNER}>Get started</FilterLink></button>
                                     </div>
                                 </div>
                             </div>

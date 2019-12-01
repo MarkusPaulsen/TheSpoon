@@ -209,7 +209,7 @@ class EditDishModal extends Component {
                         </div>
 
                         <Button type="submit" className="normal">Save</Button>
-                        <Button type="submit" className="normal">Delete Dish</Button>
+                        <Button type="submit" className="delete-button">Delete Dish</Button>
                         <div className="error-block">
                             <small>{this.state.serverMessage}</small>
                         </div>
