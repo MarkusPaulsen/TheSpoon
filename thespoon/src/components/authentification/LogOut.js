@@ -15,7 +15,9 @@ class LogOut extends Component {
         event.preventDefault();
         this.props.logOut();
         this.props.onHide();
-        return <Redirect to={{pathname: "/"}}/>
+        return(
+            <Redirect to={{pathname: "/"}}/>
+        );
 
     }
 
