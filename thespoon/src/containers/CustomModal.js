@@ -15,15 +15,15 @@ import {roles} from "../constants/roles";
 //</editor-fold>
 //<editor-fold desc="Modals">
 import LogIn from "../components/authentification/LogIn";
+import LogOut from "../components/authentification/LogOut";
 import RegisterRestaurantowner from "../components/authentification/RegisterRestaurantowner";
 import FillRestaurantInfo from "../components/authentification/FillRestaurantInfo"
 import EditRestaurantInfoModal from "../components/restaurantPage/EditRestaurantInfoModal";
 import AddMenuModal from "../components/restaurantPage/AddMenuModal";
-import EditMenuModal from "../components/restaurantPage/EditMenuModal";x``
+import EditMenuModal from "../components/restaurantPage/EditMenuModal";
 import AddDishModal from "../components/restaurantPage/AddDishModal";
 import AddDrinkModal from "../components/restaurantPage/AddDrinkModal";
 import {setCurrentMenu} from "../actionCreators/CurrentMenuActionCreators";
-import modalVisibiltyFilterReducer from "../reducers/modalVisibilityFilterReducer";
 //</editor-fold>
 
 class CustomModal extends Component {
@@ -34,6 +34,10 @@ class CustomModal extends Component {
             case modalVisibilityFilters.SHOW_LOGIN:
                 return (
                     <LogIn onHide={() => this.props.handleClose()} />
+                );
+            case modalVisibilityFilters.SHOW_LOGOUT:
+                return (
+                    <LogOut onHide={() => this.props.handleClose()} />
                 );
 
                 /*TO REMOVE

@@ -518,6 +518,13 @@ header {
       }
     }
 
+    &.logout {
+      label {
+        text-align: center;
+        color: var(--grey);
+      }
+    }
+
     &.add-menu {
       .input-field {
         margin-bottom: 1.25rem;
