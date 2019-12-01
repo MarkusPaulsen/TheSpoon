@@ -19,7 +19,7 @@ import RegisterRestaurantowner from "../components/authentification/RegisterRest
 import FillRestaurantInfo from "../components/authentification/FillRestaurantInfo"
 import EditRestaurantInfoModal from "../components/restaurantPage/EditRestaurantInfoModal";
 import AddMenuModal from "../components/restaurantPage/AddMenuModal";
-import EditMenuModal from "../components/restaurantPage/EditMenuModal";x``
+import EditMenuModal from "../components/restaurantPage/EditMenuModal";
 import AddDishModal from "../components/restaurantPage/AddDishModal";
 import AddDrinkModal from "../components/restaurantPage/AddDrinkModal";
 import {setCurrentMenu} from "../actionCreators/CurrentMenuActionCreators";
@@ -35,13 +35,6 @@ class CustomModal extends Component {
                 return (
                     <LogIn onHide={() => this.props.handleClose()} />
                 );
-
-                /*TO REMOVE
-            case modalVisibilityFilters.SHOW_CHOOSE_ROLE:
-                return (
-                    <ChooseRoleModal onHide={() => this.props.handleClose()} />
-                );*/
-
             case modalVisibilityFilters.SHOW_REGISTER_RESTAURANT_OWNER:
                 return (
                     <RegisterRestaurantowner
@@ -55,15 +48,6 @@ class CustomModal extends Component {
                         onHide={() => this.props.handleClose()}
                         />
                 );
-
-                /*TO REMOVE
-            case modalVisibilityFilters.SHOW_REGISTER_CUSTOMER:
-                return (
-                    <RegisterCustomer
-                        role={roles.CUSTOMER}
-                        onHide={() => this.props.handleClose()}/>
-                );*/
-
             case modalVisibilityFilters.SHOW_EDIT_RESTAURANT_INFORMATION:
                 return (
                     <EditRestaurantInfoModal
