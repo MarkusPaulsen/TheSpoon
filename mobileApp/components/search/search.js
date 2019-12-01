@@ -80,13 +80,13 @@ export default class Search extends Component {
   async validateSearch() {
     Keyboard.dismiss();
     const searchError = Validate("search", this.state.searchWord);
-    this.setState({ searched: true });
 
     if (!searchError) {
       await this.getResults();
     } else {
       this.setState({ searchError, searchResults: null });
     }
+    this.setState({ searched: true });
   }
   async getResults() {
     try {
@@ -102,7 +102,7 @@ export default class Search extends Component {
       const responseJson = await response.json();
       if (response.ok) {
         const searchResults = responseJson.map(index => ({
-          menuId: index.menu.menuID.toString(),
+          id: index.menu.menuID.toString(),
           menuName: index.menu.name,
           restaurantName: index.restaurantData.restaurantName,
           tags: this.getTagsInfo(index),
@@ -178,13 +178,13 @@ export default class Search extends Component {
                     <TouchableOpacity
                       onPress={() => {
                         this.props.navigation.navigate("Menu", {
-                          menuId: item.menuId,
+                          menuId: item.id,
                           restaurantName: item.restaurantName
                         });
                       }}
                     >
                       <ResultItem
-                        menuId={item.menuId}
+                        id={item.id}
                         menuName={item.menuName}
                         restaurantName={item.restaurantName}
                         tags={item.tags}
@@ -192,7 +192,7 @@ export default class Search extends Component {
                       />
                     </TouchableOpacity>
                   )}
-                  keyExtractor={item => item.menuId}
+                  keyExtractor={(item, index) => {return item.id}}
                 />
               </SafeAreaView>
             ) : null}
