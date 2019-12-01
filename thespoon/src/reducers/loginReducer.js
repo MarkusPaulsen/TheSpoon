@@ -19,6 +19,8 @@ const loginReducer = (state = initialStateLoginReducer, action) => {
             });
         case LOGGING_OUT:
             return Object.assign({}, state, {
+                username: action.username,
+                token: action.token,
                 loginStatus: "not logged in"
             });
         default:

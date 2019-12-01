@@ -1,17 +1,22 @@
 import React, {Component} from "react";
 import {Redirect} from "react-router-dom"
 import {Modal} from "react-bootstrap";
-import {IconExit, IconName, IconPassword} from "../Icons";
-import Form from "react-validation/build/form";
-import Input from "react-validation/build/input";
-import Button from "react-validation/build/button";
-import FilterLink from "../../containers/FilterModalLink";
-import {modalVisibilityFilters} from "../../constants/modalVisibiltyFilters";
+import {IconExit} from "../Icons";
+import {logOut} from "../../actionCreators/logInActionCreators";
+import {connect} from "react-redux";
+import {bindCallback, of, throwError} from "rxjs";
+import {exhaustMap, map, take} from "rxjs/operators";
+import {ajax} from "rxjs/ajax";
+import {paths} from "../../constants/paths";
 
 class LogOut extends Component {
 
     handleLogOut = (event) => {
         event.preventDefault();
+        this.props.logOut();
+        this.props.onHide();
+        return <Redirect to={{pathname: "/"}}/>
+
     }
 
     render() {
@@ -35,4 +40,10 @@ class LogOut extends Component {
     }
 }
 
-export default LogOut;
+const mapDispatchToProps = (dispatch) => {
+    return {
+        logOut: () => dispatch(logOut())
+    };
+};
+
+export default connect(null, mapDispatchToProps)(LogOut)
