@@ -29,7 +29,7 @@ import {IconEditPink, IconAddPink} from "../Icons";
 //</editor-fold>
 //<editor-fold desc="Components">
 import Sidebar from "./Sidebar";
-import FoodItem from "./FoodItem";
+import DishItem from "./DishItem";
 //</editor-fold>
 
 
@@ -115,8 +115,8 @@ class Menu extends Component {
                 </div>
 
                 {/*Item*/}
-                <FoodItem />
-                <FoodItem />
+                <DishItem />
+                <DishItem />
 
                 <div className="modal-button">
                     <FilterLink filter={modalVisibilityFilters.SHOW_ADD_DISH}><IconAddPink/> Add dish</FilterLink>
@@ -129,8 +129,8 @@ class Menu extends Component {
                 </div>
 
                 {/*Item*/}
-                <FoodItem />
-                <FoodItem />
+                <DishItem />
+                <DishItem />
 
                 <div className="modal-button">
                     <FilterLink filter={modalVisibilityFilters.SHOW_ADD_DRINK}><IconAddPink/> Add drink</FilterLink>

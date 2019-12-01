@@ -796,10 +796,13 @@ header {
     margin-top: 1rem;
     font-weight: 500;
   }
-  .editIcon {
+  .edit-button {
     position: relative;
     top: -0.25rem;
     right: -0.25rem;
+    &:hover {
+      cursor: pointer;
+    }
   }
 
 }

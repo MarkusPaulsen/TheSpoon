@@ -6,13 +6,16 @@ import {paths} from "../../constants/paths";
 import {connect} from "react-redux";
 //</editor-fold>
 
+
 //</editor-fold>
 //<editor-fold desc="Icons">
-import {IconEditGrey} from "../Icons";
+import {IconAddPink, IconEditGrey} from "../Icons";
+import FilterLink from "../../containers/FilterModalLink";
+import {modalVisibilityFilters} from "../../constants/modalVisibiltyFilters";
 //</editor-fold>
 
 
-class FoodItem extends Component {
+class DishItem extends Component {
     constructor(props){
         super(props);
     }
@@ -29,12 +32,12 @@ class FoodItem extends Component {
                     <div className="tags">tag1</div>
                 </div>
                 <div className="price">9€</div>
-                <div className="editIcon">
-                    <IconEditGrey/>
+                <div className="edit-button">
+                    <FilterLink filter={modalVisibilityFilters.SHOW_EDIT_DISH}><IconEditGrey/></FilterLink>
                 </div>
             </div>
         )
     }
 }
 
-export default FoodItem;
+export default DishItem;
