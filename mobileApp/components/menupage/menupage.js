@@ -19,6 +19,7 @@ function Rating(score) {
   for (let i = 0; i < 4; i++) {
     stars.push(
       <Image
+          key={i.toString()}
         source={require("../../assets/icon-star.png")}
         style={{ height: 13, width: 13 }}
       />
@@ -28,6 +29,7 @@ function Rating(score) {
     for (let i = 0; i < 5 - stars.length; i++) {
       stars.push(
         <Image
+            key={(i+5).toString()}
           source={require("../../assets/icon-star-empty.png")}
           style={{ height: 13, width: 13 }}
         />
@@ -51,7 +53,7 @@ function MenuItem({
   for (let i = 0; i < tags.length; i++) {
     const color = tags[i]["color"];
     const tag = [
-      <View style={[styles.bgLabel, { backgroundColor: color }]}>
+      <View key={i.toString()} style={[styles.bgLabel, { backgroundColor: color }]}>
         <Text style={[Typography.FONT_TAG, { marginHorizontal: 10 }]}>
           {tags[i]["name"]}
         </Text>
@@ -239,7 +241,7 @@ export default class Menu extends Component {
     for (let i = 0; i < tags.length; i++) {
       const color = tags[i]["color"];
       const tag = [
-        <View style={[styles.bgLabel, { backgroundColor: color }]}>
+        <View key={i.toString()} style={[styles.bgLabel, { backgroundColor: color }]}>
           <Text style={[Typography.FONT_TAG, { marginHorizontal: 10 }]}>
             {tags[i]["name"]}
           </Text>

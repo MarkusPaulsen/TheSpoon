@@ -21,7 +21,7 @@ function ResultItem({ menuName, restaurantName, tags, score }) {
   for (let i = 0; i < tags.length; i++) {
     const color = tags[i]["color"];
     const tag = [
-      <View style={[styles.bgLabel, { backgroundColor: color }]}>
+      <View key={i.toString()} style={[styles.bgLabel, { backgroundColor: color }]}>
         <Text style={[Typography.FONT_TAG, { marginHorizontal: 10 }]}>
           {tags[i]["name"]}
         </Text>
