@@ -9,6 +9,7 @@ import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import Button from "react-validation/build/button";
 import Textarea from "react-validation/build/textarea";
+import FormValidator from "../../validation/FormValidator";
 //</editor-fold>
 
 //<editor-fold desc="Icons">
@@ -26,14 +27,42 @@ class AddDishModal extends Component {
     {
         super(props);
 
+        this.validator = new FormValidator([
+            {
+                field: "name",
+                method: "isEmpty",
+                validWhen: false,
+                message: "Dish name is required"
+            },
+            {
+                field: "description",
+                method: "isEmpty",
+                validWhen: false,
+                message: "Description is required"
+            },
+            {
+                field: "price",
+                method: "isEmpty",
+                validWhen: false,
+                message: "Price is required"
+            },
+            {
+                field: "tags",
+                method: "isEmpty",
+                validWhen: false,
+                message: "Tags are required"
+            }
+        ]);
         this.handleSubmit = this.handleSubmit.bind(this);
 
         this.state = {
             name: "",
             description: "",
             price:"",
-            imageId:"",
+            imageID:"",
+            imageMessage: "",
             tags: "",
+            validation: this.validator.valid(),
             serverMessage: "",
             submitted: false
         };
@@ -42,10 +71,10 @@ class AddDishModal extends Component {
     //</editor-fold>
 
     //<editor-fold desc="Bussiness Logic">
-    handleSubmit = (event) => {
+    handleSubmit = event => {
         event.preventDefault();
-
         const thisTemp = this;
+
         of(1)
             .pipe(map(() => {
                 return thisTemp.form.getValues();
@@ -55,7 +84,7 @@ class AddDishModal extends Component {
                     name: values.name,
                     description: values.description,
                     price: values.price,
-                    imageId: values.imageId,
+                    imageID: values.imageID,
                     tags: values.tags,
                     serverMessage: "",
                     submitted: false
@@ -63,11 +92,13 @@ class AddDishModal extends Component {
             }))
             .pipe(exhaustMap(() => {
                 return bindCallback(thisTemp.setState).call(thisTemp, {
-                    submitted: true
+                    validation: thisTemp.validator.validate(thisTemp.state),
+                    submitted: true,
                 });
             }))
             .pipe(exhaustMap(() => {
-                if (true) {
+                if (thisTemp.state.validation.isValid) {
+                    thisTemp.setState({serverMessage: "New dish is added"})
                     return ajax({
                         url: "http://localhost:8080/api/user/owner/restaurant/menu/${this.props.menuID}",
                         method: "POST",
@@ -76,17 +107,19 @@ class AddDishModal extends Component {
                             name: thisTemp.state.name,
                             description: thisTemp.state.description,
                             price: thisTemp.state.price,
-                            imageId: thisTemp.imageId,
-                            tags: [{"name": thisTemp.state.tags, "color": "#FFBC8C"}]
+                            imageID: thisTemp.imageID,
+                            tags: [{"name": thisTemp.state.tags}]
                         }
                     })
                 } else {
+                    thisTemp.setState({serverMessage: "New dish cannot be added"});
                     return throwError({status: 0});
                 }
             }))
             .pipe(take(1))
             .subscribe(
-                () => {
+                (next) => {
+                    //thisTemp.props.setDishId(reply.response.dishID);
                     thisTemp.props.onHide();
                 },
                 (error) => {
@@ -110,6 +143,7 @@ class AddDishModal extends Component {
     //</editor-fold>
     //<editor-fold desc="Render">
     render() {
+        let validation = !this.submitted ? this.state.validation : this.validator.validate(this.state);
         return (
             <Modal.Body>
                 <button className="exit" onClick={this.props.onHide}><IconExit /></button>
@@ -124,16 +158,25 @@ class AddDishModal extends Component {
                             <label>Dish name</label>
                             <Input type="text" name="dishName" placeholder="Dish name"/>
                         </div>
+                        <div className="error-block">
+                            <small>{validation.name.message}</small>
+                        </div>
 
                         <div className="input-field">
                             <label>Description</label>
                             <Textarea name="description"/>
+                        </div>
+                        <div className="error-block">
+                            <small>{validation.description.message}</small>
                         </div>
 
 
                         <div className="input-field">
                             <label>Price in Euro (€)</label>
                             <Input placeholder="Price"/>
+                        </div>
+                        <div className="error-block">
+                            <small>{validation.price.message}</small>
                         </div>
 
                         <div className="input-field image">
@@ -151,13 +194,24 @@ class AddDishModal extends Component {
                             </label>
                             }
                         </div>
+                        {/*
+                        <div className="error-block">
+                            <small>{this.state.imageMessage}</small>
+                        </div>
+                         */}
 
                         <div className="input-field">
                             <label>Tags</label>
                             <Input type="tags" name="tags" placeholder="Search"/>
                         </div>
+                        <div className="error-block">
+                            <small>{validation.tags.message}</small>
+                        </div>
 
                         <Button type="submit" className="normal">Add</Button>
+                        <div className="error-block">
+                            <small>{this.state.serverMessage}</small>
+                        </div>
                     </Form>
                 </div>
             </Modal.Body>
