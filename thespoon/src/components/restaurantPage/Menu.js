@@ -26,6 +26,14 @@ import FilterLink from "../../containers/FilterModalLink";
 import {IconEditPink, IconAddPink} from "../Icons";
 //</editor-fold>
 
+//</editor-fold>
+//<editor-fold desc="Components">
+import Sidebar from "./Sidebar";
+import FoodItem from "./FoodItem";
+//</editor-fold>
+
+
+
 class Menu extends Component {
     //<editor-fold desc="Constructor">
     constructor(props) {
@@ -105,6 +113,11 @@ class Menu extends Component {
                         <div className="categoryTitle">DISHES</div>
                     <div className="col"><hr/></div>
                 </div>
+
+                {/*Item*/}
+                <FoodItem />
+                <FoodItem />
+
                 <div className="modal-button">
                     <FilterLink filter={modalVisibilityFilters.SHOW_ADD_DISH}><IconAddPink/> Add dish</FilterLink>
                 </div>
@@ -114,6 +127,11 @@ class Menu extends Component {
                     <div className="categoryTitle">DRINKS</div>
                     <div className="col"><hr/></div>
                 </div>
+
+                {/*Item*/}
+                <FoodItem />
+                <FoodItem />
+
                 <div className="modal-button">
                     <FilterLink filter={modalVisibilityFilters.SHOW_ADD_DRINK}><IconAddPink/> Add drink</FilterLink>
                 </div>

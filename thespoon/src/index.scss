@@ -39,7 +39,11 @@ h4 {
   font-size: 1rem;
 }
 
-h1, h2, h3, h4 {
+h5 {
+  font-size: 1rem;
+}
+
+h1, h2, h3, h4, h5 {
   font-weight: 500;
   line-height: 1.1;
   margin: 0;
@@ -724,7 +728,79 @@ header {
       cursor: pointer;
     }
   }
-
 }
 
 /* < RESTAURANT PAGE */
+
+/* FOOD ITEMS > */
+.foodItem {
+  flex-direction: row;
+  background: var(--light-grey);
+  border-radius: 0.8333333333333334rem;
+  display: flex;
+  //padding: 0.5rem;
+  .image-setup {
+    background: #007bff;
+    flex-direction: row;
+    display: flex;
+    border-radius: 100%;
+    margin: 0.5rem;
+    margin-left: 1rem;
+    //top: -5.333333333rem;
+    //left: 2.5rem;
+    //right: 2.5rem;
+    //height: 100%;
+  }
+  .image-wrapper {
+    height: 0;
+    position: relative;
+
+
+    .image {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0 ;
+      bottom: 0;
+      background-repeat: no-repeat;
+      border-radius: 50%;
+    }
+  }
+
+
+  .mainContent {
+    flex-direction: column;
+    text-align: left;
+    display: flex;
+    margin: 0.5rem;
+    .foodItemName {
+      font-weight: 500;
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+    }
+    .description {
+      margin-bottom: 0.5rem;
+    }
+    .tags {
+      background: var(--turquoise);
+      color: var(--white);
+      padding: 0.1rem 1rem;
+      border-radius: 5px;
+      font-weight: bold;
+    }
+  }
+  .price {
+    flex-direction: row;
+    margin-left: auto;
+    margin-right: 0.75rem;
+    margin-top: 1rem;
+    font-weight: 500;
+  }
+  .editIcon {
+    position: relative;
+    top: -0.25rem;
+    right: -0.25rem;
+  }
+
+}
+/* < FOOD ITEMS */

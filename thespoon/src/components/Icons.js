@@ -87,6 +87,16 @@ export const IconEditPink = () => {
     )
 };
 
+export const IconEditGrey = () => {
+    return (
+        <i>
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M14 0C6.258 0 0 6.258 0 14C0 21.742 6.258 28 14 28C21.742 28 28 21.742 28 14C28 6.258 21.742 0 14 0ZM18.34 7.098C18.536 7.098 18.732 7.168 18.9 7.322L20.678 9.1C21 9.408 21 9.898 20.678 10.192L19.278 11.592L16.408 8.722L17.808 7.322C17.948 7.168 18.144 7.098 18.34 7.098ZM15.582 9.534L18.466 12.418L9.982 20.902H7.098V18.018L15.582 9.534Z" fill="#686B6F"/>
+            </svg>
+        </i>
+    )
+};
+
 export const IconAddPink = () => {
     return (
         <i>
