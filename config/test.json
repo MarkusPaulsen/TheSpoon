@@ -1,0 +1,6 @@
+{
+  "jwtPrivateKey": "1234",
+  "jwtExpirationTime": "2 days",
+  "AWS_ACCESS_KEY_ID": "aaaa",
+  "AWS_SECRET_ACCESS_KEY": "aaaa"
+}
