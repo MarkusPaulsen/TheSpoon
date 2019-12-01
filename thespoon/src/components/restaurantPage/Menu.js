@@ -30,6 +30,7 @@ import {IconEditPink, IconAddPink} from "../Icons";
 //<editor-fold desc="Components">
 import Sidebar from "./Sidebar";
 import DishItem from "./DishItem";
+import DrinkItem from "./DrinkItem";
 //</editor-fold>
 
 
@@ -129,8 +130,8 @@ class Menu extends Component {
                 </div>
 
                 {/*Item*/}
-                <DishItem />
-                <DishItem />
+                <DrinkItem />
+                <DrinkItem />
 
                 <div className="modal-button">
                     <FilterLink filter={modalVisibilityFilters.SHOW_ADD_DRINK}><IconAddPink/> Add drink</FilterLink>

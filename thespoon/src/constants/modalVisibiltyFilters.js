@@ -9,5 +9,6 @@ export const modalVisibilityFilters = {
     SHOW_ADD_DISH: "SHOW_ADD_DISH",
     SHOW_EDIT_DISH: "SHOW_EDIT_DISH",
     SHOW_ADD_DRINK: "SHOW_ADD_DRINK",
+    SHOW_EDIT_DRINK: "SHOW_EDIT_DRINK",
     HIDE_ALL: "HIDE_ALL"
 };
