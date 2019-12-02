@@ -17,12 +17,16 @@ export default class SearchField extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      searchWord: ""
+      searchWord: "",
     };
   }
 
   updateSearchText = searchWord => {
     this.setState({ searchWord });
+  };
+
+  search = searchWord => {
+
   };
 
   render() {

@@ -2,20 +2,15 @@ import React, { Component } from "react";
 import {
   View,
   Text,
-  TouchableOpacity,
   StyleSheet,
-  ScrollView,
   FlatList,
-  SafeAreaView,
   TouchableHighlight
 } from "react-native";
 import * as Typography from "../../../styles/typography";
-import * as Colors from "../../../styles/colors";
 import ContinueButton from "../components/continueButton";
-import SearchField from "../components/searchField";
 import BackButton from "../components/backButton";
 
-export default class ReviewAddRestaurant extends Component {
+export default class ReviewAddMenu extends Component {
   constructor(props) {
     super(props);
     this.onClick = this.onClick.bind(this);
@@ -23,21 +18,7 @@ export default class ReviewAddRestaurant extends Component {
       disableButton: false,
       selected: null,
       backgroundColor: "#FFFFFF",
-      dataSource: [
-        "Pizzeria AUUM",
-        "Da Zero",
-        "Pizzium",
-        "Nara Sushi",
-        "Una",
-        "Da Zero",
-        "Pizzium",
-        "Nara Sushi",
-        "Una",
-        "Da Zero",
-        "Pizzium",
-        "Nara Sushi",
-        "Una"
-      ]
+      dataSource: ["Lunch Menu", "Evening Menu", "Weekend Specials"]
     };
   }
 
@@ -51,8 +32,7 @@ export default class ReviewAddRestaurant extends Component {
       <View style={styles.container}>
         <BackButton navigation={this.props.navigation} />
         <View style={{ flex: 1, alignItems: "center", marginBottom: 20 }}>
-          <Text style={Typography.FONT_H3_BLACK}>Choose Restaurant</Text>
-          <SearchField />
+          <Text style={Typography.FONT_H3_BLACK}>Choose Menu</Text>
         </View>
         <View style={styles.resultList}>
           <FlatList
@@ -78,12 +58,12 @@ export default class ReviewAddRestaurant extends Component {
           />
         </View>
         <View style={{ flex: 1, alignSelf: "center" }}>
-          <ContinueButton
-              disableButton={this.state.disableButton}
-              navigation={this.props}
-              view={"ReviewAddMenu"}
-              text={"CONTINUE"}
-          />
+            <ContinueButton
+                disableButton={this.state.disableButton}
+                navigation={this.props}
+                view={"ReviewAddItems"}
+                text={"CONTINUE"}
+            />
         </View>
       </View>
     );

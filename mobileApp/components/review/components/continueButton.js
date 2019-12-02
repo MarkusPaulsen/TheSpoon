@@ -5,14 +5,29 @@ import * as Colors from "../../../styles/colors";
 
 export default class ContinueButton extends Component {
   render() {
-    const color = this.props.color;
+    const { navigation } = this.props.navigation;
+    const disableButton = this.props.disableButton;
+    const view = this.props.view;
+    const text = this.props.text;
 
+    if (disableButton === false) {
+      return (
+          <TouchableOpacity
+              onPress={() => navigation.navigate(view)}
+              style={[styles.button, { backgroundColor: Colors.PINK }]}
+          >
+            <Text style={[Typography.FONT_H4_WHITE, { textAlign: "center" }]}>
+              {text}
+            </Text>
+          </TouchableOpacity>
+      );
+    }
     return (
-      <View style={[styles.button, { backgroundColor: color }]}>
-        <Text style={[Typography.FONT_H4_WHITE, { textAlign: "center" }]}>
-          CONTINUE
-        </Text>
-      </View>
+        <View style={[styles.button, { backgroundColor: Colors.GRAY_MEDIUM }]}>
+          <Text style={[Typography.FONT_H4_WHITE, { textAlign: "center" }]}>
+            CONTINUE
+          </Text>
+        </View>
     );
   }
 }
@@ -23,6 +38,8 @@ const styles = StyleSheet.create({
     height: 34,
     borderRadius: 50,
     justifyContent: "center",
-    marginVertical: 20
+    marginTop: 20,
+    marginBottom: 40,
+    alignSelf: "center"
   }
 });

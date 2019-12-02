@@ -13,17 +13,6 @@ export default class Review extends Component {
     };
   }
 
-  checkImageState() {
-    if (this.state.disableButton === false) {
-      return (
-        <TouchableOpacity onPress={() => this.props.navigation.navigate("ReviewAddRestaurant")}>
-          <ContinueButton color={Colors.PINK} />
-        </TouchableOpacity>
-      );
-    }
-    return <ContinueButton color={Colors.GRAY_MEDIUM} />;
-  }
-
   render() {
     return (
       <View style={styles.container}>
@@ -49,7 +38,13 @@ export default class Review extends Component {
             </Text>
           </View>
         </View>
-        {this.checkImageState()}
+        {console.log(this.state.disableButton)}
+        <ContinueButton
+          disableButton={this.state.disableButton}
+          navigation={this.props}
+          view={"ReviewAddRestaurant"}
+          text={"CONTINUE"}
+        />
       </View>
     );
   }

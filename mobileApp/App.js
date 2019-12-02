@@ -8,6 +8,10 @@ import MenuPage from "./components/menupage/menupage";
 
 import ReviewAddImage from "./components/review/views/reviewAddImage";
 import ReviewAddRestaurant from "./components/review/views/reviewAddRestaurant";
+import ReviewAddMenu from "./components/review/views/reviewAddMenu";
+import ReviewAddItems from "./components/review/views/reviewAddItems";
+import ReviewItems from "./components/review/views/reviewItems";
+import ReviewOverall from "./components/review/views/reviewOverall";
 
 import ProfilePage from "./components/profile/profile";
 import { createAppContainer } from "react-navigation";
@@ -33,7 +37,11 @@ const SearchStack = createStackNavigator(
 const ReviewStack = createStackNavigator(
   {
     ReviewAddImage: ReviewAddImage,
-    ReviewAddRestaurant: ReviewAddRestaurant
+    ReviewAddRestaurant: ReviewAddRestaurant,
+    ReviewAddMenu: ReviewAddMenu,
+    ReviewAddItems: ReviewAddItems,
+    ReviewItems: ReviewItems,
+    ReviewOverall: ReviewOverall
   },
   {
     initialRouteName: "ReviewAddImage",
