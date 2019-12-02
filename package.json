@@ -28,7 +28,8 @@
     "sequelize": "^5.21.2",
     "swagger-tools": "^0.10.4",
     "swagger-ui-express": "^4.1.2",
-    "yamljs": "^0.3.0"
+    "yamljs": "^0.3.0",
+    "node-open-geocoder": "^4.0.0"
   },
   "devDependencies": {
     "eslint": "^6.7.1",
