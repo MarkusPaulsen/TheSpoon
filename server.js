@@ -29,7 +29,7 @@ const image = require('./routes/image-upload.js');
 const searchByMenuItem = require('./routes/searchByMenuItem.js');
 const manageMenuInformation = require('./routes/manageMenuInformation.js');
 const searchMenu = require('./routes/searchMenu.js');
-const getRestaurant = require('./routes/getRestaurant.js');
+const getRestaurant = require('./routes/manageRestaurantInformation.js');
 
 app.use('/api/user/login', login);
 app.use('/api/user/customer/register', registrationCustomer);
