@@ -24,6 +24,7 @@ import Menu from "./Menu";
 import { exhaustMap } from "rxjs/operators";
 import {failLogIn, logIn, successLogIn} from "../../actionCreators/logInActionCreators";
 import {setModalVisibilityFilterAction} from "../../actionCreators/modalVisibilityFilterActionCreators";
+import {Redirect} from "react-router";
 //</editor-fold>
 
 class YourRestaurant extends Component {
@@ -71,58 +72,64 @@ class YourRestaurant extends Component {
   }
 
   render() {
-    if (!this.state.finishedLoading) {
-      return <p>Loading...</p>;
-    } else {
-      return (
-        <MainLayout>
-          <div className="mainpage-banner restaurant">
-            <div className="container">
-              <div className="row">
-                <div className="col-sm-4">
-                  <Sidebar
-                    name={this.state.restaurant.name}
-                    address={this.state.restaurant.address}
-                    city={this.state.restaurant.city}
-                    country={this.state.restaurant.country}
-                    imageLink={this.state.restaurant.imageLink}
-                    openingHours={this.state.restaurant.openingHours}
-                  />
-                </div>
-                <div className="col-sm-8">
-                  <h3 className="title">Your menus</h3>
-                  <div className="no-menus">
-                    <button className="wide">
-                      <FilterLink filter={modalVisibilityFilters.SHOW_ADD_MENU}>
-                        Create new menu
-                      </FilterLink>
-                    </button>
-                  </div>
-                  {typeof this.state.menus !== "undefined" &&
-                  this.state.menus.length > 1 ? (
-                    this.state.menus.map(menu => {
-                      return (
-                        <Menu
-                          key={menu.menuID}
-                          id={menu.menuID}
-                          name={menu.name}
-                          tags={menu.tags}
-                          description={menu.description}
-                        />
-                      );
-                    })
-                  ) : (
-                    <div className="no-menus">
-                      <label>
-                        Your restaurant doesnt have any menus yet...
-                      </label>
+    if(typeof this.props.loginStatus != "undefined" && this.props.loginStatus === "logged in") {
+      if (!this.state.finishedLoading) {
+        return <p>Loading...</p>;
+      } else {
+        return (
+            <MainLayout>
+              <div className="mainpage-banner restaurant">
+                <div className="container">
+                  <div className="row">
+                    <div className="col-sm-4">
+                      <Sidebar
+                          name={this.state.restaurant.name}
+                          address={this.state.restaurant.address}
+                          city={this.state.restaurant.city}
+                          country={this.state.restaurant.country}
+                          imageLink={this.state.restaurant.imageLink}
+                          openingHours={this.state.restaurant.openingHours}
+                      />
                     </div>
-                  )}
+                    <div className="col-sm-8">
+                      <h3 className="title">Your menus</h3>
+                      <div className="no-menus">
+                        <button className="wide">
+                          <FilterLink filter={modalVisibilityFilters.SHOW_ADD_MENU}>
+                            Create new menu
+                          </FilterLink>
+                        </button>
+                      </div>
+                      {typeof this.state.menus !== "undefined" &&
+                      this.state.menus.length > 1 ? (
+                          this.state.menus.map(menu => {
+                            return (
+                                <Menu
+                                    key={menu.menuID}
+                                    id={menu.menuID}
+                                    name={menu.name}
+                                    tags={menu.tags}
+                                    description={menu.description}
+                                />
+                            );
+                          })
+                      ) : (
+                          <div className="no-menus">
+                            <label>
+                              Your restaurant doesnt have any menus yet...
+                            </label>
+                          </div>
+                      )}
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-        </MainLayout>
+            </MainLayout>
+        );
+      }
+    } else {
+      return(
+          <Redirect to={{pathname: "/"}}/>
       );
     }
   }
@@ -131,7 +138,8 @@ class YourRestaurant extends Component {
 //<editor-fold desc="Redux">
 const mapStateToProps = (state) => {
     return {
-        token: state.logInReducer.token
+        token: state.logInReducer.token,
+        loginStatus: state.logInReducer.loginStatus
     };
 };
 

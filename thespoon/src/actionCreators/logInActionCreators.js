@@ -21,6 +21,8 @@ export const successLogIn = (token) => {
 
 export const logOut = () => {
     return {
-        type: LOGGING_OUT
+        type: LOGGING_OUT,
+        username: "",
+        token: ""
     };
 };

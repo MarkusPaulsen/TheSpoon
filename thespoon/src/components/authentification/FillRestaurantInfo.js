@@ -253,7 +253,6 @@ class FillRestaurantInfo extends Component {
                 return throwError({ status: error.status});
             }))
 
-            //not sure
             .subscribe(
                 (reply) => {
                     thisTemp.props.setRestaurantID(reply.response.restaurantID);

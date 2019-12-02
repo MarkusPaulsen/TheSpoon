@@ -23,9 +23,17 @@ import {modalVisibilityFilters} from "../../constants/modalVisibiltyFilters";
 import FilterLink from "../../containers/FilterModalLink";
 //</editor-fold>
 //<editor-fold desc="Icons">
-import {IconEditPink} from "../Icons";
+import {IconEditPink, IconAddPink} from "../Icons";
+//</editor-fold>
 
 //</editor-fold>
+//<editor-fold desc="Components">
+import Sidebar from "./Sidebar";
+import DishItem from "./DishItem";
+import DrinkItem from "./DrinkItem";
+//</editor-fold>
+
+
 
 class Menu extends Component {
     //<editor-fold desc="Constructor">
@@ -87,8 +95,8 @@ class Menu extends Component {
     render() {
         return (
             <div className="menu">
-                <h4 className="title">{this.props.name}</h4>
-                <div className="description">{this.props.description}</div>
+                <h4 className="title">Lunch menu: {this.props.name}</h4>
+                <div className="description">This is a short description of the menu: {this.props.description}</div>
                 <div className="tags">
                     {this.props.tags.map(tag => {
                         return (
@@ -99,15 +107,34 @@ class Menu extends Component {
                     })}
                 </div>
                 <div className="modal-button">
-                    <FilterLink filter={modalVisibilityFilters.SHOW_EDIT_MENU} currentMenu={this.props}>
-                        <IconEditPink/> Edit informations
-                    </FilterLink>
-                    <Form ref={(c) => {this.form = c; }} onSubmit={this.handleSubmit}>
-                        <Button type="submit" className="normal">Delete</Button>
-                        <div className="error-block">
-                            <small>{this.state.serverMessage}</small>
-                        </div>
-                    </Form>
+                    <FilterLink filter={modalVisibilityFilters.SHOW_EDIT_MENU} currentMenu={this.props}><IconEditPink/> Edit menu</FilterLink>
+                </div>
+                <div className="row">
+                    <div className="col"><hr/></div>
+                        <div className="categoryTitle">DISHES</div>
+                    <div className="col"><hr/></div>
+                </div>
+
+                {/*Item*/}
+                <DishItem />
+                <DishItem />
+
+                <div className="modal-button">
+                    <FilterLink filter={modalVisibilityFilters.SHOW_ADD_DISH}><IconAddPink/> Add dish</FilterLink>
+                </div>
+
+                <div className="row">
+                    <div className="col"><hr/></div>
+                    <div className="categoryTitle">DRINKS</div>
+                    <div className="col"><hr/></div>
+                </div>
+
+                {/*Item*/}
+                <DrinkItem />
+                <DrinkItem />
+
+                <div className="modal-button">
+                    <FilterLink filter={modalVisibilityFilters.SHOW_ADD_DRINK}><IconAddPink/> Add drink</FilterLink>
                 </div>
             </div>
         );

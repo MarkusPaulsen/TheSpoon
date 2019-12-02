@@ -1,61 +1,66 @@
 //<editor-fold desc="React">
 import React, {Component} from "react";
-import {Redirect} from "react-router";
-//</editor-fold>
-//<editor-fold desc="Redux">
-import {connect} from "react-redux";
-//</editor-fold>
-//<editor-fold desc="RxJs">
-import {bindCallback, of, throwError} from "rxjs";
-import {ajax} from "rxjs/ajax";
-import {take, exhaustMap, map} from "rxjs/operators";
 //</editor-fold>
 //<editor-fold desc="Bootstrap">
 import {Modal} from "react-bootstrap";
 //</editor-fold>
 //<editor-fold desc="Validator">
+import Form from "react-validation/build/form";
+import Input from "react-validation/build/input";
+import Button from "react-validation/build/button";
 import Textarea from "react-validation/build/textarea";
-import Form from 'react-validation/build/form';
-import Input from 'react-validation/build/input';
-import Button from 'react-validation/build/button';
 import FormValidator from "../../validation/FormValidator";
 //</editor-fold>
 
 //<editor-fold desc="Icons">
 import {IconExit} from "../Icons";
-
+import {bindCallback, of, throwError} from "rxjs";
+import {exhaustMap, map, take} from "rxjs/operators";
+import {ajax} from "rxjs/ajax";
+import {connect} from "react-redux";
 //</editor-fold>
 
 
-class EditMenuModal extends Component {
+class EditDishModal extends Component {
     //<editor-fold desc="Constructor">
-    constructor(props) {
+    constructor(props)
+    {
         super(props);
 
-        this.validator = new FormValidator([{
-            field: "name",
-            method: "isEmpty",
-            validWhen: false,
-            message: "Menu name is required"
-        },
+        this.validator = new FormValidator([
+            {
+                field: "name",
+                method: "isEmpty",
+                validWhen: false,
+                message: "Dish name is required"
+            },
             {
                 field: "description",
                 method: "isEmpty",
                 validWhen: false,
-                message: "Description name is required"
+                message: "Description is required"
+            },
+            {
+                field: "price",
+                method: "isEmpty",
+                validWhen: false,
+                message: "Price is required"
             },
             {
                 field: "tags",
                 method: "isEmpty",
                 validWhen: false,
                 message: "Tags are required"
-            }]);
-
+            }
+        ]);
         this.handleSubmit = this.handleSubmit.bind(this);
 
         this.state = {
             name: "",
             description: "",
+            price:"",
+            imageID:"",
+            imageMessage: "",
             tags: "",
             validation: this.validator.valid(),
             serverMessage: "",
@@ -66,10 +71,10 @@ class EditMenuModal extends Component {
     //</editor-fold>
 
     //<editor-fold desc="Bussiness Logic">
-    handleSubmit = (event) => {
+    handleSubmit = event => {
         event.preventDefault();
-
         const thisTemp = this;
+
         of(1)
             .pipe(map(() => {
                 return thisTemp.form.getValues();
@@ -78,40 +83,43 @@ class EditMenuModal extends Component {
                 return bindCallback(thisTemp.setState).call(thisTemp, {
                     name: values.name,
                     description: values.description,
-                    tags: values.tags.split(","),
+                    price: values.price,
+                    imageID: values.imageID,
+                    tags: values.tags,
+                    serverMessage: "",
+                    submitted: false
                 });
             }))
             .pipe(exhaustMap(() => {
                 return bindCallback(thisTemp.setState).call(thisTemp, {
                     validation: thisTemp.validator.validate(thisTemp.state),
                     submitted: true,
-                    serverMessage: ""
                 });
             }))
             .pipe(exhaustMap(() => {
                 if (thisTemp.state.validation.isValid) {
-                    thisTemp.setState({serverMessage: "Menu is edited"});
+                    thisTemp.setState({serverMessage: "New dish is edited"})
                     return ajax({
-                        url: `/api/user/owner/restaurant/menu/${this.props.menu.id}`,
-                        method: "PUT",
+                        url: "http://localhost:8080/api/user/owner/restaurant/menu/${this.props.menuID}",
+                        method: "POST",
                         headers: {"Content-Type": "application/json", "X-Auth-Token": this.props.token},
                         body: {
                             name: thisTemp.state.name,
                             description: thisTemp.state.description,
-                            tags: thisTemp.state.tags
+                            price: thisTemp.state.price,
+                            imageID: thisTemp.imageID,
+                            tags: [{"name": thisTemp.state.tags}]
                         }
                     })
                 } else {
-                    thisTemp.setState({serverMessage: ""});
+                    thisTemp.setState({serverMessage: "New dish cannot be edited"});
                     return throwError({status: 0});
                 }
             }))
             .pipe(take(1))
             .subscribe(
-                () => {
-                    thisTemp.setState(
-                        {serverMessage: <Redirect to={{pathname: "/Mainpage"}}/>}
-                    );
+                (next) => {
+                    //thisTemp.props.setDishId(reply.response.dishID);
                     thisTemp.props.onHide();
                 },
                 (error) => {
@@ -123,6 +131,7 @@ class EditMenuModal extends Component {
                             thisTemp.setState({serverMessage: "No connection to the server"});
                             break;
                         case 0:
+                            thisTemp.setState({serverMessage: ""});
                             break;
                         default:
                             thisTemp.setState({serverMessage: "General error"});
@@ -132,28 +141,22 @@ class EditMenuModal extends Component {
             );
     };
     //</editor-fold>
-
     //<editor-fold desc="Render">
     render() {
-        let validation = this.state.submitted ?                         // if the form has been submitted at least once
-            this.validator.validate(this.state) :               // then check validity every time we render
-            this.state.validation;
-
-        let tagsString = "";
-        this.props.menu.tags.map(tag => {
-            tagsString += tag.name + ", ";
-        })
-        tagsString = tagsString.slice(0, -2);
+        let validation = !this.submitted ? this.state.validation : this.validator.validate(this.state);
         return (
             <Modal.Body>
                 <button className="exit" onClick={this.props.onHide}><IconExit /></button>
-                <div className="modal-wrapper add-menu">
+                <div className="modal-wrapper restaurant-info">
                     <Form ref={(c) => {this.form = c; }} onSubmit={(e) => this.handleSubmit(e)}>
-                        <h2 className="title">Edit menu</h2>
+                        <h2>Edit</h2>
+                        <div className="account-type">
+                            <h4><span className="role">Dish</span></h4>
+                        </div>
 
                         <div className="input-field">
-                            <label>Name</label>
-                            <Input type="text" name="name" value={this.props.menu.name}/>
+                            <label>Dish name</label>
+                            <Input type="text" name="dishName" placeholder="Dish name"/>
                         </div>
                         <div className="error-block">
                             <small>{validation.name.message}</small>
@@ -161,22 +164,52 @@ class EditMenuModal extends Component {
 
                         <div className="input-field">
                             <label>Description</label>
-                            <Textarea name="description" value={this.props.menu.description}/>
+                            <Textarea name="description"/>
                         </div>
                         <div className="error-block">
                             <small>{validation.description.message}</small>
                         </div>
 
+
+                        <div className="input-field">
+                            <label>Price in Euro (€)</label>
+                            <Input placeholder="Price"/>
+                        </div>
+                        <div className="error-block">
+                            <small>{validation.price.message}</small>
+                        </div>
+
+                        <div className="input-field image">
+                            <label>Image</label>
+                            <input type="file" name="file" id="file" className="inputfile" onChange={this.fileSelectedHandler}/>
+                            <label htmlFor="file">+ Upload image</label>
+                            {this.state.selectedFile &&
+                            <label className="selected-file">
+                            <span onClick={this.removeFile}
+                                  role="button"
+                                  className="remove-button">
+                                X
+                            </span>
+                                {this.state.selectedFile.name }
+                            </label>
+                            }
+                        </div>
+                        {/*
+                        <div className="error-block">
+                            <small>{this.state.imageMessage}</small>
+                        </div>
+                         */}
+
                         <div className="input-field">
                             <label>Tags</label>
-                            <Input type="tags" name="tags" value={tagsString}/>
+                            <Input type="tags" name="tags" placeholder="Search"/>
                         </div>
                         <div className="error-block">
                             <small>{validation.tags.message}</small>
                         </div>
 
                         <Button type="submit" className="normal">Save</Button>
-                        <Button type="submit" className="delete-button">Delete Menu</Button>
+                        <Button type="submit" className="delete-button">Delete Dish</Button>
                         <div className="error-block">
                             <small>{this.state.serverMessage}</small>
                         </div>
@@ -195,5 +228,5 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps, null)(EditMenuModal);
+export default connect(mapStateToProps, null)(EditDishModal);
 //</editor-fold>
