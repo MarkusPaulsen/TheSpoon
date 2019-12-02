@@ -29,7 +29,7 @@ class DrinkItem extends Component {
                 <div className="mainContent">
                     <h5 className="foodItemName">AYMURA Pinot Noir</h5>
                     <div className="description">Delightful drink for spring season</div>
-                    <div className="tags">tag1</div>
+                    <div className="tags">Spring</div>
                 </div>
                 <div className="price">14€</div>
                 <div className="edit-button">

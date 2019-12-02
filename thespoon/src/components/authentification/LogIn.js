@@ -174,7 +174,7 @@ class LogIn extends Component {
               </Form>
 
               <div className="link-wrapper">
-                <small>Don"t have an account? <FilterLink filter={modalVisibilityFilters.SHOW_REGISTER_RESTAURANT_OWNER}>Register now</FilterLink></small>
+                <small>Don't have an account? <FilterLink filter={modalVisibilityFilters.SHOW_REGISTER_RESTAURANT_OWNER}>Register now</FilterLink></small>
               </div>
             </div>
         </Modal.Body>

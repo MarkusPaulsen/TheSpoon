@@ -150,6 +150,7 @@ class FillRestaurantInfo extends Component {
                     }, () => {
                         thisTemp.setState({ imageMessage: (file.name + " could not be uploaded.")});
                     });
+                console.log(readerEvent);
             };
             reader.onerror = () => {
                 thisTemp.setState({ imageMessage: (file.name + " could not be read.")});

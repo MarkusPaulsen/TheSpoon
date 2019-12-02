@@ -24,12 +24,12 @@ class DishItem extends Component {
         return (
             <div className="foodItem">
                 <div className="image-setup">
-                    <div className="image-wrapper">Image here</div>
+                    <div className="image-wrapper">Image Here</div>
                 </div>
                 <div className="mainContent">
                     <h5 className="foodItemName">Pepperoni pizza</h5>
                     <div className="description">Delicious pizza with pepperoni & cheese</div>
-                    <div className="tags">tag1</div>
+                    <div className="tags">Italian</div>
                 </div>
                 <div className="price">9€</div>
                 <div className="edit-button">
