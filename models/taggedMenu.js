@@ -1,6 +1,9 @@
 const Sequelize = require('sequelize');
 const db = require('../sequelizeSettings');
 
+const Tag = require('./tag.js');
+const Menu = require('./menu.js');
+
 const TaggedMenu = db.define('TaggedMenu', {
     Menu_ID: {
         type: Sequelize.INTEGER,
@@ -14,6 +17,12 @@ const TaggedMenu = db.define('TaggedMenu', {
 {
     freezeTableName: true,
     timestamps: false
+});
+
+
+TaggedMenu.belongsTo(Tag, {
+    foreignKey: 'Tag',
+    as: 'Tags'
 });
 
 module.exports = TaggedMenu;

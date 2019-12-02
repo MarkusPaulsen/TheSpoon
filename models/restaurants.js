@@ -6,7 +6,8 @@ const Menu = require('./menu');
 const Restaurant = db.define('Restaurant', {
         Restaurant_ID: {
             type: Sequelize.INTEGER,
-            primaryKey: true
+            primaryKey: true,
+            autoIncrement: true
         },
         Owner: {
             type: Sequelize.STRING
@@ -28,19 +29,14 @@ const Restaurant = db.define('Restaurant', {
         },
         Longitude: {
             type: Sequelize.FLOAT
+        },
+        ImageLink: {
+            type: Sequelize.STRING
         }
     },{
         freezeTableName: true,
         timestamps: false
     }
-    ,{
-        classMethods: {
-            associate: () => {
-                Restaurant.hasMany(Menu, {
-                    foreignKey: 'Restaurant_ID',
-                })
-            }
-        }}
 );
 
 module.exports = Restaurant;

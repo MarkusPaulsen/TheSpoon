@@ -50,6 +50,68 @@ router.post('/', auth, inputValidator(validationSchema.addMenuValidation), isOwn
     res.status(200).send({menuID: menuCreated.dataValues.Menu_ID});
 });
 
+
+router.get('/', auth, isOwner, findRestaurant, async (req, res) => {
+    try {
+        let menus = await Menu.findAll({
+            attributes: ['Name', 'Description', 'Menu_ID', 'Restaurant_ID'],
+            where: {
+                Restaurant_ID: req.restaurant.Restaurant_ID
+            },
+            include: [{
+                model: TaggedMenu,
+                attributes: ['Tag'],
+                include: [{
+                    model: Tag,
+                    as: 'Tags'
+                }]
+            }, {
+                model: MenuItem,
+                include: [{
+                    model: TaggedItem,
+                    include: [{
+                        model: Tag,
+                        as: 'Tags'
+                    }]
+                }]
+            }
+            ]
+        });
+
+        // Format the response
+        menus = await menus.map( async m => {
+            let menuTags = formatTags(m.TaggedMenus);
+            let items = await m.MenuItems.map( async mi => {
+                let itemTags = await formatTags(mi.TaggedItems);
+                return {
+                    name: mi.Name,
+                    description: mi.Description,
+                    type: mi.Type,
+                    priceEuros: mi.Price,
+                    imageLink: mi.ImageLink,
+                    tags: itemTags
+                };
+            });
+            items = await Promise.all(items);
+            return {
+                menuID: m.Menu_ID,
+                name: m.Name,
+                description: m.Description,
+                tags: menuTags,
+                menuItems: items
+            }
+
+        });
+        menus = await Promise.all(menus);
+        res.status(200).send(menus);
+    } catch (error) {
+        res.status(404).send(error+ ' :(');
+    }
+});
+
+/*
+
+// TODO: Fix this mess.
 //Return all the menus of the restaurant
 router.get('/', auth, isOwner, findRestaurant, async (req, res) => {
     try {
@@ -145,12 +207,12 @@ router.get('/', auth, isOwner, findRestaurant, async (req, res) => {
         //Return the object
         res.status(200).send(result)
     } catch (error){
-        res.status(400).send(error);
+        res.status(404).send(error);
     }
 });
+ */
 
-
-//Edit a menu's information (not its items)
+//Edit a menu's information     (not its items)
 router.put('/:menuID', auth, inputValidator(validationSchema.editMenuValidation), isOwner, findRestaurant, async (req,res) => {
 
     //check if the menu with given menuID exist
@@ -227,5 +289,24 @@ router.delete('/:menuID', auth, isOwner, findRestaurant, async (req,res) => {
 
 //this is required in order to route the request to the endpoints that manage the menu items
 router.use('/', menuItem);
+
+
+
+
+
+const formatTags = (arr) => {
+    if (arr.length < 1){
+        return null;
+    } else {
+        for (let i = 0; i < arr.length; i++) {
+            arr[i] = {
+                name: arr[i].Tags.Name,
+                color: arr[i].Tags.Color
+            }
+        }
+        return arr;
+    }
+};
+
 
 module.exports = router;
