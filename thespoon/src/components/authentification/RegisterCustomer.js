@@ -73,6 +73,9 @@ class RegisterCustomer extends Component  {
     passwordMatch = (confirmation, state) => (state.password === confirmation);
 
     handleSubmit = event => {
+        if(true) {
+            return <Redirect to="/CustomerPage"/>
+        }
         event.preventDefault();
         const thisTemp = this;
         const values = this.form.getValues();
@@ -103,6 +106,9 @@ class RegisterCustomer extends Component  {
                     }).subscribe(
                         () => {
                             thisTemp.setState({serverMessage: "Login is processing..." });
+                            thisTemp.setState(
+                                {serverMessage: <Redirect to={{pathname: "/YourRestaurant"}}/>}
+                            );
                         },
                         (error) => {
                             switch (error.status) {

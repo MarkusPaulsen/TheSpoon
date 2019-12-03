@@ -26,7 +26,7 @@ import {modalVisibilityFilters} from "../../constants/modalVisibiltyFilters";
 import FilterLink from "../../containers/FilterModalLink";
 //</editor-fold>
 //<editor-fold desc="Icons">
-import {IconName, IconEmail, IconPassword, IconExit} from "../Icons";
+import {IconName, IconEmail, IconPassword, IconExit, IconBack} from "../Icons";
 import Button from "react-validation/build/button";
 import {ajax} from "rxjs/ajax";
 import {paths} from "../../constants/paths";
@@ -180,6 +180,7 @@ class RegisterRestaurantowner extends Component  {
             this.state.validation;
         return (
         <Modal.Body>
+            <span className="back"><FilterLink filter={modalVisibilityFilters.SHOW_CHOOSE_ROLE}><IconBack/></FilterLink></span>
             <button className="exit" onClick={this.props.onHide}><IconExit/></button>
             <div className="modal-wrapper ">
                 <Form ref={ (c) => { this.form = c; }} onSubmit={this.handleSubmit}>

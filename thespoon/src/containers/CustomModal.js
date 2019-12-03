@@ -26,6 +26,8 @@ import AddDrinkModal from "../components/restaurantPage/AddDrinkModal";
 import {setCurrentMenu} from "../actionCreators/CurrentMenuActionCreators";
 import EditDishModal from "../components/restaurantPage/EditDishModal";
 import EditDrinkModal from "../components/restaurantPage/EditDrinkModal";
+import ChooseRoleModal from "../components/authentification/ChooseRoleModal";
+import RegisterCustomer from "../components/authentification/RegisterCustomer";
 //</editor-fold>
 
 class CustomModal extends Component {
@@ -43,11 +45,10 @@ class CustomModal extends Component {
                     <LogOut onHide={() => this.props.handleClose()} />
                 );
 
-                /*TO REMOVE
             case modalVisibilityFilters.SHOW_CHOOSE_ROLE:
                 return (
                     <ChooseRoleModal onHide={() => this.props.handleClose()} />
-                );*/
+                );
 
             case modalVisibilityFilters.SHOW_REGISTER_RESTAURANT_OWNER:
                 return (
@@ -55,6 +56,14 @@ class CustomModal extends Component {
                         role={roles.RESTAURANT_OWNER}
                         onHide={() => this.props.handleClose()}/>
                 );
+
+            case modalVisibilityFilters.SHOW_REGISTER_CUSTOMER:
+                return (
+                    <RegisterCustomer
+                        role={roles.CUSTOMER}
+                        onHide={() => this.props.handleClose()}/>
+                );
+
             case modalVisibilityFilters.SHOW_RESTAURANT_INFORMATION:
                 return (
                     <FillRestaurantInfo

@@ -1,46 +1,41 @@
 //<editor-fold desc="React Import">
 import React, {Component} from "react";
-import {Redirect} from "react-router-dom";
+import {Link, Redirect} from "react-router-dom"
 //</editor-fold>
 //<editor-fold desc="Redux import">
 import {connect} from "react-redux";
 //</editor-fold>
 
-//<editor-fold desc="Constants">
-import {modalVisibilityFilters} from "../../constants/modalVisibiltyFilters";
-//</editor-fold>
-//<editor-fold desc="Containers">
-import FilterLink from "../../containers/FilterModalLink";
-//</editor-fold>
 //<editor-fold desc="Layout">
-import Layout from "./../layout/Layout.js"
+import MainLayout from "../layout/MainLayout.js"
 //</editor-fold>
 
-
-class Homepage extends Component {
+class CustomerPage extends Component {
     //<editor-fold desc="Render">
     render() {
         if(typeof this.props.loginStatus != "undefined" && this.props.loginStatus === "logged in"){
-            return(
-                <Redirect to={{pathname: "/Mainpage/"}}/>
-            );
-        }
-        else {
             return (
-                <Layout >
-                    <div className="homepage-banner">
-                        <div className="homepage-text">
+                <MainLayout >
+                    <div className="mainpage-banner">
+                        <div className="mainpage-text">
                             <div className="container">
                                 <div className="row">
                                     <div className="col-sm-8">
-                                        <h1 className="title">Share your menus</h1>
-                                        <button className="normal"><FilterLink filter={modalVisibilityFilters.SHOW_CHOOSE_ROLE}>Get started</FilterLink></button>
+                                        <h1 className="title">{this.props.username}, you are a customer. Please download and use the phone application</h1>
+                                        <Link to="/" className="logo">
+                                            <text>Back to Homepage</text>
+                                        </Link>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </Layout>
+                </MainLayout>
+            );
+        }
+        else {
+            return(
+                <Redirect to={{pathname: "/"}}/>
             );
         }
     }
@@ -50,9 +45,10 @@ class Homepage extends Component {
 //<editor-fold desc="Redux">
 const mapStateToProps = (state) => {
     return {
+        username: state.logInReducer.username,
         loginStatus: state.logInReducer.loginStatus
     };
 };
 
-export default connect(mapStateToProps, null)(Homepage);
+export default connect(mapStateToProps, null)(CustomerPage);
 //</editor-fold>
