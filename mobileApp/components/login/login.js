@@ -24,15 +24,12 @@ export default class LoginScreen extends Component {
       passwordError: "",
       token: "",
       invalidError: false,
-      previousPage:""
     };
     this.register = this.register.bind(this);
   }
 
-
   componentDidMount = async () => {
     this.getToken();
-    //this.setState({previousPage:this.props.navigation.getParam("previousPage", "Search")})
   };
 
   async handleLogin() {

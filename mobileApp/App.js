@@ -30,6 +30,7 @@ const SearchStack = createStackNavigator(
 const ReviewStack = createStackNavigator(
   {
     Review: ReviewPage,
+    Login: LoginScreen
   },
   {
     initialRouteName: "Review",
