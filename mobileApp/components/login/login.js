@@ -23,13 +23,16 @@ export default class LoginScreen extends Component {
       password: "",
       passwordError: "",
       token: "",
-      invalidError: false
+      invalidError: false,
+      previousPage:""
     };
     this.register = this.register.bind(this);
   }
 
+
   componentDidMount = async () => {
     this.getToken();
+    //this.setState({previousPage:this.props.navigation.getParam("previousPage", "Search")})
   };
 
   async handleLogin() {
@@ -39,7 +42,7 @@ export default class LoginScreen extends Component {
         password: this.state.password,
         isRestaurantOwner: false
       });
-      const res = await fetch(`http://192.168.1.110:80/api/user/login/`, {
+      const res = await fetch(`http://192.168.1.110:8080/api/user/login/`, {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -54,7 +57,7 @@ export default class LoginScreen extends Component {
         this.setState({ token: jsonResponse.token });
         this.storeToken(JSON.stringify(jsonResponse.token));
         console.log("Token is set to: ", this.state.token);
-        this.props.navigation.navigate("Profile", {username: this.state.username});
+        this.props.navigation.navigate("Profile");
       }
       if (!res.ok) {
         this.setState({ invalidError: true });
@@ -87,7 +90,7 @@ export default class LoginScreen extends Component {
 
   async storeToken(user) {
     try {
-      await AsyncStorage.setItem("userData", JSON.stringify(user));
+      await AsyncStorage.setItem("userToken", JSON.stringify(user));
     } catch (e) {
       console.log("Something went wrong storing token", e);
     }
@@ -95,7 +98,7 @@ export default class LoginScreen extends Component {
 
   async getToken(user) {
     try {
-      const userData = await AsyncStorage.getItem("userData");
+      const userData = await AsyncStorage.getItem("userToken");
       const data = JSON.parse(userData);
     } catch (e) {
       console.log("Something went wrong getting token", e);
