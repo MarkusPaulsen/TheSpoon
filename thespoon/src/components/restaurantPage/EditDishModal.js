@@ -100,8 +100,8 @@ class EditDishModal extends Component {
                 if (thisTemp.state.validation.isValid) {
                     thisTemp.setState({serverMessage: "New dish is edited"})
                     return ajax({
-                        url: "http://localhost:8080/api/user/owner/restaurant/menu/${this.props.menuID}",
-                        method: "POST",
+                        url: "http://localhost:8080/api/user/owner/restaurant/menu/" + this.props.menuID + "menuItem/" + this.props.menuItemID,
+                        method: "PUT",
                         headers: {"Content-Type": "application/json", "X-Auth-Token": this.props.token},
                         body: {
                             name: thisTemp.state.name,

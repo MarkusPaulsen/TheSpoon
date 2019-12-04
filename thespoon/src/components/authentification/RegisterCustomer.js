@@ -1,16 +1,37 @@
-//TO REMOVE
+//<editor-fold desc="React">
 import React, {Component} from "react";
-import {Redirect} from "react-router-dom"
-import {ajax} from "rxjs/ajax";
-import {paths} from "../../constants/paths";
-import {IconName, IconEmail, IconPassword, IconExit, IconBack} from "../Icons";
+//</editor-fold>
+//<editor-fold desc="Redux">
+import {connect} from "react-redux";
+import {setModalVisibilityFilterAction} from "../../actionCreators/modalVisibilityFilterActionCreators";
+import {failLogIn, logIn, successLogIn} from "../../actionCreators/logInActionCreators";
+//</editor-fold>
+//<editor-fold desc="RxJs">
+import {bindCallback, of, throwError} from "rxjs";
+import {exhaustMap, map, take, catchError} from "rxjs/operators";
+//</editor-fold>
+//<editor-fold desc="Bootstrap">
 import {Modal} from "react-bootstrap";
-import FilterLink from "../../containers/FilterModalLink";
-import {modalVisibilityFilters} from "../../constants/modalVisibiltyFilters";
+//</editor-fold>
+//<editor-fold desc="Validator">
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
-import Button from "react-validation/build/button";
 import FormValidator from "../../validation/FormValidator";
+//</editor-fold>
+
+//<editor-fold desc="Constants">
+import {modalVisibilityFilters} from "../../constants/modalVisibiltyFilters";
+//</editor-fold>
+//<editor-fold desc="Containers">
+import FilterLink from "../../containers/FilterModalLink";
+//</editor-fold>
+//<editor-fold desc="Icons">
+import {IconName, IconEmail, IconPassword, IconExit, IconBack} from "../Icons";
+import Button from "react-validation/build/button";
+import {ajax} from "rxjs/ajax";
+import {paths} from "../../constants/paths";
+
+//</editor-fold>
 
 
 class RegisterCustomer extends Component  {
@@ -63,74 +84,81 @@ class RegisterCustomer extends Component  {
           password:"",
           confirmPassword: "",
           validation: this.validator.valid(),
-          serverMessage: ""
+          serverMessage: "",
+          submitted: false
       };
 
-      this.submitted = false;
       this.handleSubmit = this.handleSubmit.bind(this);
   }
 
     passwordMatch = (confirmation, state) => (state.password === confirmation);
 
     handleSubmit = event => {
-        if(true) {
-            return <Redirect to="/CustomerPage"/>
-        }
         event.preventDefault();
+
+        //get the this for RxJs
         const thisTemp = this;
-        const values = this.form.getValues();
-
-        this.setState({
-            email:values.email,
-            username: values.username,
-            password:values.password,
-            confirmPassword: values.confirmPassword
-        }, () => {//because setstate is asynchronus, further action must be taken on callback
-
-                const validation = this.validator.validate(this.state);
-                this.setState({validation });
-                this.submitted = true;
-
-                if (validation.isValid) {
-                    thisTemp.setState({serverMessage: "Sign up is processing"});
-                    let thisTemp = this;
-                    ajax({
+        of(1)
+            .pipe(map(() => {
+                return thisTemp.form.getValues()
+            }))
+            .pipe(exhaustMap((values) => {
+                return bindCallback(thisTemp.setState).call(thisTemp, {
+                    email: values.email,
+                    username: values.username,
+                    password: values.password,
+                    confirmPassword: values.confirmPassword
+                });
+            }))
+            .pipe(exhaustMap(() => {
+                return bindCallback(thisTemp.setState).call(thisTemp, {
+                    validation: thisTemp.validator.validate(thisTemp.state),
+                    submitted: true,
+                    serverMessage: ""
+                });
+            }))
+            .pipe(exhaustMap(() => {
+                if (thisTemp.state.validation.isValid) {
+                    return ajax({
                         url: paths["restApi"]["registrationCustomer"],
                         method: "POST",
-                        headers: {"Content-Type": "application/json"},
+                        header: {"Content-Type": "application/json"},
                         body: {
-                            email: this.state.email,
-                            password:this.state.password,
-                            username:this.state.username
+                            username: thisTemp.state.username,
+                            email: thisTemp.state.email,
+                            password: thisTemp.state.password
                         }
-                    }).subscribe(
-                        () => {
-                            thisTemp.setState({serverMessage: "Login is processing..." });
-                            thisTemp.setState(
-                                {serverMessage: <Redirect to={{pathname: "/YourRestaurant"}}/>}
-                            );
-                        },
-                        (error) => {
-                            switch (error.status) {
-                                case 400:
-                                    thisTemp.setState({serverMessage: "Username or email already taken" });
-                                    break;
-                                case 404:
-                                    thisTemp.setState({serverMessage: "No connection to the server" });
-                                    break;
-                                default:
-                                    thisTemp.setState({serverMessage: "General error" });
-                                    break;
-                            }
-                        },
-                        () => {
-                            thisTemp.setState({serverMessage: <Redirect to={{pathname: "/Mainpage/"}}/>});
-                            thisTemp.props.onHide();
-                        }
-                    );
+                    });
                 }
-            }
+                else {
+                    return throwError({ status: 0});
+                }
+        }))
+            .pipe(take(1))
+            .subscribe(
+                (next) => {
+                    thisTemp.props.successLogIn(next.response.token);
+                    thisTemp.props.onHide();
+                    //this.props.changeRoShowRestaurantInformationModal();
+                }, (error) => {
+                    thisTemp.props.failLogin();
+                    switch (error.status) {
+                        case 400:
+                            thisTemp.setState({serverMessage: "Username is already taken" });
+                            break;
+                        case 404:
+                            thisTemp.setState({serverMessage: "No connection to the server" });
+                            break;
+                        case 0:
+                            thisTemp.setState({serverMessage: "" });
+                            break;
+                        default:
+                            thisTemp.setState({serverMessage: "General error" });
+                            break;
+                    }
+                }
             );
+
     };
 
     render() {
@@ -152,31 +180,39 @@ class RegisterCustomer extends Component  {
                         <IconEmail />
                         <Input type="email" name="email" placeholder="E-mail"/>
                     </div>
+                    <div className="error-block">
+                        <small>{validation.email.message}</small>
+                    </div>
 
                     <div className="input-field">
                         <IconName />
                         <Input type="text" name="username" placeholder="Username"/>
+                    </div>
+                    <div className="error-block">
+                        <small>{validation.username.message}</small>
                     </div>
 
                     <div className="input-field">
                         <IconPassword />
                         <Input type="password" name="password" placeholder="Password"/>
                     </div>
+                    <div className="error-block">
+                        <small>{validation.password.message}</small>
+                    </div>
 
                     <div className="input-field">
                         <IconPassword />
                         <Input type="password" id="confirm-password" name="confirmPassword" placeholder="Confirm password"/>
                     </div>
-
                     <div className="error-block">
-                        <small>{validation.email.message}</small>
-                        <small>{validation.username.message}</small>
-                        <small>{validation.password.message}</small>
                         <small>{validation.confirmPassword.message}</small>
-                        <small>{this.state.serverMessage}</small>
                     </div>
 
                   <Button type="submit" className="normal" >Sign up</Button>
+                    <div className="error-block">
+                        <small>{this.state.serverMessage}</small>
+                    </div>
+
                 </Form>
                 <div className="link-wrapper">
                     <small>Already have an account? <FilterLink filter={modalVisibilityFilters.SHOW_LOGIN}>Log in</FilterLink></small>
@@ -187,4 +223,11 @@ class RegisterCustomer extends Component  {
   }
 }
 
-export default RegisterCustomer;
+const mapDispatchToProps = (dispatch) => ({
+    logIn: (username, password) => dispatch(logIn(username, password)),
+    failLogIn: () => dispatch(failLogIn()),
+    successLogIn: (token) => {
+        dispatch(successLogIn(token))}
+})
+
+export default connect(null, mapDispatchToProps)(RegisterCustomer);
