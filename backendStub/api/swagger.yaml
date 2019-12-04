@@ -12,7 +12,7 @@ info:
     \ to customers nor owners remain inside the default group.\n \n AUTHENTICATION/AUTHORIZATION:\
     \ The json web token returned when the login is performed is supposed to be put\
     \ into x-auth-token header in the endpoints that require authorization"
-  version: "4.3"
+  version: "5.0"
   title: "The Spoon API reference"
 tags:
 - name: "customer"
@@ -112,7 +112,7 @@ paths:
     get:
       tags:
       - "owner"
-      - "Matej"
+      - "Frikk"
       summary: "Get data of own restaurant"
       description: "Get the data of the restaurant of authenticated owner, so that\
         \ it can be showed in the 'Your Restaurant' page."
@@ -496,6 +496,204 @@ paths:
       x-security-scopes:
       - "owner"
       x-swagger-router-controller: "Owner"
+  /api/user/customer/review/restaurant:
+    get:
+      tags:
+      - "customer"
+      summary: "Return all the restaurants"
+      description: "Return all the names of the restaurants and their restaurantIDs."
+      operationId: "getRestaurants"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        "200":
+          description: "Successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/RestaurantIDAndName"
+        "401":
+          description: "Access denied"
+      security:
+      - Bearer: []
+      x-security-scopes:
+      - "customer"
+      x-swagger-router-controller: "Customer"
+  /api/user/customer/review/restaurant/{restaurantID}/menu:
+    get:
+      tags:
+      - "customer"
+      summary: "Return all the menus of given restaurant"
+      description: "Return all the names of the menus of the restaurant and their\
+        \ menuIDs."
+      operationId: "getMenusOfRestaurant"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "restaurantID"
+        in: "path"
+        description: "ID of the restaurant"
+        required: true
+        type: "integer"
+      responses:
+        "200":
+          description: "Successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/MenuIDAndName"
+        "401":
+          description: "Access denied"
+        "404":
+          description: "Restaurant with given restaurantID doesn't exist"
+      security:
+      - Bearer: []
+      x-security-scopes:
+      - "customer"
+      x-swagger-router-controller: "Customer"
+  /api/user/customer/review/restaurant/menu/{menuID}/menuItem:
+    get:
+      tags:
+      - "customer"
+      summary: "Return all the menu items of given menu"
+      description: "Return all the names of the restaurants and their restaurantIDs."
+      operationId: "getItemsOfMenu"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "menuID"
+        in: "path"
+        description: "ID of the menu"
+        required: true
+        type: "integer"
+      responses:
+        "200":
+          description: "Successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/MenuItemIDAndName"
+        "401":
+          description: "Access denied"
+        "404":
+          description: "Menu with given menuID doesn't exist"
+      security:
+      - Bearer: []
+      x-security-scopes:
+      - "customer"
+      x-swagger-router-controller: "Customer"
+  /api/user/customer/review/restaurant/menu/{menuID}:
+    post:
+      tags:
+      - "customer"
+      summary: "Submit a review of the menu"
+      description: "Submit a review of the menu with given menuID. The receiptImageID\
+        \ is obtained by the frontend when the photo of the receipt is uploaded through\
+        \ the dedicated endpoint."
+      operationId: "submitReview"
+      consumes:
+      - "application/json"
+      parameters:
+      - name: "menuID"
+        in: "path"
+        description: "ID of the menu"
+        required: true
+        type: "integer"
+      - in: "body"
+        name: "body"
+        description: "Review"
+        required: true
+        schema:
+          $ref: "#/definitions/MenuReview"
+      responses:
+        "201":
+          description: "Successful operation"
+        "401":
+          description: "Access denied"
+        "404":
+          description: "Menu with given menuID doesn't exist"
+      security:
+      - Bearer: []
+      x-security-scopes:
+      - "customer"
+      x-swagger-router-controller: "Customer"
+  /api/user/customer/review:
+    get:
+      tags:
+      - "customer"
+      summary: "Return all the reviews of the customer"
+      description: "Return all the reviews of the customer, with their reviewIDs and\
+        \ their status (accepted/refused/pending). Returns an empty array if no review\
+        \ is found."
+      operationId: "GetOwnReviews"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        "200":
+          description: "Successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/MenuReviewWithIDAndStatus"
+        "401":
+          description: "Access denied"
+      security:
+      - Bearer: []
+      x-security-scopes:
+      - "customer"
+      x-swagger-router-controller: "Customer"
+  /api/user/customer/review/{reviewID}:
+    delete:
+      tags:
+      - "customer"
+      summary: "Delete a review"
+      description: "Delete the review with the given reviewID. This will also delete\
+        \ the reviews of the menu items associated to the review with given reviewID."
+      operationId: "apiUserCustomerReviewReviewIDDELETE"
+      parameters:
+      - name: "reviewID"
+        in: "path"
+        description: "ID of the review"
+        required: true
+        type: "integer"
+      responses:
+        "200":
+          description: "Successful operation"
+        "401":
+          description: "Access denied"
+        "404":
+          description: "Review associated to the customer with given reviewID not\
+            \ found"
+      security:
+      - Bearer: []
+      x-security-scopes:
+      - "customer"
+      x-swagger-router-controller: "Customer"
+  /api/user/customer:
+    get:
+      tags:
+      - "customer"
+      summary: "Return profile data of the customer"
+      description: "Return own data of the logged in customer. This endpoints should\
+        \ be used when the frontend has to visualize the profile of the customer."
+      operationId: "apiUserCustomerGET"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        "200":
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/CustomerUsernameAndEmail"
+        "401":
+          description: "Access denied"
+      security:
+      - Bearer: []
+      x-security-scopes:
+      - "customer"
+      x-swagger-router-controller: "Customer"
 securityDefinitions:
   Bearer:
     type: "apiKey"
@@ -706,6 +904,8 @@ definitions:
           $ref: "#/definitions/Tag"
       imageLink:
         type: "string"
+      rating:
+        type: "number"
     example:
       menuItemID: 8
       name: "Spaghetti alla carbonara"
@@ -721,6 +921,7 @@ definitions:
       - name: "Italian"
         color: "#FFBC8C"
       imageLink: "www.cloudStorage.com/Carbonara"
+      rating: 4
   MenuItemWithoutColors:
     type: "object"
     properties:
@@ -770,7 +971,7 @@ definitions:
         items:
           $ref: "#/definitions/Tag"
       rating:
-        type: "integer"
+        type: "number"
     example:
       menuID: 2
       name: "Emilio's menu of the day"
@@ -935,7 +1136,7 @@ definitions:
         items:
           $ref: "#/definitions/Tag"
       menuRating:
-        type: "integer"
+        type: "number"
       menuItems:
         type: "array"
         items:
@@ -973,6 +1174,7 @@ definitions:
         - name: "Dinner"
           color: "#99C99B"
         imageLink: "www.cloudStorage.com/Carbonara"
+        rating: 4.5
       - menuItemID: 21
         name: "Polpette al sugo"
         description: "Meatballs with tomato sauce"
@@ -986,6 +1188,7 @@ definitions:
         - name: "Italian"
           color: "#FFBC8C"
         imageLink: "www.cloudStorage.com/Meatballs"
+        rating: 4
   Tag:
     type: "object"
     properties:
@@ -996,6 +1199,120 @@ definitions:
     example:
       name: "Mediterranean"
       color: "#FFBC8C"
+  RestaurantIDAndName:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+      restaurantID:
+        type: "integer"
+    example:
+      name: "Emilio's Pizza"
+      restaurantID: 520
+  MenuIDAndName:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+      menuID:
+        type: "integer"
+    example:
+      name: "Emilio's menu of the day"
+      menuID: 420
+  MenuItemIDAndName:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+      menuItemID:
+        type: "integer"
+    example:
+      name: "Pasta alla carbonara"
+      menuID: 802
+  MenuReview:
+    type: "object"
+    properties:
+      menuID:
+        type: "integer"
+      serviceRating:
+        type: "number"
+      qualityOverPriceRating:
+        type: "number"
+      date:
+        type: "string"
+      receiptImageID:
+        type: "integer"
+      menuItemsReviews:
+        type: "array"
+        items:
+          $ref: "#/definitions/MenuItemReview"
+    example:
+      menuID: 343
+      serviceRating: 4.5999999999999996447286321199499070644378662109375
+      qualityOverPriceRating: 4.70000000000000017763568394002504646778106689453125
+      date: "2019-12-01"
+      receiptImageID: 67
+      menuItemsReviews:
+      - menuItemID: 34
+        rating: 4.0999999999999996447286321199499070644378662109375
+        content: "That was delicious!"
+      - menuItemID: 58
+        rating: 0.5
+        content: "It was an insult, I will never eat that trash again in my whole\
+          \ life"
+  MenuItemReview:
+    type: "object"
+    properties:
+      menuItemID:
+        type: "integer"
+      rating:
+        type: "number"
+      content:
+        type: "string"
+  MenuReviewWithIDAndStatus:
+    type: "object"
+    properties:
+      menuID:
+        type: "integer"
+      serviceRating:
+        type: "number"
+      qualityOverPriceRating:
+        type: "number"
+      date:
+        type: "string"
+      receiptImageID:
+        type: "integer"
+      status:
+        type: "string"
+      menuItemsReviews:
+        type: "array"
+        items:
+          $ref: "#/definitions/MenuItemReview"
+    example:
+      menuID: 343
+      serviceRating: 4.5999999999999996447286321199499070644378662109375
+      qualityOverPriceRating: 4.70000000000000017763568394002504646778106689453125
+      date: "2019-12-01"
+      receiptImageID: 67
+      status: "accepted"
+      menuItemsReviews:
+      - menuItemID: 34
+        rating: 4.0999999999999996447286321199499070644378662109375
+        content: "That was delicious!"
+      - menuItemID: 58
+        rating: 0.5
+        content: "It was an insult, I will never eat that trash again in my whole\
+          \ life"
+  CustomerUsernameAndEmail:
+    type: "object"
+    properties:
+      username:
+        type: "string"
+      email:
+        type: "string"
+    example:
+      username: "emilio_imperiali"
+      email: "emilioimperiali@mail.it"
   MenuAndRestaurant_restaurantData:
     type: "object"
     properties:

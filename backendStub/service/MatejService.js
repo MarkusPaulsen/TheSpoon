@@ -22,37 +22,3 @@ exports.configureRestaurant = function(body) {
   });
 }
 
-
-/**
- * Get data of own restaurant
- * Get the data of the restaurant of authenticated owner, so that it can be showed in the 'Your Restaurant' page.
- *
- * returns RestaurantReceived
- **/
-exports.getRestaurant = function() {
-  return new Promise(function(resolve, reject) {
-    var examples = {};
-    examples['application/json'] = {
-  "name" : "Emilio's Pizza",
-  "address" : "Piazzale Susa",
-  "city" : "Milan",
-  "country" : "Italy",
-  "imageLink" : "www.cloudStorage.com/Restaurant",
-  "openingHours" : [ {
-    "day" : "Monday",
-    "openTime" : "12.00",
-    "closeTime" : "15.00"
-  }, {
-    "day" : "Saturday",
-    "openTime" : "19.00",
-    "closeTime" : "23.59"
-  } ]
-};
-    if (Object.keys(examples).length > 0) {
-      resolve(examples[Object.keys(examples)[0]]);
-    } else {
-      resolve();
-    }
-  });
-}
-
