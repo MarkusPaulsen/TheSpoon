@@ -1,9 +1,6 @@
 const Sequelize = require('sequelize');
 const db = require('../sequelizeSettings');
 
-//const MenuItem = require('./menuItem');
-
-
 const ItemReview = db.define('ItemReview', {
     Review_ID: {
         type: Sequelize.INTEGER,

@@ -50,7 +50,6 @@ router.post('/:menuID/menuItem', auth, isOwner, findRestaurant, async (req, res)
         });
     }
 
-
     const menu = await Menu.findOne({
         attributes: ['Name', 'Description'],
         where: {
@@ -59,23 +58,38 @@ router.post('/:menuID/menuItem', auth, isOwner, findRestaurant, async (req, res)
         ,
         include: [{
             model: TaggedMenu,
-            attributes: ['Tag']
+            attributes: ['Tag'],
+            include: [{
+                model: Tag,
+                as: 'Tags'
+            }]
         }
             , {
                 model: MenuItem,
                 attributes: ['Name', 'Description', 'Type', 'Price', 'ImageLink'],
                 include: [{
-                    model: TaggedItem
-                    , attributes: ['Tag']
-                    , include: [{model: Tag, as: 'Tags'}]
+                    model: TaggedItem,
+                    attributes: ['Tag'],
+                    include: [{model: Tag, as: 'Tags'}]
                 }]
             }
         ]
 
     });
 
+    const menuTags = await formatTags(menu.TaggedMenus);
+    const menuItems = await formatMenuItems(menu.MenuItems);
+
+    const menuInfo = {
+        name: menu.Name,
+        description: menu.Description,
+        tags: menuTags,
+        menuItems: menuItems
+    }
+
+
     console.log('sending 200');
-    res.status(200).send(menu);
+    res.status(200).send(menuInfo);
 
 
 });
@@ -83,22 +97,19 @@ router.post('/:menuID/menuItem', auth, isOwner, findRestaurant, async (req, res)
 //Edit a menuItem
 router.put('/:menuID/menuItem/:menuItemID', auth, isOwner, findRestaurant, async (req, res) => {
     console.log('In PUT /api/user/owner/restaurant/menu/{menuID}/menuItem/{menuItemID}');
-    const menuID=req.params.menuID;
-    const menuItemID=req.params.menuItemID;
-    const menuItem=req.body;
-    const imageLink=AWS_IMAGE_STORAGE + menuItem.imageID;
+    const menuID = req.params.menuID;
+    const menuItemID = req.params.menuItemID;
+    const menuItem = req.body;
+    const imageLink = AWS_IMAGE_STORAGE + menuItem.imageID;
 
-    console.log('body is ' + JSON.stringify(menuItem));
-
-
-    const menuItemFound=await MenuItem.findOne({
+    const menuItemFound = await MenuItem.findOne({
         where: {
             MI_ID: menuItemID,
             Menu_ID: menuID
         }
     });
 
-    if(menuItem==null){
+    if (menuItem == null) {
         res.status('400').send('No such element');
     }
 
@@ -133,23 +144,39 @@ router.put('/:menuID/menuItem/:menuItemID', auth, isOwner, findRestaurant, async
         ,
         include: [{
             model: TaggedMenu,
-            attributes: ['Tag']
+            attributes: ['Tag'],
+            include: [{
+                model: Tag,
+                as: 'Tags'
+            }]
         }
             , {
                 model: MenuItem,
                 attributes: ['Name', 'Description', 'Type', 'Price', 'ImageLink'],
                 include: [{
-                    model: TaggedItem
-                    , attributes: ['Tag']
-                    , include: [{model: Tag, as: 'Tags'}]
+                    model: TaggedItem,
+                    attributes: ['Tag'],
+                    include: [{
+                        model: Tag,
+                        as: 'Tags'
+                    }]
                 }]
             }
         ]
 
     });
 
+    const menuTags = await formatTags(menu.TaggedMenus);
+    const menuItems = await formatMenuItems(menu.MenuItems);
+
+    const menuInfo = {
+        name: menu.Name,
+        description: menu.Description,
+        tags: menuTags,
+        menuItems: menuItems
+    }
     console.log('sending 200');
-    res.status(200).send(menu);
+    res.status(200).send(menuInfo);
 
 });
 
@@ -173,5 +200,31 @@ router.delete('/:menuID/menuItem/:menuItemID', auth, isOwner, findRestaurant, as
     await menuItemFound.destroy();
     res.status(200).send('deleted');
 });
+
+const formatMenuItems = (menuItems) => {
+    for (let i = 0; i < menuItems.length; i++) {
+        const tags = formatTags(menuItems[i].TaggedItems);
+        menuItems[i] = {
+            name: menuItems[i].Name,
+            description: menuItems[i].Description,
+            type: menuItems[i].Description,
+            priceEuros: menuItems[i].Price,
+            tags: tags,
+            imageLink: menuItems[i].ImageLink
+        }
+    }
+    return menuItems;
+}
+
+const formatTags = (arr) => {
+    for (let i = 0; i < arr.length; i++) {
+        arr[i] = {
+            name: arr[i].Tags.Name,
+            color: arr[i].Tags.Color
+        }
+    }
+    return arr;
+};
+
 
 module.exports = router;

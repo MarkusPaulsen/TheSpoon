@@ -13,13 +13,3 @@ module.exports.configureRestaurant = function configureRestaurant (req, res, nex
       utils.writeJson(res, response);
     });
 };
-
-module.exports.getRestaurant = function getRestaurant (req, res, next) {
-  Matej.getRestaurant()
-    .then(function (response) {
-      utils.writeJson(res, response);
-    })
-    .catch(function (response) {
-      utils.writeJson(res, response);
-    });
-};
