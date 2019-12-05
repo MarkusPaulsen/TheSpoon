@@ -1,5 +1,6 @@
 const Sequelize = require('sequelize');
 const db = require('../sequelizeSettings');
+const Restaurant = require('./restaurant.js');
 
 const OpeningHours = db.define('OpeningHours', {
     Restaurant_ID: {
