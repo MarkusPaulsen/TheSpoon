@@ -11,11 +11,13 @@ export default class ContinueButton extends Component {
     const text = this.props.text;
     const id = this.props.id;
     const menuItems = this.props.menuItems;
+    const menuID = this.props.menuID;
+    const menuItemReviews= this.props.menuItemReviews;
 
     if (disableButton === false) {
       return (
           <TouchableOpacity
-              onPress={() => navigation.navigate(view, {id:id, menuItems:menuItems})}
+              onPress={() => navigation.navigate(view, {id:id, menuItems:menuItems, menuID:menuID, menuItemReviews:menuItemReviews})}
               style={[styles.button, { backgroundColor: Colors.PINK }]}
           >
             <Text style={[Typography.FONT_H4_WHITE, { textAlign: "center" }]}>

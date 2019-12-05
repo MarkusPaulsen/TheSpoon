@@ -18,7 +18,7 @@ export default class ReviewAddMenu extends Component {
       disableButton: false,
       selected: null,
       backgroundColor: "#FFFFFF",
-      menus: ""
+      menus: "",
     };
   }
 
@@ -86,7 +86,7 @@ export default class ReviewAddMenu extends Component {
           <ContinueButton
             disableButton={this.state.disableButton}
             navigation={this.props}
-            id={this.state.selected}
+            menuID={this.state.selected}
             view={"ReviewAddItems"}
             text={"CONTINUE"}
           />

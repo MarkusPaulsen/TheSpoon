@@ -10,12 +10,6 @@ export default class ReviewItems extends Component {
     super(props);
     this.state = {
       disableButton: false,
-      itemsList: [
-        "Pizza Margherita",
-        "Blue Cheese Burger",
-        "Pizza 4 Formaggio",
-        "Avocado Toast"
-      ],
         menuItems:"",
     };
   }

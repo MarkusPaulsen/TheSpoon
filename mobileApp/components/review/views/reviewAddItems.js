@@ -26,7 +26,7 @@ export default class ReviewAddItems extends Component {
 
   componentDidMount = async () => {
     const { navigation } = this.props;
-    const menuID = navigation.getParam("id", "000");
+    const menuID = navigation.getParam("menuID", "000");
     await this.getMenuItems(menuID);
   };
 
@@ -50,11 +50,12 @@ export default class ReviewAddItems extends Component {
 
   onClick(menuItemID, menuItemName) {
     this.setState({
-      backgroundColor: "#A5DED0",
-      selected: menuItemID,
-      menuItemName
+      backgroundColor: "#A5DED0"
     });
-    this.state.selectedMenuItems.push({menuItemID:menuItemID, menuItemName: menuItemName});
+    this.state.selectedMenuItems.push({
+      menuItemID: menuItemID,
+      menuItemName: menuItemName
+    });
     console.log(this.state.backgroundColor, menuItemID);
   }
 
@@ -94,7 +95,6 @@ export default class ReviewAddItems extends Component {
             disableButton={this.state.disableButton}
             navigation={this.props}
             menuItems={this.state.selectedMenuItems}
-            id={this.state.selected}
             view={"ReviewItems"}
             text={"CONTINUE"}
           />
