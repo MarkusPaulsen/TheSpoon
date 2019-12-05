@@ -12,6 +12,8 @@ const Tag = require('../models/tag.js');
 const ItemReview = require('../models/itemReview.js');
 const MenuReview = require('../models/menuReview.js');
 
+// TODO: Fix calculation of rating
+// TODO: Fix common function for computing average rating of a specific column in the DB.
 
 router.get('/:menuID', async (req, res) => {
     try {
