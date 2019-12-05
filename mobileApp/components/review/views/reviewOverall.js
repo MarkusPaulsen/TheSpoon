@@ -12,6 +12,7 @@ import * as Typography from "../../../styles/typography";
 import * as Colors from "../../../styles/colors";
 import BackButton from "../components/backButton";
 import ContinueButton from "../components/continueButton";
+import { AirbnbRating } from "react-native-ratings";
 
 export default class ReviewOverall extends Component {
   constructor(props) {
@@ -26,16 +27,46 @@ export default class ReviewOverall extends Component {
       <View style={styles.container}>
         <BackButton navigation={this.props.navigation} />
         <View style={{ flex: 1, alignItems: "center", marginBottom: 20 }}>
-          <Text style={Typography.FONT_H3_BLACK}>
-            What's you overall impression
+          <Text style={[Typography.FONT_H3_BLACK, { textAlign: "center" }]}>
+            What's you overall{"\n"}impression?
           </Text>
+          <Text
+            style={[
+              Typography.FONT_H4_BLACK,
+              { marginTop: 80, marginBottom: 10 }
+            ]}
+          >
+            Service
+          </Text>
+          <AirbnbRating
+            showRating={false}
+            defaultRating={0}
+            size={30}
+            selectedColor={Colors.PINK}
+          />
+          <Text
+            style={[
+              Typography.FONT_H4_BLACK,
+              { marginTop: 40, marginBottom: 10 }
+            ]}
+          >
+            Quality/Price
+          </Text>
+          <AirbnbRating
+            showRating={false}
+            defaultRating={0}
+            size={30}
+            selectedColor={Colors.PINK}
+          />
+          <View style={{ marginTop: 60 }}>
+            <ContinueButton
+              disableButton={this.state.disableButton}
+              navigation={this.props}
+              view={"ReviewOverall"}
+              text={"POST REVIEW"}
+            />
+          </View>
         </View>
-        <ContinueButton
-          disableButton={this.state.disableButton}
-          navigation={this.props}
-          view={"ReviewOverall"}
-          text={"POST REVIEW"}
-        />
       </View>
     );
   }
@@ -43,7 +74,7 @@ export default class ReviewOverall extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    flexGrow: 1,
+    flex: 1,
     marginTop: 60
   }
 });

@@ -31,7 +31,7 @@ export default class ReviewAddMenu extends Component {
     return (
       <View style={styles.container}>
         <BackButton navigation={this.props.navigation} />
-        <View style={{ flex: 1, alignItems: "center", marginBottom: 20 }}>
+        <View style={{ flex: 1, alignItems: "center" }}>
           <Text style={Typography.FONT_H3_BLACK}>Choose Menu</Text>
         </View>
         <View style={styles.resultList}>
@@ -57,13 +57,13 @@ export default class ReviewAddMenu extends Component {
             )}
           />
         </View>
-        <View style={{ flex: 1, alignSelf: "center" }}>
-            <ContinueButton
-                disableButton={this.state.disableButton}
-                navigation={this.props}
-                view={"ReviewAddItems"}
-                text={"CONTINUE"}
-            />
+        <View style={{ alignSelf: "center" }}>
+          <ContinueButton
+            disableButton={this.state.disableButton}
+            navigation={this.props}
+            view={"ReviewAddItems"}
+            text={"CONTINUE"}
+          />
         </View>
       </View>
     );
@@ -77,6 +77,6 @@ const styles = StyleSheet.create({
   },
   resultList: {
     height: 200,
-    flex: 4
+    flex: 6
   }
 });

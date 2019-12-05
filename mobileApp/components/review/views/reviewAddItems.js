@@ -61,7 +61,7 @@ export default class ReviewAddItems extends Component {
             )}
           />
         </View>
-        <View style={{ flex: 1, alignSelf: "center" }}>
+        <View style={{ alignSelf: "center" }}>
           <ContinueButton
             disableButton={this.state.disableButton}
             navigation={this.props}

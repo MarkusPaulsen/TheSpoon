@@ -81,6 +81,20 @@ export const FONT_MED_GRAY = {
   color: Colors.GRAY_MEDIUM
 };
 
+export const FONT_MED_BLACK = {
+  fontFamily: FONT_FAMILY,
+  fontWeight: FONT_WEIGHT_MEDIUM,
+  fontSize: FONT_SIZE_15,
+  color: Colors.BLACK
+};
+
+export const FONT_MED_PINK = {
+  fontFamily: FONT_FAMILY,
+  fontWeight: FONT_WEIGHT_MEDIUM,
+  fontSize: FONT_SIZE_15,
+  color: Colors.PINK
+};
+
 export const FONT_SMALL_BLACK = {
   fontFamily: FONT_FAMILY,
   fontWeight: FONT_WEIGHT_MEDIUM,
