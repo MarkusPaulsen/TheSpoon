@@ -18,13 +18,38 @@ export default class ReviewAddMenu extends Component {
       disableButton: false,
       selected: null,
       backgroundColor: "#FFFFFF",
-      dataSource: ["Lunch Menu", "Evening Menu", "Weekend Specials"]
+      menus: ""
     };
   }
 
-  onClick() {
-    this.setState({ backgroundColor: "#A5DED0" });
+  componentDidMount = async () => {
+    const { navigation } = this.props;
+    const restaurantID = navigation.getParam("id", "000");
+    await this.getMenus(restaurantID);
+  };
+
+  async getMenus(restaurantID) {
+    try {
+      const backendStubURL = `http://192.168.1.110:8080/api/user/customer/review/restaurant/${restaurantID}/menu`;
+      const response = await fetch(backendStubURL, {
+        method: "GET",
+        accept: "application/json"
+      });
+      const responseJson = await response.json();
+      const menus = responseJson.map(index => ({
+        menuID: index.menuID,
+        menuName: index.name
+      }));
+      this.setState({ menus });
+    } catch (e) {
+      console.log("ERROR fetching menus", e);
+    }
+  }
+
+  onClick(menuID) {
+    this.setState({ backgroundColor: "#A5DED0", selected:menuID });
     console.log(this.state.backgroundColor);
+    console.log("MENUID", menuID);
   }
 
   render() {
@@ -36,10 +61,10 @@ export default class ReviewAddMenu extends Component {
         </View>
         <View style={styles.resultList}>
           <FlatList
-            data={this.state.dataSource}
+            data={this.state.menus}
             renderItem={({ item }) => (
               <TouchableHighlight
-                onPress={this.onClick}
+                onPress={this.onClick(item.menuID)}
                 underlayColor={"#A5DED0"}
               >
                 <Text
@@ -51,16 +76,18 @@ export default class ReviewAddMenu extends Component {
                     }
                   ]}
                 >
-                  {item}
+                  {item.menuName}
                 </Text>
               </TouchableHighlight>
             )}
+            keyExtractor={item => item.menuID}
           />
         </View>
         <View style={{ alignSelf: "center" }}>
           <ContinueButton
             disableButton={this.state.disableButton}
             navigation={this.props}
+            id={this.state.selected}
             view={"ReviewAddItems"}
             text={"CONTINUE"}
           />

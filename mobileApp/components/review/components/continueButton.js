@@ -9,11 +9,12 @@ export default class ContinueButton extends Component {
     const disableButton = this.props.disableButton;
     const view = this.props.view;
     const text = this.props.text;
+    const id = this.props.id;
 
     if (disableButton === false) {
       return (
           <TouchableOpacity
-              onPress={() => navigation.navigate(view)}
+              onPress={() => navigation.navigate(view, {id:id})}
               style={[styles.button, { backgroundColor: Colors.PINK }]}
           >
             <Text style={[Typography.FONT_H4_WHITE, { textAlign: "center" }]}>

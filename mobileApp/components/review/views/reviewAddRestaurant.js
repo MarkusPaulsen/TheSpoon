@@ -23,22 +23,7 @@ export default class ReviewAddRestaurant extends Component {
       disableButton: false,
       selected: null,
       backgroundColor: "#FFFFFF",
-      restaurants: "",
-      dataSource: [
-        "Pizzeria AUUM",
-        "Da Zero",
-        "Pizzium",
-        "Nara Sushi",
-        "Una",
-        "Da Zero",
-        "Pizzium",
-        "Nara Sushi",
-        "Una",
-        "Da Zero",
-        "Pizzium",
-        "Nara Sushi",
-        "Una"
-      ]
+      restaurants: ""
     };
   }
   componentDidMount = async () => {
@@ -66,10 +51,11 @@ export default class ReviewAddRestaurant extends Component {
     }
   }
 
-  onClick() {
+  onClick(restaurantID){
     this.setState({ backgroundColor: "#A5DED0" });
+    this.setState({selected: restaurantID});
     console.log(this.state.backgroundColor);
-  }
+  };
 
   render() {
     return (
@@ -84,7 +70,7 @@ export default class ReviewAddRestaurant extends Component {
             data={this.state.restaurants}
             renderItem={({ item }) => (
               <TouchableHighlight
-                onPress={this.onClick}
+                onPress={this.onClick(item.restaurantID)}
                 underlayColor={"#A5DED0"}
               >
                 <Text
@@ -107,6 +93,7 @@ export default class ReviewAddRestaurant extends Component {
           <ContinueButton
             disableButton={this.state.disableButton}
             navigation={this.props}
+            id={this.state.selected}
             view={"ReviewAddMenu"}
             text={"CONTINUE"}
           />
