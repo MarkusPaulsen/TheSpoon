@@ -23,6 +23,7 @@ export default class ReviewAddRestaurant extends Component {
       disableButton: false,
       selected: null,
       backgroundColor: "#FFFFFF",
+      restaurants: "",
       dataSource: [
         "Pizzeria AUUM",
         "Da Zero",
@@ -40,6 +41,30 @@ export default class ReviewAddRestaurant extends Component {
       ]
     };
   }
+  componentDidMount = async () => {
+    await this.getAllMenus();
+  };
+
+  async getAllMenus() {
+    try {
+      const backendStubURL = `http://192.168.1.110:8080/api/user/customer/review/restaurant`;
+      const response = await fetch(backendStubURL, {
+        method: "GET",
+        accept: "application/json"
+      });
+      const responseJson = await response.json();
+      console.log(responseJson);
+      if (response.ok) {
+        const restaurants = responseJson.map(index => ({
+          restaurantID: index.restaurantID.toString(),
+          name: index.name
+        }));
+        this.setState({ restaurants });
+      }
+    } catch (e) {
+      console.log("ERROR fetching restaurants", e);
+    }
+  }
 
   onClick() {
     this.setState({ backgroundColor: "#A5DED0" });
@@ -56,7 +81,7 @@ export default class ReviewAddRestaurant extends Component {
         </View>
         <View style={styles.resultList}>
           <FlatList
-            data={this.state.dataSource}
+            data={this.state.restaurants}
             renderItem={({ item }) => (
               <TouchableHighlight
                 onPress={this.onClick}
@@ -71,10 +96,11 @@ export default class ReviewAddRestaurant extends Component {
                     }
                   ]}
                 >
-                  {item}
+                  {item.name}
                 </Text>
               </TouchableHighlight>
             )}
+            keyExtractor={item => item.restaurantID}
           />
         </View>
         <View style={{ alignSelf: "center" }}>
