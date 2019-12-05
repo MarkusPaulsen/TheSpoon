@@ -70,7 +70,7 @@ export default class ReviewAddRestaurant extends Component {
             data={this.state.restaurants}
             renderItem={({ item }) => (
               <TouchableHighlight
-                onPress={this.onClick(item.restaurantID)}
+                onPress={() => this.onClick(item.restaurantID)}
                 underlayColor={"#A5DED0"}
               >
                 <Text

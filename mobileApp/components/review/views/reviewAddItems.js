@@ -17,42 +17,44 @@ export default class ReviewAddItems extends Component {
     this.state = {
       disableButton: false,
       selected: null,
+      menuItemName: null,
       backgroundColor: "#FFFFFF",
-        menuItems:"",
-      dataSource: [
-        "Pizza Margherita",
-        "Pizza 4 Formaggio",
-        "Hummus and Avocado Toast"
-      ]
+      menuItems: "",
+      selectedMenuItems: []
     };
   }
 
   componentDidMount = async () => {
-      const {navigation} = this.props;
-      const menuID = navigation.getParam("id", "000");
-      await this.getMenuItems(menuID);
+    const { navigation } = this.props;
+    const menuID = navigation.getParam("id", "000");
+    await this.getMenuItems(menuID);
   };
 
-  async getMenuItems(menuID){
-      try {
-          const backendStubURL = `http://192.168.1.110:8080/api/user/customer/review/restaurant/menu/${menuID}/menuItem`;
-          const response = await fetch(backendStubURL, {
-              method: "GET",
-              accept: "application/json"
-          });
-          const responseJson = await response.json();
-          const menuItems = responseJson.map(index => ({
-              menuItemID: index.menuID.toString(),
-              menuItemName: index.name
-          }));
-          this.setState({ menuItems });
-      } catch (e) {
-          console.log("ERROR fetching menuItems", e);
-      }
+  async getMenuItems(menuID) {
+    try {
+      const backendStubURL = `http://192.168.1.110:8080/api/user/customer/review/restaurant/menu/${menuID}/menuItem`;
+      const response = await fetch(backendStubURL, {
+        method: "GET",
+        accept: "application/json"
+      });
+      const responseJson = await response.json();
+      const menuItems = responseJson.map(index => ({
+        menuItemID: index.menuID.toString(),
+        menuItemName: index.name
+      }));
+      this.setState({ menuItems });
+    } catch (e) {
+      console.log("ERROR fetching menuItems", e);
+    }
   }
 
-    onClick(menuItemID) {
-    this.setState({ backgroundColor: "#A5DED0", selected:menuItemID });
+  onClick(menuItemID, menuItemName) {
+    this.setState({
+      backgroundColor: "#A5DED0",
+      selected: menuItemID,
+      menuItemName
+    });
+    this.state.selectedMenuItems.push({menuItemID:menuItemID, menuItemName: menuItemName});
     console.log(this.state.backgroundColor, menuItemID);
   }
 
@@ -68,7 +70,7 @@ export default class ReviewAddItems extends Component {
             data={this.state.menuItems}
             renderItem={({ item }) => (
               <TouchableHighlight
-                onPress={this.onClick(item.menuItemID)}
+                onPress={() => this.onClick(item.menuItemID, item.menuItemName)}
                 underlayColor={"#A5DED0"}
               >
                 <Text
@@ -91,6 +93,7 @@ export default class ReviewAddItems extends Component {
           <ContinueButton
             disableButton={this.state.disableButton}
             navigation={this.props}
+            menuItems={this.state.selectedMenuItems}
             id={this.state.selected}
             view={"ReviewItems"}
             text={"CONTINUE"}

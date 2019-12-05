@@ -63,7 +63,7 @@ export default class ReviewAddMenu extends Component {
             data={this.state.menus}
             renderItem={({ item }) => (
               <TouchableHighlight
-                onPress={this.onClick(item.menuID)}
+                onPress={() => this.onClick(item.menuID)}
                 underlayColor={"#A5DED0"}
               >
                 <Text

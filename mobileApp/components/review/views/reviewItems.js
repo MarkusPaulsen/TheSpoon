@@ -15,11 +15,16 @@ export default class ReviewItems extends Component {
         "Blue Cheese Burger",
         "Pizza 4 Formaggio",
         "Avocado Toast"
-      ]
+      ],
+        menuItems:"",
     };
   }
-
-  render() {
+  componentDidMount = async () => {
+      const { navigation } = this.props;
+      const menuItems = navigation.getParam("menuItems", "no-values");
+      this.setState({menuItems});
+  };
+    render() {
     return (
       <View style={styles.container}>
         <BackButton navigation={this.props.navigation} />
@@ -27,8 +32,9 @@ export default class ReviewItems extends Component {
           <Text style={Typography.FONT_H3_BLACK}>Write review</Text>
         </View>
         <FlatList
-          data={this.state.itemsList}
-          renderItem={({ item }) => <ReviewItem item={item} />}
+          data={this.state.menuItems}
+          renderItem={({ item }) => <ReviewItem item={item.menuItemName} />}
+          keyExtractor={item => item.menuItemID}
         />
         <View>
           <ContinueButton
