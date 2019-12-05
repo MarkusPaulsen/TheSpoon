@@ -14,6 +14,45 @@ export default class ReviewOverall extends Component {
       colorIndex: 5
     };
   }
+  async postReview() {
+    try {
+      const { navigation } = this.props;
+      const menuID = this.navigation.getParam("menuID", "no-id");
+      const data = JSON.stringify({
+        menuID,
+        serviceRating: null,
+        qualityOverPriceRating: null,
+        date: null,
+        receiptImageID: null,
+        menuItemsReviews: [
+          {
+            menuItemID: null,
+            rating: null,
+            content: null
+          }
+        ]
+      });
+      const backendStubURL = `http://192.168.1.110:8080/api/user/customer/review/restaurant/menu/${menuID}`;
+      const response = await fetch(backendStubURL, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "content-Type": "application/json"
+        },
+        body: data
+      });
+      const responseText = await response.text();
+      console.log("The response is: ", responseText);
+      if (response.ok) {
+        console.log("Review was posted successfully!");
+      }
+      if (!response.ok) {
+        console.log("Review failed");
+      }
+    } catch (e) {
+      console.log("ERROR posting review:", e);
+    }
+  }
 
   render() {
     return (

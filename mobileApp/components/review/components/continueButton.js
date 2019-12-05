@@ -10,6 +10,10 @@ export default class ContinueButton extends Component {
     const disableButton = this.props.disableButton;
     const view = this.props.view;
     const text = this.props.text;
+    const id = this.props.id;
+    const menuItems = this.props.menuItems;
+    const menuID = this.props.menuID;
+    const menuItemReviews = this.props.menuItemReviews;
     const colorIndex = this.props.colorIndex;
 
     if (disableButton === false) {
@@ -22,7 +26,14 @@ export default class ContinueButton extends Component {
           }}
         >
           <TouchableOpacity
-            onPress={() => navigation.navigate(view)}
+            onPress={() =>
+              navigation.navigate(view, {
+                id: id,
+                menuItems: menuItems,
+                menuID: menuID,
+                menuItemReviews: menuItemReviews
+              })
+            }
             style={[styles.button, { backgroundColor: Colors.PINK }]}
           >
             <Text style={[Typography.FONT_H4_WHITE, { textAlign: "center" }]}>
@@ -34,10 +45,19 @@ export default class ContinueButton extends Component {
       );
     }
     return (
-      <View style={[styles.button, { backgroundColor: Colors.GRAY_MEDIUM }]}>
-        <Text style={[Typography.FONT_H4_WHITE, { textAlign: "center" }]}>
-          CONTINUE
-        </Text>
+      <View
+        style={{
+          flexDirection: "column",
+          alignItems: "center",
+          marginBottom: 20
+        }}
+      >
+        <View style={[styles.button, { backgroundColor: Colors.GRAY_MEDIUM }]}>
+          <Text style={[Typography.FONT_H4_WHITE, { textAlign: "center" }]}>
+            CONTINUE
+          </Text>
+        </View>
+        <Circles colorIndex={colorIndex} />
       </View>
     );
   }

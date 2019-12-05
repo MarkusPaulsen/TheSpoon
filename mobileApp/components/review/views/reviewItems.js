@@ -10,17 +10,16 @@ export default class ReviewItems extends Component {
     super(props);
     this.state = {
       disableButton: false,
+        menuItems:"",
       colorIndex: 4,
-      itemsList: [
-        "Pizza Margherita",
-        "Blue Cheese Burger",
-        "Pizza 4 Formaggio",
-        "Avocado Toast"
-      ]
     };
   }
-
-  render() {
+  componentDidMount = async () => {
+      const { navigation } = this.props;
+      const menuItems = navigation.getParam("menuItems", "no-values");
+      this.setState({menuItems});
+  };
+    render() {
     return (
       <View style={styles.container}>
         <View>
@@ -32,8 +31,9 @@ export default class ReviewItems extends Component {
           </View>
         </View>
         <FlatList
-          data={this.state.itemsList}
-          renderItem={({ item }) => <ReviewItem item={item} />}
+          data={this.state.menuItems}
+          renderItem={({ item }) => <ReviewItem item={item.menuItemName} />}
+          keyExtractor={item => item.menuItemID}
         />
         <ContinueButton
           disableButton={this.state.disableButton}

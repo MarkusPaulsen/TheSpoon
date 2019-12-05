@@ -21,28 +21,39 @@ export default class ReviewAddRestaurant extends Component {
       selected: null,
       colorIndex: 1,
       backgroundColor: "#FFFFFF",
-      dataSource: [
-        "Pizzeria AUUM",
-        "Da Zero",
-        "Pizzium",
-        "Nara Sushi",
-        "Una",
-        "Da Zero",
-        "Pizzium",
-        "Nara Sushi",
-        "Una",
-        "Da Zero",
-        "Pizzium",
-        "Nara Sushi",
-        "Una"
-      ]
+      restaurants: ""
     };
   }
+  componentDidMount = async () => {
+    await this.getAllMenus();
+  };
 
-  onClick() {
-    this.setState({ backgroundColor: "#A5DED0" });
-    console.log(this.state.backgroundColor);
+  async getAllMenus() {
+    try {
+      const backendStubURL = `http://192.168.1.110:8080/api/user/customer/review/restaurant`;
+      const response = await fetch(backendStubURL, {
+        method: "GET",
+        accept: "application/json"
+      });
+      const responseJson = await response.json();
+      console.log(responseJson);
+      if (response.ok) {
+        const restaurants = responseJson.map(index => ({
+          restaurantID: index.restaurantID.toString(),
+          name: index.name
+        }));
+        this.setState({ restaurants });
+      }
+    } catch (e) {
+      console.log("ERROR fetching restaurants", e);
+    }
   }
+
+  onClick(restaurantID){
+    this.setState({ backgroundColor: "#A5DED0" });
+    this.setState({selected: restaurantID});
+    console.log(this.state.backgroundColor);
+  };
 
   render() {
     return (
@@ -58,10 +69,10 @@ export default class ReviewAddRestaurant extends Component {
         </View>
         <View style={styles.resultList}>
           <FlatList
-            data={this.state.dataSource}
+            data={this.state.restaurants}
             renderItem={({ item }) => (
               <TouchableHighlight
-                onPress={this.onClick}
+                onPress={() => this.onClick(item.restaurantID)}
                 underlayColor={"#A5DED0"}
               >
                 <Text
@@ -73,16 +84,18 @@ export default class ReviewAddRestaurant extends Component {
                     }
                   ]}
                 >
-                  {item}
+                  {item.name}
                 </Text>
               </TouchableHighlight>
             )}
+            keyExtractor={item => item.restaurantID}
           />
         </View>
         <ContinueButton
           disableButton={this.state.disableButton}
           navigation={this.props}
           view={"ReviewAddMenu"}
+          id={this.state.selected}
           text={"CONTINUE"}
           colorIndex={this.state.colorIndex}
         />
