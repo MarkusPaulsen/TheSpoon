@@ -14,14 +14,14 @@ const MenuReview = db.define('MenuReview', {
         Menu_ID: {
             type: Sequelize.INTEGER
         },
-        Content: {
-            type: Sequelize.STRING
-        },
-        Rating: {
-            type: Sequelize.INTEGER
-        },
         Date: {
             type: Sequelize.DATE
+        },
+        ServiceRating: {
+            type: Sequelize.INTEGER
+        },
+        QualityRating: {
+            type: Sequelize.INTEGER
         }
     },
     {
