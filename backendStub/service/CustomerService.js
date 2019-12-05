@@ -72,10 +72,10 @@ exports.getItemsOfMenu = function(menuID) {
     var examples = {};
     examples['application/json'] = [ {
   "name" : "Pasta alla carbonara",
-  "menuID" : 802
+  "menuItemID" : 802
 }, {
   "name" : "Pizza margherita",
-  "menuID" : 803
+  "menuItemID" : 803
 } ];
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);

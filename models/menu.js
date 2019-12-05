@@ -22,6 +22,9 @@ const Menu = db.define('Menu', {
         Description: {
             type: Sequelize.STRING
         },
+        Rating: {
+            type:  Sequelize.INTEGER
+        }
     },
     {
         freezeTableName: true,

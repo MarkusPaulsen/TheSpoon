@@ -20,6 +20,7 @@ import { createBottomTabNavigator } from "react-navigation-tabs";
 import * as Font from "expo-font";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import * as Colors from "./styles/colors";
+import { ActionSheetProvider } from "@expo/react-native-action-sheet";
 
 const SearchStack = createStackNavigator(
   {
@@ -124,7 +125,11 @@ export default class App extends Component {
   render() {
     if (this.state.fontLoaded) {
       console.log("font loaded");
-      return <AppContainer />;
+      return (
+        <ActionSheetProvider>
+          <AppContainer />
+        </ActionSheetProvider>
+      );
     } else {
       return <LoadingPage />;
     }

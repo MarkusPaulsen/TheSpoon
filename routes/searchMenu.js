@@ -31,12 +31,13 @@ router.get('/:menuID', async (req, res) => {
                 }]
             },{
                 model: MenuReview,
-                attributes: ['Rating']
+                attributes: ['ServiceRating', 'QualityRating']
             }]
         });
 
         const menuTags = formatTags(menuInfo.TaggedMenus);
-        const menuRating = aggregateRating(menuInfo.MenuReviews);
+        //const serviceRating = averageRating(menuInfo.MenuReviews, 'ServiceRating');
+        //const qualityRating = averageRating(menuInfo.MenuReviews, 'QualityRating');
 
         let menuItems = await MenuItem.findAll({
             where: {
@@ -51,13 +52,13 @@ router.get('/:menuID', async (req, res) => {
                 }]
             }, {
                 model: ItemReview,
-                attributes: ['Rating']
+                attributes: ['ItemRating']
             }]
         });
 
         menuItems =  await menuItems.map ( mi => {
             const tags= formatTags(mi.TaggedItems);
-            const rating = aggregateRating(mi.ItemReviews);
+            const rating = averageRating(mi.ItemReviews, 'ItemRating');
             return {
                 menuItemID: mi.MI_ID,
                 name: mi.Name,
@@ -83,7 +84,7 @@ router.get('/:menuID', async (req, res) => {
             menuName: menuInfo.Name,
             description: menuInfo.Description,
             tags: menuTags,
-            menuRating: menuRating,
+            menuRating: '',
             menuItems,
         };
 
@@ -110,17 +111,21 @@ const formatTags = (arr) => {
     }
 };
 
-const aggregateRating = (arr) => {
+const averageRating = (arr, e) => {
     if (arr.length < 1){
         return null;
     } else {
         let sum = 0;
         for (let i = 0; i < arr.length; i++) {
-            sum += parseInt(arr[i].Rating);
+            sum += parseInt(arr[i].ItemRating);
         }
         return (sum/ (arr.length)).toFixed(1);
     }
 };
 
+const computeMenuRating = (qualityAverage, serviceAverage, menuItemsAverage, nrMenuRatings, nrMenuItemRatings) => {
+    const totalRatings = nrMenuItemRatings + nrMenuRatings;
+    return ((qualityAverage + serviceAverage)/(2*nrMenuRatings/totalRatings) + menuItemsAverage/(nrMenuItemRatings/totalRatings))/2
+};
 
 module.exports = router;

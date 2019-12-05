@@ -19,6 +19,7 @@ export default class ReviewAddItems extends Component {
       selected: null,
       menuItemName: null,
       backgroundColor: "#FFFFFF",
+      colorIndex: 3,
       menuItems: "",
       selectedMenuItems: []
     };
@@ -39,7 +40,7 @@ export default class ReviewAddItems extends Component {
       });
       const responseJson = await response.json();
       const menuItems = responseJson.map(index => ({
-        menuItemID: index.menuID.toString(),
+        menuItemID: index.menuItemID.toString(),
         menuItemName: index.name
       }));
       this.setState({ menuItems });
@@ -62,9 +63,13 @@ export default class ReviewAddItems extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <BackButton navigation={this.props.navigation} />
-        <View style={{ flex: 1, alignItems: "center", marginBottom: 20 }}>
-          <Text style={Typography.FONT_H3_BLACK}>What did you eat/drink?</Text>
+        <View>
+          <BackButton navigation={this.props.navigation} />
+          <View style={styles.header}>
+            <Text style={Typography.FONT_H3_BLACK}>
+              What did you{"\n"}eat/drink?
+            </Text>
+          </View>
         </View>
         <View style={styles.resultList}>
           <FlatList
@@ -90,15 +95,14 @@ export default class ReviewAddItems extends Component {
             keyExtractor={item => item.menuItemID}
           />
         </View>
-        <View style={{ alignSelf: "center" }}>
-          <ContinueButton
-            disableButton={this.state.disableButton}
-            navigation={this.props}
-            menuItems={this.state.selectedMenuItems}
-            view={"ReviewItems"}
-            text={"CONTINUE"}
-          />
-        </View>
+        <ContinueButton
+          disableButton={this.state.disableButton}
+          navigation={this.props}
+          menuItems={this.state.selectedMenuItems}
+          view={"ReviewItems"}
+          text={"CONTINUE"}
+          colorIndex={this.state.colorIndex}
+        />
       </View>
     );
   }
@@ -106,11 +110,20 @@ export default class ReviewAddItems extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 60,
+    marginTop: 50,
     flex: 1
   },
   resultList: {
     height: 200,
     flex: 4
+  },
+  header: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: "center",
+    alignItems: "center"
   }
 });
