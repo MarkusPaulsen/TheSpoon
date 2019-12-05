@@ -37,7 +37,7 @@ export default class ReviewAddMenu extends Component {
       });
       const responseJson = await response.json();
       const menus = responseJson.map(index => ({
-        menuID: index.menuID,
+        menuID: index.menuID.toString(),
         menuName: index.name
       }));
       this.setState({ menus });
@@ -48,8 +48,7 @@ export default class ReviewAddMenu extends Component {
 
   onClick(menuID) {
     this.setState({ backgroundColor: "#A5DED0", selected:menuID });
-    console.log(this.state.backgroundColor);
-    console.log("MENUID", menuID);
+    console.log(this.state.backgroundColor, menuID);
   }
 
   render() {

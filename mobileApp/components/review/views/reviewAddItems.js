@@ -18,6 +18,7 @@ export default class ReviewAddItems extends Component {
       disableButton: false,
       selected: null,
       backgroundColor: "#FFFFFF",
+        menuItems:"",
       dataSource: [
         "Pizza Margherita",
         "Pizza 4 Formaggio",
@@ -26,9 +27,33 @@ export default class ReviewAddItems extends Component {
     };
   }
 
-  onClick() {
-    this.setState({ backgroundColor: "#A5DED0" });
-    console.log(this.state.backgroundColor);
+  componentDidMount = async () => {
+      const {navigation} = this.props;
+      const menuID = navigation.getParam("id", "000");
+      await this.getMenuItems(menuID);
+  };
+
+  async getMenuItems(menuID){
+      try {
+          const backendStubURL = `http://192.168.1.110:8080/api/user/customer/review/restaurant/menu/${menuID}/menuItem`;
+          const response = await fetch(backendStubURL, {
+              method: "GET",
+              accept: "application/json"
+          });
+          const responseJson = await response.json();
+          const menuItems = responseJson.map(index => ({
+              menuItemID: index.menuID.toString(),
+              menuItemName: index.name
+          }));
+          this.setState({ menuItems });
+      } catch (e) {
+          console.log("ERROR fetching menuItems", e);
+      }
+  }
+
+    onClick(menuItemID) {
+    this.setState({ backgroundColor: "#A5DED0", selected:menuItemID });
+    console.log(this.state.backgroundColor, menuItemID);
   }
 
   render() {
@@ -40,10 +65,10 @@ export default class ReviewAddItems extends Component {
         </View>
         <View style={styles.resultList}>
           <FlatList
-            data={this.state.dataSource}
+            data={this.state.menuItems}
             renderItem={({ item }) => (
               <TouchableHighlight
-                onPress={this.onClick}
+                onPress={this.onClick(item.menuItemID)}
                 underlayColor={"#A5DED0"}
               >
                 <Text
@@ -55,16 +80,18 @@ export default class ReviewAddItems extends Component {
                     }
                   ]}
                 >
-                  {item}
+                  {item.menuItemName}
                 </Text>
               </TouchableHighlight>
             )}
+            keyExtractor={item => item.menuItemID}
           />
         </View>
         <View style={{ alignSelf: "center" }}>
           <ContinueButton
             disableButton={this.state.disableButton}
             navigation={this.props}
+            id={this.state.selected}
             view={"ReviewItems"}
             text={"CONTINUE"}
           />
