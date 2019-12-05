@@ -110,6 +110,7 @@ export default class LoginScreen extends Component {
           <View style={{ flexDirection: "row" }}>
             <Image source={UsernameIcon} style={{ alignSelf: "center" }} />
             <TextInput
+                placeholder={"Username"}
               value={this.state.username}
               onChangeText={this.handleUsernameChange}
               onBlur={() => {
@@ -127,6 +128,7 @@ export default class LoginScreen extends Component {
           <View style={{ flexDirection: "row", marginBottom: 90 }}>
             <Image source={PasswordIcon} style={{ alignSelf: "center" }} />
             <TextInput
+                placeholder={"Password"}
               onChangeText={this.handlePasswordChange}
               value={this.state.password}
               onBlur={() => {
