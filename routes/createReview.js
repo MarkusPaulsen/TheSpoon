@@ -5,44 +5,53 @@ router.use(express.json());
 const auth = require('../middleware/authorizationMiddleware.js');
 const isCustomer = require('../middleware/checkIfCustomerMiddleware');
 
-const Menu=require('../models/menu.js');
+const Menu = require('../models/menu.js');
 const ItemReview = require('../models/itemReview.js');
 const MenuReview = require('../models/menuReview.js');
+const MenuItem = require('../models/menuItem.js');
 
-router.post('/menu/:menuID', auth, isCustomer , async (req, res) => {
-
+router.post('/menu/:menuID', auth, isCustomer, async (req, res) => {
     console.log('In POST /api/user/customer/review/restaurant/menu/' + req.params.menuID);
-    const menuID=req.params.menuID;
+    const menuID = req.params.menuID;
 
-    console.log('body is '+ JSON.stringify(req.body)+ ", username is "+ req.username);
-    console.log('menu id is '+ menuID)
-    const menu=await Menu.findOne({
+    //check if menu with menuID exists
+    const menu = await Menu.findOne({
         where: {
             Menu_ID: menuID
         }
     })
 
-    if(!menu) return res.status(404).send('Menu with given menuID doesn\'t exist')
+    if (!menu) return res.status(404).send('Menu with menuID' + menuID + ' doesn\'t exist')
+
+    //check if menu item with menuItemID exists
+    const itemReviews = req.body.menuItemsReviews;
+    for (let i = 0; i < itemReviews.length; i++) {
+        const menuItemID = itemReviews[i].menuItemID;
+        const menuItem = await MenuItem.findOne({
+            where: {
+                MI_ID: menuItemID
+            }
+        })
+        if (!menuItem) return res.status(404).send('Menu item with MI_ID ' + menuItemID + ' doesn\'t exist')
+    }
 
     //create menu review
-     const menuReview= await MenuReview.create({ //SequelizeDatabaseError: null value in column "Review_ID" violates not-null constraint
+    const menuReview = await MenuReview.create({
         Username: req.username,
         Menu_ID: menuID,
         Date: req.body.date,
         ServiceRating: req.body.serviceRating,
         QualityRating: req.body.qualityOverPriceRating,
-        Status: null,
+        Status: 'approved',
         Image_ID: req.body.receiptImageID
     });
 
-    const menuReviewID=menuReview.dataValues.Review_ID;
+    const menuReviewID = menuReview.dataValues.Review_ID;
 
     //creating item reviews
-    const itemReviews=req.body.menuItemsReviews;
-    for(let i=0;i< itemReviews.length;i++){
-        const itemReview=itemReviews[i];
-        console.log('itemReview is '+ JSON.stringify(itemReview));
-        ItemReview.create({
+    for (let i = 0; i < itemReviews.length; i++) {
+        const itemReview = itemReviews[i];
+        await ItemReview.create({
             Username: req.username,
             MI_ID: itemReview.menuItemID,
             Content: itemReview.content,
@@ -51,7 +60,6 @@ router.post('/menu/:menuID', auth, isCustomer , async (req, res) => {
             MenuReview_ID: menuReviewID
         })
     }
-
 
     res.status(201).send('Sucessful operation');
 
