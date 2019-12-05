@@ -16,7 +16,6 @@ export default class ContinueButton extends Component {
 
 const styles = StyleSheet.create({
   button: {
-    marginLeft: 20,
-    marginBottom: 5
+    marginLeft: 20
   }
 });

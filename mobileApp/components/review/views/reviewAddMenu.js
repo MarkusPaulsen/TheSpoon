@@ -18,6 +18,7 @@ export default class ReviewAddMenu extends Component {
       disableButton: false,
       selected: null,
       backgroundColor: "#FFFFFF",
+      colorIndex: 2,
       dataSource: ["Lunch Menu", "Evening Menu", "Weekend Specials"]
     };
   }
@@ -30,9 +31,11 @@ export default class ReviewAddMenu extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <BackButton navigation={this.props.navigation} />
-        <View style={{ flex: 1, alignItems: "center" }}>
-          <Text style={Typography.FONT_H3_BLACK}>Choose Menu</Text>
+        <View>
+          <BackButton navigation={this.props.navigation} />
+          <View style={styles.header}>
+            <Text style={Typography.FONT_H3_BLACK}>Choose Menu</Text>
+          </View>
         </View>
         <View style={styles.resultList}>
           <FlatList
@@ -57,14 +60,13 @@ export default class ReviewAddMenu extends Component {
             )}
           />
         </View>
-        <View style={{ alignSelf: "center" }}>
-          <ContinueButton
-            disableButton={this.state.disableButton}
-            navigation={this.props}
-            view={"ReviewAddItems"}
-            text={"CONTINUE"}
-          />
-        </View>
+        <ContinueButton
+          disableButton={this.state.disableButton}
+          navigation={this.props}
+          view={"ReviewAddItems"}
+          text={"CONTINUE"}
+          colorIndex={this.state.colorIndex}
+        />
       </View>
     );
   }
@@ -72,11 +74,19 @@ export default class ReviewAddMenu extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 60,
+    marginTop: 50,
     flex: 1
   },
   resultList: {
-    height: 200,
     flex: 6
+  },
+  header: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: "center",
+    alignItems: "center"
   }
 });

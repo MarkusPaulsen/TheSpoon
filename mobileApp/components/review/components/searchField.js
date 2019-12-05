@@ -50,11 +50,6 @@ export default class SearchField extends Component {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flexGrow: 1,
-    alignItems: "center",
-    marginTop: 60
-  },
   textInput: {
     height: 42,
     width: 240,
@@ -63,8 +58,8 @@ const styles = StyleSheet.create({
     marginLeft: 7
   },
   searchBar: {
-    flex: 1,
     flexDirection: "row",
     alignItems: "center",
+    marginBottom: 10
   }
 });
