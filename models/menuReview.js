@@ -39,7 +39,7 @@ const MenuReview = db.define('MenuReview', {
 
 
 MenuReview.hasMany(ItemReview, {
-    foreignKey: 'Review_ID'
+    foreignKey: 'MenuReview_ID'
 });
 
 module.exports = MenuReview;

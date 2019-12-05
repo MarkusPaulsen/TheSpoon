@@ -3,7 +3,7 @@ const router = express();
 router.use(express.json());
 
 const auth = require('../middleware/authorizationMiddleware.js');
-const isCustomer = require('../middleware/checkIfOwnerMiddleware.js');
+const isCustomer = require('../middleware/checkIfCustomerMiddleware.js');
 
 const ItemReview = require('../models/itemReview.js');
 const MenuReview = require('../models/menuReview.js');
@@ -22,12 +22,15 @@ router.get('/', auth, isCustomer , async (req, res) => {
             },
             include: [{
                 model: ItemReview,
-                attributes: ['MI_ID', 'Rating', 'Content']
+                attributes: ['MI_ID', 'ItemRating', 'Content'],
+                where: {
+                    Username: req.username
+                }
             }]
         });
 
         const formattedReview = await reviews.map( async r => {
-            let formattedItemReview = await r.map( async i => {
+            let formattedItemReview = await r.ItemReviews.map( async i => {
                 return {
                     menuItemID: i.MI_ID,
                     rating: i.Rating,
