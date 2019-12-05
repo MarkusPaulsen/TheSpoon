@@ -1,9 +1,14 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import {authentificationModalVisibilityFilters} from "../../constants/authentificationModalVisibiltyFilters";
+//<editor-fold desc="React">
+import React from "react";
+import {Link} from "react-router-dom";
+//</editor-fold>
 
-
+//<editor-fold desc="Constants">
+import {modalVisibilityFilters} from "../../constants/modalVisibiltyFilters";
+//</editor-fold>
+//<editor-fold desc="Containers">
 import FilterLink from "../../containers/FilterModalLink";
+//</editor-fold>
 
 const Header = () => {
     return (
@@ -15,16 +20,16 @@ const Header = () => {
                     </Link>
                     <ul>
                         <li>
-                            <FilterLink filter={authentificationModalVisibilityFilters.SHOW_LOGIN}>Log in</FilterLink>
+                            <FilterLink filter={modalVisibilityFilters.SHOW_LOGIN}>Log in</FilterLink>
                         </li>
                         <li>
-                            <FilterLink filter={authentificationModalVisibilityFilters.SHOW_CHOOSE_ROLE}>Sign up</FilterLink>
+                            <FilterLink filter={modalVisibilityFilters.SHOW_REGISTER_RESTAURANT_OWNER}>Sign up</FilterLink>
                         </li>
                     </ul>
                 </nav> 
             </div>  
         </header>
     );
-}
+};
 
 export default Header;

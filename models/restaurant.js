@@ -1,6 +1,10 @@
 const Sequelize = require('sequelize');
 const db = require('../sequelizeSettings');
 
+const Menu = require('./menu.js');
+const OpeningHours = require('./openingHours.js');
+
+
 const Restaurant = db.define('Restaurant', {
     Restaurant_ID: {
         type: Sequelize.INTEGER,
@@ -35,5 +39,15 @@ const Restaurant = db.define('Restaurant', {
     freezeTableName: true,
     timestamps: false
 });
+
+Restaurant.hasMany(Menu, {
+    foreignKey: 'Restaurant_ID'
+});
+
+Restaurant.hasMany(OpeningHours, {
+    foreignKey: 'Restaurant_ID'
+});
+
+
 
 module.exports = Restaurant;
