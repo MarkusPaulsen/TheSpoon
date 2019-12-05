@@ -21,7 +21,7 @@ import MainLayout from "../layout/MainLayout.js";
 //<editor-fold desc="Components">
 import Sidebar from "./Sidebar";
 import Menu from "./Menu";
-import { exhaustMap } from "rxjs/operators";
+import {catchError, exhaustMap} from "rxjs/operators";
 import {failLogIn, logIn, successLogIn} from "../../actionCreators/logInActionCreators";
 import {setModalVisibilityFilterAction} from "../../actionCreators/modalVisibilityFilterActionCreators";
 import {Redirect} from "react-router";
@@ -41,12 +41,14 @@ class YourRestaurant extends Component {
     const thisTemp = this;
     this.data$ = zip(
       ajax({
-        url: "/api/user/owner/restaurant",
-        method: "GET"
+          url: "/api/user/owner/restaurant",
+          method: "GET",
+          headers: {"X-Auth-Token": thisTemp.props.token}
       }),
       ajax({
-        url: "/api/user/owner/restaurant/menu",
-        method: "GET"
+          url: "/api/user/owner/restaurant/menu",
+          method: "GET",
+          headers: {"X-Auth-Token": thisTemp.props.token}
       })
     )
       .pipe(
@@ -55,16 +57,16 @@ class YourRestaurant extends Component {
             restaurant: values[0].response,
             menus: values[1].response
           });
+        }),
+          catchError((error) => {
+              throw error
+          })
+      ).subscribe((next) => {
+          thisTemp.setState({finishedLoading: true});
+        }, (error) => {
+          console.log(error);
+          thisTemp.setState({finishedLoading: true});
         })
-      )
-      .pipe(
-        exhaustMap(() => {
-          return bindCallback(thisTemp.setState).call(thisTemp, {
-            finishedLoading: true
-          });
-        })
-      )
-      .subscribe();
   }
 
   componentWillUnmount() {

@@ -135,14 +135,17 @@ class FillRestaurantInfo extends Component {
         thisTemp.setState({ imageMessage: "", selectedFile: null });
         let file = event.target.files[0];
         if(["image/png","image/jpeg"].includes(file.type)) {
+            let formData = new FormData();
+            formData.append("image", file);
             let reader = new FileReader();
             thisTemp.setState({serverMessage: "Image upload is processing"});
             reader.onload = (readerEvent) => {
+                console.log(readerEvent)
                 ajax({
                     url: paths["restApi"]["image"],
                     method: "POST",
-                    headers: {"Content-Type": file.type , "X-Auth-Token": thisTemp.props.token},
-                    body: readerEvent.target.result
+                    headers: {"X-Auth-Token": thisTemp.props.token},
+                    body: formData
                 })
                     .pipe(take(1))
                     .subscribe((reply) => {
