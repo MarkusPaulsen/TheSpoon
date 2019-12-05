@@ -49,7 +49,8 @@ exports.getMenuCustomer = function(menuID) {
       "name" : "Dinner",
       "color" : "#99C99B"
     } ],
-    "imageLink" : "www.cloudStorage.com/Carbonara"
+    "imageLink" : "www.cloudStorage.com/Carbonara",
+    "rating" : 4.5
   }, {
     "menuItemID" : 21,
     "name" : "Polpette al sugo",
@@ -66,7 +67,8 @@ exports.getMenuCustomer = function(menuID) {
       "name" : "Italian",
       "color" : "#FFBC8C"
     } ],
-    "imageLink" : "www.cloudStorage.com/Meatballs"
+    "imageLink" : "www.cloudStorage.com/Meatballs",
+    "rating" : 4
   } ]
 };
     if (Object.keys(examples).length > 0) {
@@ -176,6 +178,40 @@ exports.getOwnMenus = function() {
     "imageLink" : "www.cloudStorage.com/Meatballs"
   } ]
 } ];
+    if (Object.keys(examples).length > 0) {
+      resolve(examples[Object.keys(examples)[0]]);
+    } else {
+      resolve();
+    }
+  });
+}
+
+
+/**
+ * Get data of own restaurant
+ * Get the data of the restaurant of authenticated owner, so that it can be showed in the 'Your Restaurant' page.
+ *
+ * returns RestaurantReceived
+ **/
+exports.getRestaurant = function() {
+  return new Promise(function(resolve, reject) {
+    var examples = {};
+    examples['application/json'] = {
+  "name" : "Emilio's Pizza",
+  "address" : "Piazzale Susa",
+  "city" : "Milan",
+  "country" : "Italy",
+  "imageLink" : "www.cloudStorage.com/Restaurant",
+  "openingHours" : [ {
+    "day" : "Monday",
+    "openTime" : "12.00",
+    "closeTime" : "15.00"
+  }, {
+    "day" : "Saturday",
+    "openTime" : "19.00",
+    "closeTime" : "23.59"
+  } ]
+};
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);
     } else {
