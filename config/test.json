@@ -1,0 +1,7 @@
+{
+  "jwtPrivateKey": "1234",
+  "jwtExpirationTime": "2 days",
+  "AWS_ACCESS_KEY_ID": "aaaa",
+  "AWS_SECRET_ACCESS_KEY": "aaaa",
+  "sequelize_Database": "postgres://wryvvzpcpmxzkh:f49e3b130adcbafe54c1d34e9c19fbca0137c5d9b9ca55dcb7a7e67de516cf6d@ec2-54-228-243-238.eu-west-1.compute.amazonaws.com:5432/dffan03venodiu?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory"
+}
