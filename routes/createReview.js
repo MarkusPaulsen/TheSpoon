@@ -10,17 +10,13 @@ const ItemReview = require('../models/itemReview.js');
 const MenuReview = require('../models/menuReview.js');
 
 router.post('/menu/:menuID', auth, isCustomer , async (req, res) => {
-
-    console.log('In POST /api/user/customer/review/restaurant/menu/' + req.params.menuID);
     const menuID=req.params.menuID;
 
-    console.log('body is '+ JSON.stringify(req.body)+ ", username is "+ req.username);
-    console.log('menu id is '+ menuID)
     const menu=await Menu.findOne({
         where: {
             Menu_ID: menuID
         }
-    })
+    });
 
     if(!menu) return res.status(404).send('Menu with given menuID doesn\'t exist')
 
@@ -31,7 +27,7 @@ router.post('/menu/:menuID', auth, isCustomer , async (req, res) => {
         Date: req.body.date,
         ServiceRating: req.body.serviceRating,
         QualityRating: req.body.qualityOverPriceRating,
-        Status: null,
+        Status: "Pending",
         Image_ID: req.body.receiptImageID
     });
 
@@ -41,7 +37,6 @@ router.post('/menu/:menuID', auth, isCustomer , async (req, res) => {
     const itemReviews=req.body.menuItemsReviews;
     for(let i=0;i< itemReviews.length;i++){
         const itemReview=itemReviews[i];
-        console.log('itemReview is '+ JSON.stringify(itemReview));
         ItemReview.create({
             Username: req.username,
             MI_ID: itemReview.menuItemID,
@@ -53,7 +48,7 @@ router.post('/menu/:menuID', auth, isCustomer , async (req, res) => {
     }
 
 
-    res.status(201).send('Sucessful operation');
+    res.status(201).send('Successful operation');
 
 });
 module.exports = router;

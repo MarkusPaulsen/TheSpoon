@@ -33,7 +33,7 @@ router.get('/', auth, isCustomer , async (req, res) => {
             let formattedItemReview = await r.ItemReviews.map( async i => {
                 return {
                     menuItemID: i.MI_ID,
-                    rating: i.Rating,
+                    rating: i.ItemRating,
                     content: i.Content
                 }
             });
@@ -62,20 +62,23 @@ router.delete('/:reviewID', auth, isCustomer, async (req, res) => {
     //check if the review with given reviewID exist
     const reviewFound = await MenuReview.findOne({
         where: {
-            MenuReview_ID: req.params.reviewID
+            Review_ID: req.params.reviewID
         }
     });
     // If no review is found, return 404 Not found.
     if (reviewFound.length <= 0) return res.status(404).send('Menu not found');
 
     // Delete review from system.
-    await MenuReview.destroy({
-        where: {
-            MenuReview_ID: req.params.reviewID
-        }
-    });
-    //send the response
-    res.status(200).send({reviewID: req.params.reviewID});
+    if (reviewFound.Username === req.username) {
+        await MenuReview.destroy({
+            where: {
+                Review_ID: req.params.reviewID
+            }
+        });
+        res.status(200).send({reviewID: req.params.reviewID});
+    } else {
+        res.status(403).send('Forbidden request');
+    }
 
 });
 
