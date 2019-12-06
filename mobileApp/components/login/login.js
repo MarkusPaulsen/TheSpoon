@@ -24,12 +24,15 @@ export default class LoginScreen extends Component {
       passwordError: "",
       token: "",
       invalidError: false,
+      parent: null
     };
     this.register = this.register.bind(this);
   }
 
   componentDidMount = async () => {
     this.getToken();
+    const parent = this.props.navigation.getParam("parent", "Profile");
+    this.setState({ parent });
   };
 
   async handleLogin() {
@@ -48,13 +51,12 @@ export default class LoginScreen extends Component {
         body: data
       });
       const responseText = await res.text();
-      console.log("The response is: ", responseText);
       if (res.ok) {
         const jsonResponse = JSON.parse(responseText);
         this.setState({ token: jsonResponse.token });
         this.storeToken(JSON.stringify(jsonResponse.token));
         console.log("Token is set to: ", this.state.token);
-        this.props.navigation.navigate("Profile");
+        this.props.navigation.navigate(this.state.parent);
       }
       if (!res.ok) {
         this.setState({ invalidError: true });
@@ -110,7 +112,7 @@ export default class LoginScreen extends Component {
           <View style={{ flexDirection: "row" }}>
             <Image source={UsernameIcon} style={{ alignSelf: "center" }} />
             <TextInput
-                placeholder={"Username"}
+              placeholder={"Username"}
               value={this.state.username}
               onChangeText={this.handleUsernameChange}
               onBlur={() => {
@@ -128,7 +130,7 @@ export default class LoginScreen extends Component {
           <View style={{ flexDirection: "row", marginBottom: 90 }}>
             <Image source={PasswordIcon} style={{ alignSelf: "center" }} />
             <TextInput
-                placeholder={"Password"}
+              placeholder={"Password"}
               onChangeText={this.handlePasswordChange}
               value={this.state.password}
               onBlur={() => {

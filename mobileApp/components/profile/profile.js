@@ -5,16 +5,16 @@ import {
   View,
   Text,
   TouchableOpacity,
+  Alert,
   Image,
   StyleSheet,
   AsyncStorage
 } from "react-native";
 import * as Typography from "../../styles/typography";
 import * as Colors from "../../styles/colors";
-import LoginScreen from "../login/login";
 import Icon from "react-native-vector-icons/MaterialIcons";
 
-export default class Review extends Component {
+export default class Profile extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -23,33 +23,60 @@ export default class Review extends Component {
     };
   }
 
-  componentDidMount = async () => {
+  componentDidMount() {
     AsyncStorage.getItem("userToken").then(token => {
       this.setState({ loggedIn: token !== null, isLoaded: true });
     });
-  };
+  }
 
-  _signOutAsync = async () => {
-    await AsyncStorage.removeItem("userToken");
-    this.props.navigation.navigate('Login');
-  };
+  logout() {
+    AsyncStorage.removeItem("userToken").then(() => {
+      Alert.alert("Logout Success!");
+      this.setState({ loggedIn: false });
+      this.props.navigation.navigate("Login");
+    });
+  }
 
   render() {
+    console.log("Usertoken in profilepage: ", this.state.loggedIn);
+    const RenderLogin = props => {
+      return props.navigation.navigate("Login", { parent: "Profile" });
+    };
     if (!this.state.isLoaded) {
       return <ActivityIndicator />;
     } else {
       return (
         <ScrollView contentContainerStyle={styles.container}>
           {this.state.loggedIn ? (
-              <View>
-                <TouchableOpacity onPress={() => {
-                  this._signOutAsync();
-                }}>
-                <Icon name="power_settings_new" size={32} color={Colors.GRAY_DARK} />
+            <View>
+              <View
+                style={{
+                  flex: 1,
+                  marginTop: 60,
+                  flexDirection: "row",
+                  marginRight: 10
+                }}
+              >
+                <TouchableOpacity
+                  onPress={() => {
+                    this.logout();
+                  }}
+                >
+                  <Icon
+                    name="power-settings-new"
+                    size={32}
+                    color={Colors.GRAY_DARK}
+                  />
                 </TouchableOpacity>
-                <Text>Welcome to your profile {this.state.username}</Text></View>
+              </View>
+              <View style={{ flex: 4 }}>
+                <Text style={Typography.FONT_H4_PINK}>
+                  Welcome to your profile
+                </Text>
+              </View>
+            </View>
           ) : (
-            this.props.navigation.navigate("Login")
+            <RenderLogin {...this.props} />
           )}
         </ScrollView>
       );
@@ -63,7 +90,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center"
   },
-  logout_icon :{
-    marginTop:60
+  logout_icon: {
+    marginTop: 60
   }
 });
