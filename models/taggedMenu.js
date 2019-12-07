@@ -2,7 +2,6 @@ const Sequelize = require('sequelize');
 const db = require('../sequelizeSettings');
 
 const Tag = require('./tag.js');
-const Menu = require('./menu.js');
 
 const TaggedMenu = db.define('TaggedMenu', {
     Menu_ID: {
