@@ -13,7 +13,7 @@ branches:
     - master
 notifications:
   slack: dsd2019thespoon:7SFtEzMgqGVWfBxAIPayUXa7
-    on_success: never
-    on_failure: always
+  on_success: never
+  on_failure: always
 script:
   - npm test
