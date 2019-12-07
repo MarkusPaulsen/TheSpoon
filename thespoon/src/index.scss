@@ -1,3 +1,7 @@
+@import "node_modules/bootstrap/scss/functions";
+@import "node_modules/bootstrap/scss/variables";
+@import "node_modules/bootstrap/scss/mixins/_breakpoints";
+
 :root {
   --black: #000000;
   --grey: #959595;
@@ -20,15 +24,34 @@ body {
   font-size: 1rem;
   font-weight: 300;
   line-height: 1.1;
+
+  @include media-breakpoint-down(md) {
+    font-size: 18px;
+  }
 }
 
 h1 {
   font-size: 4rem;
-  
+  line-height: 1;
+  @include media-breakpoint-down(md) {
+    font-size: 3rem;
+  }
+  @include media-breakpoint-down(sm) {
+    font-size: 2rem;
+  }
 }
 
 h2 {
   font-size: 2rem;
+  @include media-breakpoint-down(md) {
+    font-size: 1.75rem;
+  }
+  @include media-breakpoint-down(sm) {
+    font-size: 1.5rem;
+  }
+  @include media-breakpoint-down(xs) {
+    font-size: 1rem;
+  }
 }
 
 h3 {
@@ -157,6 +180,20 @@ button {
   &:active, &:focus {
     outline: none;
   }
+
+  @include media-breakpoint-down(sm) {
+    width: 7rem;
+    height: 1.5rem;
+    span {
+      line-height: 1.5rem;
+    }
+  }
+
+  @include media-breakpoint-down(xs) {
+    &.normal {
+      width: 6rem;
+    }
+  }
 }
 
 
@@ -198,6 +235,39 @@ header {
       }
     }
   }
+
+  @include media-breakpoint-down(md) {
+    nav {
+      height: 4rem;
+
+      li {
+        font-size: .75rem;
+        margin-left: 1.16667rem;
+      }
+    }
+  }
+
+  @include media-breakpoint-down(sm) {
+    nav {
+      .logo {
+        max-width: 7.5rem;
+      }
+    }
+  }
+
+  @include media-breakpoint-down(xs) {
+    nav {
+      .logo {
+        max-width: 5rem;
+      }
+      li {
+        margin-left: .625rem;
+        span {
+          font-size: .7rem;
+        }
+      }
+    }
+  }
 }
 
 /* < HEADER */
@@ -231,7 +301,19 @@ header {
       }
     }
 
+  @include media-breakpoint-down(sm) {
+    .title {
+      margin-bottom: 2rem;
+    }
+  }
+
+  @include media-breakpoint-down(xs) {
+    button {
+      font-size: .7rem;
+    }
+  }
 }
+
 
 /* < HOMEPAGE */
 
@@ -572,6 +654,9 @@ header {
     &:focus {
       outline: none;
     }
+    @include media-breakpoint-down(sm) {
+      width: auto;
+    }
   }
 
   .back {
@@ -580,6 +665,63 @@ header {
     &:hover {
       cursor: pointer;
     }
+  }
+
+  @include media-breakpoint-down(xs) {
+   .modal-wrapper {
+     padding: 2rem 1rem;
+     .title {
+       margin-bottom: 2rem;
+     }
+     .input-field {
+       i {
+         margin-right: .1rem;
+       }
+       &.name {
+         > div {
+           width: 80%;
+           margin-right: 0;
+           &:first-of-type {
+             margin-right: 0;
+           }
+           &:last-child {
+             margin-top: 1rem;
+             margin-left: calc(22px + 0.1rem);
+           }
+         }
+       }
+     }
+     button {
+       margin: 0;
+     }
+
+     .account-type {
+       margin: .25rem 0 2rem;
+       .role {
+         display: block;
+       }
+     }
+
+     &.restaurant-info {
+       padding: 2rem;
+       .opening-hours {
+         .hours-selector {
+           margin-bottom: 2.5rem;
+           .days {
+             width: 100%;
+           }
+           .hours {
+             top: 50px;
+             width: calc(50% - 5px);
+             left: 0;
+           }
+         }
+         .selected-hours {
+           margin-left: 0;
+         }
+       }
+     }
+   }
   }
 
 }
