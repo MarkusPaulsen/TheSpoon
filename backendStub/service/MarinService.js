@@ -66,6 +66,42 @@ exports.addMenuItem = function(menuID,body) {
 
 
 /**
+ * Return profile data of the customer
+ * Return own data of the logged in customer. This endpoints should be used when the frontend has to visualize the profile of the customer.
+ *
+ * returns CustomerUsernameAndEmail
+ **/
+exports.apiUserCustomerGET = function() {
+  return new Promise(function(resolve, reject) {
+    var examples = {};
+    examples['application/json'] = {
+  "username" : "emilio_imperiali",
+  "email" : "emilioimperiali@mail.it"
+};
+    if (Object.keys(examples).length > 0) {
+      resolve(examples[Object.keys(examples)[0]]);
+    } else {
+      resolve();
+    }
+  });
+}
+
+
+/**
+ * Delete a review
+ * Delete the review with the given reviewID. This will also delete the reviews of the menu items associated to the review with given reviewID.
+ *
+ * reviewID Integer ID of the review
+ * no response value expected for this operation
+ **/
+exports.apiUserCustomerReviewReviewIDDELETE = function(reviewID) {
+  return new Promise(function(resolve, reject) {
+    resolve();
+  });
+}
+
+
+/**
  * Delete a menuItem
  * Delete the menuItem with given menuItemID of the menu with given menuID. Authentication required.
  *
