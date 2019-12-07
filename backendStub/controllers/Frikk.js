@@ -24,6 +24,16 @@ module.exports.getOwnMenus = function getOwnMenus (req, res, next) {
     });
 };
 
+module.exports.getOwnReviews = function getOwnReviews (req, res, next) {
+  Frikk.getOwnReviews()
+    .then(function (response) {
+      utils.writeJson(res, response);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
+};
+
 module.exports.getRestaurant = function getRestaurant (req, res, next) {
   Frikk.getRestaurant()
     .then(function (response) {
@@ -37,6 +47,18 @@ module.exports.getRestaurant = function getRestaurant (req, res, next) {
 module.exports.searchByMenuItem = function searchByMenuItem (req, res, next) {
   var menuItemName = req.swagger.params['menuItemName'].value;
   Frikk.searchByMenuItem(menuItemName)
+    .then(function (response) {
+      utils.writeJson(res, response);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
+};
+
+module.exports.submitReview = function submitReview (req, res, next) {
+  var menuID = req.swagger.params['menuID'].value;
+  var body = req.swagger.params['body'].value;
+  Frikk.submitReview(menuID,body)
     .then(function (response) {
       utils.writeJson(res, response);
     })

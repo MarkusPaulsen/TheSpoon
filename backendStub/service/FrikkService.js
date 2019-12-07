@@ -188,6 +188,57 @@ exports.getOwnMenus = function() {
 
 
 /**
+ * Return all the reviews of the customer
+ * Return all the reviews of the customer, with their reviewIDs and their status (accepted/refused/pending). Returns an empty array if no review is found.
+ *
+ * returns List
+ **/
+exports.getOwnReviews = function() {
+  return new Promise(function(resolve, reject) {
+    var examples = {};
+    examples['application/json'] = [ {
+  "menuID" : 343,
+  "serviceRating" : 4.6,
+  "qualityOverPriceRating" : 4.7,
+  "date" : "2019-12-01",
+  "receiptImageID" : 67,
+  "status" : "accepted",
+  "menuItemsReviews" : [ {
+    "menuItemID" : 34,
+    "rating" : 4.1,
+    "content" : "That was delicious!"
+  }, {
+    "menuItemID" : 58,
+    "rating" : 0.5,
+    "content" : "It was an insult, I will never eat that trash again in my whole life"
+  } ]
+}, {
+  "menuID" : 343,
+  "serviceRating" : 4.6,
+  "qualityOverPriceRating" : 4.7,
+  "date" : "2019-12-01",
+  "receiptImageID" : 67,
+  "status" : "accepted",
+  "menuItemsReviews" : [ {
+    "menuItemID" : 34,
+    "rating" : 4.1,
+    "content" : "That was delicious!"
+  }, {
+    "menuItemID" : 58,
+    "rating" : 0.5,
+    "content" : "It was an insult, I will never eat that trash again in my whole life"
+  } ]
+} ];
+    if (Object.keys(examples).length > 0) {
+      resolve(examples[Object.keys(examples)[0]]);
+    } else {
+      resolve();
+    }
+  });
+}
+
+
+/**
  * Get data of own restaurant
  * Get the data of the restaurant of authenticated owner, so that it can be showed in the 'Your Restaurant' page.
  *
@@ -273,6 +324,21 @@ exports.searchByMenuItem = function(menuItemName) {
     } else {
       resolve();
     }
+  });
+}
+
+
+/**
+ * Submit a review of the menu
+ * Submit a review of the menu with given menuID. The receiptImageID is obtained by the frontend when the photo of the receipt is uploaded through the dedicated endpoint.
+ *
+ * menuID Integer ID of the menu
+ * body MenuReview Review
+ * no response value expected for this operation
+ **/
+exports.submitReview = function(menuID,body) {
+  return new Promise(function(resolve, reject) {
+    resolve();
   });
 }
 

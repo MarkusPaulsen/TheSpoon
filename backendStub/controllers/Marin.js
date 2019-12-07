@@ -15,6 +15,27 @@ module.exports.addMenuItem = function addMenuItem (req, res, next) {
     });
 };
 
+module.exports.apiUserCustomerGET = function apiUserCustomerGET (req, res, next) {
+  Marin.apiUserCustomerGET()
+    .then(function (response) {
+      utils.writeJson(res, response);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
+};
+
+module.exports.apiUserCustomerReviewReviewIDDELETE = function apiUserCustomerReviewReviewIDDELETE (req, res, next) {
+  var reviewID = req.swagger.params['reviewID'].value;
+  Marin.apiUserCustomerReviewReviewIDDELETE(reviewID)
+    .then(function (response) {
+      utils.writeJson(res, response);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
+};
+
 module.exports.deleteMenuItem = function deleteMenuItem (req, res, next) {
   var menuID = req.swagger.params['menuID'].value;
   var menuItemID = req.swagger.params['menuItemID'].value;
