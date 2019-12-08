@@ -25,7 +25,7 @@ export default class LoginScreen extends Component {
       passwordError: "",
       token: "",
       invalidError: false,
-      parent: null,
+      parent: ""
     };
     this.register = this.register.bind(this);
   }
@@ -34,7 +34,7 @@ export default class LoginScreen extends Component {
     this.focusListener = this.props.navigation.addListener("didFocus", () => {
       this.getToken();
       const parent = this.props.navigation.getParam("parent", "Profile");
-      this.setState({parent});
+      this.setState({ parent });
     });
   };
 

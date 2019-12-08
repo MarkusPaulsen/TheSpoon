@@ -33,15 +33,10 @@ export default class Review extends Component {
   }
 
   render() {
-    const RenderLogin = props => {
-      return props.navigation.navigate("Login", { parent: "Review" });
-    };
     if (!this.state.isLoaded) {
-      console.log("REVIEW IS LOADING");
       return <ActivityIndicator />;
     }
     if (this.state.isLoaded) {
-      console.log("Usertoken in reviewPage: ", this.state.loggedIn);
       if (this.state.loggedIn) {
         return (
           <View style={styles.container}>
@@ -70,8 +65,20 @@ export default class Review extends Component {
             </TouchableOpacity>
           </View>
         );
-      } if(!this.state.loggedIn) {
-        return <RenderLogin {...this.props} />;
+      }
+      if (!this.state.loggedIn) {
+        return (
+          <View style={styles.container}>
+            <Text style={Typography.FONT_H4_BLACK}>
+              You need to log in to write a review
+            </Text>
+            <TouchableOpacity
+              onPress={() => this.props.navigation.navigate("Profile")}
+            >
+              <Text style={Typography.FONT_H4_PINK}>Click here to log in</Text>
+            </TouchableOpacity>
+          </View>
+        );
       }
     }
   }
@@ -80,7 +87,8 @@ export default class Review extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center"
+    justifyContent: "center",
+    alignItems: "center"
   },
   imageBox: {
     height: 63,

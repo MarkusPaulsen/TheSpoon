@@ -46,11 +46,9 @@ export default class Profile extends Component {
       return props.navigation.navigate("Login", { parent: "Profile" });
     };
     if (!this.state.isLoaded) {
-      console.log("PROFILE IS LOADING");
       return <ActivityIndicator />;
     }
     if (this.state.isLoaded) {
-      console.log("Usertoken in profilepage: ", this.state.loggedIn);
       if (this.state.loggedIn) {
         return (
           <View style={styles.container}>
@@ -81,8 +79,8 @@ export default class Profile extends Component {
             </View>
           </View>
         );
-      } if(!this.state.loggedIn) {
-        console.log("Showing loginPage");
+      }
+      if (!this.state.loggedIn) {
         return <RenderLogin {...this.props} />;
       }
     }
@@ -92,7 +90,8 @@ export default class Profile extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center"
+    justifyContent: "center",
+    alignItems:"center"
   },
   logout_icon: {
     marginTop: 60
