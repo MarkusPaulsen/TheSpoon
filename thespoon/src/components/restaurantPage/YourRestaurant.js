@@ -96,7 +96,7 @@ class YourRestaurant extends Component {
                       <div className="no-menus">
                         <h4>Your menu has pending reviews...</h4>
                         <button className="wide">
-                          <FilterLink filter={modalVisibilityFilters.SHOW_ADD_MENU}>
+                          <FilterLink filter={modalVisibilityFilters.SHOW_PENDING_REVIEW}>
                             See reviews
                           </FilterLink>
                         </button>

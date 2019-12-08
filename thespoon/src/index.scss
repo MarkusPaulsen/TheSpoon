@@ -838,3 +838,52 @@ header {
 
 }
 /* < FOOD ITEMS */
+
+/* REVIEW ITEMS > */
+.reviewItem {
+  background: var(--light-grey);
+  margin: 1rem 0 1rem 0;
+  flex-direction: row;
+  border-radius: 0.8333333333333334rem;
+  display: flex;
+  height: 150px;
+
+  .receipt-photo {
+    background: lightgrey;
+    border-radius: 0.8333333333333334rem;
+    height: 130px;
+    width: 130px;
+    margin: 10px;
+
+  }
+  .mainContent {
+    margin-left: 10px;
+    text-align: left;
+    flex-direction: column;
+    font-size: 0.625rem;
+
+    .menuName {
+      margin: 0.5rem 0 0.5rem 0;
+    }
+
+    .review-validation {
+      flex-direction: row;
+      align-items: center;
+      .review-button {
+        height: 0.85rem;
+        margin: 1.5rem 0.10rem 0 0.10rem;
+        width: 4rem;
+        font-size: 0.6rem;
+        -webkit-box-shadow: none;
+        -moz-box-shadow: none;
+        box-shadow: none;
+
+        &.decline {
+          background-color: var(--grey);
+        }
+      }
+    }
+  }
+}
+
+/* < REVIEW ITEMS */
