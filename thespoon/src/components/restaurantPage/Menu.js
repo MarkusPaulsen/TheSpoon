@@ -1,19 +1,5 @@
 //<editor-fold desc="React">
 import React, {Component} from "react";
-import {Redirect} from "react-router-dom"
-import {paths} from "../../constants/paths";
-//</editor-fold>
-//<editor-fold desc="Redux">
-import {connect} from "react-redux";
-//</editor-fold>
-//<editor-fold desc="RxJs">
-import {bindCallback, of} from "rxjs";
-import {ajax} from "rxjs/ajax";
-import {take, exhaustMap} from "rxjs/operators";
-//</editor-fold>
-//<editor-fold desc="Validator">
-import Form from "react-validation/build/form";
-import Button from "react-validation/build/button";
 //</editor-fold>
 
 //<editor-fold desc="Constants">
@@ -25,12 +11,8 @@ import FilterLink from "../../containers/FilterModalLink";
 //<editor-fold desc="Icons">
 import {IconEditPink, IconAddPink} from "../Icons";
 //</editor-fold>
-
-//</editor-fold>
 //<editor-fold desc="Components">
-import Sidebar from "./Sidebar";
-import DishItem from "./DishItem";
-import DrinkItem from "./DrinkItem";
+import MenuItem from "./MenuItem";
 //</editor-fold>
 
 
@@ -39,56 +21,7 @@ class Menu extends Component {
     //<editor-fold desc="Constructor">
     constructor(props) {
         super(props);
-
-        this.handleSubmit = this.handleSubmit.bind(this);
-
-        this.state = {
-            serverMessage: ""
-        };
     }
-
-    //</editor-fold>
-    handleSubmit = (event) => {
-        event.preventDefault();
-
-        const thisTemp = this;
-        of(1)
-            .pipe(exhaustMap(() => {
-                return ajax({
-                    url: paths["restApi"]["menu"] + "/" + this.props.id,
-                    method: "DELETE",
-                    headers: {"Content-Type": "application/json", "X-Auth-Token": this.props.token}
-                })
-            }))
-            .pipe(exhaustMap(() => {
-                return bindCallback(thisTemp.setState).call(thisTemp, {
-                    serverMessage: ""
-                });
-            }))
-            .pipe(take(1))
-            .subscribe(
-                (next) => {
-                    thisTemp.setState(
-                        {serverMessage: <Redirect to={{pathname: "/Mainpage"}}/>}
-                    );
-                }, (error) => {
-                    thisTemp.props.failLogIn();
-                    switch (error.status) {
-                        case 401:
-                            thisTemp.setState({serverMessage: "Access denied"});
-                            break;
-                        case 404:
-                            thisTemp.setState({serverMessage: "No connection to the server"});
-                            break;
-                        case 0:
-                            break;
-                        default:
-                            thisTemp.setState({serverMessage: "General error"});
-                            break;
-                    }
-                }
-            );
-    };
     //</editor-fold>
 
     //<editor-fold desc="Render">
@@ -115,12 +48,15 @@ class Menu extends Component {
                     <div className="col"><hr/></div>
                 </div>
 
-                {/*Item*/}
-                <DishItem />
-                <DishItem />
-
+                {this.props.menuItems.filter(menuItem => menuItem.type === "dish").map(dishItem => {
+                    return (
+                        <MenuItem name={dishItem.name} description={dishItem.description}
+                                  priceEuros={dishItem.priceEuros} tags={dishItem.tags}
+                                  imageLink={dishItem.imageLink} type={dishItem.type}/>
+                    );
+                })}
                 <div className="modal-button">
-                    <FilterLink filter={modalVisibilityFilters.SHOW_ADD_DISH}><IconAddPink/> Add dish</FilterLink>
+                    <FilterLink filter={modalVisibilityFilters.SHOW_ADD_DISH} currentMenu={this.props}><IconAddPink/> Add dish</FilterLink>
                 </div>
 
                 <div className="row">
@@ -129,12 +65,15 @@ class Menu extends Component {
                     <div className="col"><hr/></div>
                 </div>
 
-                {/*Item*/}
-                <DrinkItem />
-                <DrinkItem />
-
+                {this.props.menuItems.filter(menuItem => menuItem.type === "drink").map(drinkItem => {
+                    return (
+                        <MenuItem name={drinkItem.name} description={drinkItem.description}
+                                   priceEuros={drinkItem.priceEuros} tags={drinkItem.tags}
+                                   imageLink={drinkItem.imageLink} type={drinkItem.type}/>
+                    );
+                })}
                 <div className="modal-button">
-                    <FilterLink filter={modalVisibilityFilters.SHOW_ADD_DRINK}><IconAddPink/> Add drink</FilterLink>
+                    <FilterLink filter={modalVisibilityFilters.SHOW_ADD_DRINK} currentMenu={this.props}><IconAddPink/> Add drink</FilterLink>
                 </div>
             </div>
         );
@@ -143,12 +82,4 @@ class Menu extends Component {
     //</editor-fold>
 }
 
-//<editor-fold desc="Redux">
-const mapStateToProps = (state) => {
-    return {
-        token: state.logInReducer.token
-    };
-};
-
-export default connect(mapStateToProps, null)(Menu);
-//</editor-fold>
+export default Menu;

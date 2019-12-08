@@ -1,5 +1,14 @@
 //<editor-fold desc="React">
 import React, {Component} from "react";
+import {Redirect} from "react-router";
+//</editor-fold>
+//<editor-fold desc="RxJs">
+import {bindCallback, of, throwError} from "rxjs";
+import {ajax} from "rxjs/ajax";
+import {exhaustMap, map, take} from "rxjs/operators";
+//</editor-fold>
+//<editor-fold desc="Redux">
+import {connect} from "react-redux";
 //</editor-fold>
 //<editor-fold desc="Bootstrap">
 import {Modal} from "react-bootstrap";
@@ -12,19 +21,17 @@ import Textarea from "react-validation/build/textarea";
 import FormValidator from "../../validation/FormValidator";
 //</editor-fold>
 
+//<editor-fold desc="Constants">
+import {paths} from "../../constants/paths";
+//</editor-fold>
 //<editor-fold desc="Icons">
 import {IconExit} from "../Icons";
-import {bindCallback, of, throwError} from "rxjs";
-import {exhaustMap, map, take} from "rxjs/operators";
-import {ajax} from "rxjs/ajax";
-import {connect} from "react-redux";
 //</editor-fold>
 
 
-class EditDrinkModal extends Component {
+class EditMenuItemModal extends Component {
     //<editor-fold desc="Constructor">
-    constructor(props)
-    {
+    constructor(props) {
         super(props);
 
         this.validator = new FormValidator([
@@ -32,7 +39,7 @@ class EditDrinkModal extends Component {
                 field: "name",
                 method: "isEmpty",
                 validWhen: false,
-                message: "Drink name is required"
+                message: "Dish name is required"
             },
             {
                 field: "description",
@@ -85,7 +92,7 @@ class EditDrinkModal extends Component {
                     description: values.description,
                     price: values.price,
                     imageID: values.imageID,
-                    tags: values.tags,
+                    tags: values.tags.split(",").map(tag => tag.trim()),
                     serverMessage: "",
                     submitted: false
                 });
@@ -98,28 +105,30 @@ class EditDrinkModal extends Component {
             }))
             .pipe(exhaustMap(() => {
                 if (thisTemp.state.validation.isValid) {
-                    thisTemp.setState({serverMessage: "New drink is edited"})
+                    thisTemp.setState({serverMessage: "New dish is edited"});
                     return ajax({
-                        url: "http://localhost:8080/api/user/owner/restaurant/menu/" + this.props.menuID + "menuItem/" + this.props.menuItemID,
+                        url: paths["restApi"]["menu"] + "/" + thisTemp.props.menuID + "/" + "menuItem" + "/" + thisTemp.props.menuItemID,
                         method: "PUT",
-                        headers: {"Content-Type": "application/json", "X-Auth-Token": this.props.token},
+                        headers: {"Content-Type": "application/json", "X-Auth-Token": thisTemp.props.token},
                         body: {
                             name: thisTemp.state.name,
                             description: thisTemp.state.description,
                             price: thisTemp.state.price,
-                            imageID: thisTemp.imageID,
-                            tags: [{"name": thisTemp.state.tags}]
+                            imageID: thisTemp.state.imageID,
+                            tags: thisTemp.state.tags
                         }
                     })
                 } else {
-                    thisTemp.setState({serverMessage: "New drink cannot be edited"});
+                    thisTemp.setState({serverMessage: "New dish cannot be edited"});
                     return throwError({status: 0});
                 }
             }))
             .pipe(take(1))
             .subscribe(
-                (next) => {
-                    //thisTemp.props.setDrinkId(reply.response.drinkID);
+                () => {
+                    thisTemp.setState(
+                        {serverMessage: <Redirect to={{pathname: "/Mainpage"}}/>}
+                    );
                     thisTemp.props.onHide();
                 },
                 (error) => {
@@ -151,12 +160,12 @@ class EditDrinkModal extends Component {
                     <Form ref={(c) => {this.form = c; }} onSubmit={(e) => this.handleSubmit(e)}>
                         <h2>Edit</h2>
                         <div className="account-type">
-                            <h4><span className="role">Drink</span></h4>
+                            <h4><span className="role">Dish</span></h4>
                         </div>
 
                         <div className="input-field">
-                            <label>Drink name</label>
-                            <Input type="text" name="drinkName" placeholder="Drink name"/>
+                            <label>Dish name</label>
+                            <Input type="text" name="dishName" placeholder="Dish name"/>
                         </div>
                         <div className="error-block">
                             <small>{validation.name.message}</small>
@@ -209,7 +218,7 @@ class EditDrinkModal extends Component {
                         </div>
 
                         <Button type="submit" className="normal">Save</Button>
-                        <Button type="submit" className="delete-button">Delete Drink</Button>
+                        <Button type="submit" className="delete-button">Delete Dish</Button>
                         <div className="error-block">
                             <small>{this.state.serverMessage}</small>
                         </div>
@@ -224,9 +233,10 @@ class EditDrinkModal extends Component {
 //<editor-fold desc="Redux">
 const mapStateToProps = (state) => {
     return {
-        token: state.logInReducer.token
+        token: state.logInReducer.token,
+        modalVisibilityFilter: state.modalVisibiltyFilterReducer.modalVisibilityFilter,
     };
 };
 
-export default connect(mapStateToProps, null)(EditDrinkModal);
+export default connect(mapStateToProps, null)(EditMenuItemModal);
 //</editor-fold>

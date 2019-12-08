@@ -20,10 +20,17 @@ import Layout from "./../layout/Layout.js"
 class Homepage extends Component {
     //<editor-fold desc="Render">
     render() {
-        if(typeof this.props.loginStatus != "undefined" && this.props.loginStatus === "logged in"){
-            return(
-                <Redirect to={{pathname: "/Mainpage/"}}/>
-            );
+        if(typeof this.props.loginStatus != "undefined" && this.props.loginStatus === "logged in") {
+            if(typeof this.props.isRestaurantOwner != "undefined" && this.props.isRestaurantOwner) {
+                return(
+                    <Redirect to={{pathname: "/Mainpage/"}}/>
+                );
+            }
+            else {
+                return(
+                    <Redirect to={{pathname: "/CustomerPage/"}}/>
+                );
+            }
         }
         else {
             return (
@@ -50,6 +57,7 @@ class Homepage extends Component {
 //<editor-fold desc="Redux">
 const mapStateToProps = (state) => {
     return {
+        isRestaurantOwner: state.logInReducer.isRestaurantOwner,
         loginStatus: state.logInReducer.loginStatus
     };
 };

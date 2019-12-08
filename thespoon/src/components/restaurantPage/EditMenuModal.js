@@ -2,28 +2,30 @@
 import React, {Component} from "react";
 import {Redirect} from "react-router";
 //</editor-fold>
-//<editor-fold desc="Redux">
-import {connect} from "react-redux";
-//</editor-fold>
 //<editor-fold desc="RxJs">
 import {bindCallback, of, throwError} from "rxjs";
 import {ajax} from "rxjs/ajax";
-import {take, exhaustMap, map} from "rxjs/operators";
+import {exhaustMap, map, take} from "rxjs/operators";
+//</editor-fold>
+//<editor-fold desc="Redux">
+import {connect} from "react-redux";
 //</editor-fold>
 //<editor-fold desc="Bootstrap">
 import {Modal} from "react-bootstrap";
 //</editor-fold>
 //<editor-fold desc="Validator">
+import Form from "react-validation/build/form";
+import Input from "react-validation/build/input";
+import Button from "react-validation/build/button";
 import Textarea from "react-validation/build/textarea";
-import Form from 'react-validation/build/form';
-import Input from 'react-validation/build/input';
-import Button from 'react-validation/build/button';
 import FormValidator from "../../validation/FormValidator";
 //</editor-fold>
 
+//<editor-fold desc="Constants">
+import {paths} from "../../constants/paths";
+//</editor-fold>
 //<editor-fold desc="Icons">
 import {IconExit} from "../Icons";
-
 //</editor-fold>
 
 
@@ -52,6 +54,7 @@ class EditMenuModal extends Component {
             }]);
 
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleDelete = this.handleDelete.bind(this);
 
         this.state = {
             name: "",
@@ -92,7 +95,7 @@ class EditMenuModal extends Component {
                 if (thisTemp.state.validation.isValid) {
                     thisTemp.setState({serverMessage: "Menu is edited"});
                     return ajax({
-                        url: `/api/user/owner/restaurant/menu/${this.props.menu.id}`,
+                        url: paths["restApi"]["menu"] + "/" + this.props.menu.id,
                         method: "PUT",
                         headers: {"Content-Type": "application/json", "X-Auth-Token": this.props.token},
                         body: {
@@ -105,6 +108,45 @@ class EditMenuModal extends Component {
                     thisTemp.setState({serverMessage: ""});
                     return throwError({status: 0});
                 }
+            }))
+            .pipe(take(1))
+            .subscribe(
+                () => {
+                    thisTemp.setState(
+                        {serverMessage: <Redirect to={{pathname: "/Mainpage"}}/>}
+                    );
+                    thisTemp.props.onHide();
+                },
+                (error) => {
+                    switch (error.status) {
+                        case 400:
+                            thisTemp.setState({serverMessage: "Access denied"});
+                            break;
+                        case 404:
+                            thisTemp.setState({serverMessage: "No connection to the server"});
+                            break;
+                        case 0:
+                            break;
+                        default:
+                            thisTemp.setState({serverMessage: "General error"});
+                            break;
+                    }
+                }
+            );
+    };
+
+    handleDelete = (event) => {
+        event.preventDefault();
+        console.log(this.props)
+
+        const thisTemp = this;
+        of(1)
+            .pipe(exhaustMap(() => {
+                return ajax({
+                    url: paths["restApi"]["menu"] + "/" + this.props.currentMenu.id,
+                    method: "DELETE",
+                    headers: {"Content-Type": "application/json", "X-Auth-Token": this.props.token},
+                })
             }))
             .pipe(take(1))
             .subscribe(
@@ -176,7 +218,7 @@ class EditMenuModal extends Component {
                         </div>
 
                         <Button type="submit" className="normal">Save</Button>
-                        <Button type="submit" className="delete-button">Delete Menu</Button>
+                        <Button type="button" className="delete-button" onClick={this.handleDelete}>Delete Menu</Button>
                         <div className="error-block">
                             <small>{this.state.serverMessage}</small>
                         </div>
@@ -191,7 +233,8 @@ class EditMenuModal extends Component {
 //<editor-fold desc="Redux">
 const mapStateToProps = (state) => {
     return {
-        token: state.logInReducer.token
+        token: state.logInReducer.token,
+        currentMenu: state.currentMenuReducer.currentMenu
     };
 };
 

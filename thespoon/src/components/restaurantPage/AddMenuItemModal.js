@@ -1,5 +1,14 @@
 //<editor-fold desc="React">
 import React, {Component} from "react";
+import {Redirect} from "react-router";
+//</editor-fold>
+//<editor-fold desc="RxJs">
+import {bindCallback, of, throwError} from "rxjs";
+import {ajax} from "rxjs/ajax";
+import {exhaustMap, map, take} from "rxjs/operators";
+//</editor-fold>
+//<editor-fold desc="Redux">
+import {connect} from "react-redux";
 //</editor-fold>
 //<editor-fold desc="Bootstrap">
 import {Modal} from "react-bootstrap";
@@ -12,19 +21,18 @@ import Textarea from "react-validation/build/textarea";
 import FormValidator from "../../validation/FormValidator";
 //</editor-fold>
 
+//<editor-fold desc="Constants">
+import {paths} from "../../constants/paths";
+import {modalVisibilityFilters} from "../../constants/modalVisibiltyFilters";
+//</editor-fold>
 //<editor-fold desc="Icons">
 import {IconExit} from "../Icons";
-import {bindCallback, of, throwError} from "rxjs";
-import {exhaustMap, map, take} from "rxjs/operators";
-import {ajax} from "rxjs/ajax";
-import {connect} from "react-redux";
 //</editor-fold>
 
 
-class AddDrinkModal extends Component {
+class AddMenuItemModal extends Component {
     //<editor-fold desc="Constructor">
-    constructor(props)
-    {
+    constructor(props) {
         super(props);
 
         this.validator = new FormValidator([
@@ -32,7 +40,7 @@ class AddDrinkModal extends Component {
                 field: "name",
                 method: "isEmpty",
                 validWhen: false,
-                message: "Drink name is required"
+                message: "Name is required"
             },
             {
                 field: "description",
@@ -41,7 +49,7 @@ class AddDrinkModal extends Component {
                 message: "Description is required"
             },
             {
-                field: "price",
+                field: "priceEuros",
                 method: "isEmpty",
                 validWhen: false,
                 message: "Price is required"
@@ -53,13 +61,15 @@ class AddDrinkModal extends Component {
                 message: "Tags are required"
             }
         ]);
+
+        this.fileSelectedHandler = this.fileSelectedHandler.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
 
         this.state = {
             name: "",
             description: "",
-            price:"",
-            imageID:"",
+            priceEuros: 0,
+            imageID: 0,
             imageMessage: "",
             tags: "",
             validation: this.validator.valid(),
@@ -67,10 +77,44 @@ class AddDrinkModal extends Component {
             submitted: false
         };
     }
-
     //</editor-fold>
 
     //<editor-fold desc="Bussiness Logic">
+    fileSelectedHandler = (event) => {
+        const thisTemp = this;
+        thisTemp.setState({ imageMessage: "", selectedFile: null });
+        let file = event.target.files[0];
+        if(["image/png","image/jpeg"].includes(file.type)) {
+            let formData = new FormData();
+            formData.append("image", file);
+            let reader = new FileReader();
+            thisTemp.setState({serverMessage: "Image upload is processing"});
+            reader.onload = () => {
+                ajax({
+                    url: paths["restApi"]["image"],
+                    method: "POST",
+                    headers: {"X-Auth-Token": thisTemp.props.token},
+                    body: formData
+                })
+                    .pipe(take(1))
+                    .subscribe((reply) => {
+                        thisTemp.setState({ imageID: reply.response.imageID, selectedFile: file, serverMessage: ""});
+                    }, () => {
+                        thisTemp.setState({ imageMessage: (file.name + " could not be uploaded.")});
+                    });
+            };
+            reader.onerror = () => {
+                thisTemp.setState({ imageMessage: (file.name + " could not be read.")});
+            };
+            reader.readAsText(file);
+        }
+        else {
+            //thisTemp.setState({ imageMessage: (file.type + " is not supported.\n Please use image/png or image/jpeg.")});
+            // \n does not work in a state
+            thisTemp.setState({ imageMessage: ("Please use .jpeg or .png format")});
+        }
+    };
+
     handleSubmit = event => {
         event.preventDefault();
         const thisTemp = this;
@@ -80,12 +124,13 @@ class AddDrinkModal extends Component {
                 return thisTemp.form.getValues();
             }))
             .pipe(exhaustMap((values) => {
+                console.log(values)
                 return bindCallback(thisTemp.setState).call(thisTemp, {
                     name: values.name,
                     description: values.description,
-                    price: values.price,
-                    imageID: values.imageID,
-                    tags: values.tags,
+                    priceEuros: parseInt(values.priceEuros),
+                    imageID: thisTemp.state.imageID,
+                    tags: values.tags.split(",").map(tag => tag.trim()),
                     serverMessage: "",
                     submitted: false
                 });
@@ -98,28 +143,32 @@ class AddDrinkModal extends Component {
             }))
             .pipe(exhaustMap(() => {
                 if (thisTemp.state.validation.isValid) {
-                    thisTemp.setState({serverMessage: "New drink is added"})
+                    thisTemp.setState({serverMessage: "New dish is added"});
+                    console.log(thisTemp.props)
                     return ajax({
-                        url: "http://localhost:8080/api/user/owner/restaurant/menu/" + this.props.menuID + "menuItem/",
+                        url: paths["restApi"]["menu"] + "/" + thisTemp.props.currentMenu.id + "/" + "menuItem",
                         method: "POST",
-                        headers: {"Content-Type": "application/json", "X-Auth-Token": this.props.token},
+                        headers: {"Content-Type": "application/json", "X-Auth-Token": thisTemp.props.token},
                         body: {
                             name: thisTemp.state.name,
                             description: thisTemp.state.description,
-                            price: thisTemp.state.price,
-                            imageID: thisTemp.imageID,
-                            tags: [{"name": thisTemp.state.tags}]
+                            priceEuros: thisTemp.state.priceEuros,
+                            type: thisTemp.props.modalVisibilityFilter === modalVisibilityFilters.SHOW_ADD_DISH ? "dish": "drink",
+                            imageID: thisTemp.state.imageID,
+                            tags: thisTemp.state.tags
                         }
                     })
                 } else {
-                    thisTemp.setState({serverMessage: "New drink cannot be added"});
+                    thisTemp.setState({serverMessage: "New dish cannot be added"});
                     return throwError({status: 0});
                 }
             }))
             .pipe(take(1))
             .subscribe(
-                (next) => {
-                    //thisTemp.props.setDrinkId(reply.response.drinkID);
+                () => {
+                    thisTemp.setState(
+                        {serverMessage: <Redirect to={{pathname: "/Mainpage"}}/>}
+                    );
                     thisTemp.props.onHide();
                 },
                 (error) => {
@@ -151,12 +200,12 @@ class AddDrinkModal extends Component {
                     <Form ref={(c) => {this.form = c; }} onSubmit={(e) => this.handleSubmit(e)}>
                         <h2>Add</h2>
                         <div className="account-type">
-                            <h4><span className="role">Drink</span></h4>
+                            <h4><span className="role">{this.props.modalVisibilityFilter === modalVisibilityFilters.SHOW_ADD_DISH ? "dish": "drink"}</span></h4>
                         </div>
 
                         <div className="input-field">
-                            <label>Drink name</label>
-                            <Input type="text" name="drinkName" placeholder="Drink name"/>
+                            <label>Name</label>
+                            <Input type="text" name="name" placeholder="Name"/>
                         </div>
                         <div className="error-block">
                             <small>{validation.name.message}</small>
@@ -173,10 +222,10 @@ class AddDrinkModal extends Component {
 
                         <div className="input-field">
                             <label>Price in Euro (€)</label>
-                            <Input placeholder="Price"/>
+                            <Input name="priceEuros" placeholder="Price"/>
                         </div>
                         <div className="error-block">
-                            <small>{validation.price.message}</small>
+                            <small>{validation.priceEuros.message}</small>
                         </div>
 
                         <div className="input-field image">
@@ -202,7 +251,7 @@ class AddDrinkModal extends Component {
 
                         <div className="input-field">
                             <label>Tags</label>
-                            <Input type="tags" name="tags" placeholder="Search"/>
+                            <Input type="tags" name="tags" placeholder="Tags"/>
                         </div>
                         <div className="error-block">
                             <small>{validation.tags.message}</small>
@@ -223,9 +272,11 @@ class AddDrinkModal extends Component {
 //<editor-fold desc="Redux">
 const mapStateToProps = (state) => {
     return {
-        token: state.logInReducer.token
+        token: state.logInReducer.token,
+        modalVisibilityFilter: state.modalVisibiltyFilterReducer.modalVisibilityFilter,
+        currentMenu: state.currentMenuReducer.currentMenu
     };
 };
 
-export default connect(mapStateToProps, null)(AddDrinkModal);
+export default connect(mapStateToProps, null)(AddMenuItemModal);
 //</editor-fold>

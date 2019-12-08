@@ -1,16 +1,14 @@
 //<editor-fold desc="React">
 import React, {Component} from "react";
-import {Redirect} from "react-router-dom"
-import {paths} from "../../constants/paths";
+//</editor-fold>
+//<editor-fold desc="RxJs">
+import {bindCallback, of, throwError} from "rxjs";
+import {ajax} from "rxjs/ajax";
+import {exhaustMap, map, take} from "rxjs/operators";
 //</editor-fold>
 //<editor-fold desc="Redux">
 import {connect} from "react-redux";
 import {logIn, failLogIn, successLogIn} from "../../actionCreators/logInActionCreators";
-//</editor-fold>
-//<editor-fold desc="RxJs">
-import {bindCallback, throwError, of} from "rxjs";
-import {ajax} from "rxjs/ajax";
-import {take, map, exhaustMap} from "rxjs/operators";
 //</editor-fold>
 //<editor-fold desc="Bootstrap">
 import {Modal} from "react-bootstrap";
@@ -23,6 +21,7 @@ import FormValidator from "../../validation/FormValidator";
 //</editor-fold>
 
 //<editor-fold desc="Constants">
+import {paths} from "../../constants/paths";
 import {modalVisibilityFilters} from "../../constants/modalVisibiltyFilters";
 //</editor-fold>
 //<editor-fold desc="Containers">
@@ -37,12 +36,10 @@ import {IconExit, IconName, IconPassword} from "../Icons";
 class LogIn extends Component {
 
   //<editor-fold desc="Constructor">
-  constructor(props)
-  {
+  constructor(props) {
     super(props);
 
-    this.validator = new FormValidator([
-      {
+    this.validator = new FormValidator([{
         field: "username",
         method: "isEmpty",
         validWhen: false,
@@ -53,8 +50,7 @@ class LogIn extends Component {
         method: "isEmpty",
         validWhen: false,
         message: "Password is required."
-      },
-    ]);
+      }]);
 
     this.handleSubmit = this.handleSubmit.bind(this);
 
@@ -114,9 +110,6 @@ class LogIn extends Component {
         .subscribe(
             (next) => {
               thisTemp.props.successLogIn(next.response.token);
-              thisTemp.setState(
-                  {serverMessage: <Redirect to={{pathname: "/Mainpage"}}/>}
-              );
               thisTemp.props.onHide();
             }, (error) => {
               thisTemp.props.failLogIn();
@@ -189,7 +182,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     logIn: (username) => dispatch(logIn(username)),
     failLogIn: () => dispatch(failLogIn()),
-    successLogIn: (token) => dispatch(successLogIn(token))
+    successLogIn: (token) => dispatch(successLogIn(token, true))
   };
 };
 

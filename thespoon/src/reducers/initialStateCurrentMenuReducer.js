@@ -1,3 +1,4 @@
 export const initialStateCurrentMenuReducer = {
-  currentMenu: null
+    currentMenu: null,
+    currentMenuItem: null
 };

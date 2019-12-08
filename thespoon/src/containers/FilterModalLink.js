@@ -23,7 +23,7 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     onClick: () => {
       dispatch(setModalVisibilityFilterAction(ownProps.filter));
       ownProps.currentMenu &&
-        dispatch(setCurrentMenu(ownProps.currentMenu));
+      dispatch(setCurrentMenu(ownProps.currentMenu));
     }
   };
 };

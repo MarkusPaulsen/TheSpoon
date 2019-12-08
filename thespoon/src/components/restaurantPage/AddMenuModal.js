@@ -2,25 +2,28 @@
 import React, {Component} from "react";
 import {Redirect} from "react-router";
 //</editor-fold>
-//<editor-fold desc="Redux">
-import {connect} from "react-redux";
-//</editor-fold>
 //<editor-fold desc="RxJs">
 import {bindCallback, of, throwError} from "rxjs";
 import {ajax} from "rxjs/ajax";
-import {take, exhaustMap, map} from "rxjs/operators";
+import {exhaustMap, map, take} from "rxjs/operators";
+//</editor-fold>
+//<editor-fold desc="Redux">
+import {connect} from "react-redux";
 //</editor-fold>
 //<editor-fold desc="Bootstrap">
 import {Modal} from "react-bootstrap";
 //</editor-fold>
 //<editor-fold desc="Validator">
+import Form from "react-validation/build/form";
+import Input from "react-validation/build/input";
+import Button from "react-validation/build/button";
 import Textarea from "react-validation/build/textarea";
-import Form from 'react-validation/build/form';
-import Input from 'react-validation/build/input';
-import Button from 'react-validation/build/button';
 import FormValidator from "../../validation/FormValidator";
 //</editor-fold>
 
+//<editor-fold desc="Constants">
+import {paths} from "../../constants/paths";
+//</editor-fold>
 //<editor-fold desc="Icons">
 import {IconExit} from "../Icons";
 //</editor-fold>
@@ -77,7 +80,7 @@ class AddMenuModal extends Component {
                 return bindCallback(thisTemp.setState).call(thisTemp, {
                     name: values.name,
                     description: values.description,
-                    tags: values.tags.split(","),
+                    tags: values.tags.split(",").map(tag => tag.trim())
                 });
             }))
             .pipe(exhaustMap(() => {
@@ -88,11 +91,10 @@ class AddMenuModal extends Component {
                 });
             }))
             .pipe(exhaustMap(() => {
-                console.log(thisTemp.state)
                 if (thisTemp.state.validation.isValid) {
                     thisTemp.setState({serverMessage: "Menu is created"});
                     return ajax({
-                        url: "/api/user/owner/restaurant/menu",
+                        url: paths["restApi"]["menu"],
                         method: "POST",
                         headers: {"Content-Type": "application/json", "X-Auth-Token": this.props.token},
                         body: {

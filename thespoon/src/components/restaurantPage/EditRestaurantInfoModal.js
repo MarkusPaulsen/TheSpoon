@@ -10,6 +10,9 @@ import Input from "react-validation/build/input";
 import Button from "react-validation/build/button";
 //</editor-fold>
 
+//<editor-fold desc="Constants">
+import {paths} from "../../constants/paths";
+//</editor-fold>
 //<editor-fold desc="Icons">
 import {IconExit} from "../Icons";
 import {bindCallback, of, throwError} from "rxjs";
@@ -69,7 +72,7 @@ class EditRestaurantInfoModal extends Component {
             .pipe(exhaustMap(() => {
                 if (true) {
                     return ajax({
-                        url: "/api/user/owner/restaurant",
+                        url: paths["restApi"]["restaurant"],
                         method: "POST",
                         headers: {"Content-Type": "application/json", "X-Auth-Token": this.props.token},
                         body: {

@@ -9,8 +9,8 @@ import {setRestaurantID} from "../../actionCreators/restaurantActionCreators";
 //</editor-fold>
 //<editor-fold desc="RxJs">
 import {bindCallback, of, throwError} from "rxjs";
-import {catchError, exhaustMap, map, take} from "rxjs/operators";
 import {ajax} from "rxjs/ajax";
+import {catchError, exhaustMap, map, take} from "rxjs/operators";
 //</editor-fold>
 //<editor-fold desc="Bootstrap">
 import {Modal} from "react-bootstrap";
@@ -23,9 +23,9 @@ import FormValidator from "../../validation/FormValidator";
 //</editor-fold>
 
 //<editor-fold desc="Constants">
+import {paths} from "../../constants/paths";
 import {days} from "../../constants/days";
 import {hours} from "../../constants/hours";
-import {paths} from "../../constants/paths";
 //</editor-fold>
 
 
@@ -45,7 +45,6 @@ class FillRestaurantInfo extends Component {
     //<editor-fold desc="Constructor">
     constructor(props) {
         super(props);
-
         this.validator = new FormValidator([
             {
                 field: "name",
@@ -73,8 +72,6 @@ class FillRestaurantInfo extends Component {
             }
 
         ]);
-
-
         this.handleChangeDay = this.handleChangeDay.bind(this);
         this.handleChangeOpenTime = this.handleChangeOpenTime.bind(this);
         this.handleChangeCloseTime = this.handleChangeCloseTime.bind(this);
@@ -140,7 +137,6 @@ class FillRestaurantInfo extends Component {
             let reader = new FileReader();
             thisTemp.setState({serverMessage: "Image upload is processing"});
             reader.onload = (readerEvent) => {
-                console.log(readerEvent)
                 ajax({
                     url: paths["restApi"]["image"],
                     method: "POST",
@@ -153,7 +149,6 @@ class FillRestaurantInfo extends Component {
                     }, () => {
                         thisTemp.setState({ imageMessage: (file.name + " could not be uploaded.")});
                     });
-                console.log(readerEvent);
             };
             reader.onerror = () => {
                 thisTemp.setState({ imageMessage: (file.name + " could not be read.")});
@@ -226,13 +221,13 @@ class FillRestaurantInfo extends Component {
             .pipe(exhaustMap((osmData) => {
                 if (Array.isArray(osmData.response) && osmData.response.length > 0) {
                     thisTemp.setState({serverMessage: "Restaurant information publication is processed"});
+                    console.log()
                     return ajax({
                         url: paths["restApi"]["restaurant"],
                         method: "POST",
-                        headers: {"Content-Type": "application/json"},
+                        headers: {"Content-Type": "application/json", "X-Auth-Token": thisTemp.props.token},
                         body: {
-                            //restaurantName
-                            name: thisTemp.state.restaurantName,
+                            name: thisTemp.state.name,
                             address: thisTemp.state.address,
                             city: thisTemp.state.city,
                             country: thisTemp.state.country,
@@ -261,7 +256,7 @@ class FillRestaurantInfo extends Component {
                 (reply) => {
                     thisTemp.props.setRestaurantID(reply.response.restaurantID);
                     thisTemp.setState(
-                        {serverMessage: <Redirect to={{pathname: "/YourRestaurant"}}/>}
+                        {serverMessage: <Redirect to={{pathname: "/Mainpage"}}/>}
                     );
                     thisTemp.props.onHide();
                 },

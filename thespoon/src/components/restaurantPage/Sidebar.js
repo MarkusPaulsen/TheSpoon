@@ -23,7 +23,7 @@ class Sidebar extends Component {
             <div className="sidebar">
                 <div className="image-setup">
                     <div className="image-wrapper">
-                        <div className="image" style={{backgroundImage: `url(${this.props.image})`}}/>
+                        <div className="image" style={{backgroundImage: `url(${this.props.imageLink})`}}/>
                     </div>
                 </div>
                 <h4 className="title">{this.props.name}</h4>
@@ -38,10 +38,10 @@ class Sidebar extends Component {
                     <IconHoursTurqoise/>
                     <ul>
                         {
-                            (typeof(this.props.openingHours) !== "undefined" && this.props.openingHours.length > 1) ?
+                            (typeof(this.props.openingHours) !== "undefined" && this.props.openingHours.length >= 1) ?
                                 this.props.openingHours.map((openingHour) => {
                                     return (
-                                        <li><span>{openingHour.day}:</span>{openingHour.openTime} - {openingHour.closeTime}</li>
+                                        <li><span>{openingHour.day}: </span>{openingHour.openTime} - {openingHour.closeTime}</li>
                                     )})
                                 :
                                 <li><span>No opening hours defined</span></li>
