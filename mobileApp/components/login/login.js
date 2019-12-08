@@ -13,6 +13,7 @@ import UsernameIcon from "../../assets/login-email.png";
 import PasswordIcon from "../../assets/login-password.png";
 import Validate from "./validation.js";
 import validate from "./validation";
+import Profile from "../profile/profile";
 
 export default class LoginScreen extends Component {
   constructor(props) {
@@ -24,16 +25,22 @@ export default class LoginScreen extends Component {
       passwordError: "",
       token: "",
       invalidError: false,
-      parent: null
+      parent: null,
     };
     this.register = this.register.bind(this);
   }
 
   componentDidMount = async () => {
-    this.getToken();
-    const parent = this.props.navigation.getParam("parent", "Profile");
-    this.setState({ parent });
+    this.focusListener = this.props.navigation.addListener("didFocus", () => {
+      this.getToken();
+      const parent = this.props.navigation.getParam("parent", "Profile");
+      this.setState({parent});
+    });
   };
+
+  componentWillUnmount() {
+    this.focusListener.remove();
+  }
 
   async handleLogin() {
     try {
@@ -62,7 +69,7 @@ export default class LoginScreen extends Component {
         this.setState({ invalidError: true });
       }
     } catch (e) {
-      console.error("something went wrong in fetching", e);
+      console.error("Error logging in: ", e);
     }
   }
 
@@ -91,7 +98,7 @@ export default class LoginScreen extends Component {
     try {
       await AsyncStorage.setItem("userToken", JSON.stringify(user));
     } catch (e) {
-      console.log("Something went wrong storing token", e);
+      console.log("Error storing token: ", e);
     }
   }
 
@@ -100,7 +107,7 @@ export default class LoginScreen extends Component {
       const userData = await AsyncStorage.getItem("userToken");
       const data = JSON.parse(userData);
     } catch (e) {
-      console.log("Something went wrong getting token", e);
+      console.log("Error getting token: ", e);
     }
   }
 

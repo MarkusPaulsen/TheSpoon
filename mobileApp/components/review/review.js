@@ -21,62 +21,66 @@ export default class Review extends Component {
     };
   }
 
-  componentDidMount() {
-    AsyncStorage.getItem("userToken").then(token => {
-      this.setState({ loggedIn: token !== null, isLoaded: true });
+  componentDidMount = async () => {
+    this.focusListener = this.props.navigation.addListener("didFocus", () => {
+      AsyncStorage.getItem("userToken").then(token => {
+        this.setState({ loggedIn: token !== null, isLoaded: true });
+      });
     });
+  };
+  componentWillUnmount() {
+    this.focusListener.remove();
   }
 
   render() {
-    console.log("Usertoken in reviewpage: ", this.state.loggedIn);
     const RenderLogin = props => {
       return props.navigation.navigate("Login", { parent: "Review" });
     };
     if (!this.state.isLoaded) {
+      console.log("REVIEW IS LOADING");
       return <ActivityIndicator />;
-    } else {
-      return (
-        <ScrollView contentContainerStyle={styles.container}>
-          {this.state.loggedIn ? (
-            <View>
-              <View style={{ flexDirection: "row" }}>
-                <Text style={Typography.FONT_H2_PINK}>Write </Text>
-                <Text style={Typography.FONT_H2_BLACK}>Review</Text>
-              </View>
-              <View style={styles.imageBox}>
-                <Image source={require("../../assets/addImage.png")} />
-              </View>
-              <Text style={Typography.FONT_H4_BLACK}>
-                Upload a picture of the receipt
-              </Text>
-              <Text style={Typography.FONT_MED_GRAY}>
-                We use this to confirm the review
-              </Text>
-              <Text style={Typography.FONT_H4_BLACK}>
-                What did you eat/drink?
-              </Text>
-              <TouchableOpacity>
-                <Text>Restaurant</Text>
-                <Text>None</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.reviewButton}>
-                <Text style={Typography.FONT_H4_WHITE}>POST REVIEW</Text>
-              </TouchableOpacity>
+    }
+    if (this.state.isLoaded) {
+      console.log("Usertoken in reviewPage: ", this.state.loggedIn);
+      if (this.state.loggedIn) {
+        return (
+          <View style={styles.container}>
+            <View style={{ flexDirection: "row" }}>
+              <Text style={Typography.FONT_H2_PINK}>Write </Text>
+              <Text style={Typography.FONT_H2_BLACK}>Review</Text>
             </View>
-          ) : (
-            <RenderLogin {...this.props} />
-          )}
-        </ScrollView>
-      );
+            <View style={styles.imageBox}>
+              <Image source={require("../../assets/addImage.png")} />
+            </View>
+            <Text style={Typography.FONT_H4_BLACK}>
+              Upload a picture of the receipt
+            </Text>
+            <Text style={Typography.FONT_MED_GRAY}>
+              We use this to confirm the review
+            </Text>
+            <Text style={Typography.FONT_H4_BLACK}>
+              What did you eat/drink?
+            </Text>
+            <TouchableOpacity>
+              <Text>Restaurant</Text>
+              <Text>None</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.reviewButton}>
+              <Text style={Typography.FONT_H4_WHITE}>POST REVIEW</Text>
+            </TouchableOpacity>
+          </View>
+        );
+      } if(!this.state.loggedIn) {
+        return <RenderLogin {...this.props} />;
+      }
     }
   }
 }
 
 const styles = StyleSheet.create({
   container: {
-    flexGrow: 1,
-    justifyContent: "center",
-    alignItems: "center"
+    flex: 1,
+    justifyContent: "center"
   },
   imageBox: {
     height: 63,
