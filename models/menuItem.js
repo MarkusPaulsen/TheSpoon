@@ -30,6 +30,9 @@ const MenuItem = db.define('MenuItem', {
     },
     Type: {
         type: Sequelize.STRING
+    },
+    Rating: {
+        type: Sequelize.INTEGER
     }
 }, {
     freezeTableName: true,

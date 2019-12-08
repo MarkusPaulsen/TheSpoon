@@ -12,8 +12,12 @@ const Tag = require('../models/tag.js');
 const ItemReview = require('../models/itemReview.js');
 const MenuReview = require('../models/menuReview.js');
 
+// TODO: Fix calculation of rating
+// TODO: Fix common function for computing average rating of a specific column in the DB.
 
 router.get('/:menuID', async (req, res) => {
+    let serviceRating, qualityRating;
+    let itemRatings = [];
     try {
         let menuInfo = await Menu.findOne({
             attributes: ['Name', 'Description', 'Menu_ID', 'Restaurant_ID'],
@@ -31,13 +35,13 @@ router.get('/:menuID', async (req, res) => {
                 }]
             },{
                 model: MenuReview,
-                attributes: ['Rating']
+                attributes: ['ServiceRating', 'QualityRating']
             }]
         });
 
         const menuTags = formatTags(menuInfo.TaggedMenus);
-        const menuRating = aggregateRating(menuInfo.MenuReviews);
-
+        serviceRating = averageRating(menuInfo.MenuReviews, 'ServiceRating');
+        qualityRating = averageRating(menuInfo.MenuReviews, 'QualityRating');
         let menuItems = await MenuItem.findAll({
             where: {
                 Menu_ID: menuInfo.Menu_ID
@@ -51,13 +55,16 @@ router.get('/:menuID', async (req, res) => {
                 }]
             }, {
                 model: ItemReview,
-                attributes: ['Rating']
+                attributes: ['ItemRating']
             }]
         });
 
         menuItems =  await menuItems.map ( mi => {
             const tags= formatTags(mi.TaggedItems);
-            const rating = aggregateRating(mi.ItemReviews);
+            const rating = averageRating(mi.ItemReviews, 'ItemRating');
+            if (!(rating === null)) {
+                itemRatings.push({ir: rating});
+            }
             return {
                 menuItemID: mi.MI_ID,
                 name: mi.Name,
@@ -69,8 +76,9 @@ router.get('/:menuID', async (req, res) => {
                 tags: tags
             }
         });
+        let itemRating = averageRating(itemRatings,'ir');
+        const menuRating = computeMenuRating( qualityRating, serviceRating, itemRating, menuItems.length.toFixed(1), itemRatings.length.toFixed(1) );
 
-        // TODO: Right format for response
         const result = {
             restaurant: {
                 restaurantName: menuInfo.Restaurant.Name,
@@ -110,17 +118,30 @@ const formatTags = (arr) => {
     }
 };
 
-const aggregateRating = (arr) => {
+const averageRating = (arr, type) => {
     if (arr.length < 1){
         return null;
     } else {
         let sum = 0;
         for (let i = 0; i < arr.length; i++) {
-            sum += parseInt(arr[i].Rating);
-        }
-        return (sum/ (arr.length)).toFixed(1);
+            sum += parseFloat(arr[i][type]);
+            }
+        return (sum/(arr.length)).toFixed(1);
     }
 };
 
+const computeMenuRating = (qualityAverage, serviceAverage, menuItemsAverage, nrMenuRatings, nrMenuItemRatings) => {
+    qualityAverage = parseFloat(qualityAverage);
+    serviceAverage = parseFloat(serviceAverage);
+    menuItemsAverage = parseFloat(menuItemsAverage);
+    nrMenuRatings = parseFloat(nrMenuRatings);
+    nrMenuItemRatings = parseFloat(nrMenuItemRatings);
+    const totalRatings = nrMenuItemRatings + nrMenuRatings;
+    const menuRatings = ((qualityAverage + serviceAverage)/2)/(2*nrMenuRatings/totalRatings);
+    const itemRatings = menuItemsAverage/(nrMenuItemRatings/totalRatings);
+    console.log(menuRatings);
+    console.log(itemRatings);
+    return  ((menuRatings + itemRatings)/2).toFixed(1);
+};
 
 module.exports = router;

@@ -1,7 +1,7 @@
 swagger: "2.0"
 info:
   description: "This is the API reference of The Spoon project.\n \n VERSIONING: The version number works in this way: it's composed of two numbers separated by a point. The first number identifies the Sprint, so for example the version 2.1 of the API reference is related to the Sprint number 2. The second number starts from 0 and has to be increased by one each time the file is modified. The person who modifies this document is responsible for increasing the number.\n \n GROUPING OF ENDPOINTS: The endpoints are grouped by dividing them into customers' operations and owners' operations. All the endpoints that are not strictly related to customers nor owners remain inside the default group.\n \n AUTHENTICATION/AUTHORIZATION: The json web token returned when the login is performed is supposed to be put into x-auth-token header in the endpoints that require authorization"
-  version: "5.0"
+  version: "6.0"
   title: "The Spoon API reference"
 tags:
   - name: "customer"
@@ -422,6 +422,7 @@ paths:
     get:
       tags:
         - "customer"
+        - "Emilio"
       summary: "Return all the restaurants"
       description: "Return all the names of the restaurants and their restaurantIDs."
       operationId: "getRestaurants"
@@ -444,6 +445,7 @@ paths:
     get:
       tags:
         - "customer"
+        - "Emilio"
       summary: "Return all the menus of given restaurant"
       description: "Return all the names of the menus of the restaurant and their menuIDs."
       operationId: "getMenusOfRestaurant"
@@ -474,6 +476,7 @@ paths:
     get:
       tags:
         - "customer"
+        - "Emilio"
       summary: "Return all the menu items of given menu"
       description: "Return all the names of the restaurants and their restaurantIDs."
       operationId: "getItemsOfMenu"
@@ -504,6 +507,7 @@ paths:
     post:
       tags:
         - "customer"
+        - "Frikk"
       summary: "Submit a review of the menu"
       description: "Submit a review of the menu with given menuID. The receiptImageID is obtained by the frontend when the photo of the receipt is uploaded through the dedicated endpoint."
       operationId: "submitReview"
@@ -536,6 +540,7 @@ paths:
     get:
       tags:
         - "customer"
+        - "Frikk"
       summary: "Return all the reviews of the customer"
       description: "Return all the reviews of the customer, with their reviewIDs and their status (accepted/refused/pending). Returns an empty array if no review is found."
       operationId: "GetOwnReviews"
@@ -558,6 +563,7 @@ paths:
     delete:
       tags:
         - "customer"
+        - "Marin"
       summary: "Delete a review"
       description: "Delete the review with the given reviewID. This will also delete the reviews of the menu items associated to the review with given reviewID."
       parameters:
@@ -581,6 +587,7 @@ paths:
     get:
       tags:
         - "customer"
+        - "Marin"
       summary: "Return profile data of the customer"
       description: "Return own data of the logged in customer. This endpoints should be used when the frontend has to visualize the profile of the customer."
       produces:
@@ -596,6 +603,62 @@ paths:
         - Bearer: []
       x-security-scopes:
         - "customer"
+  /api/user/owner/restaurant/review:
+    get:
+      tags:
+        - "owner"
+      summary: "Return pending reviews"
+      description: "Return all the pending reviews of the owner's restaurant. Only the image of the receipt is sent (the link to download it from the cloud), together with the name of the reviewed menu and the list of the reviewed menu items.The pending reviews are sent in an array, which will be empty in case there are no pending reviews. With a POST the restaurant owner will approve or disapprove the review."
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/PendingReview"
+        401:
+          description: "Access denied"
+      security:
+        - Bearer: []
+      x-security-scopes:
+        - "owner"
+  /api/user/owner/restaurant/review/{reviewID}:
+    post:
+      tags:
+        - "owner"
+      summary: "Approve or disapprove pending review"
+      description: "Submit the decision of the restaurant owner about the pending review with given reviewID (approved or disapproved). In case of a successful operation, an array containing all the pending reviews is sent, so that the frontend is able to refresh the list (the array sent is like the array sent with the GET endpoint)."
+      consumes:
+        - "application/json"
+      parameters:
+        - name: "reviewID"
+          in: "path"
+          description: "ID of the pending review"
+          required: true
+          type: "integer"
+        - name: "body"
+          in: "body"
+          description: "Submitted status of pending review (approved or disapproved)"
+          required: true
+          schema:
+            $ref: "#/definitions/ApprovalStatus"
+      responses:
+        201:
+          description: "Successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/PendingReview"
+        404:
+          description: "Review with given reviewID not found"
+        401:
+          description: "Access denied"
+      security:
+        - Bearer: []
+      x-security-scopes:
+        - "owner"
 
 securityDefinitions:
   Bearer:
@@ -1005,12 +1068,10 @@ definitions:
         type: "integer"
     example:
       name: "Pasta alla carbonara"
-      menuID: 802
+      menuItemID: 802
   MenuReview:
     type: "object"
     properties:
-      menuID:
-        type: "integer"
       serviceRating:
         type: "number"
       qualityOverPriceRating:
@@ -1024,7 +1085,6 @@ definitions:
         items:
           $ref: "#/definitions/MenuItemReview"
     example:
-      menuID: 343
       serviceRating: 4.6
       qualityOverPriceRating: 4.7
       date: "2019-12-01"
@@ -1076,3 +1136,28 @@ definitions:
     example:
       username: "emilio_imperiali"
       email: "emilioimperiali@mail.it"
+  PendingReview:
+    type: "object"
+    properties:
+      reviewID:
+        type: "integer"
+      menuName:
+        type: "string"
+      menuItemNames:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            menuItemName:
+              type: "string"
+    example:
+      reviewID: 988
+      menuName: "Sea menu"
+      menuItemNames: [{"menuItemName": "Spaghetti allo scoglio"}, {"menuItemName": "Sashimi"}]
+  ApprovalStatus:
+    type: "object"
+    properties:
+      isApproved:
+        type: "boolean"
+    example:
+      isApproved: true

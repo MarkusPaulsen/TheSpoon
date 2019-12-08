@@ -16,4 +16,4 @@ notifications:
   on_success: never
   on_failure: always
 script:
-  - echo "Temporary message"
+  - npm test

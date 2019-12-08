@@ -28,7 +28,7 @@ router.get('/', async (req, res) => {
 
         let promises = await matchingItems.map(async mi => {
             let menuInfo = await Menu.findOne({
-                attributes: ['Name', 'Description', 'Menu_ID', 'Restaurant_ID'],
+                attributes: ['Name', 'Description', 'Menu_ID', 'Restaurant_ID', 'Rating'],
                 where: {
                     Menu_ID: mi.dataValues.Menu_ID
                 },
@@ -42,13 +42,10 @@ router.get('/', async (req, res) => {
                         model: Tag,
                         as: 'Tags'
                     }]
-                }, {
-                    model: MenuReview,
-                    attributes: ['Rating']
                 }]
             });
             const tags = await formatTags(menuInfo.TaggedMenus);
-            const rating = await aggregateRating(menuInfo.MenuReviews);
+            //const rating = await aggregateRating(menuInfo.MenuReviews);
 
             menuInfo = {
                 restaurantData: {
@@ -60,7 +57,7 @@ router.get('/', async (req, res) => {
                     name: menuInfo.Name,
                     description: menuInfo.Description,
                     tags: tags,
-                    rating: rating
+                    rating: menuInfo.Rating
                     }
                 };
             return menuInfo;

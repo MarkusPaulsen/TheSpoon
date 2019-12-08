@@ -16,11 +16,14 @@ const ItemReview = db.define('ItemReview', {
     Content: {
         type: Sequelize.STRING
     },
-    Rating: {
+    ItemRating: {
         type: Sequelize.INTEGER
     },
     Date: {
         type: Sequelize.DATE
+    },
+    MenuReview_ID: {
+        type: Sequelize.INTEGER
     }
 },
     {
