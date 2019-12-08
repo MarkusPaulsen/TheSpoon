@@ -92,13 +92,14 @@ export default class Search extends Component {
     try {
       const searchString = this.state.searchWord;
       //change to port 80 if not using the stub
-      const response = await fetch(
-        "http://192.168.1.103:8080/api/user/customer/menu/searchByMenuItem?menuItemName={searchString}",
-        {
-          method: "GET",
-          accept: "application/json"
-        }
-      );
+      const backendStubLink =
+        "http://192.168.1.xxx:8080/api/user/customer/menu/searchByMenuItem?menuItemName={searchString}";
+      const backendServerLink =
+        "https://thespoon.herokuapp.com/api/user/customer/menu/searchByMenuItem?menuItemName={searchString}";
+      const response = await fetch(backendStubLink, {
+        method: "GET",
+        accept: "application/json"
+      });
       const responseJson = await response.json();
       if (response.ok) {
         const searchResults = responseJson.map(index => ({

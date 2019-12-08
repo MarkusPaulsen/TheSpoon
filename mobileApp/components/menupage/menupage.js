@@ -147,8 +147,10 @@ export default class Menu extends Component {
   async getMenuItem(menuId, restaurantName) {
     try {
       //change to port 80 if not using the stub
+      const backendStubLink = `http://192.168.1.xxx:8080/api/user/customer/menu/${menuId}`;
+      const backendServerLink = `https://thespoon.herokuapp.com/api/user/customer/menu/${menuId}`;
       const response = await fetch(
-        `http://192.168.1.110:8080/api/user/customer/menu/${menuId}`,
+        backendStubLink,
         {
           method: "GET",
           accept: "application/json"
