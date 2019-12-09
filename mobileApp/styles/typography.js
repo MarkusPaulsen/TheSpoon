@@ -37,7 +37,13 @@ export const FONT_H3_BLACK = {
   fontWeight: FONT_WEIGHT_MEDIUM,
   fontSize: FONT_SIZE_24,
   color: Colors.BLACK
-}
+};
+export const FONT_H3_PINK = {
+  fontFamily: FONT_FAMILY,
+  fontWeight: FONT_WEIGHT_MEDIUM,
+  fontSize: FONT_SIZE_24,
+  color: Colors.PINK
+};
 
 export const FONT_H4_BLACK = {
   fontFamily: FONT_FAMILY,
