@@ -5,13 +5,13 @@ import {
   StyleSheet,
   FlatList,
   TouchableOpacity,
-  SafeAreaView
+  SafeAreaView, TextInput
 } from "react-native";
 import * as Typography from "../../../styles/typography";
 import * as Colors from "../../../styles/colors";
 import ContinueButton from "../components/continueButton";
-import SearchField from "../components/searchField";
 import BackButton from "../components/backButton";
+import Icon from "react-native-vector-icons/MaterialIcons";
 
 export default class ReviewAddRestaurant extends Component {
   constructor(props) {
@@ -22,7 +22,8 @@ export default class ReviewAddRestaurant extends Component {
       colorIndex: 1,
       backgroundColor: null,
       restaurants: "",
-      test: "123"
+      searchWord: "",
+      searchResult: null
     };
   }
   componentDidMount = async () => {
@@ -55,6 +56,37 @@ export default class ReviewAddRestaurant extends Component {
     this.setState({disableButton: false});
   };
 
+  updateSearchText = searchWord => {
+    this.setState({ searchWord });
+  };
+
+  searchBySearchWord(restaurants, searchWordOriginal){
+    if(!restaurants){
+      return null;
+    }
+    const searchWord = searchWordOriginal.toLowerCase();
+    const result = [];
+    restaurants.map(restaurant => {
+      if(restaurant.name.toLowerCase().includes(searchWord)){
+        result.push(restaurant);
+      }
+    });
+    if(result.length < 1){
+      return null;
+    }
+    return result;
+  }
+
+  getSearchResult() {
+    const searchWord = this.state.searchWord;
+    if(searchWord === ""){
+      this.setState({searchResult: this.state.restaurants});
+    } else {
+      const searchResult = this.searchBySearchWord(this.state.restaurants, searchWord);
+      this.setState({searchResult});
+    }
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -65,12 +97,24 @@ export default class ReviewAddRestaurant extends Component {
           </View>
         </View>
         <View style={{ alignItems: "center" }}>
-          <SearchField style={{ marginBottom: 20 }} />
+          <View style={[styles.searchBar, { marginTop: 20 }]}>
+            <TouchableOpacity value={this.state.searchWord}>
+              <Icon name={"search"} size={22} color={Colors.PINK} />
+            </TouchableOpacity>
+            <TextInput
+                style={[Typography.FONT_INPUT, styles.textInput]}
+                placeholder="Search..."
+                placeholderTextColor={Colors.GRAY_MEDIUM}
+                onChangeText={this.updateSearchText}
+                value={this.state.searchWord}
+                onSubmitEditing={() => this.getSearchResult()}
+            />
+          </View>
         </View>
         <View style={styles.resultList}>
           <SafeAreaView>
             <FlatList
-              data={this.state.restaurants}
+              data={this.state.searchResult ? this.state.searchResult : this.state.restaurants}
               extraData={this.state}
               renderItem={({ item }) => (
                 <TouchableOpacity
@@ -127,5 +171,17 @@ const styles = StyleSheet.create({
     bottom: 0,
     justifyContent: "center",
     alignItems: "center"
+  }, textInput: {
+    height: 42,
+    width: 240,
+    borderBottomColor: Colors.PINK,
+    borderBottomWidth: 1.5,
+    marginLeft: 7
+  },
+  searchBar: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 10
   }
+
 });

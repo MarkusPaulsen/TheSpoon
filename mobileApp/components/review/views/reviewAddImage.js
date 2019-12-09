@@ -12,7 +12,7 @@ class ReviewAddImage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      disableButton: true,
+      disableButton: false,
       imageUrl: null,
       colorIndex: 0
     };
@@ -65,7 +65,6 @@ class ReviewAddImage extends Component {
             </View>
           )}
         </View>
-        {console.log(this.state.disableButton)}
         <ContinueButton
           disableButton={this.state.disableButton}
           navigation={this.props}
