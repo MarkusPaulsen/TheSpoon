@@ -1,5 +1,13 @@
 import React, { Component } from "react";
-import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+  AsyncStorage,
+  ActivityIndicator
+} from "react-native";
 import * as Typography from "../../../styles/typography";
 import * as Colors from "../../../styles/colors";
 import Icon from "react-native-vector-icons/MaterialIcons";
@@ -14,66 +22,99 @@ class ReviewAddImage extends Component {
     this.state = {
       disableButton: true,
       imageUrl: null,
-      colorIndex: 0
+      colorIndex: 0,
+      loggedIn: false,
+      isLoaded: false
     };
+  }
+  componentDidMount = async () => {
+    this.focusListener = this.props.navigation.addListener("didFocus", () => {
+      AsyncStorage.getItem("userToken").then(token => {
+        this.setState({ loggedIn: token !== null, isLoaded: true });
+      });
+    });
+  };
+  componentWillUnmount() {
+    this.focusListener.remove();
   }
 
   render() {
-    let { imageUrl } = this.state;
+    if (!this.state.isLoaded) {
+      return <ActivityIndicator />;
+    }
+    if (this.state.isLoaded) {
+      if (this.state.loggedIn) {
+        let { imageUrl } = this.state;
 
-    return (
-      <View style={styles.container}>
-        <View style={{ flexDirection: "row", flex: 1 }}>
-          <Text style={Typography.FONT_H2_BLACK}>Write </Text>
-          <Text style={Typography.FONT_H2_PINK}>Review</Text>
-        </View>
-        <View style={{ flex: 3 }}>
-          {imageUrl ? (
-            <TouchableOpacity
-              onPress={() => this._onOpenActionSheet()}
-              activeOpacity={0.3}
-            >
-              <Image
-                source={{ uri: imageUrl }}
-                style={{
-                  width: 250,
-                  height: 350,
-                  alignSelf: "center",
-                  marginTop: 30
-                }}
-              />
-            </TouchableOpacity>
-          ) : (
-            <View>
-              <TouchableOpacity
-                onPress={() => this._onOpenActionSheet()}
-                activeOpacity={0.3}
-                style={{ alignItems: "center" }}
-              >
-                <View style={styles.imageBox}>
-                  <Icon name="add-a-photo" size={52} color={Colors.WHITE} />
-                </View>
-              </TouchableOpacity>
-              <View style={{ alignItems: "center" }}>
-                <Text style={Typography.FONT_H4_BLACK}>
-                  Upload a picture of the receipt
-                </Text>
-                <Text style={Typography.FONT_MED_GRAY}>
-                  We use this to confirm the review
-                </Text>
-              </View>
+        return (
+          <View style={styles.container}>
+            <View style={{ flexDirection: "row", flex: 1 }}>
+              <Text style={Typography.FONT_H2_BLACK}>Write </Text>
+              <Text style={Typography.FONT_H2_PINK}>Review</Text>
             </View>
-          )}
-        </View>
-        <ContinueButton
-          disableButton={this.state.disableButton}
-          navigation={this.props}
-          view={"ReviewAddRestaurant"}
-          text={"CONTINUE"}
-          colorIndex={this.state.colorIndex}
-        />
-      </View>
-    );
+            <View style={{ flex: 3 }}>
+              {imageUrl ? (
+                <TouchableOpacity
+                  onPress={() => this._onOpenActionSheet()}
+                  activeOpacity={0.3}
+                >
+                  <Image
+                    source={{ uri: imageUrl }}
+                    style={{
+                      width: 250,
+                      height: 350,
+                      alignSelf: "center",
+                      marginTop: 30
+                    }}
+                  />
+                </TouchableOpacity>
+              ) : (
+                <View>
+                  <TouchableOpacity
+                    onPress={() => this._onOpenActionSheet()}
+                    activeOpacity={0.3}
+                    style={{ alignItems: "center" }}
+                  >
+                    <View style={styles.imageBox}>
+                      <Icon name="add-a-photo" size={52} color={Colors.WHITE} />
+                    </View>
+                  </TouchableOpacity>
+                  <View style={{ alignItems: "center" }}>
+                    <Text style={Typography.FONT_H4_BLACK}>
+                      Upload a picture of the receipt
+                    </Text>
+                    <Text style={Typography.FONT_MED_GRAY}>
+                      We use this to confirm the review
+                    </Text>
+                  </View>
+                </View>
+              )}
+            </View>
+            <ContinueButton
+              disableButton={this.state.disableButton}
+              navigation={this.props}
+              view={"ReviewAddRestaurant"}
+              text={"CONTINUE"}
+              colorIndex={this.state.colorIndex}
+            />
+          </View>
+        );
+      }
+      if (!this.state.loggedIn) {
+        return (
+            <View style={styles.container}>
+              <Text style={Typography.FONT_H4_BLACK}>
+                You need to log in to write a review
+              </Text>
+              <TouchableOpacity
+                  onPress={() => this.props.navigation.navigate("Profile")}
+              >
+                <Text style={Typography.FONT_H4_PINK}>Click here to log in</Text>
+              </TouchableOpacity>
+            </View>
+        );
+      }
+    }
   }
 
   _onOpenActionSheet = () => {

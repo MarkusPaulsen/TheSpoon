@@ -31,7 +31,7 @@ export default class ReviewAddMenu extends Component {
 
   async getMenus(restaurantID) {
     try {
-      const backendStubURL =`http://192.168.1.103:8080/api/user/customer/review/restaurant/${restaurantID}/menu`;
+      const backendStubURL =`http://192.168.1.110:8080/api/user/customer/review/restaurant/${restaurantID}/menu`;
       const response = await fetch(backendStubURL, {
         method: "GET",
         accept: "application/json"

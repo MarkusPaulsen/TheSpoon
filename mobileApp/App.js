@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { StyleSheet, Text, View, Image } from "react-native";
+import { AsyncStorage, StyleSheet, Text, View, Image } from "react-native";
 import LoginScreen from "./components/login/login";
 import SearchPage from "./components/search/search";
 import LandingPage from "./components/landingpage/landingpage";
@@ -42,7 +42,8 @@ const ReviewStack = createStackNavigator(
     ReviewAddMenu: ReviewAddMenu,
     ReviewAddItems: ReviewAddItems,
     ReviewItems: ReviewItems,
-    ReviewOverall: ReviewOverall
+    ReviewOverall: ReviewOverall,
+      Login:LoginScreen
   },
   {
     initialRouteName: "ReviewAddImage",
@@ -50,11 +51,10 @@ const ReviewStack = createStackNavigator(
     headerMode: "none"
   }
 );
-
 const ProfileStack = createStackNavigator(
   {
-    Login: LoginScreen,
-    Profile: ProfilePage
+    Profile: ProfilePage,
+    Login: LoginScreen
   },
   {
     initialRouteName: "Profile",
@@ -119,7 +119,6 @@ export default class App extends Component {
     await Font.loadAsync({
       roboto: require("./assets/fonts/roboto-regular.ttf")
     });
-
     this.setState({ fontLoaded: true });
   }
   render() {
