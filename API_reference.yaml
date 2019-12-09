@@ -1,7 +1,7 @@
 swagger: "2.0"
 info:
   description: "This is the API reference of The Spoon project.\n \n VERSIONING: The version number works in this way: it's composed of two numbers separated by a point. The first number identifies the Sprint, so for example the version 2.1 of the API reference is related to the Sprint number 2. The second number starts from 0 and has to be increased by one each time the file is modified. The person who modifies this document is responsible for increasing the number.\n \n GROUPING OF ENDPOINTS: The endpoints are grouped by dividing them into customers' operations and owners' operations. All the endpoints that are not strictly related to customers nor owners remain inside the default group.\n \n AUTHENTICATION/AUTHORIZATION: The json web token returned when the login is performed is supposed to be put into x-auth-token header in the endpoints that require authorization"
-  version: "6.0"
+  version: "6.1"
   title: "The Spoon API reference"
 tags:
   - name: "customer"
@@ -128,6 +128,34 @@ paths:
           description: "Successful operation"
           schema:
             $ref: '#/definitions/RestaurantReceived'
+        401:
+          description: "Access denied"
+      security:
+        - Bearer: []
+      x-security-scopes:
+        - "owner"
+    put:
+      tags:
+        - "owner"
+      summary: "Edit restaurant's information"
+      description: "Edit the information of the restaurant"
+      operationId: "editRestaurant"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Restaurant data"
+          required: true
+          schema:
+            $ref: "#/definitions/Restaurant"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/RestaurantID"
         401:
           description: "Access denied"
       security:
@@ -968,13 +996,13 @@ definitions:
       menuItems:
         type: "array"
         items:
-          $ref: "#/definitions/MenuItem"
+          $ref: "#/definitions/MenuItemWithID"
     example:
       menuID: 2
       name: "Emilio's menu of the day"
       description: "Our special menu of today"
       tags: [{"name": "Italian", "color": "#FFBC8C"}, {"name": "Mediterranean", "color": "#FFBC8C"}]
-      menuItems: [{"name": "Spaghetti alla carbonara", "description": "Fantastic italian dish made of spaghetti, pig cheek, eggs, black pepper, pecorino romano", "type": "dish", "priceEuros": 10, "tags": [{"name": "Mediterranean", "color": "#FFBC8C"}, {"name": "Pasta", "color": "#99C99B"}, {"name": "Italian", "color": "#FFBC8C"}], "imageLink": "www.cloudStorage.com/Carbonara"}, {"name": "Polpette al sugo", "description": "Meatballs with tomato sauce", "type": "dish", "priceEuros": 7, "tags": [{"name": "Mediterranean", "color": "#FFBC8C"}, {"name": "Meat", "color": "#FFBC8C"}, {"name": "Italian", "color": "#FFBC8C"}], "imageLink": "www.cloudStorage.com/Meatballs"}]
+      menuItems: [{"menuItemID": 20, "name": "Spaghetti alla carbonara", "description": "Fantastic italian dish made of spaghetti, pig cheek, eggs, black pepper, pecorino romano", "type": "dish", "priceEuros": 10, "tags": [{"name": "Mediterranean", "color": "#FFBC8C"}, {"name": "Pasta", "color": "#99C99B"}, {"name": "Italian", "color": "#FFBC8C"}], "imageLink": "www.cloudStorage.com/Carbonara", "rating": 4.5}, {"menuItemID": 21, "name": "Polpette al sugo", "description": "Meatballs with tomato sauce", "type": "dish", "priceEuros": 7, "tags": [{"name": "Mediterranean", "color": "#FFBC8C"}, {"name": "Meat", "color": "#FFBC8C"}, {"name": "Italian", "color": "#FFBC8C"}], "imageLink": "www.cloudStorage.com/Meatballs", "rating": 4}]
   MenuWithoutItems:
     type: "object"
     properties:
