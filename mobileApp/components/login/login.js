@@ -14,6 +14,7 @@ import PasswordIcon from "../../assets/login-password.png";
 import Validate from "./validation.js";
 import validate from "./validation";
 import Profile from "../profile/profile";
+import * as Api from "../../services/api";
 
 export default class LoginScreen extends Component {
   constructor(props) {
@@ -49,9 +50,8 @@ export default class LoginScreen extends Component {
         password: this.state.password,
         isRestaurantOwner: false
       });
-      const backendStubLink = `http://192.168.1.110:8080/api/user/login/`;
-      const backendServerLink = `https://thespoon.herokuapp.com/api/user/login`;
-      const res = await fetch(backendStubLink, {
+
+      const res = await fetch(Api.STUB_LOGIN, {
         method: "POST",
         headers: {
           Accept: "application/json",

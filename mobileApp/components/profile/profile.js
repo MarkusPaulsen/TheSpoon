@@ -12,6 +12,7 @@ import {
 } from "react-native";
 import * as Typography from "../../styles/typography";
 import * as Colors from "../../styles/colors";
+import * as Api from "../../services/api";
 import Icon from "react-native-vector-icons/MaterialIcons";
 
 export default class Profile extends Component {
@@ -57,34 +58,36 @@ export default class Profile extends Component {
     this.focusListener.remove();
   }
 
-
   logout() {
     Alert.alert(
-        'Logout',
-        'Are you sure you want to log out?',
-        [
-          {
-            text: 'Cancel',
-            onPress: () => console.log('Cancel logout'),
-            style: 'cancel',
-          },
-          {text: 'Logout', onPress: () => {console.log('Logout Pressed') ;  AsyncStorage.removeItem("userToken")
-                .then(() => {
-                  this.setState({ loggedIn: false });
-                  Alert.alert("Logout Success!");
-                })
-                .catch(error => console.log("Error logging out: ", error));}},
-        ],
-        {cancelable: false},
+      "Logout",
+      "Are you sure you want to log out?",
+      [
+        {
+          text: "Cancel",
+          onPress: () => console.log("Cancel logout"),
+          style: "cancel"
+        },
+        {
+          text: "Logout",
+          onPress: () => {
+            console.log("Logout Pressed");
+            AsyncStorage.removeItem("userToken")
+              .then(() => {
+                this.setState({ loggedIn: false });
+                Alert.alert("Logout Success!");
+              })
+              .catch(error => console.log("Error logging out: ", error));
+          }
+        }
+      ],
+      { cancelable: false }
     );
-
   }
 
   async getUserInfo() {
     try {
-      const backendStubLink = `http://192.168.1.110:8080/api/user/customer/`;
-      const backendServerLink = `https://thespoon.herokuapp.com/api/user/customer/`;
-      const response = await fetch(backendStubLink, {
+      const response = await fetch(Api.STUB_PROFILE_USERINFO, {
         method: "GET",
         accept: "application/json"
       });
@@ -101,9 +104,7 @@ export default class Profile extends Component {
 
   async getUserReviews() {
     try {
-      const backendStubLink = `http://192.168.1.110:8080/api/user/customer/review`;
-      const backendServerLink = `https://thespoon.herokuapp.com/api/user/customer/review`;
-      const response = await fetch(backendStubLink, {
+      const response = await fetch(Api.STUB_PROFILE_USERREVIEWS, {
         method: "GET",
         accept: "application/json"
       });

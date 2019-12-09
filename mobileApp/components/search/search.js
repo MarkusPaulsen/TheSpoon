@@ -14,6 +14,7 @@ import Validate from "./searchvalidation.js";
 import { TouchableWithoutFeedback } from "react-native-web";
 import * as Typography from "../../styles/typography";
 import * as Colors from "../../styles/colors";
+import * as Api from "../../services/api";
 
 function ResultItem({ menuName, restaurantName, tags, score }) {
   const tags1Row = [];
@@ -91,12 +92,7 @@ export default class Search extends Component {
   async getResults() {
     try {
       const searchString = this.state.searchWord;
-      //change to port 80 if not using the stub
-      const backendStubLink =
-        "http://192.168.1.110:8080/api/user/customer/menu/searchByMenuItem?menuItemName={searchString}";
-      const backendServerLink =
-        "https://thespoon.herokuapp.com/api/user/customer/menu/searchByMenuItem?menuItemName={searchString}";
-      const response = await fetch(backendStubLink, {
+      const response = await fetch(Api.STUB_SEARCH, {
         method: "GET",
         accept: "application/json"
       });
