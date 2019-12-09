@@ -4,6 +4,7 @@ const Customer = require('../models/customer.js');
 //the function sends an error response if the username of the email are already taken and returns true
 //return false if both the username and the email are not already taken
 module.exports = async (req, res) => {
+
     //check if the the username is already taken (it must be unique)
     let owner;
     let customer;
@@ -28,7 +29,7 @@ module.exports = async (req, res) => {
             Email: req.body.email
         }
     });
-    customer = await Owner.findAll({
+    customer = await Customer.findAll({
         where: {
             Email: req.body.email
         }

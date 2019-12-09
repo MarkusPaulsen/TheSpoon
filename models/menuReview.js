@@ -1,6 +1,7 @@
 const Sequelize = require('sequelize');
 const db = require('../sequelizeSettings');
 
+const ItemReview = require('./itemReview.js');
 
 const MenuReview = db.define('MenuReview', {
         Review_ID: {
@@ -22,6 +23,12 @@ const MenuReview = db.define('MenuReview', {
         },
         QualityRating: {
             type: Sequelize.INTEGER
+        },
+        Status: {
+            type: Sequelize.TEXT
+        },
+        Image_ID: {
+            type: Sequelize.INTEGER
         }
     },
     {
@@ -29,5 +36,10 @@ const MenuReview = db.define('MenuReview', {
         timestamps: false
     }
 );
+
+
+MenuReview.hasMany(ItemReview, {
+    foreignKey: 'MenuReview_ID'
+});
 
 module.exports = MenuReview;

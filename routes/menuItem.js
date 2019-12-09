@@ -214,7 +214,7 @@ const formatMenuItems = (menuItems) => {
         }
     }
     return menuItems;
-}
+};
 
 const formatTags = (arr) => {
     for (let i = 0; i < arr.length; i++) {

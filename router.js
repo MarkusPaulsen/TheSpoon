@@ -14,6 +14,9 @@ const searchByMenuItem = require('./routes/searchByMenuItem.js');
 const manageMenuInformation = require('./routes/manageMenuInformation.js');
 const searchMenu = require('./routes/searchMenu.js');
 const getRestaurant = require('./routes/manageRestaurantInformation.js');
+const manageCustomerReviews = require('./routes/manageCustomerReviews.js');
+const manageCustomerInformation = require('./routes/manageCustomerInformation.js');
+const createReview = require('./routes/createReview.js');
 
 app.use('/api/user/login', login);
 app.use('/api/user/customer/register', registrationCustomer);
@@ -23,6 +26,9 @@ app.use('/api/user/customer/menu/searchByMenuItem', searchByMenuItem);
 app.use('/api/user/owner/restaurant/menu', manageMenuInformation);
 app.use('/api/user/customer/menu/', searchMenu);
 app.use('/api/user/owner/restaurant', getRestaurant);
+app.use('/api/user/customer/review/restaurant', createReview);
+app.use('/api/user/customer/review', manageCustomerReviews);
+app.use('/api/user/customer', manageCustomerInformation);
 
 app.use(bodyParser.json());
 
