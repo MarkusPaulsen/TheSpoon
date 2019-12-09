@@ -5,6 +5,10 @@ import validator from "validator";
 class FormValidator {
     //<editor-fold desc="Constructor">
     constructor(validations) {
+
+        this.validate = this.validate.bind(this);
+        this.valid = this.valid.bind(this);
+
         // validations is an array of validation rules specific to a form
         this.validations = validations;
     }

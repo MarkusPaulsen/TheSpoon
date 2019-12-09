@@ -7,4 +7,7 @@ export const paths = {
         login:                          "/api/user/login",
         image:                          "/api/image"
     },
+    openStreetMap: {
+        search:                         "https://nominatim.openstreetmap.org/search"
+    }
 };

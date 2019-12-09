@@ -1,0 +1,229 @@
+//<editor-fold desc="React">
+import React, {Component} from "react";
+import {Redirect} from "react-router";
+//</editor-fold>
+//<editor-fold desc="RxJs">
+import {bindCallback, of, throwError} from "rxjs";
+import {ajax} from "rxjs/ajax";
+import {exhaustMap, catchError} from "rxjs/operators";
+//</editor-fold>
+//<editor-fold desc="Redux">
+import {connect} from "react-redux";
+import {setModalVisibilityFilterAction} from "../../actionCreators/modalVisibilityFilterActionCreators";
+//</editor-fold>
+//<editor-fold desc="Bootstrap">
+import {Modal} from "react-bootstrap";
+//</editor-fold>
+
+//<editor-fold desc="Constants">
+import {paths} from "../../constants/paths";
+import {modalVisibilityFilters} from "../../constants/modalVisibiltyFilters";
+import {timeout} from "../../constants/timeout"
+//</editor-fold>
+//<editor-fold desc="Containers">
+import FilterLink from "../../containers/FilterModalLink";
+//</editor-fold>
+//<editor-fold desc="Layout">
+import MainLayout from "../layout/MainLayout.js";
+//</editor-fold>
+//<editor-fold desc="Components">
+import Sidebar from "./Items/Sidebar";
+import Menu from "./Items/Menu";
+
+//</editor-fold>
+
+class YourRestaurantPage extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            restaurant: {},
+            menus: [],
+            serverMessageFinishedLoadingRestaurantData:"",
+            serverMessageFinishedLoadingMenuData:"",
+            finishedLoadingRestaurantData: false,
+            finishedLoadingMenuData: false
+        };
+    }
+
+    componentDidMount() {
+        const thisTemp = this;
+        this.$restaurantdata = ajax({
+            url: paths["restApi"]["restaurant"],
+            method: "GET",
+            headers: {"X-Auth-Token": thisTemp.props.token},
+            timeout: timeout,
+            responseType: "text"
+        })
+            .pipe(
+                exhaustMap((next) => {
+                    let response = JSON.parse(next.response);
+                    return bindCallback(thisTemp.setState).call(thisTemp, {
+                        restaurant: response
+                    });
+                }),
+                catchError((error) => {
+                    throw error
+                }))
+            .subscribe(
+                (next) => {
+                    thisTemp.setState({serverMessageFinishedLoadingRestaurantData: "", finishedLoadingRestaurantData: true});
+                }, (error) => {
+                    switch (error.name) {
+                        case "AjaxTimeoutError":
+                            thisTemp.setState({serverMessageFinishedLoadingRestaurantData: "Error 408: The request timed out.", finishedLoadingRestaurantData: true});
+                            break;
+                        case "InternalError":
+                        case "AjaxError":
+                            if (error.status === 0 && error.response === "") {
+                                thisTemp.setState({serverMessageFinishedLoadingRestaurantData: "Error " + error.status + ": " + "No connection to the server.", finishedLoadingRestaurantData: true});
+                            } else if (error.status === 400) {
+                                this.props.openRestaurantConfiguration();
+                                thisTemp.setState({serverMessageFinishedLoadingRestaurantData: "", finishedLoadingRestaurantData: true});
+                            } else {
+                                thisTemp.setState({serverMessageFinishedLoadingRestaurantData: "Error " + error.status + ": " + error.response, finishedLoadingRestaurantData: true});
+                            }
+                            break;
+                        default:
+                            console.log(error);
+                            thisTemp.setState({serverMessageFinishedLoadingRestaurantData: "Code error", finishedLoadingMenuData: true});
+                            break;
+                    }
+                }
+            );
+
+        this.$menuData = ajax({
+            url: paths["restApi"]["menu"],
+            method: "GET",
+            headers: {"X-Auth-Token": thisTemp.props.token},
+            timeout: timeout,
+            responseType: "text"
+        })
+            .pipe(
+                exhaustMap((next) => {
+                    let response = JSON.parse(next.response);
+                    return bindCallback(thisTemp.setState).call(thisTemp, {
+                        menus: response
+                    });
+                }),
+                catchError((error) => {
+                    throw error
+                }))
+            .subscribe(
+                (next) => {
+                    thisTemp.setState({serverMessageFinishedLoadingMenuData: "", finishedLoadingMenuData: true});
+                }, (error) => {
+                    switch (error.name) {
+                        case "AjaxTimeoutError":
+                            thisTemp.setState({serverMessageFinishedLoadingMenuData: "Error 408: The request timed out.", finishedLoadingMenuData: true});
+                            break;
+                        case "InternalError":
+                        case "AjaxError":
+                            if (error.status === 0 && error.response === "") {
+                                thisTemp.setState({serverMessageFinishedLoadingMenuData: "Error " + error.status + ": " + "No connection to the server.", finishedLoadingMenuData: true});
+                            } else {
+                                thisTemp.setState({serverMessageFinishedLoadingMenuData: "Error " + error.status + ": " + error.response, finishedLoadingMenuData: true});
+                            }
+                            break;
+                        default:
+                            console.log(error);
+                            thisTemp.setState({serverMessageFinishedLoadingMenuData: "Code error", finishedLoadingMenuData: true});
+                            break;
+                    }
+                }
+            );
+    }
+
+    componentWillUnmount() {
+        this.$restaurantdata.unsubscribe();
+        this.$menuData.unsubscribe();
+    }
+
+    render() {
+        if (typeof this.props.loginStatus != "undefined" && this.props.loginStatus === "logged in") {
+            if (!this.state.finishedLoadingRestaurantData || !this.state.finishedLoadingMenuData) {
+                return <p>Loading...</p>;
+            } else {
+                return (
+                    <MainLayout>
+                        <div className="mainpage-banner restaurant">
+                            <div className="container">
+                                <div className="row">
+                                    <div className="col-sm-4">
+                                        <Sidebar
+                                            name={this.state.restaurant.name}
+                                            address={this.state.restaurant.address}
+                                            city={this.state.restaurant.city}
+                                            country={this.state.restaurant.country}
+                                            imageLink={this.state.restaurant.imageLink}
+                                            openingHours={this.state.restaurant.openingHours}
+                                        />
+                                    </div>
+                                    <div className="col-sm-8">
+                                        <div className="error-block">
+                                            <small>{this.state.serverMessageFinishedLoadingRestaurantData}</small>
+                                        </div>
+                                        <div className="error-block">
+                                            <small>{this.state.serverMessageFinishedLoadingMenuData}</small>
+                                        </div>
+                                        <h3 className="title">Your menus</h3>
+                                        <div className="no-menus">
+                                            <button className="wide">
+                                                <FilterLink filter={modalVisibilityFilters.SHOW_ADD_MENU}>
+                                                    Create new menu
+                                                </FilterLink>
+                                            </button>
+                                        </div>
+                                        {typeof this.state.menus !== "undefined" &&
+                                        this.state.menus.length >= 1 ? (
+                                            this.state.menus.map(menu => {
+                                                return (
+                                                    <Menu
+                                                        key={menu.menuID}
+                                                        id={menu.menuID}
+                                                        name={menu.name}
+                                                        tags={menu.tags}
+                                                        description={menu.description}
+                                                        menuItems={menu.menuItems}
+                                                    />
+                                                );
+                                            })
+                                        ) : (
+                                            <div className="no-menus">
+                                                <label>
+                                                    Your restaurant doesnt have any menus yet...
+                                                </label>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </MainLayout>
+                );
+            }
+        } else {
+            return (
+                <Redirect to={{pathname: "/"}}/>
+            );
+        }
+    }
+}
+
+//<editor-fold desc="Redux">
+const mapStateToProps = (state) => {
+    return {
+        token: state.logInReducer.token,
+        loginStatus: state.logInReducer.loginStatus
+    };
+};
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        openRestaurantConfiguration: () => {
+            dispatch(setModalVisibilityFilterAction(modalVisibilityFilters.SHOW_RESTAURANT_INFORMATION));
+        }
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(YourRestaurantPage);
+//</editor-fold>

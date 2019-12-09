@@ -4,6 +4,7 @@ import React, {Component} from "react";
 //<editor-fold desc="Redux">
 import {connect} from "react-redux";
 import {setModalVisibilityFilterAction} from "../actionCreators/modalVisibilityFilterActionCreators";
+import {setCurrentMenu} from "../actionCreators/CurrentMenuActionCreators";
 //</editor-fold>
 //<editor-fold desc="Bootstrap">
 import {Modal} from "react-bootstrap";
@@ -12,21 +13,18 @@ import {Modal} from "react-bootstrap";
 //<editor-fold desc="Constants">
 import {modalVisibilityFilters} from "../constants/modalVisibiltyFilters";
 //</editor-fold>
-//<editor-fold desc="Action Creators">
-import {setCurrentMenu} from "../actionCreators/CurrentMenuActionCreators";
-//</editor-fold>
 //<editor-fold desc="Modals">
-import LogIn from "../components/authentification/LogIn";
-import LogOut from "../components/authentification/LogOut";
-import RegisterRestaurantowner from "../components/authentification/RegisterRestaurantowner";
-import FillRestaurantInfo from "../components/authentification/FillRestaurantInfo"
-import EditRestaurantInfoModal from "../components/restaurantPage/EditRestaurantInfoModal";
-import AddMenuModal from "../components/restaurantPage/AddMenuModal";
-import EditMenuModal from "../components/restaurantPage/EditMenuModal";
-import AddMenuItemModal from "../components/restaurantPage/AddMenuItemModal";
-import EditMenuItemModal from "../components/restaurantPage/EditMenuItemModal";
-import ChooseRoleModal from "../components/authentification/ChooseRoleModal";
-import RegisterCustomer from "../components/authentification/RegisterCustomer";
+import LogInModal from "../components/HomePage/Modals/LogInModal";
+import LogOutModal from "../components/HomePage/Modals/LogOutModal";
+import RegisterRestaurantowner from "../components/HomePage/Modals/RegisterRestaurantOwnerModal";
+import AddRestaurantModal from "../components/HomePage/Modals/AddRestaurantModal"
+import EditRestaurantModal from "../components/RestaurantPage/Modals/EditRestaurantModal";
+import AddMenuModal from "../components/RestaurantPage/Modals/AddMenuModal";
+import EditMenuModal from "../components/RestaurantPage/Modals/EditMenuModal";
+import AddMenuItemModal from "../components/RestaurantPage/Modals/AddMenuItemModal";
+import EditMenuItemModal from "../components/RestaurantPage/Modals/EditMenuItemModal";
+import ChooseRoleModal from "../components/HomePage/Modals/ChooseRoleModal";
+import RegisterCustomer from "../components/HomePage/Modals/RegisterCustomerModal";
 //</editor-fold>
 
 class CustomModal extends Component {
@@ -36,12 +34,12 @@ class CustomModal extends Component {
         switch (filter) {
             case modalVisibilityFilters.SHOW_LOGIN:
                 return (
-                    <LogIn onHide={() => this.props.handleClose()} />
+                    <LogInModal onHide={() => this.props.handleClose()} />
                 );
 
             case modalVisibilityFilters.SHOW_LOGOUT:
                 return (
-                    <LogOut onHide={() => this.props.handleClose()} />
+                    <LogOutModal onHide={() => this.props.handleClose()} />
                 );
 
             case modalVisibilityFilters.SHOW_CHOOSE_ROLE:
@@ -59,13 +57,13 @@ class CustomModal extends Component {
                     <RegisterCustomer onHide={() => this.props.handleClose()}/>
                 );
 
-            case modalVisibilityFilters.SHOW_RESTAURANT_INFORMATION:
+            case modalVisibilityFilters.SHOW_ADD_RESTAURANT:
                 return (
-                    <FillRestaurantInfo onHide={() => this.props.handleClose()}/>
+                    <AddRestaurantModal onHide={() => this.props.handleClose()}/>
                 );
-            case modalVisibilityFilters.SHOW_EDIT_RESTAURANT_INFORMATION:
+            case modalVisibilityFilters.SHOW_EDIT_RESTAURANT:
                 return (
-                    <EditRestaurantInfoModal onHide={() => this.props.handleClose()}/>
+                    <EditRestaurantModal onHide={() => this.props.handleClose()}/>
                 );
             case modalVisibilityFilters.SHOW_ADD_MENU:
                 return (
