@@ -12,7 +12,7 @@ info:
     \ to customers nor owners remain inside the default group.\n \n AUTHENTICATION/AUTHORIZATION:\
     \ The json web token returned when the login is performed is supposed to be put\
     \ into x-auth-token header in the endpoints that require authorization"
-  version: "6.2"
+  version: "6.3"
   title: "The Spoon API reference"
 tags:
 - name: "customer"
@@ -1230,6 +1230,12 @@ definitions:
         type: "array"
         items:
           $ref: "#/definitions/Tag"
+      totalScore:
+        type: "integer"
+      serviceScore:
+        type: "integer"
+      qualityOverPriceScore:
+        type: "integer"
       menuItems:
         type: "array"
         items:
@@ -1243,6 +1249,9 @@ definitions:
         color: "#FFBC8C"
       - name: "Mediterranean"
         color: "#FFBC8C"
+      totalScore: 4
+      serviceScore: 3.5
+      qualityOverPriceScore: 5
       menuItems:
       - menuItemID: 20
         name: "Spaghetti alla carbonara"

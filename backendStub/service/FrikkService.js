@@ -100,6 +100,9 @@ exports.getOwnMenus = function() {
     "name" : "Mediterranean",
     "color" : "#FFBC8C"
   } ],
+  "totalScore" : 4,
+  "serviceScore" : 3.5,
+  "qualityOverPriceScore" : 5,
   "menuItems" : [ {
     "menuItemID" : 20,
     "name" : "Spaghetti alla carbonara",
@@ -172,6 +175,9 @@ exports.getOwnMenus = function() {
     "name" : "Mediterranean",
     "color" : "#FFBC8C"
   } ],
+  "totalScore" : 4,
+  "serviceScore" : 3.5,
+  "qualityOverPriceScore" : 5,
   "menuItems" : [ {
     "menuItemID" : 30,
     "name" : "Spaghetti alla carbonara",
