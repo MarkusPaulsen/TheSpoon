@@ -102,16 +102,16 @@ class ReviewAddImage extends Component {
       }
       if (!this.state.loggedIn) {
         return (
-            <View style={styles.container}>
-              <Text style={Typography.FONT_H4_BLACK}>
-                You need to log in to write a review
-              </Text>
-              <TouchableOpacity
-                  onPress={() => this.props.navigation.navigate("Profile")}
-              >
-                <Text style={Typography.FONT_H4_PINK}>Click here to log in</Text>
-              </TouchableOpacity>
-            </View>
+          <View style={styles.container}>
+            <Text style={Typography.FONT_H4_BLACK}>
+              You need to log in to write a review
+            </Text>
+            <TouchableOpacity
+              onPress={() => this.props.navigation.navigate("Profile")}
+            >
+              <Text style={Typography.FONT_H4_PINK}>Click here to log in</Text>
+            </TouchableOpacity>
+          </View>
         );
       }
     }
@@ -155,9 +155,47 @@ class ReviewAddImage extends Component {
 
     if (!result.cancelled) {
       this.setState({ imageUrl: result.uri });
+      this.postImage();
       this.setState({ disableButton: false });
     }
   };
+  createFormData = imageUrl => {
+    let uriParts = imageUrl.split('.');
+    let fileType = uriParts[uriParts.length -1];
+    const data = new FormData();
+    data.append("photo", { name: `imageUrl.${fileType}`, type: `image/${fileType}`, uri: imageUrl});
+    return data;
+  };
+
+  async postImage() {
+    try {
+      const url = `http://192.168.1.110:8080/api/image`;
+      const data = this.createFormData(this.state.imageUrl);
+      console.log(data);
+      const response = await fetch(url, {
+        method: "POST",
+        body: this.createFormData(this.state.imageUrl),
+        headers:{
+          Accept:"application/json",
+          'Content-Type':'multipart/form-data',
+        },
+      });
+      console.log("RESPONSE: ", response);
+      const responseText = await response.text();
+      console.log("ResponseText: ", responseText);
+      if (response.ok) {
+        console.log("Image was posted successfully!");
+        this.setState({ imageUrl: null });
+        alert("Upload success!");
+      }
+      if (!response.ok) {
+        console.log("Image posting failed");
+        alert("Upload failed");
+      }
+    } catch (error) {
+      console.log("Error posting image: ", error);
+    }
+  }
 
   onChooseLibraryPress = async () => {
     const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
@@ -172,6 +210,7 @@ class ReviewAddImage extends Component {
     console.log(result);
     if (!result.cancelled) {
       this.setState({ imageUrl: result.uri });
+      this.postImage();
       this.setState({ disableButton: false });
     }
   };

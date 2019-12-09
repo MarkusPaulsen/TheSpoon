@@ -331,6 +331,7 @@ paths:
       consumes:
         - "image/png"
         - "image/jpeg"
+        - "image/jpg"
       produces:
         - "application/json"
       responses:
