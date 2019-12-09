@@ -1,9 +1,10 @@
 const Sequelize = require('sequelize');
 const db = require('../sequelizeSettings');
 
-const MenuItem = require('./menuItem');
-const Restaurant = require('./restaurants');
-const TaggedMenu = require('./taggedMenu');
+const MenuItem = require('./menuItem.js');
+const Restaurant = require('./restaurants.js');
+const TaggedMenu = require('./taggedMenu.js');
+const MenuReview = require('./menuReview.js');
 
 
 const Menu = db.define('Menu', {
@@ -21,6 +22,9 @@ const Menu = db.define('Menu', {
         Description: {
             type: Sequelize.STRING
         },
+        Rating: {
+            type:  Sequelize.INTEGER
+        }
     },
     {
         freezeTableName: true,
@@ -32,11 +36,20 @@ Menu.hasMany(MenuItem, {
     foreignKey: 'Menu_ID'
 });
 
+MenuItem.belongsTo(Menu, {
+    foreignKey: 'Menu_ID'
+});
+
 Menu.belongsTo(Restaurant, {
     foreignKey: 'Restaurant_ID'
 });
 
 Menu.hasMany(TaggedMenu, {
+    foreignKey: 'Menu_ID'
+});
+
+
+Menu.hasMany(MenuReview, {
     foreignKey: 'Menu_ID'
 });
 

@@ -1,6 +1,11 @@
+//<editor-fold desc="React">
 import React from "react";
+//</editor-fold>
+//<editor-fold desc="Validator">
 import validator from "validator";
+//</editor-fold>
 
+//<editor-fold desc="Business Logic">
 export const required = (value) => {
     if (validator.isEmpty(value)) {
         return (
@@ -20,4 +25,5 @@ export const email = (value) => {
         );
     }
 };
+//</editor-fold>
 

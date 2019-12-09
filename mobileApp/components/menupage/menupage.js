@@ -19,6 +19,7 @@ function Rating(score) {
   for (let i = 0; i < 4; i++) {
     stars.push(
       <Image
+          key={i.toString()}
         source={require("../../assets/icon-star.png")}
         style={{ height: 13, width: 13 }}
       />
@@ -28,6 +29,7 @@ function Rating(score) {
     for (let i = 0; i < 5 - stars.length; i++) {
       stars.push(
         <Image
+            key={(i+5).toString()}
           source={require("../../assets/icon-star-empty.png")}
           style={{ height: 13, width: 13 }}
         />
@@ -51,7 +53,7 @@ function MenuItem({
   for (let i = 0; i < tags.length; i++) {
     const color = tags[i]["color"];
     const tag = [
-      <View style={[styles.bgLabel, { backgroundColor: color }]}>
+      <View key={i.toString()} style={[styles.bgLabel, { backgroundColor: color }]}>
         <Text style={[Typography.FONT_TAG, { marginHorizontal: 10 }]}>
           {tags[i]["name"]}
         </Text>
@@ -130,7 +132,9 @@ export default class Menu extends Component {
       menuItems: "",
       restaurantInfo: "",
       searchResults: null,
-      isLoading: true
+      isLoading: true,
+      dishItems: "",
+      drinkItems: ""
     };
   }
 
@@ -147,7 +151,7 @@ export default class Menu extends Component {
   async getMenuItem(menuId, restaurantName) {
     try {
       //change to port 80 if not using the stub
-      const backendStubLink = `http://192.168.1.xxx:8080/api/user/customer/menu/${menuId}`;
+      const backendStubLink = `http://192.168.1.110:8080/api/user/customer/menu/${menuId}`;
       const backendServerLink = `https://thespoon.herokuapp.com/api/user/customer/menu/${menuId}`;
       const response = await fetch(
         backendStubLink,
@@ -168,13 +172,15 @@ export default class Menu extends Component {
         score: responseJson["menuRating"]
       };
       const menuItems = responseJson["menuItems"].map(index => ({
+        id: index["menuItemID"].toString(),
         menuItemName: index["name"],
         menuItemDescription: index["description"],
         priceEuros: index["priceEuros"],
         menuItemImage: index["imageLink"],
         tags: this.getMenuItemTagsInfo(index),
         // TODO: Add right rating-score
-        score: "4.6"
+        score: "4.6",
+        type: index["type"]
       }));
       const restaurantInfo = {
         latitude: responseJson["restaurant"]["latitude"],
@@ -183,7 +189,26 @@ export default class Menu extends Component {
         city: responseJson["restaurant"]["city"],
         country: responseJson["restaurant"]["country"]
       };
-      this.setState({ menuInfo, menuItems, restaurantInfo, isLoading: false });
+
+      const dishItems = [];
+      const drinkItems = [];
+
+      menuItems.map(item => {
+        if (item.type == "dish") {
+          dishItems.push(item);
+        } else if (item.type == "drink") {
+          drinkItems.push(item);
+        }
+      });
+
+      this.setState({
+        menuInfo,
+        menuItems,
+        dishItems,
+        drinkItems,
+        restaurantInfo,
+        isLoading: false
+      });
     } catch (e) {
       console.error(e);
     }
@@ -210,6 +235,7 @@ export default class Menu extends Component {
     }
     return tagsObject;
   }
+
   tags1Row = [];
   tags2Row = [];
 
@@ -217,7 +243,7 @@ export default class Menu extends Component {
     for (let i = 0; i < tags.length; i++) {
       const color = tags[i]["color"];
       const tag = [
-        <View style={[styles.bgLabel, { backgroundColor: color }]}>
+        <View key={i.toString()} style={[styles.bgLabel, { backgroundColor: color }]}>
           <Text style={[Typography.FONT_TAG, { marginHorizontal: 10 }]}>
             {tags[i]["name"]}
           </Text>
@@ -287,56 +313,63 @@ export default class Menu extends Component {
           <SafeAreaView
             style={{ marginTop: 140, alignItems: "center", flex: 1 }}
           >
-            <Text
-              style={[
-                Typography.FONT_REGULAR_THIN,
-                { marginTop: 10, textAlign: "center" }
-              ]}
-            >
-              DISHES
-            </Text>
-            <View style={styles.underline} />
-            <FlatList
-              data={this.state.menuItems}
-              contentContainerStyle={{
-                flex: 1
-              }}
-              renderItem={({ item }) => (
-                <MenuItem
-                  menuId={item.menuItemName}
-                  menuItemName={item.menuItemName}
-                  menuItemDescription={item.menuItemDescription}
-                  priceEuros={item.priceEuros + " €"}
-                  menuItemImage={item.menuItemImage}
-                  tags={item.tags}
-                  score={item.score}
+            {this.state.dishItems.length > 0 ? (
+              <View style={{ flex: 1 }}>
+                <Text
+                  style={[
+                    Typography.FONT_REGULAR_THIN,
+                    { marginTop: 10, textAlign: "center" }
+                  ]}
+                >
+                  DISHES
+                </Text>
+                <View style={styles.underline} />
+                <FlatList
+                  data={this.state.dishItems}
+                  renderItem={({ item }) => (
+                    <MenuItem
+                      id={item.id}
+                      menuItemName={item.menuItemName}
+                      menuItemDescription={item.menuItemDescription}
+                      priceEuros={item.priceEuros + " €"}
+                      menuItemImage={item.menuItemImage}
+                      tags={item.tags}
+                      score={item.score}
+                    />
+                  )}
+                  keyExtractor={item => item.id}
                 />
-              )}
-              keyExtractor={item => item.menuId}
-            />
-            <Text style={[Typography.FONT_REGULAR_THIN, { marginTop: 15 }]}>
-              DRINKS
-            </Text>
-            <View style={styles.underline} />
-            <FlatList
-              contentContainerStyle={{
-                flex: 1
-              }}
-              data={this.state.menuItems}
-              renderItem={({ item }) => (
-                <MenuItem
-                  menuId={"9mmn" + item.menuItemName}
-                  menuItemName={item.menuItemName}
-                  menuItemDescription={item.menuItemDescription}
-                  priceEuros={item.priceEuros + " €"}
-                  menuItemImage={item.menuItemImage}
-                  tags={item.tags}
-                  score={item.score}
+              </View>
+            ) : null}
+            {this.state.drinkItems.length > 0 ? (
+              <View style={{ flex: 1 }}>
+                <Text
+                  style={[
+                    Typography.FONT_REGULAR_THIN,
+                    { marginTop: 15, textAlign: "center" }
+                  ]}
+                >
+                  DRINKS
+                </Text>
+                <View style={styles.underline} />
+                <FlatList
+                  data={this.state.drinkItems}
+                  renderItem={({ item }) => (
+                    <MenuItem
+                      id={item.id}
+                      menuItemName={item.menuItemName}
+                      menuItemDescription={item.menuItemDescription}
+                      priceEuros={item.priceEuros + " €"}
+                      menuItemImage={item.menuItemImage}
+                      tags={item.tags}
+                      score={item.score}
+                    />
+                  )}
+                  keyExtractor={item => item.id}
                 />
-              )}
-              keyExtractor={item => item.menuId}
-            />
-            <View>
+              </View>
+            ) : null}
+            <View style={{ flex: 1 }}>
               {this.state.isLoading ? (
                 <Text> No map to display </Text>
               ) : (

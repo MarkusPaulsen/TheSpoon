@@ -1,11 +1,9 @@
-let BACKEND = ''//"http://thespoon.herokuapp.com";
-
-const paths = {
+export const paths = {
     restApi: {
-        registrationRestaurantOwner: BACKEND + "/api/user/owner/registration",
-        registrationCustomer: BACKEND + "/api/user/customer/registration",
-        login: BACKEND + "/api/user/login"
+        registrationRestaurantOwner: "/api/user/owner/register",
+        login: "/api/user/login",
+        menu: "/api/user/owner/restaurant/menu",
+        restaurant: "/api/user/owner/restaurant",
+        image: "/api/image"
     },
 };
-
-export default paths;

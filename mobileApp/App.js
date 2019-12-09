@@ -5,7 +5,14 @@ import SearchPage from "./components/search/search";
 import LandingPage from "./components/landingpage/landingpage";
 import LoadingPage from "./components/loading";
 import MenuPage from "./components/menupage/menupage";
-import ReviewPage from "./components/review/review";
+
+import ReviewAddImage from "./components/review/views/reviewAddImage";
+import ReviewAddRestaurant from "./components/review/views/reviewAddRestaurant";
+import ReviewAddMenu from "./components/review/views/reviewAddMenu";
+import ReviewAddItems from "./components/review/views/reviewAddItems";
+import ReviewItems from "./components/review/views/reviewItems";
+import ReviewOverall from "./components/review/views/reviewOverall";
+
 import ProfilePage from "./components/profile/profile";
 import { createAppContainer } from "react-navigation";
 import { createStackNavigator } from "react-navigation-stack";
@@ -13,6 +20,7 @@ import { createBottomTabNavigator } from "react-navigation-tabs";
 import * as Font from "expo-font";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import * as Colors from "./styles/colors";
+import { ActionSheetProvider } from "@expo/react-native-action-sheet";
 
 const SearchStack = createStackNavigator(
   {
@@ -29,11 +37,16 @@ const SearchStack = createStackNavigator(
 
 const ReviewStack = createStackNavigator(
   {
-    Review: ReviewPage,
-    Login: LoginScreen
+    ReviewAddImage: ReviewAddImage,
+    ReviewAddRestaurant: ReviewAddRestaurant,
+    ReviewAddMenu: ReviewAddMenu,
+    ReviewAddItems: ReviewAddItems,
+    ReviewItems: ReviewItems,
+    ReviewOverall: ReviewOverall,
+      Login:LoginScreen
   },
   {
-    initialRouteName: "Review",
+    initialRouteName: "ReviewAddImage",
     header: null,
     headerMode: "none"
   }
@@ -99,7 +112,7 @@ const styles = StyleSheet.create({
 
 export default class App extends Component {
   state = {
-    fontLoaded: false,
+    fontLoaded: false
   };
 
   async componentDidMount() {
@@ -111,7 +124,11 @@ export default class App extends Component {
   render() {
     if (this.state.fontLoaded) {
       console.log("font loaded");
-      return <AppContainer />;
+      return (
+        <ActionSheetProvider>
+          <AppContainer />
+        </ActionSheetProvider>
+      );
     } else {
       return <LoadingPage />;
     }

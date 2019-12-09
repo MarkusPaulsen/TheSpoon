@@ -21,7 +21,7 @@ function ResultItem({ menuName, restaurantName, tags, score }) {
   for (let i = 0; i < tags.length; i++) {
     const color = tags[i]["color"];
     const tag = [
-      <View style={[styles.bgLabel, { backgroundColor: color }]}>
+      <View key={i.toString()} style={[styles.bgLabel, { backgroundColor: color }]}>
         <Text style={[Typography.FONT_TAG, { marginHorizontal: 10 }]}>
           {tags[i]["name"]}
         </Text>
@@ -80,20 +80,20 @@ export default class Search extends Component {
   async validateSearch() {
     Keyboard.dismiss();
     const searchError = Validate("search", this.state.searchWord);
-    this.setState({ searched: true });
 
     if (!searchError) {
       await this.getResults();
     } else {
       this.setState({ searchError, searchResults: null });
     }
+    this.setState({ searched: true });
   }
   async getResults() {
     try {
       const searchString = this.state.searchWord;
       //change to port 80 if not using the stub
       const backendStubLink =
-        "http://192.168.1.xxx:8080/api/user/customer/menu/searchByMenuItem?menuItemName={searchString}";
+        "http://192.168.1.110:8080/api/user/customer/menu/searchByMenuItem?menuItemName={searchString}";
       const backendServerLink =
         "https://thespoon.herokuapp.com/api/user/customer/menu/searchByMenuItem?menuItemName={searchString}";
       const response = await fetch(backendStubLink, {
@@ -103,7 +103,7 @@ export default class Search extends Component {
       const responseJson = await response.json();
       if (response.ok) {
         const searchResults = responseJson.map(index => ({
-          menuId: index.menu.menuID.toString(),
+          id: index.menu.menuID.toString(),
           menuName: index.menu.name,
           restaurantName: index.restaurantData.restaurantName,
           tags: this.getTagsInfo(index),
@@ -179,13 +179,13 @@ export default class Search extends Component {
                     <TouchableOpacity
                       onPress={() => {
                         this.props.navigation.navigate("Menu", {
-                          menuId: item.menuId,
+                          menuId: item.id,
                           restaurantName: item.restaurantName
                         });
                       }}
                     >
                       <ResultItem
-                        menuId={item.menuId}
+                        id={item.id}
                         menuName={item.menuName}
                         restaurantName={item.restaurantName}
                         tags={item.tags}
@@ -193,7 +193,7 @@ export default class Search extends Component {
                       />
                     </TouchableOpacity>
                   )}
-                  keyExtractor={item => item.menuId}
+                  keyExtractor={(item, index) => {return item.id}}
                 />
               </SafeAreaView>
             ) : null}

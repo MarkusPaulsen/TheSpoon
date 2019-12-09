@@ -49,7 +49,7 @@ export default class LoginScreen extends Component {
         password: this.state.password,
         isRestaurantOwner: false
       });
-      const backendStubLink = `http://192.168.1.xxx:8080/api/user/login/`;
+      const backendStubLink = `http://192.168.1.110:8080/api/user/login/`;
       const backendServerLink = `https://thespoon.herokuapp.com/api/user/login`;
       const res = await fetch(backendStubLink, {
         method: "POST",

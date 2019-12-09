@@ -24,6 +24,16 @@ module.exports.getOwnMenus = function getOwnMenus (req, res, next) {
     });
 };
 
+module.exports.getRestaurant = function getRestaurant (req, res, next) {
+  Frikk.getRestaurant()
+    .then(function (response) {
+      utils.writeJson(res, response);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
+};
+
 module.exports.searchByMenuItem = function searchByMenuItem (req, res, next) {
   var menuItemName = req.swagger.params['menuItemName'].value;
   Frikk.searchByMenuItem(menuItemName)
