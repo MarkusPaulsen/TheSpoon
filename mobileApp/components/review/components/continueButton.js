@@ -54,7 +54,7 @@ export default class ContinueButton extends Component {
       >
         <View style={[styles.button, { backgroundColor: Colors.GRAY_MEDIUM }]}>
           <Text style={[Typography.FONT_H4_WHITE, { textAlign: "center" }]}>
-            CONTINUE
+            {text}
           </Text>
         </View>
         <Circles colorIndex={colorIndex} />

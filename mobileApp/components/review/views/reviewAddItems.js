@@ -3,20 +3,18 @@ import {
   View,
   Text,
   StyleSheet,
-  FlatList,
-  TouchableHighlight
+  FlatList, TouchableOpacity
 } from "react-native";
 import * as Typography from "../../../styles/typography";
 import BackButton from "../components/backButton";
 import ContinueButton from "../components/continueButton";
+import * as Colors from "../../../styles/colors";
 
 export default class ReviewAddItems extends Component {
   constructor(props) {
     super(props);
-    this.onClick = this.onClick.bind(this);
     this.state = {
-      disableButton: false,
-      selected: null,
+      disableButton: true,
       menuItemName: null,
       backgroundColor: "#FFFFFF",
       colorIndex: 3,
@@ -33,7 +31,7 @@ export default class ReviewAddItems extends Component {
 
   async getMenuItems(menuID) {
     try {
-      const backendStubURL = `http://192.168.1.110:8080/api/user/customer/review/restaurant/menu/${menuID}/menuItem`;
+      const backendStubURL = `http://192.168.1.103:8080/api/user/customer/review/restaurant/menu/${menuID}/menuItem`;
       const response = await fetch(backendStubURL, {
         method: "GET",
         accept: "application/json"
@@ -49,16 +47,27 @@ export default class ReviewAddItems extends Component {
     }
   }
 
-  onClick(menuItemID, menuItemName) {
-    this.setState({
-      backgroundColor: "#A5DED0"
-    });
-    this.state.selectedMenuItems.push({
-      menuItemID: menuItemID,
-      menuItemName: menuItemName
-    });
-    console.log(this.state.backgroundColor, menuItemID);
-  }
+  setSelected(id, name){
+    if(this.state.selectedMenuItems.some(e => e.menuItemID===id)){
+      this.setState(state => {
+        const selectedMenuItems = state.selectedMenuItems.filter(e => e.menuItemID!==id);
+        return {
+          selectedMenuItems
+        };
+      });
+      if(this.state.selectedMenuItems.length === 0){
+        this.setState({disableButton: true});
+      }
+    } else {
+      this.setState(state => {
+        const selectedMenuItems = state.selectedMenuItems.concat({menuItemID: id, menuItemName: name, score: null, text: ""});
+        return {
+          selectedMenuItems
+        };
+      });
+      this.setState({disableButton: false});
+    }
+  };
 
   render() {
     return (
@@ -67,32 +76,33 @@ export default class ReviewAddItems extends Component {
           <BackButton navigation={this.props.navigation} />
           <View style={styles.header}>
             <Text style={Typography.FONT_H3_BLACK}>
-              What did you{"\n"}eat/drink?
+              What did you eat/drink?
             </Text>
           </View>
         </View>
         <View style={styles.resultList}>
           <FlatList
-            data={this.state.menuItems}
-            renderItem={({ item }) => (
-              <TouchableHighlight
-                onPress={() => this.onClick(item.menuItemID, item.menuItemName)}
-                underlayColor={"#A5DED0"}
-              >
-                <Text
-                  style={[
-                    Typography.FONT_H4_BLACK,
-                    {
-                      marginVertical: 10,
-                      marginLeft: 50
-                    }
-                  ]}
-                >
-                  {item.menuItemName}
-                </Text>
-              </TouchableHighlight>
-            )}
-            keyExtractor={item => item.menuItemID}
+              data={this.state.menuItems}
+              extraData={this.state}
+              renderItem={({ item }) => (
+                  <TouchableOpacity
+                      style={{backgroundColor: this.state.selectedMenuItems.some(e => e.menuItemID===item.menuItemID) ? Colors.TURQUOISE : Colors.WHITE}}
+                      onPress={() => this.setSelected(item.menuItemID, item.menuItemName)}
+                  >
+                    <Text
+                        style={[
+                          Typography.FONT_H4_BLACK,
+                          {
+                            marginVertical: 10,
+                            marginLeft: 50
+                          }
+                        ]}
+                    >
+                      {item.menuItemName}
+                    </Text>
+                  </TouchableOpacity>
+              )}
+              keyExtractor={item => item.menuItemID}
           />
         </View>
         <ContinueButton
@@ -114,8 +124,7 @@ const styles = StyleSheet.create({
     flex: 1
   },
   resultList: {
-    height: 200,
-    flex: 4
+    flex: 6
   },
   header: {
     position: "absolute",

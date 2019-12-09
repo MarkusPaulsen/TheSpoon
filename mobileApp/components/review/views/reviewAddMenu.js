@@ -4,18 +4,18 @@ import {
   Text,
   StyleSheet,
   FlatList,
-  TouchableHighlight
+  TouchableOpacity
 } from "react-native";
 import * as Typography from "../../../styles/typography";
 import ContinueButton from "../components/continueButton";
 import BackButton from "../components/backButton";
+import * as Colors from "../../../styles/colors";
 
 export default class ReviewAddMenu extends Component {
   constructor(props) {
     super(props);
-    this.onClick = this.onClick.bind(this);
     this.state = {
-      disableButton: false,
+      disableButton: true,
       selected: null,
       backgroundColor: "#FFFFFF",
       colorIndex: 2,
@@ -31,12 +31,14 @@ export default class ReviewAddMenu extends Component {
 
   async getMenus(restaurantID) {
     try {
-      const backendStubURL = `http://192.168.1.110:8080/api/user/customer/review/restaurant/${restaurantID}/menu`;
+      const backendStubURL =`http://192.168.1.103:8080/api/user/customer/review/restaurant/${restaurantID}/menu`;
       const response = await fetch(backendStubURL, {
         method: "GET",
         accept: "application/json"
       });
+      console.log(response);
       const responseJson = await response.json();
+      console.log(responseJson);
       const menus = responseJson.map(index => ({
         menuID: index.menuID.toString(),
         menuName: index.name
@@ -47,10 +49,10 @@ export default class ReviewAddMenu extends Component {
     }
   }
 
-  onClick(menuID) {
-    this.setState({ backgroundColor: "#A5DED0", selected:menuID });
-    console.log(this.state.backgroundColor, menuID);
-  }
+  setSelected(id){
+    this.setState({selected: id});
+    this.setState({disableButton: false});
+  };
 
   render() {
     return (
@@ -64,10 +66,11 @@ export default class ReviewAddMenu extends Component {
         <View style={styles.resultList}>
           <FlatList
             data={this.state.menus}
+            extraData={this.state}
             renderItem={({ item }) => (
-              <TouchableHighlight
-                onPress={() => this.onClick(item.menuID)}
-                underlayColor={"#A5DED0"}
+              <TouchableOpacity
+                  style={{backgroundColor: this.state.selected === item.menuID ? Colors.TURQUOISE : Colors.WHITE}}
+                  onPress={() => this.setSelected(item.menuID)}
               >
                 <Text
                   style={[
@@ -80,7 +83,7 @@ export default class ReviewAddMenu extends Component {
                 >
                   {item.menuName}
                 </Text>
-              </TouchableHighlight>
+              </TouchableOpacity>
             )}
             keyExtractor={item => item.menuID}
           />

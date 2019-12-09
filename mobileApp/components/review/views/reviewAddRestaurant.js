@@ -4,7 +4,8 @@ import {
   Text,
   StyleSheet,
   FlatList,
-  TouchableHighlight
+  TouchableOpacity,
+  SafeAreaView
 } from "react-native";
 import * as Typography from "../../../styles/typography";
 import * as Colors from "../../../styles/colors";
@@ -15,13 +16,13 @@ import BackButton from "../components/backButton";
 export default class ReviewAddRestaurant extends Component {
   constructor(props) {
     super(props);
-    this.onClick = this.onClick.bind(this);
     this.state = {
-      disableButton: false,
+      disableButton: true,
       selected: null,
       colorIndex: 1,
-      backgroundColor: "#FFFFFF",
-      restaurants: ""
+      backgroundColor: null,
+      restaurants: "",
+      test: "123"
     };
   }
   componentDidMount = async () => {
@@ -30,7 +31,7 @@ export default class ReviewAddRestaurant extends Component {
 
   async getAllMenus() {
     try {
-      const backendStubURL = `http://192.168.1.110:8080/api/user/customer/review/restaurant`;
+      const backendStubURL = `http://192.168.1.103:8080/api/user/customer/review/restaurant`;
       const response = await fetch(backendStubURL, {
         method: "GET",
         accept: "application/json"
@@ -49,10 +50,9 @@ export default class ReviewAddRestaurant extends Component {
     }
   }
 
-  onClick(restaurantID){
-    this.setState({ backgroundColor: "#A5DED0" });
-    this.setState({selected: restaurantID});
-    console.log(this.state.backgroundColor);
+  setSelected(id){
+    this.setState({selected: id});
+    this.setState({disableButton: false});
   };
 
   render() {
@@ -68,34 +68,41 @@ export default class ReviewAddRestaurant extends Component {
           <SearchField style={{ marginBottom: 20 }} />
         </View>
         <View style={styles.resultList}>
-          <FlatList
-            data={this.state.restaurants}
-            renderItem={({ item }) => (
-              <TouchableHighlight
-                onPress={() => this.onClick(item.restaurantID)}
-                underlayColor={"#A5DED0"}
-              >
-                <Text
-                  style={[
-                    Typography.FONT_H4_BLACK,
-                    {
-                      marginVertical: 10,
-                      marginLeft: 50
-                    }
-                  ]}
+          <SafeAreaView>
+            <FlatList
+              data={this.state.restaurants}
+              extraData={this.state}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  activeOpacity={0.5}
+                  onPress={() => this.setSelected(item.restaurantID)}
+                  style={{
+
+                    backgroundColor: this.state.selected === item.restaurantID ? Colors.TURQUOISE : Colors.WHITE
+                  }}
                 >
-                  {item.name}
-                </Text>
-              </TouchableHighlight>
-            )}
-            keyExtractor={item => item.restaurantID}
-          />
+                  <Text
+                    style={[
+                      Typography.FONT_H4_BLACK,
+                      {
+                        marginVertical: 10,
+                        marginLeft: 50
+                      }
+                    ]}
+                  >
+                    {item.name}
+                  </Text>
+                </TouchableOpacity>
+              )}
+              keyExtractor={item => item.restaurantID}
+            />
+          </SafeAreaView>
         </View>
         <ContinueButton
           disableButton={this.state.disableButton}
           navigation={this.props}
-          view={"ReviewAddMenu"}
           id={this.state.selected}
+          view={"ReviewAddMenu"}
           text={"CONTINUE"}
           colorIndex={this.state.colorIndex}
         />
@@ -110,7 +117,7 @@ const styles = StyleSheet.create({
     flex: 1
   },
   resultList: {
-    flex: 5
+    flex: 6
   },
   header: {
     position: "absolute",

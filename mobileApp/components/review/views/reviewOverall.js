@@ -10,8 +10,11 @@ export default class ReviewOverall extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      disableButton: false,
-      colorIndex: 5
+      disableButton: true,
+      colorIndex: 5,
+      serviceRating: null,
+      qualityOverPriceRating: null,
+      reviewedScores: []
     };
   }
   async postReview() {
@@ -54,6 +57,24 @@ export default class ReviewOverall extends Component {
     }
   }
 
+  setServiceScore(rating) {
+    this.setState({serviceRating: rating});
+    this.state.reviewedScores.push(rating);
+    this.checkReview();
+  }
+
+  setQualityScore(rating) {
+    this.setState({qualityOverPriceRating: rating});
+    this.state.reviewedScores.push(rating);
+    this.checkReview();
+  }
+
+  checkReview(){
+    if (this.state.reviewedScores.length === 2) {
+      this.setState({ disableButton: false });
+    }
+  }
+
   render() {
     return (
       <View style={styles.container}>
@@ -79,6 +100,9 @@ export default class ReviewOverall extends Component {
             defaultRating={0}
             size={30}
             selectedColor={Colors.PINK}
+            onFinishRating={rating =>
+                this.setServiceScore(rating)
+            }
           />
           <Text
             style={[
@@ -93,13 +117,16 @@ export default class ReviewOverall extends Component {
             defaultRating={0}
             size={30}
             selectedColor={Colors.PINK}
+            onFinishRating={rating =>
+                this.setQualityScore(rating)
+            }
           />
         </View>
         <ContinueButton
           disableButton={this.state.disableButton}
           navigation={this.props}
           view={"ReviewOverall"}
-          text={"CONTINUE"}
+          text={"POST REVIEW"}
           colorIndex={this.state.colorIndex}
         />
       </View>
