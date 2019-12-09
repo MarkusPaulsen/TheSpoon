@@ -56,14 +56,23 @@ h2 {
 
 h3 {
   font-size: 1.5rem;
+  @include media-breakpoint-down(xs) {
+    font-size: 1rem;
+  }
 }
 
 h4 {
   font-size: 1rem;
+  @include media-breakpoint-down(md) {
+    font-size: .8rem;
+  }
 }
 
 h5 {
   font-size: 1rem;
+  @include media-breakpoint-down(md) {
+    font-size: .75rem;
+  }
 }
 
 h1, h2, h3, h4, h5 {
@@ -193,6 +202,9 @@ button {
     &.normal {
       width: 6rem;
     }
+    &.wide {
+      width: 8.708333rem;
+    }
   }
 }
 
@@ -207,7 +219,7 @@ header {
   z-index: 1;
   
   nav {
-    height: 6rem;
+    height: 4rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -222,7 +234,7 @@ header {
       position: relative;
       font-size: 0.875rem;
       font-weight: 500;
-      margin-left: 3.1666666666666665rem;
+      margin-left: 2rem;
 
       a, span {
         text-transform: uppercase;
@@ -238,8 +250,6 @@ header {
 
   @include media-breakpoint-down(md) {
     nav {
-      height: 4rem;
-
       li {
         font-size: .75rem;
         margin-left: 1.16667rem;
@@ -322,16 +332,15 @@ header {
   background-color: var(--white);
   position: relative;
   nav {
-    height: 3rem;
-
     li {
+      margin-left: 1rem;
       a, span {
         color: var(--grey);
         font-size: 0.75rem;
         line-height: 0.8333333333333334rem;
         text-transform: none;
         position: relative;
-        padding-left: 1.5rem;
+        padding-left: 1.25rem;
         &:hover {
           color: var(--grey);
           border-bottom: none;
@@ -703,7 +712,7 @@ header {
      }
 
      &.restaurant-info {
-       padding: 2rem;
+       padding: 1rem;
        .opening-hours {
          .hours-selector {
            margin-bottom: 2.5rem;
@@ -808,6 +817,29 @@ header {
       transform: translateY(-50%);
     }
   }
+
+  @include media-breakpoint-down(md) {
+    margin-top: 0.66666rem;
+    margin-bottom: 2rem;
+    padding: 3rem 1rem 1rem;
+    .image-setup {
+      position: absolute;
+      top: -5.333333rem;
+      left: 6.5rem;
+      right: 6.5rem;
+    }
+    .part {
+      margin-bottom: 1rem;
+    }
+    ul {
+      padding-left: 1.25rem;
+      li {
+        span {
+          display: block;
+        }
+      }
+    }
+  }
 }
 /* < SIDEBAR*/
 
@@ -821,12 +853,15 @@ header {
 .no-menus {
   background: var(--white);
   border-radius: 0.8333333333333334rem;
-  padding: 4.75rem;
+  padding: 1.75rem;
   text-align: center;
   margin-bottom: 1.25rem;
   label {
     font-weight: 500;
     margin-bottom: 1.25rem;
+  }
+  @include media-breakpoint-down(xs) {
+    padding: 0.75rem;
   }
 }
 
@@ -863,6 +898,11 @@ header {
       font-weight: bold;
       margin: 0 0.5rem;
     }
+    @include media-breakpoint-down(sm) {
+      .tag {
+        margin-bottom: .25rem;
+      }
+    }
   }
   .modal-button {
     color: var(--pink);
@@ -881,6 +921,15 @@ header {
       cursor: pointer;
     }
   }
+
+  @include media-breakpoint-down(sm) {
+    font-size: .7rem;
+    .foodItem {
+      .image-setup {
+        margin: .25rem .25rem .25rem .5rem;
+      }
+    }
+  }
 }
 
 /* < RESTAURANT PAGE */
@@ -893,19 +942,15 @@ header {
   display: flex;
   //padding: 0.5rem;
   .image-setup {
-    background: #007bff;
-    flex-direction: row;
-    display: flex;
-    border-radius: 100%;
     margin: 0.5rem;
     margin-left: 1rem;
-    //top: -5.333333333rem;
-    //left: 2.5rem;
-    //right: 2.5rem;
-    //height: 100%;
   }
   .image-wrapper {
     height: 0;
+    width: 100%;
+    padding-bottom: 100%;
+    background: #007bff;
+    border-radius: 100%;
     position: relative;
 
 
@@ -918,6 +963,15 @@ header {
       background-repeat: no-repeat;
       border-radius: 50%;
     }
+
+    @include media-breakpoint-down(xs) {
+      .image-setup {
+        width: 50%;
+      }
+      .price {
+        margin-right: 0;
+      }
+    }
   }
 
 
@@ -927,8 +981,6 @@ header {
     display: flex;
     margin: 0.5rem;
     .foodItemName {
-      font-weight: 500;
-      font-size: 1rem;
       margin-bottom: 0.5rem;
     }
     .description {

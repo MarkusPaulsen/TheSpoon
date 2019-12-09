@@ -81,7 +81,7 @@ class YourRestaurant extends Component {
               <div className="mainpage-banner restaurant">
                 <div className="container">
                   <div className="row">
-                    <div className="col-sm-4">
+                    <div className="col-md-4">
                       <Sidebar
                           name={this.state.restaurant.name}
                           address={this.state.restaurant.address}
@@ -91,7 +91,7 @@ class YourRestaurant extends Component {
                           openingHours={this.state.restaurant.openingHours}
                       />
                     </div>
-                    <div className="col-sm-8">
+                    <div className="col-md-8">
                       <h3 className="title">Your menus</h3>
                       <div className="no-menus">
                         <button className="wide">
