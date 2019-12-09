@@ -355,6 +355,88 @@ header {
       }
     }
   }
+  @include media-breakpoint-down(md) {
+    ul {
+      position: absolute;
+      display: none;
+      left: 0;
+      right: 0;
+      top: 4rem;
+      background: var(--white);
+      -webkit-box-shadow: 10px 10px 5px 0px rgba(232,232,232,0.64);
+      -moz-box-shadow: 10px 10px 5px 0px rgba(232,232,232,0.64);
+      box-shadow: 10px 10px 5px 0px rgba(232,232,232,0.64);
+      li {
+        display: block;
+        padding: 1rem 0;
+        margin: 0 1rem;
+        border-top: 1px solid var(--light-grey);
+      }
+    }
+    #mainnav-toggle {
+      display: block;
+      position: relative;
+      cursor: pointer;
+      width: 56px;
+      height: 118px;
+      .hamburger {
+        display: block;
+        width: 20px;
+        height: 3px;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        margin: -1px 0 0 -10px;
+        background: var(--grey);
+        &:before, &:after {
+          display: block;
+          content: "";
+          width: 100%;
+          height: 100%;
+          position: absolute;
+          background: var(--grey);
+        }
+        &:before {
+          top: -6px;
+        }
+        &:after {
+          bottom: -6px;
+        }
+      }
+    }
+    .active {
+      ul {
+        display: block;
+      }
+      #mainnav-toggle {
+        .hamburger {
+          background: transparent;
+          &:before {
+            transform: translateY(6px) rotate(135deg)
+          }
+          &:after {
+            transform: translateY(-6px) rotate(-135deg);
+          }
+        }
+      }
+    }
+  }
+  @include media-breakpoint-down(sm) {
+    ul {
+      li {
+        margin: 0 .75rem;
+      }
+    }
+  }
+  @include media-breakpoint-down(xs) {
+    ul {
+      li {
+        a {
+          font-size: .7rem;
+        }
+      }
+    }
+  }
 }
 
 /* < MAINHEADER */
@@ -366,6 +448,9 @@ header {
   padding-top: 3.66666rem;
   background-color: var(--light-grey);
   min-height: calc(100vh - 3rem);
+  @include media-breakpoint-down(sm) {
+    padding-top: 2rem;
+  }
 }
 /* < MAINPAGE */
 
@@ -824,7 +909,7 @@ header {
     padding: 3rem 1rem 1rem;
     .image-setup {
       position: absolute;
-      top: -5.333333rem;
+      top: -3.333333rem;
       left: 6.5rem;
       right: 6.5rem;
     }
