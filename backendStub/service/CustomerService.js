@@ -24,6 +24,38 @@ exports.apiUserCustomerGET = function() {
 
 
 /**
+ * Return all the reviews of the menu item
+ * Return all the reviews of the menu item with given menuItemID contained in the menu with given menuID. It also returns the overall score of the menu item.
+ *
+ * menuID Integer ID of the menu
+ * menuItemID Integer ID of the menu item
+ * returns ReviewsOfMenuItem
+ **/
+exports.apiUserCustomerMenuMenuIDMenuItemMenuItemIDReviewGET = function(menuID,menuItemID) {
+  return new Promise(function(resolve, reject) {
+    var examples = {};
+    examples['application/json'] = {
+  "rating" : 4.5,
+  "reviews" : [ {
+    "username" : "Janine",
+    "rating" : 5,
+    "content" : "Best pizza I have tasted in ages!"
+  }, {
+    "username" : "Emilio",
+    "rating" : 4,
+    "content" : "Nice pizza!"
+  } ]
+};
+    if (Object.keys(examples).length > 0) {
+      resolve(examples[Object.keys(examples)[0]]);
+    } else {
+      resolve();
+    }
+  });
+}
+
+
+/**
  * Delete a review
  * Delete the review with the given reviewID. This will also delete the reviews of the menu items associated to the review with given reviewID.
  *
