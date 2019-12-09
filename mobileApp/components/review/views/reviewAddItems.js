@@ -19,6 +19,9 @@ export default class ReviewAddItems extends Component {
       backgroundColor: "#FFFFFF",
       colorIndex: 3,
       menuItems: "",
+      menuID:null,
+      menuName:null,
+      restaurant:null,
       selectedMenuItems: []
     };
   }
@@ -26,6 +29,10 @@ export default class ReviewAddItems extends Component {
   componentDidMount = async () => {
     const { navigation } = this.props;
     const menuID = navigation.getParam("menuID", "000");
+    const menuName = navigation.getParam("menuName", "no-menu");
+    console.log(menuName);
+    const restaurant = navigation.getParam("restaurant", "no-restaurant");
+    this.setState({menuID, menuName, restaurant});
     await this.getMenuItems(menuID);
   };
 
@@ -109,6 +116,9 @@ export default class ReviewAddItems extends Component {
           disableButton={this.state.disableButton}
           navigation={this.props}
           menuItems={this.state.selectedMenuItems}
+          menuID={this.state.menuID}
+          menuName={this.state.menuName}
+          restaurant={this.state.restaurant}
           view={"ReviewItems"}
           text={"CONTINUE"}
           colorIndex={this.state.colorIndex}

@@ -24,7 +24,8 @@ class ReviewAddImage extends Component {
       imageUrl: null,
       colorIndex: 0,
       loggedIn: false,
-      isLoaded: false
+      isLoaded: false,
+      imageID:null
     };
   }
   componentDidMount = async () => {
@@ -93,6 +94,7 @@ class ReviewAddImage extends Component {
             <ContinueButton
               disableButton={this.state.disableButton}
               navigation={this.props}
+              imageID={this.state.imageID}
               view={"ReviewAddRestaurant"}
               text={"CONTINUE"}
               colorIndex={this.state.colorIndex}
@@ -185,7 +187,7 @@ class ReviewAddImage extends Component {
       console.log("ResponseText: ", responseText);
       if (response.ok) {
         console.log("Image was posted successfully!");
-        this.setState({ imageUrl: null });
+        this.setState({ imageUrl: null, imageID:responseText.imageID});
         alert("Upload success!");
       }
       if (!response.ok) {

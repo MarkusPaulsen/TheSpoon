@@ -21,6 +21,7 @@ export default class ReviewAddRestaurant extends Component {
     this.state = {
       disableButton: true,
       selected: null,
+      restaurant:"",
       colorIndex: 1,
       backgroundColor: null,
       restaurants: "",
@@ -52,8 +53,8 @@ export default class ReviewAddRestaurant extends Component {
     }
   }
 
-  setSelected(id) {
-    this.setState({ selected: id });
+  setSelected(id, restaurant) {
+    this.setState({ selected: id, restaurant:restaurant });
     this.setState({ disableButton: false });
   }
 
@@ -127,7 +128,7 @@ export default class ReviewAddRestaurant extends Component {
               renderItem={({ item }) => (
                 <TouchableOpacity
                   activeOpacity={0.5}
-                  onPress={() => this.setSelected(item.restaurantID)}
+                  onPress={() => this.setSelected(item.restaurantID, item.name)}
                   style={{
                     backgroundColor:
                       this.state.selected === item.restaurantID
@@ -156,6 +157,7 @@ export default class ReviewAddRestaurant extends Component {
           disableButton={this.state.disableButton}
           navigation={this.props}
           id={this.state.selected}
+          restaurant={this.state.restaurant}
           view={"ReviewAddMenu"}
           text={"CONTINUE"}
           colorIndex={this.state.colorIndex}

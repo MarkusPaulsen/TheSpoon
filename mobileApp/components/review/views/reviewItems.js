@@ -12,6 +12,8 @@ export default class ReviewItems extends Component {
     this.state = {
       disableButton: true,
       menuItems: "",
+      menuName:null,
+      restaurant:null,
       colorIndex: 4,
       reviewedScores: []
     };
@@ -20,7 +22,10 @@ export default class ReviewItems extends Component {
   componentDidMount = async () => {
     const { navigation } = this.props;
     const menuItems = navigation.getParam("menuItems", "no-values");
-    this.setState({ menuItems });
+    const menuID = navigation.getParam("menuID", "00");
+    const menuName = navigation.getParam("menuName", "no-menu");
+    const restaurant = navigation.getParam("restaurant", "no-restaurant");
+    this.setState({ menuItems, menuID, menuName, restaurant });
   };
 
   setRatingCount(rating, item, itemID) {
@@ -96,6 +101,10 @@ export default class ReviewItems extends Component {
         <ContinueButton
           disableButton={this.state.disableButton}
           navigation={this.props}
+          menuItemReviews ={this.state.menuItems}
+          menuID={this.state.menuID}
+          menuName={this.state.menuName}
+          restaurant={this.state.restaurant}
           view={"ReviewOverall"}
           text={"CONTINUE"}
           colorIndex={this.state.colorIndex}

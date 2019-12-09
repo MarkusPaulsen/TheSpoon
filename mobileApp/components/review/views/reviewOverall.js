@@ -14,27 +14,39 @@ export default class ReviewOverall extends Component {
       colorIndex: 5,
       serviceRating: null,
       qualityOverPriceRating: null,
-      reviewedScores: []
+      reviewedScores: [],
+      menuID:null,
+      menuName:null,
+      restaurant:null
     };
   }
-  async postReview() {
+  componentDidMount = async () =>{
+    const {navigation} = this.props;
+    const menuID = await navigation.getParam("menuID", "00");
+    const menuName = navigation.getParam("menuName", "no-menu");
+    console.log(menuName);
+    const restaurant = navigation.getParam("restaurant", "no-restaurant");
+    this.setState({menuID, menuName, restaurant});
+  };
+
+
+  async postReview(menuID) {
+    const date = new Date().toISOString().slice(0,10);
     try {
       const { navigation } = this.props;
-      const menuID = this.navigation.getParam("menuID", "no-id");
       const data = JSON.stringify({
-        menuID,
-        serviceRating: null,
-        qualityOverPriceRating: null,
-        date: null,
-        receiptImageID: null,
-        menuItemsReviews: [
-          {
-            menuItemID: null,
-            rating: null,
-            content: null
-          }
-        ]
+        serviceRating: this.state.serviceRating,
+        qualityOverPriceRating: this.state.qualityOverPriceRating,
+        date: date,
+        receiptImageID: 3,
+        restaurant:this.state.restaurant,
+        menuName: this.state.menuName,
+        menuItemsReviews: navigation.getParam(
+          "menuItemReviews",
+          "no-reviews"
+        )
       });
+      console.log(data);
       const backendStubURL = `http://192.168.1.110:8080/api/user/customer/review/restaurant/menu/${menuID}`;
       const response = await fetch(backendStubURL, {
         method: "POST",
@@ -45,12 +57,13 @@ export default class ReviewOverall extends Component {
         body: data
       });
       const responseText = await response.text();
-      console.log("The response is: ", responseText);
       if (response.ok) {
         console.log("Review was posted successfully!");
+        alert("Review success!");
       }
       if (!response.ok) {
         console.log("Review failed");
+        alert("Submitting review failed!");
       }
     } catch (e) {
       console.log("ERROR posting review:", e);
@@ -58,18 +71,19 @@ export default class ReviewOverall extends Component {
   }
 
   setServiceScore(rating) {
-    this.setState({serviceRating: rating});
+    this.setState({ serviceRating: rating });
     this.state.reviewedScores.push(rating);
     this.checkReview();
   }
 
   setQualityScore(rating) {
-    this.setState({qualityOverPriceRating: rating});
+    this.setState({ qualityOverPriceRating: rating });
     this.state.reviewedScores.push(rating);
     this.checkReview();
+    this.postReview(this.state.menuID);
   }
 
-  checkReview(){
+  checkReview() {
     if (this.state.reviewedScores.length === 2) {
       this.setState({ disableButton: false });
     }
@@ -81,12 +95,12 @@ export default class ReviewOverall extends Component {
         <View>
           <BackButton navigation={this.props.navigation} />
           <View style={styles.header}>
-            <Text style={[Typography.FONT_H3_BLACK, {textAlign: "center"}]}>
+            <Text style={[Typography.FONT_H3_BLACK, { textAlign: "center" }]}>
               What's your overall{"\n"}impression?
             </Text>
           </View>
         </View>
-        <View style={{alignItems: "center", flex: 5}}>
+        <View style={{ alignItems: "center", flex: 5 }}>
           <Text
             style={[
               Typography.FONT_H4_BLACK,
@@ -100,9 +114,7 @@ export default class ReviewOverall extends Component {
             defaultRating={0}
             size={30}
             selectedColor={Colors.PINK}
-            onFinishRating={rating =>
-                this.setServiceScore(rating)
-            }
+            onFinishRating={rating => this.setServiceScore(rating)}
           />
           <Text
             style={[
@@ -117,9 +129,7 @@ export default class ReviewOverall extends Component {
             defaultRating={0}
             size={30}
             selectedColor={Colors.PINK}
-            onFinishRating={rating =>
-                this.setQualityScore(rating)
-            }
+            onFinishRating={rating => this.setQualityScore(rating)}
           />
         </View>
         <ContinueButton

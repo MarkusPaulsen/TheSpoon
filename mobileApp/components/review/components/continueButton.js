@@ -10,9 +10,12 @@ export default class ContinueButton extends Component {
     const disableButton = this.props.disableButton;
     const view = this.props.view;
     const text = this.props.text;
+    const imageID = this.props.imageID;
     const id = this.props.id;
+    const restaurant = this.props.restaurant;
     const menuItems = this.props.menuItems;
     const menuID = this.props.menuID;
+    const menuName = this.props.menuName;
     const menuItemReviews = this.props.menuItemReviews;
     const colorIndex = this.props.colorIndex;
 
@@ -28,9 +31,12 @@ export default class ContinueButton extends Component {
           <TouchableOpacity
             onPress={() =>
               navigation.navigate(view, {
+                  imageID:imageID,
                 id: id,
                 menuItems: menuItems,
                 menuID: menuID,
+                restaurant: restaurant,
+                menuName: menuName,
                 menuItemReviews: menuItemReviews
               })
             }

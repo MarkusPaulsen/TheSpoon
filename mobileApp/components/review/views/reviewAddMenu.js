@@ -17,6 +17,8 @@ export default class ReviewAddMenu extends Component {
     this.state = {
       disableButton: true,
       selected: null,
+      menuName:null,
+      restaurant:null,
       backgroundColor: "#FFFFFF",
       colorIndex: 2,
       menus: "",
@@ -26,6 +28,8 @@ export default class ReviewAddMenu extends Component {
   componentDidMount = async () => {
     const { navigation } = this.props;
     const restaurantID = navigation.getParam("id", "000");
+    const restaurant = navigation.getParam("restaurant", "no-restaurant");
+    this.setState({restaurant});
     await this.getMenus(restaurantID);
   };
 
@@ -36,9 +40,7 @@ export default class ReviewAddMenu extends Component {
         method: "GET",
         accept: "application/json"
       });
-      console.log(response);
       const responseJson = await response.json();
-      console.log(responseJson);
       const menus = responseJson.map(index => ({
         menuID: index.menuID.toString(),
         menuName: index.name
@@ -49,8 +51,8 @@ export default class ReviewAddMenu extends Component {
     }
   }
 
-  setSelected(id){
-    this.setState({selected: id});
+  setSelected(id, menuName){
+    this.setState({selected: id, menuName:menuName});
     this.setState({disableButton: false});
   };
 
@@ -70,7 +72,7 @@ export default class ReviewAddMenu extends Component {
             renderItem={({ item }) => (
               <TouchableOpacity
                   style={{backgroundColor: this.state.selected === item.menuID ? Colors.TURQUOISE : Colors.WHITE}}
-                  onPress={() => this.setSelected(item.menuID)}
+                  onPress={() => this.setSelected(item.menuID, item.menuName)}
               >
                 <Text
                   style={[
@@ -92,6 +94,8 @@ export default class ReviewAddMenu extends Component {
           disableButton={this.state.disableButton}
           navigation={this.props}
           menuID={this.state.selected}
+          menuName={this.state.menuName}
+          restaurant={this.state.restaurant}
           view={"ReviewAddItems"}
           text={"CONTINUE"}
           colorIndex={this.state.colorIndex}
