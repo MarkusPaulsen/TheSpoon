@@ -57,13 +57,27 @@ export default class Profile extends Component {
     this.focusListener.remove();
   }
 
+
   logout() {
-    AsyncStorage.removeItem("userToken")
-      .then(() => {
-        this.setState({ loggedIn: false });
-        Alert.alert("Logout Success!");
-      })
-      .catch(error => console.log("Error logging out: ", error));
+    Alert.alert(
+        'Logout',
+        'Are you sure you want to log out?',
+        [
+          {
+            text: 'Cancel',
+            onPress: () => console.log('Cancel logout'),
+            style: 'cancel',
+          },
+          {text: 'Logout', onPress: () => {console.log('Logout Pressed') ;  AsyncStorage.removeItem("userToken")
+                .then(() => {
+                  this.setState({ loggedIn: false });
+                  Alert.alert("Logout Success!");
+                })
+                .catch(error => console.log("Error logging out: ", error));}},
+        ],
+        {cancelable: false},
+    );
+
   }
 
   async getUserInfo() {
