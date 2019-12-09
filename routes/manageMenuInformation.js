@@ -84,12 +84,14 @@ router.get('/', auth, isOwner, findRestaurant, async (req, res) => {
             let items = await m.MenuItems.map( async mi => {
                 let itemTags = await formatTags(mi.TaggedItems);
                 return {
+                    menuItemID: mi.MI_ID,
                     name: mi.Name,
                     description: mi.Description,
                     type: mi.Type,
                     priceEuros: mi.Price,
                     imageLink: mi.ImageLink,
-                    tags: itemTags
+                    tags: itemTags,
+                    rating: mi.Rating
                 };
             });
             items = await Promise.all(items);
