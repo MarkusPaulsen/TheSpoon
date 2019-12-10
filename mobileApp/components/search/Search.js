@@ -21,7 +21,10 @@ function ResultItem({ menuName, restaurantName, tags, score }) {
   for (let i = 0; i < tags.length; i++) {
     const color = tags[i]["color"];
     const tag = [
-      <View key={i.toString()} style={[styles.bgLabel, { backgroundColor: color }]}>
+      <View
+        key={i.toString()}
+        style={[styles.bgLabel, { backgroundColor: color }]}
+      >
         <Text style={[Typography.FONT_TAG, { marginHorizontal: 10 }]}>
           {tags[i]["name"]}
         </Text>
@@ -134,25 +137,28 @@ export default class Search extends Component {
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.container}>
-          <View style={styles.text}>
-            <Text style={Typography.FONT_H2_PINK}>What</Text>
+          <View style={styles.text} testID="heading">
+            <Text style={Typography.FONT_H2_PINK}>What </Text>
             <View style={{ flexDirection: "row" }}>
               <Text style={Typography.FONT_H4_BLACK}>do you want to </Text>
               <Text style={Typography.FONT_H4_PINK}>eat </Text>
-              <Text style={Typography.FONT_H4_BLACK}>today </Text>
+              <Text style={Typography.FONT_H4_BLACK}>today?</Text>
             </View>
           </View>
           <View style={[styles.searchBar, { marginTop: 20 }]}>
             <TouchableOpacity
+              testID="searchIconButton"
               value={this.state.searchWord}
               onPress={this.validateSearch}
             >
               <Image
+                testID="searchIcon"
                 source={require("../../assets/search.png")}
                 style={{ alignSelf: "center", marginTop: 10 }}
               />
             </TouchableOpacity>
             <TextInput
+              testID="searchField"
               style={[Typography.FONT_INPUT, styles.textInput]}
               placeholder="Search..."
               placeholderTextColor={Colors.GRAY_MEDIUM}
@@ -192,12 +198,14 @@ export default class Search extends Component {
                       />
                     </TouchableOpacity>
                   )}
-                  keyExtractor={(item, index) => {return item.id}}
+                  keyExtractor={(item, index) => {
+                    return item.id;
+                  }}
                 />
               </SafeAreaView>
             ) : null}
             {this.state.searched && !this.state.searchResults ? (
-              <View style={styles.noResult}>
+              <View style={styles.noResult} testID="noResultsView">
                 <View>
                   <Image source={require("../../assets/noresults.png")} />
                 </View>

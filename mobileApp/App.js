@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import LoginScreen from "./components/login/login";
-import SearchPage from "./components/search/search";
+import SearchPage from "./components/search/Search";
 import LandingPage from "./components/landingpage/landingpage";
 import Loading from "./components/Loading";
 import MenuPage from "./components/menupage/menupage"
