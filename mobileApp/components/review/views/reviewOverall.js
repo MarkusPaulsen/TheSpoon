@@ -1,10 +1,17 @@
 import React, { Component } from "react";
-import { View, Text, StyleSheet, AsyncStorage } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  AsyncStorage,
+  TouchableOpacity
+} from "react-native";
 import * as Typography from "../../../styles/typography";
 import * as Colors from "../../../styles/colors";
 import BackButton from "../components/backButton";
 import ContinueButton from "../components/continueButton";
 import { AirbnbRating } from "react-native-ratings";
+import Circles from "../components/circles";
 
 export default class ReviewOverall extends Component {
   constructor(props) {
@@ -35,25 +42,29 @@ export default class ReviewOverall extends Component {
 
   async postReview(menuID) {
     const date = new Date().toISOString().slice(0, 10);
+    const menuItemReviewsWithMenuName = this.props.navigation.getParam("menuItemReviews", "no-reviews");
+    const menuItemsReview = menuItemReviewsWithMenuName.map(index => ({
+      menuItemID :parseInt(index.menuItemID),
+      rating:index.rating,
+      content:index.content,
+    }));
     try {
-      const { navigation } = this.props;
       const data = JSON.stringify({
         serviceRating: this.state.serviceRating,
         qualityOverPriceRating: this.state.qualityOverPriceRating,
         date: date,
-        receiptImageID: this.state.imageID,
-        restaurant: this.state.restaurant,
-        menuName: this.state.menuName,
-        menuItemsReviews: navigation.getParam("menuItemReviews", "no-reviews")
+        receiptImageID: parseInt(this.state.imageID),
+       // restaurant: this.state.restaurant,
+      //  menuName: this.state.menuName,
+        menuItemsReviews: menuItemsReview
       });
-      console.log(data);
       const backendStubURL = `http://192.168.1.110:8080/api/user/customer/review/restaurant/menu/${menuID}`;
       const response = await fetch(backendStubURL, {
         method: "POST",
         headers: {
           Accept: "application/json",
           "x-auth-token": this.state.token,
-          "content-Type": "application/json"
+          "Content-Type": "application/json"
         },
         body: data
       });
@@ -63,7 +74,7 @@ export default class ReviewOverall extends Component {
         alert("Review success!");
       }
       if (!response.ok) {
-        console.log("Review failed");
+        console.log("Review failed", responseText);
         alert("Submitting review failed!");
       }
     } catch (e) {
@@ -81,7 +92,6 @@ export default class ReviewOverall extends Component {
     this.setState({ qualityOverPriceRating: rating });
     this.state.reviewedScores.push(rating);
     this.checkReview();
-    this.postReview(this.state.menuID);
   }
 
   checkReview() {
@@ -133,13 +143,42 @@ export default class ReviewOverall extends Component {
             onFinishRating={rating => this.setQualityScore(rating)}
           />
         </View>
-        <ContinueButton
-          disableButton={this.state.disableButton}
-          navigation={this.props}
-          view={"ReviewOverall"}
-          text={"POST REVIEW"}
-          colorIndex={this.state.colorIndex}
-        />
+        {this.state.disableButton ? (
+          <View
+            style={{
+              flexDirection: "column",
+              alignItems: "center",
+              marginBottom: 20
+            }}
+          >
+            <View
+              style={[styles.button, { backgroundColor: Colors.GRAY_MEDIUM }]}
+            >
+              <Text style={[Typography.FONT_H4_WHITE, { textAlign: "center" }]}>
+                CONTINUE
+              </Text>
+            </View>
+            <Circles colorIndex={this.state.colorIndex} />
+          </View>
+        ) : (
+          <View
+            style={{
+              flexDirection: "column",
+              alignItems: "center",
+              marginBottom: 20
+            }}
+          >
+            <TouchableOpacity
+              onPress={() => this.postReview(this.state.menuID)}
+              style={[styles.button, { backgroundColor: Colors.PINK }]}
+            >
+              <Text style={[Typography.FONT_H4_WHITE, { textAlign: "center" }]}>
+                CONTINUE
+              </Text>
+            </TouchableOpacity>
+            <Circles colorIndex={this.state.colorIndex} />
+          </View>
+        )}
       </View>
     );
   }
@@ -158,5 +197,14 @@ const styles = StyleSheet.create({
     bottom: 0,
     justifyContent: "center",
     alignItems: "center"
+  },
+  button: {
+    width: 145,
+    height: 34,
+    borderRadius: 50,
+    justifyContent: "center",
+    marginTop: 20,
+    marginBottom: 20,
+    alignSelf: "center"
   }
 });

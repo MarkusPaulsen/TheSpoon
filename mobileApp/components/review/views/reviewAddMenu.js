@@ -17,12 +17,12 @@ export default class ReviewAddMenu extends Component {
     this.state = {
       disableButton: true,
       selected: null,
-      menuName:null,
-      restaurant:null,
-      imageID:null,
+      menuName: null,
+      restaurant: null,
+      imageID: null,
       backgroundColor: "#FFFFFF",
       colorIndex: 2,
-      menus: "",
+      menus: ""
     };
   }
 
@@ -31,13 +31,13 @@ export default class ReviewAddMenu extends Component {
     const restaurantID = navigation.getParam("id", "000");
     const restaurant = navigation.getParam("restaurant", "no-restaurant");
     const imageID = navigation.getParam("imageID", "0");
-    this.setState({restaurant, imageID});
+    this.setState({ restaurant, imageID });
     await this.getMenus(restaurantID);
   };
 
   async getMenus(restaurantID) {
     try {
-      const backendStubURL =`http://192.168.1.110:8080/api/user/customer/review/restaurant/${restaurantID}/menu`;
+      const backendStubURL = `http://192.168.1.110:8080/api/user/customer/review/restaurant/${restaurantID}/menu`;
       const response = await fetch(backendStubURL, {
         method: "GET",
         accept: "application/json"
@@ -53,10 +53,10 @@ export default class ReviewAddMenu extends Component {
     }
   }
 
-  setSelected(id, menuName){
-    this.setState({selected: id, menuName:menuName});
-    this.setState({disableButton: false});
-  };
+  setSelected(id, menuName) {
+    this.setState({ selected: id, menuName: menuName });
+    this.setState({ disableButton: false });
+  }
 
   render() {
     return (
@@ -73,8 +73,13 @@ export default class ReviewAddMenu extends Component {
             extraData={this.state}
             renderItem={({ item }) => (
               <TouchableOpacity
-                  style={{backgroundColor: this.state.selected === item.menuID ? Colors.TURQUOISE : Colors.WHITE}}
-                  onPress={() => this.setSelected(item.menuID, item.menuName)}
+                style={{
+                  backgroundColor:
+                    this.state.selected === item.menuID
+                      ? Colors.TURQUOISE
+                      : Colors.WHITE
+                }}
+                onPress={() => this.setSelected(item.menuID, item.menuName)}
               >
                 <Text
                   style={[

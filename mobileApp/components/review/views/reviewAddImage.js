@@ -184,15 +184,15 @@ class ReviewAddImage extends Component {
       const response = await fetch(Api.SERVER_POST_IMAGE, {
         method: "POST",
         headers: {
-          Accept:"*/*",
-          "x-auth-token": this.state.token,
+          Accept: "*/*",
+          "x-auth-token": this.state.token
         },
-        body:data,
+        body: data
       });
       const responseText = await response.json();
       if (response.ok) {
         alert("Upload success!");
-        this.setState({imageID: responseText.imageID, disableButton:false });
+        this.setState({ imageID: responseText.imageID, disableButton: false });
       }
       if (!response.ok) {
         alert("Upload failed");

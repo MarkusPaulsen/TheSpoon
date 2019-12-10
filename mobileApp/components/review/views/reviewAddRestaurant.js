@@ -21,19 +21,19 @@ export default class ReviewAddRestaurant extends Component {
     this.state = {
       disableButton: true,
       selected: null,
-      restaurant:"",
+      restaurant: "",
       colorIndex: 1,
       backgroundColor: null,
       restaurants: "",
       searchWord: "",
       searchResult: null,
-      imageID:null
+      imageID: null
     };
   }
   componentDidMount = async () => {
     await this.getAllMenus();
     const imageID = this.props.navigation.getParam("imageID", "0");
-    this.setState({imageID})
+    this.setState({ imageID });
   };
 
   async getAllMenus() {
@@ -57,7 +57,7 @@ export default class ReviewAddRestaurant extends Component {
   }
 
   setSelected(id, restaurant) {
-    this.setState({ selected: id, restaurant:restaurant });
+    this.setState({ selected: id, restaurant: restaurant });
     this.setState({ disableButton: false });
   }
 
