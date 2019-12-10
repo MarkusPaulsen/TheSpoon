@@ -14,17 +14,17 @@ import {Modal} from "react-bootstrap";
 import {modalVisibilityFilters} from "../constants/modalVisibiltyFilters";
 //</editor-fold>
 //<editor-fold desc="Modals">
-import LogInModal from "../components/HomePage/Modals/LogInModal";
-import LogOutModal from "../components/HomePage/Modals/LogOutModal";
-import RegisterRestaurantowner from "../components/HomePage/Modals/RegisterRestaurantOwnerModal";
-import AddRestaurantModal from "../components/HomePage/Modals/AddRestaurantModal"
-import EditRestaurantModal from "../components/RestaurantPage/Modals/EditRestaurantModal";
-import AddMenuModal from "../components/RestaurantPage/Modals/AddMenuModal";
-import EditMenuModal from "../components/RestaurantPage/Modals/EditMenuModal";
-import AddMenuItemModal from "../components/RestaurantPage/Modals/AddMenuItemModal";
-import EditMenuItemModal from "../components/RestaurantPage/Modals/EditMenuItemModal";
-import ChooseRoleModal from "../components/HomePage/Modals/ChooseRoleModal";
-import RegisterCustomer from "../components/HomePage/Modals/RegisterCustomerModal";
+import LogInModal from "../components/homepage/Modals/LogInModal";
+import LogOutModal from "../components/homepage/Modals/LogOutModal";
+import RegisterRestaurantowner from "../components/homepage/Modals/RegisterRestaurantOwnerModal";
+import AddRestaurantModal from "../components/homepage/Modals/AddRestaurantModal"
+import EditRestaurantModal from "../components/restaurantPage/Modals/EditRestaurantModal";
+import AddMenuModal from "../components/restaurantPage/Modals/AddMenuModal";
+import EditMenuModal from "../components/restaurantPage/Modals/EditMenuModal";
+import AddMenuItemModal from "../components/restaurantPage/Modals/AddMenuItemModal";
+import EditMenuItemModal from "../components/restaurantPage/Modals/EditMenuItemModal";
+import ChooseRoleModal from "../components/homepage/Modals/ChooseRoleModal";
+import RegisterCustomer from "../components/homepage/Modals/RegisterCustomerModal";
 //</editor-fold>
 
 class CustomModal extends Component {

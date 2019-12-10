@@ -122,7 +122,7 @@ class RegisterCustomerModal extends Component {
                     return ajax({
                         url: paths["restApi"]["registrationCustomer"],
                         method: "POST",
-                        header: {"Content-Type": "application/json"},
+                        headers: {"Content-Type": "application/json"},
                         body: {
                             username: thisTemp.state.username,
                             email: thisTemp.state.email,
