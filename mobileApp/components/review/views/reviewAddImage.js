@@ -14,6 +14,7 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 import ContinueButton from "../components/continueButton";
 import * as ImagePicker from "expo-image-picker";
 import * as Permissions from "expo-permissions";
+import * as Api from "../../../services/api";
 import { connectActionSheet } from "@expo/react-native-action-sheet";
 
 class ReviewAddImage extends Component {
@@ -179,11 +180,8 @@ class ReviewAddImage extends Component {
 
   async postImage() {
     try {
-      const url = `http://192.168.1.110:8080/api/image/`;
-      const urlServer = `https://thespoon.herokuapp.com/api/image/`;
-      console.log(this.state.imageUrl);
       const data = this.createFormData(this.state.imageUrl);
-      const response = await fetch(urlServer, {
+      const response = await fetch(Api.SERVER_POST_IMAGE, {
         method: "POST",
         headers: {
           Accept:"*/*",
@@ -191,16 +189,12 @@ class ReviewAddImage extends Component {
         },
         body:data,
       });
-      console.log("RESPONSE: ", response);
-      const responseText = await response.text();
-      console.log("ResponseText: ", responseText);
+      const responseText = await response.json();
       if (response.ok) {
-        console.log("Image was posted successfully!");
-        this.setState({imageID: responseText.imageID, disableButton:false });
         alert("Upload success!");
+        this.setState({imageID: responseText.imageID, disableButton:false });
       }
       if (!response.ok) {
-        console.log("Image posting failed");
         alert("Upload failed");
       }
     } catch (error) {
@@ -222,7 +216,6 @@ class ReviewAddImage extends Component {
     if (!result.cancelled) {
       this.setState({ imageUrl: result.uri });
       this.postImage();
-      this.setState({ disableButton: false });
     }
   };
 }

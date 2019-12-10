@@ -19,3 +19,7 @@ export const SERVER_PROFILE_USERREVIEWS = `https://thespoon.herokuapp.com/api/us
 //ReviewAddRestaurant
 export const STUB_GET_RESTAURANTS = `http://192.168.1.110:8080/api/user/customer/review/restaurant`;
 export const SERVER_GET_RESTAURANTS = `https://thespoon.herokuapp.com/api/user/customer/review/restaurant`;
+
+//ReviewAddImage
+export const STUB_POST_IMAGE = `http://192.168.1.110:8080/api/image/`;
+export const SERVER_POST_IMAGE = `https://thespoon.herokuapp.com/api/image/`;

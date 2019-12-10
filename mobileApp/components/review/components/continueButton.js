@@ -31,7 +31,7 @@ export default class ContinueButton extends Component {
           <TouchableOpacity
             onPress={() =>
               navigation.navigate(view, {
-                  imageID:imageID,
+                imageID: imageID,
                 id: id,
                 menuItems: menuItems,
                 menuID: menuID,

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, AsyncStorage } from "react-native";
 import * as Typography from "../../../styles/typography";
 import * as Colors from "../../../styles/colors";
 import BackButton from "../components/backButton";
@@ -13,38 +13,38 @@ export default class ReviewOverall extends Component {
       disableButton: true,
       colorIndex: 5,
       serviceRating: null,
+      imageID: null,
       qualityOverPriceRating: null,
       reviewedScores: [],
-      menuID:null,
-      menuName:null,
-      restaurant:null
+      menuID: null,
+      menuName: null,
+      restaurant: null
     };
   }
-  componentDidMount = async () =>{
-    const {navigation} = this.props;
-    const menuID = await navigation.getParam("menuID", "00");
+  componentDidMount = async () => {
+    AsyncStorage.getItem("userToken").then(token => {
+      this.setState({ token: token });
+    });
+    const { navigation } = this.props;
+    const menuID = navigation.getParam("menuID", "00");
+    const imageID = navigation.getParam("imageID", "0");
     const menuName = navigation.getParam("menuName", "no-menu");
-    console.log(menuName);
     const restaurant = navigation.getParam("restaurant", "no-restaurant");
-    this.setState({menuID, menuName, restaurant});
+    this.setState({ imageID, menuID, menuName, restaurant });
   };
 
-
   async postReview(menuID) {
-    const date = new Date().toISOString().slice(0,10);
+    const date = new Date().toISOString().slice(0, 10);
     try {
       const { navigation } = this.props;
       const data = JSON.stringify({
         serviceRating: this.state.serviceRating,
         qualityOverPriceRating: this.state.qualityOverPriceRating,
         date: date,
-        receiptImageID: 3,
-        restaurant:this.state.restaurant,
+        receiptImageID: this.state.imageID,
+        restaurant: this.state.restaurant,
         menuName: this.state.menuName,
-        menuItemsReviews: navigation.getParam(
-          "menuItemReviews",
-          "no-reviews"
-        )
+        menuItemsReviews: navigation.getParam("menuItemReviews", "no-reviews")
       });
       console.log(data);
       const backendStubURL = `http://192.168.1.110:8080/api/user/customer/review/restaurant/menu/${menuID}`;
@@ -52,6 +52,7 @@ export default class ReviewOverall extends Component {
         method: "POST",
         headers: {
           Accept: "application/json",
+          "x-auth-token": this.state.token,
           "content-Type": "application/json"
         },
         body: data

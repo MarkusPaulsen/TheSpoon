@@ -19,6 +19,7 @@ export default class ReviewAddMenu extends Component {
       selected: null,
       menuName:null,
       restaurant:null,
+      imageID:null,
       backgroundColor: "#FFFFFF",
       colorIndex: 2,
       menus: "",
@@ -29,7 +30,8 @@ export default class ReviewAddMenu extends Component {
     const { navigation } = this.props;
     const restaurantID = navigation.getParam("id", "000");
     const restaurant = navigation.getParam("restaurant", "no-restaurant");
-    this.setState({restaurant});
+    const imageID = navigation.getParam("imageID", "0");
+    this.setState({restaurant, imageID});
     await this.getMenus(restaurantID);
   };
 
@@ -95,6 +97,7 @@ export default class ReviewAddMenu extends Component {
           navigation={this.props}
           menuID={this.state.selected}
           menuName={this.state.menuName}
+          imageID={this.state.imageID}
           restaurant={this.state.restaurant}
           view={"ReviewAddItems"}
           text={"CONTINUE"}

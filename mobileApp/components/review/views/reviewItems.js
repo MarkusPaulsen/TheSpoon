@@ -11,6 +11,7 @@ export default class ReviewItems extends Component {
     super(props);
     this.state = {
       disableButton: true,
+      imageID:null,
       menuItems: "",
       menuName:null,
       restaurant:null,
@@ -22,10 +23,11 @@ export default class ReviewItems extends Component {
   componentDidMount = async () => {
     const { navigation } = this.props;
     const menuItems = navigation.getParam("menuItems", "no-values");
+    const imageID = navigation.getParam("imageID", "0");
     const menuID = navigation.getParam("menuID", "00");
     const menuName = navigation.getParam("menuName", "no-menu");
     const restaurant = navigation.getParam("restaurant", "no-restaurant");
-    this.setState({ menuItems, menuID, menuName, restaurant });
+    this.setState({imageID, menuItems, menuID, menuName, restaurant });
   };
 
   setRatingCount(rating, item, itemID) {
@@ -102,6 +104,7 @@ export default class ReviewItems extends Component {
           disableButton={this.state.disableButton}
           navigation={this.props}
           menuItemReviews ={this.state.menuItems}
+          imageID={this.state.imageID}
           menuID={this.state.menuID}
           menuName={this.state.menuName}
           restaurant={this.state.restaurant}

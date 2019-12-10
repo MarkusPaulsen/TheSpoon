@@ -26,11 +26,14 @@ export default class ReviewAddRestaurant extends Component {
       backgroundColor: null,
       restaurants: "",
       searchWord: "",
-      searchResult: null
+      searchResult: null,
+      imageID:null
     };
   }
   componentDidMount = async () => {
     await this.getAllMenus();
+    const imageID = this.props.navigation.getParam("imageID", "0");
+    this.setState({imageID})
   };
 
   async getAllMenus() {
@@ -157,6 +160,7 @@ export default class ReviewAddRestaurant extends Component {
           disableButton={this.state.disableButton}
           navigation={this.props}
           id={this.state.selected}
+          imageID={this.state.imageID}
           restaurant={this.state.restaurant}
           view={"ReviewAddMenu"}
           text={"CONTINUE"}
