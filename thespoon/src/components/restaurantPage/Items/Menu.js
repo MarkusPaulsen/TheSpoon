@@ -52,7 +52,8 @@ class Menu extends Component {
                     return (
                         <MenuItem name={dishItem.name} description={dishItem.description}
                                   priceEuros={dishItem.priceEuros} tags={dishItem.tags}
-                                  imageLink={dishItem.imageLink} type={dishItem.type}/>
+                                  imageLink={dishItem.imageLink} type={dishItem.type}
+                                  menuID={this.props.menuID} menuItemID={dishItem.menuItemID}/>
                     );
                 })}
                 <div className="modal-button">
@@ -68,8 +69,9 @@ class Menu extends Component {
                 {this.props.menuItems.filter(menuItem => menuItem.type === "drink").map(drinkItem => {
                     return (
                         <MenuItem name={drinkItem.name} description={drinkItem.description}
-                                   priceEuros={drinkItem.priceEuros} tags={drinkItem.tags}
-                                   imageLink={drinkItem.imageLink} type={drinkItem.type}/>
+                                  priceEuros={drinkItem.priceEuros} tags={drinkItem.tags}
+                                  imageLink={drinkItem.imageLink} type={drinkItem.type}
+                                  menuID={this.props.menuID} menuItemID={drinkItem.menuItemID}/>
                     );
                 })}
                 <div className="modal-button">

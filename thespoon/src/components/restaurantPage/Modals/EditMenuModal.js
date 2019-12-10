@@ -95,7 +95,7 @@ class EditMenuModal extends Component {
                 if (thisTemp.state.validation.isValid) {
                     thisTemp.setState({serverMessage: "Menu is edited"});
                     return ajax({
-                        url: paths["restApi"]["menu"] + "/" + this.props.menu.id,
+                        url: paths["restApi"]["menu"] + "/" + this.props.menu.menuID,
                         method: "PUT",
                         headers: {"Content-Type": "application/json", "X-Auth-Token": this.props.token},
                         body: {
@@ -147,7 +147,7 @@ class EditMenuModal extends Component {
         of(1)
             .pipe(exhaustMap(() => {
                 return ajax({
-                    url: paths["restApi"]["menu"] + "/" + this.props.currentMenu.id,
+                    url: paths["restApi"]["menu"] + "/" + this.props.currentMenu.menuID,
                     method: "DELETE",
                     headers: {"Content-Type": "application/json", "X-Auth-Token": this.props.token},
                 })

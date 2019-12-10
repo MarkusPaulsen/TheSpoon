@@ -16,6 +16,8 @@ class FormValidator {
 
     //<editor-fold desc="Business Logic">
     validate(state) {
+        console.log(this.validations)
+        console.log(state)
         // start out assuming valid
         let validation = this.valid();
 

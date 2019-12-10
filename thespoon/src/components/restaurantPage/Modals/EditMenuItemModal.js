@@ -41,7 +41,7 @@ class EditMenuItemModal extends Component {
                 field: "name",
                 method: "isEmpty",
                 validWhen: false,
-                message: "Dish name is required"
+                message: "Name is required"
             },
             {
                 field: "description",
@@ -50,7 +50,7 @@ class EditMenuItemModal extends Component {
                 message: "Description is required"
             },
             {
-                field: "price",
+                field: "priceEuros",
                 method: "isEmpty",
                 validWhen: false,
                 message: "Price is required"
@@ -65,11 +65,12 @@ class EditMenuItemModal extends Component {
 
         this.fileSelectedHandler = this.fileSelectedHandler.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleDelete = this.handleDelete.bind(this);
 
         this.state = {
             name: "",
             description: "",
-            price: "",
+            priceEuros: "",
             type: "",
             imageID: 0,
             imageMessage: "",
@@ -164,7 +165,7 @@ class EditMenuItemModal extends Component {
                 return bindCallback(thisTemp.setState).call(thisTemp, {
                     name: values.name,
                     description: values.description,
-                    price: parseInt(values.priceEuros),
+                    priceEuros: parseInt(values.priceEuros),
                     type: thisTemp.props.modalVisibilityFilter === modalVisibilityFilters.SHOW_ADD_DISH ? "dish" : "drink",
                     imageID: thisTemp.state.imageID,
                     tags: values.tags.split(",").map(tag => tag.trim())
@@ -181,13 +182,16 @@ class EditMenuItemModal extends Component {
                 if (thisTemp.state.validation.isValid) {
                     thisTemp.setState({serverMessage: "New dish is edited"});
                     return ajax({
-                        url: paths["restApi"]["menu"] + "/" + thisTemp.props.menuID + "/" + "menuItem" + "/" + thisTemp.props.menuItemID,
+                        url: paths["restApi"]["menu"] + "/"
+                            + thisTemp.props.currentMenuItem.menuID + "/"
+                            + "menuItem" + "/"
+                            + thisTemp.props.currentMenuItem.menuItemID,
                         method: "PUT",
                         headers: {"Content-Type": "application/json", "X-Auth-Token": thisTemp.props.token},
                         body: {
                             name: thisTemp.state.name,
                             description: thisTemp.state.description,
-                            price: thisTemp.state.price,
+                            priceEuros: thisTemp.state.priceEuros,
                             type: thisTemp.state.type,
                             imageID: thisTemp.state.imageID,
                             tags: thisTemp.state.tags
@@ -202,6 +206,47 @@ class EditMenuItemModal extends Component {
                         response: "One of the fields above is not correctly filled."
                     });
                 }
+            }))
+            .pipe(take(1))
+            .subscribe(
+                () => {
+                    thisTemp.props.onHide();
+                }, (error) => {
+                    switch (error.name) {
+                        case "AjaxTimeoutError":
+                            thisTemp.setState({serverMessage: "Error 408: The request timed out."});
+                            break;
+                        case "InternalError":
+                        case "AjaxError":
+                            if (error.status === 0 && error.response === "") {
+                                thisTemp.setState({serverMessage: "Error " + error.status + ": " + "No connection to the server."});
+                            } else {
+                                thisTemp.setState({serverMessage: "Error " + error.status + ": " + error.response});
+                            }
+                            break;
+                        default:
+                            console.log(error);
+                            thisTemp.setState({serverMessage: "Code error"});
+                            break;
+                    }
+                }
+            );
+    };
+
+    handleDelete = (event) => {
+        event.preventDefault();
+
+        const thisTemp = this;
+        of(1)
+            .pipe(exhaustMap(() => {
+                return ajax({
+                    url: paths["restApi"]["menu"] + "/"
+                        + thisTemp.props.currentMenuItem.menuID + "/"
+                        + "menuItem" + "/"
+                        + thisTemp.props.currentMenuItem.menuItemID,
+                    method: "DELETE",
+                    headers: {"Content-Type": "application/json", "X-Auth-Token": this.props.token},
+                })
             }))
             .pipe(take(1))
             .subscribe(
@@ -246,7 +291,7 @@ class EditMenuItemModal extends Component {
 
                         <div className="input-field">
                             <label>Dish name</label>
-                            <Input type="text" name="dishName" placeholder="Dish name"/>
+                            <Input type="text" name="name" placeholder="Dish name"/>
                         </div>
                         <div className="error-block">
                             <small>{validation.name.message}</small>
@@ -263,10 +308,10 @@ class EditMenuItemModal extends Component {
 
                         <div className="input-field">
                             <label>Price in Euro (€)</label>
-                            <Input placeholder="Price"/>
+                            <Input name="priceEuros" placeholder="Price"/>
                         </div>
                         <div className="error-block">
-                            <small>{validation.price.message}</small>
+                            <small>{validation.priceEuros.message}</small>
                         </div>
 
                         <div className="input-field image">
@@ -300,7 +345,7 @@ class EditMenuItemModal extends Component {
                         </div>
 
                         <Button type="submit" className="normal">Save</Button>
-                        <Button type="submit" className="delete-button">Delete Dish</Button>
+                        <Button type="button" className="delete-button" onClick={this.handleDelete}>Delete Dish</Button>
                         <div className="error-block">
                             <small>{this.state.serverMessage}</small>
                         </div>
@@ -318,6 +363,7 @@ const mapStateToProps = (state) => {
     return {
         token: state.logInReducer.token,
         modalVisibilityFilter: state.modalVisibiltyFilterReducer.modalVisibilityFilter,
+        currentMenuItem: state.currentMenuReducer.currentMenuItem
     };
 };
 
