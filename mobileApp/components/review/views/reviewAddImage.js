@@ -163,16 +163,15 @@ class ReviewAddImage extends Component {
     if (!result.cancelled) {
       this.setState({ imageUrl: result.uri });
       this.postImage();
-      this.setState({ disableButton: false });
     }
   };
   createFormData = imageUrl => {
     let uriParts = imageUrl.split(".");
     let fileType = uriParts[uriParts.length - 1];
     const data = new FormData();
-    data.append("photo", {
-      //name: `imageUrl.${fileType}`,
-      //type: `image/${fileType}`,
+    data.append("image", {
+      name: `image.${fileType}`,
+      type: `image/${fileType}`,
       uri: imageUrl
     });
     return data;
@@ -182,24 +181,22 @@ class ReviewAddImage extends Component {
     try {
       const url = `http://192.168.1.110:8080/api/image/`;
       const urlServer = `https://thespoon.herokuapp.com/api/image/`;
-      let formdata = new FormData();
-      formdata.append("photo", this.state.imageUrl);
+      console.log(this.state.imageUrl);
       const data = this.createFormData(this.state.imageUrl);
-      console.log(data);
-      console.log(this.state.token);
       const response = await fetch(urlServer, {
         method: "POST",
         headers: {
-          "X-Auth-Token": this.state.token
+          Accept:"*/*",
+          "x-auth-token": this.state.token,
         },
-        body:formdata,
+        body:data,
       });
       console.log("RESPONSE: ", response);
       const responseText = await response.text();
       console.log("ResponseText: ", responseText);
       if (response.ok) {
         console.log("Image was posted successfully!");
-        this.setState({ imageUrl: null, imageID: responseText.imageID });
+        this.setState({imageID: responseText.imageID, disableButton:false });
         alert("Upload success!");
       }
       if (!response.ok) {

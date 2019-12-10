@@ -51,7 +51,7 @@ export default class LoginScreen extends Component {
         isRestaurantOwner: false
       });
 
-      const res = await fetch(Api.SERVER_LOGIN, {
+      const res = await fetch(Api.STUB_LOGIN, {
         method: "POST",
         headers: {
           Accept: "application/json",
