@@ -101,6 +101,12 @@ export default class Profile extends Component {
         email: responseJson.email
       };
       this.setState({ userInfo });
+      if(response.ok){
+        console.log("Success fetching profileData")
+      }
+      if(!response.ok){
+        console.log("Fetching profileData failed");
+      }
     } catch (error) {
       console.log("Error fetching user info: ", error);
     }
@@ -115,9 +121,7 @@ export default class Profile extends Component {
           "X-Auth-Token": this.state.token
         }
       });
-      console.log(response);
       const responseJson = await response.json();
-      console.log(responseJson);
       const reviews = responseJson.map(index => ({
         reviewID: index.menuID.toString(),
         menu: index.menuID,
@@ -125,6 +129,12 @@ export default class Profile extends Component {
         status: index.status
       }));
       this.setState({ reviews });
+      if(response.ok){
+        console.log("Success fetching reviews")
+      }
+      if(!response.ok){
+        console.log("Fetching reviews failed");
+      }
     } catch (error) {
       console.log("Error fetching reviews: ", error);
     }

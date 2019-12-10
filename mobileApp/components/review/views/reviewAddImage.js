@@ -25,13 +25,18 @@ class ReviewAddImage extends Component {
       colorIndex: 0,
       loggedIn: false,
       isLoaded: false,
-      imageID:null
+      imageID: null,
+      token: null
     };
   }
   componentDidMount = async () => {
     this.focusListener = this.props.navigation.addListener("didFocus", () => {
       AsyncStorage.getItem("userToken").then(token => {
-        this.setState({ loggedIn: token !== null, isLoaded: true });
+        this.setState({
+          loggedIn: token !== null,
+          isLoaded: true,
+          token: token
+        });
       });
     });
   };
@@ -162,32 +167,39 @@ class ReviewAddImage extends Component {
     }
   };
   createFormData = imageUrl => {
-    let uriParts = imageUrl.split('.');
-    let fileType = uriParts[uriParts.length -1];
+    let uriParts = imageUrl.split(".");
+    let fileType = uriParts[uriParts.length - 1];
     const data = new FormData();
-    data.append("photo", { name: `imageUrl.${fileType}`, type: `image/${fileType}`, uri: imageUrl});
+    data.append("photo", {
+      //name: `imageUrl.${fileType}`,
+      //type: `image/${fileType}`,
+      uri: imageUrl
+    });
     return data;
   };
 
   async postImage() {
     try {
-      const url = `http://192.168.1.110:8080/api/image`;
+      const url = `http://192.168.1.110:8080/api/image/`;
+      const urlServer = `https://thespoon.herokuapp.com/api/image/`;
+      let formdata = new FormData();
+      formdata.append("photo", this.state.imageUrl);
       const data = this.createFormData(this.state.imageUrl);
       console.log(data);
-      const response = await fetch(url, {
+      console.log(this.state.token);
+      const response = await fetch(urlServer, {
         method: "POST",
-        body: this.createFormData(this.state.imageUrl),
-        headers:{
-          Accept:"application/json",
-          'Content-Type':'multipart/form-data',
+        headers: {
+          "X-Auth-Token": this.state.token
         },
+        body:formdata,
       });
       console.log("RESPONSE: ", response);
       const responseText = await response.text();
       console.log("ResponseText: ", responseText);
       if (response.ok) {
         console.log("Image was posted successfully!");
-        this.setState({ imageUrl: null, imageID:responseText.imageID});
+        this.setState({ imageUrl: null, imageID: responseText.imageID });
         alert("Upload success!");
       }
       if (!response.ok) {

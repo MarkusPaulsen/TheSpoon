@@ -51,7 +51,7 @@ export default class LoginScreen extends Component {
         isRestaurantOwner: false
       });
 
-      const res = await fetch(Api.STUB_LOGIN, {
+      const res = await fetch(Api.SERVER_LOGIN, {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -98,7 +98,7 @@ export default class LoginScreen extends Component {
 
   async storeToken(user) {
     try {
-      await AsyncStorage.setItem("userToken", JSON.stringify(user));
+      await AsyncStorage.setItem("userToken",user);
     } catch (e) {
       console.log("Error storing token: ", e);
     }
