@@ -179,7 +179,7 @@ class YourRestaurantPage extends Component {
                                                 return (
                                                     <Menu
                                                         key={menu.menuID}
-                                                        id={menu.menuID}
+                                                        menuID={menu.menuID}
                                                         name={menu.name}
                                                         tags={menu.tags}
                                                         description={menu.description}

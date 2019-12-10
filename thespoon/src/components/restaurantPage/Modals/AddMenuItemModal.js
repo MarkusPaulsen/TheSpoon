@@ -179,7 +179,7 @@ class AddMenuItemModal extends Component {
                 if (thisTemp.state.validation.isValid) {
                     thisTemp.setState({serverMessage: "New dish is added"});
                     return ajax({
-                        url: paths["restApi"]["menu"] + "/" + thisTemp.props.currentMenu.id + "/" + "menuItem",
+                        url: paths["restApi"]["menu"] + "/" + thisTemp.props.currentMenu.menuID + "/" + "menuItem",
                         method: "POST",
                         headers: {"Content-Type": "application/json", "X-Auth-Token": thisTemp.props.token},
                         body: {
