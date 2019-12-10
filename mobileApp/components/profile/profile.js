@@ -21,7 +21,8 @@ export default class Profile extends Component {
     this.state = {
       loggedIn: false,
       isLoaded: false,
-      userInfo: { username: "cathrbak", email: "cathrineakreaaas@gmail.com" },
+      token:null,
+      userInfo: "",
       reviews: [
         {
           reviewID: "2",
@@ -48,7 +49,7 @@ export default class Profile extends Component {
   componentDidMount = async () => {
     this.focusListener = this.props.navigation.addListener("didFocus", () => {
       AsyncStorage.getItem("userToken").then(token => {
-        this.setState({ loggedIn: token !== null, isLoaded: true });
+        this.setState({ loggedIn: token !== null, isLoaded: true, token:token });
         this.getUserInfo();
         this.getUserReviews();
       });
@@ -89,7 +90,10 @@ export default class Profile extends Component {
     try {
       const response = await fetch(Api.STUB_PROFILE_USERINFO, {
         method: "GET",
-        accept: "application/json"
+        accept: "application/json",
+        headers:{
+           "X-Auth-Token": this.state.token
+        }
       });
       const responseJson = await response.json();
       const userInfo = {
@@ -106,13 +110,18 @@ export default class Profile extends Component {
     try {
       const response = await fetch(Api.STUB_PROFILE_USERREVIEWS, {
         method: "GET",
-        accept: "application/json"
+        accept: "application/json",
+        headers:{
+          "X-Auth-Token": this.state.token
+        }
       });
+      console.log(response);
       const responseJson = await response.json();
-      const reviews = responseJson["reviewID"].map(index => ({
-        reviewID: index,
-        menu: index.menu,
-        restaurant: index.restaurant,
+      console.log(responseJson);
+      const reviews = responseJson.map(index => ({
+        reviewID: index.menuID.toString(),
+        menu: index.menuID,
+        restaurant: index.menuID,
         status: index.status
       }));
       this.setState({ reviews });
@@ -150,7 +159,7 @@ export default class Profile extends Component {
                 marginTop: 12
               }}
             >
-              {status === "approved" ? (
+              {status === "accepted" ? (
                 <Icon name={"done"} size={35} color={Colors.GREEN} />
               ) : null}
               {status === "declined" ? (
