@@ -661,7 +661,7 @@ paths:
       description: "Return all the reviews of the customer, with their reviewIDs and\
         \ their status (accepted/refused/pending). Returns an empty array if no review\
         \ is found."
-      operationId: "GetOwnReviews"
+      operationId: "getOwnReviews"
       produces:
       - "application/json"
       parameters: []
