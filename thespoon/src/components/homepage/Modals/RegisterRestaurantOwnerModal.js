@@ -152,7 +152,7 @@ class RegisterRestaurantOwnerModal extends Component {
                     return throwError({
                         name: "InternalError",
                         status: 0,
-                        response: ""
+                        response: null
                     });
                 }
             }))
