@@ -70,22 +70,22 @@ class YourRestaurantPage extends Component {
                 }, (error) => {
                     switch (error.name) {
                         case "AjaxTimeoutError":
-                            thisTemp.setState({serverMessageFinishedLoadingRestaurantData: "Error 408: The request timed out.", finishedLoadingRestaurantData: true});
+                            thisTemp.setState({serverMessageFinishedLoadingRestaurantData: ""  +"The request timed out.", finishedLoadingRestaurantData: true});
                             break;
                         case "InternalError":
                         case "AjaxError":
                             if (error.status === 0 && error.response === "") {
-                                thisTemp.setState({serverMessageFinishedLoadingRestaurantData: "Error " + error.status + ": " + "No connection to the server.", finishedLoadingRestaurantData: true});
+                                thisTemp.setState({serverMessageFinishedLoadingRestaurantData: "There is no connection to the server.", finishedLoadingRestaurantData: true});
                             } else if (error.status === 400) {
                                 this.props.openRestaurantConfiguration();
                                 thisTemp.setState({serverMessageFinishedLoadingRestaurantData: "", finishedLoadingRestaurantData: true});
                             } else {
-                                thisTemp.setState({serverMessageFinishedLoadingRestaurantData: "Error " + error.status + ": " + error.response, finishedLoadingRestaurantData: true});
+                                thisTemp.setState({serverMessageFinishedLoadingRestaurantData: error.response, finishedLoadingRestaurantData: true});
                             }
                             break;
                         default:
                             console.log(error);
-                            thisTemp.setState({serverMessageFinishedLoadingRestaurantData: "Code error", finishedLoadingMenuData: true});
+                            thisTemp.setState({serverMessageFinishedLoadingRestaurantData: "Something is not like it is supposed to be.", finishedLoadingMenuData: true});
                             break;
                     }
                 }
@@ -114,19 +114,19 @@ class YourRestaurantPage extends Component {
                 }, (error) => {
                     switch (error.name) {
                         case "AjaxTimeoutError":
-                            thisTemp.setState({serverMessageFinishedLoadingMenuData: "Error 408: The request timed out.", finishedLoadingMenuData: true});
+                            thisTemp.setState({serverMessageFinishedLoadingMenuData: "The request timed out.", finishedLoadingMenuData: true});
                             break;
                         case "InternalError":
                         case "AjaxError":
                             if (error.status === 0 && error.response === "") {
-                                thisTemp.setState({serverMessageFinishedLoadingMenuData: "Error " + error.status + ": " + "No connection to the server.", finishedLoadingMenuData: true});
+                                thisTemp.setState({serverMessageFinishedLoadingMenuData: "There is no connection to the server.", finishedLoadingMenuData: true});
                             } else {
-                                thisTemp.setState({serverMessageFinishedLoadingMenuData: "Error " + error.status + ": " + error.response, finishedLoadingMenuData: true});
+                                thisTemp.setState({serverMessageFinishedLoadingMenuData: error.response, finishedLoadingMenuData: true});
                             }
                             break;
                         default:
                             console.log(error);
-                            thisTemp.setState({serverMessageFinishedLoadingMenuData: "Code error", finishedLoadingMenuData: true});
+                            thisTemp.setState({serverMessageFinishedLoadingMenuData: "Something is not like it is supposed to be.", finishedLoadingMenuData: true});
                             break;
                     }
                 }

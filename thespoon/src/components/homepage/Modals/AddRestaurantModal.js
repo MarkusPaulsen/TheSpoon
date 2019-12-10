@@ -159,29 +159,29 @@ class AddRestaurantInfo extends Component {
                             switch (error.name) {
                                 case "AjaxTimeoutError":
                                     thisTemp.setState({
-                                        imageMessage: (file.name + " could not be uploaded, the request timed out (" + "408" + ")"),
-                                        serverMessage: ("Error " + "400" + ": " + "One of the fields above is not correctly filled.")
+                                        imageMessage: file.name + " could not be uploaded, as the request timed out.",
+                                        serverMessage: ""
                                     });
                                     break;
                                 case "InternalError":
                                 case "AjaxError":
                                     if (error.status === 0 && error.response === "") {
                                         thisTemp.setState({
-                                            imageMessage: (file.name + " could not be uploaded, no connection to the server (" + "0" + ")"),
-                                            serverMessage: ("Error " + "400" + ": " + "One of the fields above is not correctly filled.")
+                                            imageMessage: file.name + " could not be uploaded, as there is no connection to the server.",
+                                            serverMessage: ""
                                         });
                                     } else {
                                         thisTemp.setState({
-                                            imageMessage: (file.name + " could not be uploaded, " + error.response + " (" + error.status + ")"),
-                                            serverMessage: ("Error " + "400" + ": " + "One of the fields above is not correctly filled.")
+                                            imageMessage: file.name + " could not be uploaded, as " + error.response ,
+                                            serverMessage: ""
                                         });
                                     }
                                     break;
                                 default:
                                     console.log(error);
                                     thisTemp.setState({
-                                        imageMessage: ("Code error"),
-                                        serverMessage: ("Error " + "400" + ": " + "One of the fields above is not correctly filled.")
+                                        imageMessage: "Something is not like it is supposed to be.",
+                                        serverMessage: ""
                                     });
                                     break;
                             }
@@ -190,16 +190,16 @@ class AddRestaurantInfo extends Component {
             };
             reader.onerror = () => {
                 thisTemp.setState({
-                    imageMessage: (file.name + " could not be read."),
-                    serverMessage: ("Error " + "0" + ": " + "Image cannot be used.")
+                    imageMessage: file.name + " could not be read.",
+                    serverMessage: ""
                 });
             };
             thisTemp.setState({serverMessage: "Image upload is processing"});
             reader.readAsText(file);
         } else {
             thisTemp.setState({
-                imageMessage: (file.name + " has the wrong filetype (" + file.type + "). Please only use .jpeg or .png format"),
-                serverMessage: ("Error " + "0" + ": " + "Image cannot be used.")
+                imageMessage: file.name + " has the wrong filetype (" + file.type + "). Please only use .jpeg or .png format",
+                serverMessage: ""
             });
         }
     };
@@ -286,7 +286,11 @@ class AddRestaurantInfo extends Component {
                         responseType: "text"
                     })
                 } else {
-                    thisTemp.setState({serverMessage: "Location data cannot be calculated"});
+                    return throwError({
+                        name: "InternalError",
+                        status: 0,
+                        response: "Location data cannot be calculated. Probably the location does not exist."
+                    });
                     return throwError({status: 0});
                 }
             }), catchError(error => {
@@ -300,19 +304,19 @@ class AddRestaurantInfo extends Component {
                     }, (error) => {
                         switch (error.name) {
                             case "AjaxTimeoutError":
-                                thisTemp.setState({serverMessage: "Error 408: The request timed out."});
+                                thisTemp.setState({serverMessage: "The request timed out."});
                                 break;
                             case "InternalError":
                             case "AjaxError":
                                 if (error.status === 0 && error.response === "") {
-                                    thisTemp.setState({serverMessage: "Error " + error.status + ": " + "No connection to the server."});
+                                    thisTemp.setState({serverMessage: "There is no connection to the server."});
                                 } else {
-                                    thisTemp.setState({serverMessage: "Error " + error.status + ": " + error.response});
+                                    thisTemp.setState({serverMessage: error.response});
                                 }
                                 break;
                             default:
                                 console.log(error);
-                                thisTemp.setState({serverMessage: "Code error"});
+                                thisTemp.setState({serverMessage: "Something is not like it is supposed to be."});
                                 break;
                         }
                     }
