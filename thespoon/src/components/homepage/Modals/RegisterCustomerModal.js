@@ -135,7 +135,7 @@ class RegisterCustomerModal extends Component {
                     return throwError({
                         name: "InternalError",
                         status: 0,
-                        response: "One of the fields above is not correctly filled."
+                        response: "+"
                     });
                 }
             }))
