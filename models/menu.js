@@ -23,7 +23,13 @@ const Menu = db.define('Menu', {
             type: Sequelize.STRING
         },
         Rating: {
-            type:  Sequelize.INTEGER
+            type:  Sequelize.FLOAT
+        },
+        Quality: {
+            type: Sequelize.FLOAT
+        },
+        Service: {
+            type: Sequelize.FLOAT
         }
     },
     {

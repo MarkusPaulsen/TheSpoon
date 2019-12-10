@@ -7,6 +7,7 @@ const Tag = require('../models/tag.js');
 const TaggedMenu = require('../models/taggedMenu.js');
 const TaggedItem = require('../models/taggedItem.js');
 const MenuItem = require('../models/menuItem.js');
+const ItemReview = require('../models/itemReview.js');
 
 const inputValidator = require('../middleware/inputValidationMiddleware.js');
 const validationSchema = require('../validationSchemas.js');
@@ -54,7 +55,6 @@ router.post('/', auth, inputValidator(validationSchema.addMenuValidation), isOwn
 router.get('/', auth, isOwner, findRestaurant, async (req, res) => {
     try {
         let menus = await Menu.findAll({
-            attributes: ['Name', 'Description', 'Menu_ID', 'Restaurant_ID'],
             where: {
                 Restaurant_ID: req.restaurant.Restaurant_ID
             },
@@ -72,17 +72,27 @@ router.get('/', auth, isOwner, findRestaurant, async (req, res) => {
                     include: [{
                         model: Tag,
                         as: 'Tags'
-                    }]
+                    },]
+                },
+                {
+                    model: ItemReview,
+                    attributes: ['Username', 'ItemRating', 'Content']
                 }]
-            }
-            ]
+            }]
         });
-
         // Format the response
         menus = await menus.map( async m => {
             let menuTags = formatTags(m.TaggedMenus);
             let items = await m.MenuItems.map( async mi => {
                 let itemTags = await formatTags(mi.TaggedItems);
+                let itemReviews = await mi.ItemReviews.map( async ir => {
+                    return {
+                        username: ir.Username,
+                        rating: ir.ItemRating,
+                        content: ir.Content
+                    }
+                });
+                itemReviews = await Promise.all(itemReviews);
                 return {
                     menuItemID: mi.MI_ID,
                     name: mi.Name,
@@ -91,7 +101,11 @@ router.get('/', auth, isOwner, findRestaurant, async (req, res) => {
                     priceEuros: mi.Price,
                     imageLink: mi.ImageLink,
                     tags: itemTags,
-                    rating: mi.Rating
+                    rating: mi.Rating,
+                    menuItemReviews: {
+                        rating: mi.Rating,
+                        reviews:itemReviews
+                    }
                 };
             });
             items = await Promise.all(items);
@@ -100,6 +114,9 @@ router.get('/', auth, isOwner, findRestaurant, async (req, res) => {
                 name: m.Name,
                 description: m.Description,
                 tags: menuTags,
+                totalScore: m.Rating,
+                serviceScore: m.Service,
+                qualityOverPriceScore: m.Quality,
                 menuItems: items
             }
 
@@ -110,7 +127,6 @@ router.get('/', auth, isOwner, findRestaurant, async (req, res) => {
         res.status(404).send(error+ ' :(');
     }
 });
-
 
 //Edit a menu's information     (not its items)
 router.put('/:menuID', auth, inputValidator(validationSchema.editMenuValidation), isOwner, findRestaurant, async (req,res) => {
@@ -192,8 +208,6 @@ router.use('/', menuItem);
 
 
 
-
-
 const formatTags = (arr) => {
     if (arr.length < 1){
         return null;
@@ -207,6 +221,5 @@ const formatTags = (arr) => {
         return arr;
     }
 };
-
 
 module.exports = router;
