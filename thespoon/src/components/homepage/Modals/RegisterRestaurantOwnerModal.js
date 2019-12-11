@@ -48,42 +48,96 @@ class RegisterRestaurantOwnerModal extends Component {
             message: "E-mail is required."
         }, {
             field: "email",
+            method: (email) => {return email.length >= 6},
+            validWhen: true,
+            message: "Email is required to be longer or equal 6 characters."
+        }, {
+            field: "email",
             method: "isEmail",
             validWhen: true,
-            message: "That is not a valid email."
+            message: "Email is required to be valid."
         }, {
             field: "username",
             method: "isEmpty",
             validWhen: false,
             message: "Username is required."
+        },/*{
+            field: "username",
+            method: "isAlphanumeric",
+            validWhen: true,
+            message: "Username is required to be alphanumeric."
+        },*/ {
+            field: "username",
+            method: (username) => {return username.length >= 5},
+            validWhen: true,
+            message: "Username is required to be longer or equal 5 characters."
         }, {
             field: "name",
             method: "isEmpty",
             validWhen: false,
             message: "Name is required."
-        }, {
+        },/*{
+            field: "name",
+            method: "isAlpha",
+            validWhen: true,
+            message: "Name is required to be alphabetic."
+        },*/ {
+            field: "name",
+            method: (name) => {return name.length >= 1},
+            validWhen: true,
+            message: "Name is required to be longer or equal 1 characters."
+        },  {
             field: "surname",
             method: "isEmpty",
             validWhen: false,
             message: "Surname is required."
-        }, {
+        },/*{
+            field: "surname",
+            method: "isAlpha",
+            validWhen: true,
+            message: "Surname is required to be alphabetic."
+        },*/ {
+            field: "surname",
+            method: (surname) => {return surname.length >= 1},
+            validWhen: true,
+            message: "Surname is required to be longer or equal 1 characters."
+        },  {
             field: "password",
             method: "isEmpty",
             validWhen: false,
             message: "Password is required."
+        },/*{
+            field: "password",
+            method: "isAlphanumeric",
+            validWhen: true,
+            message: "Password is required to be alphanumeric."
+        },*/ {
+            field: "password",
+            method: (password) => {return password.length >= 5},
+            validWhen: true,
+            message: "Password is required to be longer or equal 5 characters."
         }, {
             field: "confirmPassword",
             method: "isEmpty",
             validWhen: false,
             message: "Password confirmation is required."
+        },/*{
+            field: "confirmPassword",
+            method: "isAlphanumeric",
+            validWhen: true,
+            message: "Password confirmation is required to be alphanumeric."
+        },*/ {
+            field: "confirmPassword",
+            method: (confirmPassword) => {return confirmPassword.length >= 5},
+            validWhen: true,
+            message: "Password confirmation is required to be longer or equal 5 characters."
         }, {
             field: "confirmPassword",
-            method: this.passwordMatch,
+            method: (confirmPassword, state) => (confirmPassword === state.password),
             validWhen: true,
-            message: "Confirm password has to be identical to the password."
+            message: "Password confirmation has to be identical to the password."
         }]);
 
-        this.passwordMatch = this.passwordMatch.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
 
         this.state = {
@@ -102,8 +156,6 @@ class RegisterRestaurantOwnerModal extends Component {
     //</editor-fold>
 
     //<editor-fold desc="Business Logic">
-    passwordMatch = (confirmation, state) => (state.password === confirmation);
-
     handleSubmit = event => {
         event.preventDefault();
 

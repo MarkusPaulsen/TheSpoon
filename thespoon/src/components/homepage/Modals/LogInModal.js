@@ -44,13 +44,33 @@ class LogInModal extends Component {
             field: "username",
             method: "isEmpty",
             validWhen: false,
-            message: "Username is required"
+            message: "Username is required."
+        }, /*{
+            field: "username",
+            method: "isAlphanumeric",
+            validWhen: true,
+            message: "Username is required to be alphanumeric."
+        },*/ {
+            field: "username",
+            method: (username) => {return username.length >= 5},
+            validWhen: true,
+            message: "Username is required to be longer or equal 5 characters."
         }, {
             field: "password",
             method: "isEmpty",
             validWhen: false,
             message: "Password is required."
-        }]);
+        }, /*{
+            field: "password",
+            method: "isAlphanumeric",
+            validWhen: true,
+            message: "Password is required to be alphanumeric."
+        },*/ {
+            field: "password",
+            method: (password) => {return password.length >= 5},
+            validWhen: true,
+            message: "Password is required to be longer or equal 5 characters."
+        } ]);
 
         this.handleSubmit = this.handleSubmit.bind(this);
 

@@ -39,20 +39,59 @@ class AddMenuModal extends Component {
             field: "name",
             method: "isEmpty",
             validWhen: false,
-            message: "Menu name is required"
-        },
-            {
-                field: "description",
-                method: "isEmpty",
-                validWhen: false,
-                message: "Description name is required"
+            message: "Name is required."
+        }, /*{
+            field: "name",
+            method: "isAlphanumeric",
+            validWhen: true,
+            message: "Name is required to be alphanumeric."
+        },*/ {
+            field: "name",
+            method: (name) => {return name.length >= 1},
+            validWhen: true,
+            message: "Name is required to be longer or equal 1 characters."
+        }, {
+            field: "description",
+            method: "isEmpty",
+            validWhen: false,
+            message: "Description name is required."
+        }, /*{
+            field: "description",
+            method: "isAlphanumeric",
+            validWhen: true,
+            message: "Description is required to be alphanumeric."
+        },*/ {
+            field: "description",
+            method: (description) => {return description.length >= 1},
+            validWhen: true,
+            message: "Description is required to be longer or equal 1 characters."
+        }, {
+            field: "tags",
+            method: "isEmpty",
+            validWhen: false,
+            message: "Tags are required."
+        }, /*{
+            field: "tags",
+            method: "isAlphanumeric (plus comma)",
+            validWhen: true,
+            message: "Tags are required to be alphanumeric."
+        },*/ {
+            field: "tags",
+            method: (tags) => {
+                return tags.split(",")
+                    .map((tag) => {
+                        return tag.trim()
+                    })
+                    .map((tag) => {
+                        return tag.length >= 1
+                    })
+                    .reduce((total, minLength) => {
+                        return total && minLength
+                    }, true)
             },
-            {
-                field: "tags",
-                method: "isEmpty",
-                validWhen: false,
-                message: "Tags are required"
-            }]);
+            validWhen: true,
+            message: "Each tag is required to be longer or equal 1 characters."
+        }]);
 
         this.handleSubmit = this.handleSubmit.bind(this);
 

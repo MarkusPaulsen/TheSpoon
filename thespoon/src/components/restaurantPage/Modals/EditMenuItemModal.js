@@ -36,32 +36,86 @@ class EditMenuItemModal extends Component {
     constructor(props) {
         super(props);
 
-        this.validator = new FormValidator([
-            {
-                field: "name",
-                method: "isEmpty",
-                validWhen: false,
-                message: "Name is required"
+        this.validator = new FormValidator([{
+            field: "name",
+            method: "isEmpty",
+            validWhen: false,
+            message: "Name is required."
+        }, /*{
+            field: "name",
+            method: "isAlphanumeric",
+            validWhen: true,
+            message: "Name is required to be alphanumeric."
+        },*/ {
+            field: "name",
+            method: (name) => {
+                return name.length >= 1
             },
-            {
-                field: "description",
-                method: "isEmpty",
-                validWhen: false,
-                message: "Description is required"
+            validWhen: true,
+            message: "Name is required to be longer or equal 1 characters."
+        }, {
+            field: "description",
+            method: "isEmpty",
+            validWhen: false,
+            message: "Description name is required."
+        }, /*{
+            field: "description",
+            method: "isAlphanumeric",
+            validWhen: true,
+            message: "Description is required to be alphanumeric."
+        },*/ {
+            field: "description",
+            method: (description) => {
+                return description.length >= 1
             },
-            {
-                field: "priceEuros",
-                method: "isEmpty",
-                validWhen: false,
-                message: "Price is required"
+            validWhen: true,
+            message: "Description is required to be longer or equal 1 characters."
+        }, {
+            field: "priceEuros",
+            method: "isEmpty",
+            validWhen: false,
+            message: "PriceEuros is required."
+        }, {
+            field: "priceEuros",
+            method: (priceEuros) => {
+                return !isNaN(priceEuros)
             },
-            {
-                field: "tags",
-                method: "isEmpty",
-                validWhen: false,
-                message: "Tags are required"
-            }
-        ]);
+            validWhen: true,
+            message: "PriceEuros needs to be a number."
+        }, {
+            field: "priceEuros",
+            method: (priceEuros) => {
+                return priceEuros >= 0
+            },
+            validWhen: true,
+            message: "PriceEuros needs to be positive."
+        },{
+            field: "tags",
+            method: "isEmpty",
+            validWhen: false,
+            message: "Tags are required."
+        }, /*{
+            field: "tags",
+            method: "isAlphanumeric (plus comma)",
+            validWhen: true,
+            message: "Tags are required to be alphanumeric."
+        },*/ {
+            field: "tags",
+            method: (tags) => {
+                return tags.split(",")
+                    .map((tag) => {
+                        return tag.trim()
+                    })
+                    .map((tag) => {
+                        return tag.length >= 1
+                    })
+                    .reduce((total, minLength) => {
+                        return total && minLength
+                    }, true)
+            },
+            validWhen: true,
+            message: "Each tag is required to be longer or equal 1 characters."
+        }]);
 
         this.fileSelectedHandler = this.fileSelectedHandler.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -70,7 +124,7 @@ class EditMenuItemModal extends Component {
         this.state = {
             name: "",
             description: "",
-            priceEuros: "",
+            priceEuros: 0,
             type: "",
             imageID: 0,
             imageMessage: "",
@@ -334,11 +388,9 @@ class EditMenuItemModal extends Component {
                             </label>
                             }
                         </div>
-                        {/*
                         <div className="error-block">
                             <small>{this.state.imageMessage}</small>
                         </div>
-                         */}
 
                         <div className="input-field">
                             <label>Tags</label>

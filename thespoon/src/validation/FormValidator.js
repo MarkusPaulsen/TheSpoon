@@ -16,13 +16,13 @@ class FormValidator {
 
     //<editor-fold desc="Business Logic">
     validate(state) {
-        console.log(this.validations)
-        console.log(state)
         // start out assuming valid
         let validation = this.valid();
 
         // for each validation rule
         this.validations.forEach(rule => {
+            console.log(rule.field)
+            console.log(rule.method)
 
             // if the field hasn"t already been marked invalid by an earlier rule
             if (!validation[rule.field].isInvalid) {

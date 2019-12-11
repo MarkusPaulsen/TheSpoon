@@ -27,6 +27,7 @@ import {modalVisibilityFilters} from "../../../constants/modalVisibiltyFilters";
 //<editor-fold desc="Icons">
 import {IconExit} from "../../Icons";
 import {timeout} from "../../../constants/timeout";
+
 //</editor-fold>
 
 
@@ -35,32 +36,86 @@ class AddMenuItemModal extends Component {
     constructor(props) {
         super(props);
 
-        this.validator = new FormValidator([
-            {
-                field: "name",
-                method: "isEmpty",
-                validWhen: false,
-                message: "Name is required"
+        this.validator = new FormValidator([{
+            field: "name",
+            method: "isEmpty",
+            validWhen: false,
+            message: "Name is required."
+        }, /*{
+            field: "name",
+            method: "isAlphanumeric",
+            validWhen: true,
+            message: "Name is required to be alphanumeric."
+        },*/ {
+            field: "name",
+            method: (name) => {
+                return name.length >= 1
             },
-            {
-                field: "description",
-                method: "isEmpty",
-                validWhen: false,
-                message: "Description is required"
+            validWhen: true,
+            message: "Name is required to be longer or equal 1 characters."
+        }, {
+            field: "description",
+            method: "isEmpty",
+            validWhen: false,
+            message: "Description name is required."
+        }, /*{
+            field: "description",
+            method: "isAlphanumeric",
+            validWhen: true,
+            message: "Description is required to be alphanumeric."
+        },*/ {
+            field: "description",
+            method: (description) => {
+                return description.length >= 1
             },
-            {
-                field: "priceEuros",
-                method: "isEmpty",
-                validWhen: false,
-                message: "Price is required"
+            validWhen: true,
+            message: "Description is required to be longer or equal 1 characters."
+        }, {
+            field: "priceEuros",
+            method: "isEmpty",
+            validWhen: false,
+            message: "PriceEuros is required."
+        }, {
+            field: "priceEuros",
+            method: (priceEuros) => {
+                return !isNaN(priceEuros)
             },
-            {
-                field: "tags",
-                method: "isEmpty",
-                validWhen: false,
-                message: "Tags are required"
-            }
-        ]);
+            validWhen: true,
+            message: "PriceEuros needs to be a number."
+        }, {
+            field: "priceEuros",
+            method: (priceEuros) => {
+                return priceEuros >= 0
+            },
+            validWhen: true,
+            message: "PriceEuros needs to be positive."
+        }, {
+            field: "tags",
+            method: "isEmpty",
+            validWhen: false,
+            message: "Tags are required."
+        }, /*{
+            field: "tags",
+            method: "isAlphanumeric (plus comma)",
+            validWhen: true,
+            message: "Tags are required to be alphanumeric."
+        },*/ {
+            field: "tags",
+            method: (tags) => {
+                return tags.split(",")
+                    .map((tag) => {
+                        return tag.trim()
+                    })
+                    .map((tag) => {
+                        return tag.length >= 1
+                    })
+                    .reduce((total, minLength) => {
+                        return total && minLength
+                    }, true)
+            },
+            validWhen: true,
+            message: "Each tag is required to be longer or equal 1 characters."
+        }]);
 
         this.fileSelectedHandler = this.fileSelectedHandler.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -78,14 +133,15 @@ class AddMenuItemModal extends Component {
             submitted: false
         };
     }
+
     //</editor-fold>
 
     //<editor-fold desc="Bussiness Logic">
     fileSelectedHandler = (event) => {
         const thisTemp = this;
-        thisTemp.setState({ imageMessage: "", selectedFile: null });
+        thisTemp.setState({imageMessage: "", selectedFile: null});
         let file = event.target.files[0];
-        if(["image/png","image/jpeg"].includes(file.type)) {
+        if (["image/png", "image/jpeg"].includes(file.type)) {
             let formData = new FormData();
             formData.append("image", file);
             let reader = new FileReader();
@@ -122,7 +178,7 @@ class AddMenuItemModal extends Component {
                                         });
                                     } else {
                                         thisTemp.setState({
-                                            imageMessage: file.name + " could not be uploaded, as " + error.response ,
+                                            imageMessage: file.name + " could not be uploaded, as " + error.response,
                                             serverMessage: ""
                                         });
                                     }
@@ -167,7 +223,7 @@ class AddMenuItemModal extends Component {
                     name: values.name,
                     description: values.description,
                     priceEuros: parseInt(values.priceEuros),
-                    type: thisTemp.props.modalVisibilityFilter === modalVisibilityFilters.SHOW_ADD_DISH ? "dish": "drink",
+                    type: thisTemp.props.modalVisibilityFilter === modalVisibilityFilters.SHOW_ADD_DISH ? "dish" : "drink",
                     imageID: thisTemp.state.imageID,
                     tags: values.tags.split(",").map(tag => tag.trim()),
                 });
@@ -236,12 +292,16 @@ class AddMenuItemModal extends Component {
         let validation = !this.submitted ? this.state.validation : this.validator.validate(this.state);
         return (
             <Modal.Body>
-                <button className="exit" onClick={this.props.onHide}><IconExit /></button>
+                <button className="exit" onClick={this.props.onHide}><IconExit/></button>
                 <div className="modal-wrapper restaurant-info">
-                    <Form ref={(c) => {this.form = c; }} onSubmit={(e) => this.handleSubmit(e)}>
+                    <Form ref={(c) => {
+                        this.form = c;
+                    }} onSubmit={(e) => this.handleSubmit(e)}>
                         <h2>Add</h2>
                         <div className="account-type">
-                            <h4><span className="role">{this.props.modalVisibilityFilter === modalVisibilityFilters.SHOW_ADD_DISH ? "dish": "drink"}</span></h4>
+                            <h4><span
+                                className="role">{this.props.modalVisibilityFilter === modalVisibilityFilters.SHOW_ADD_DISH ? "dish" : "drink"}</span>
+                            </h4>
                         </div>
 
                         <div className="input-field">
@@ -271,7 +331,8 @@ class AddMenuItemModal extends Component {
 
                         <div className="input-field image">
                             <label>Image</label>
-                            <input type="file" name="file" id="file" className="inputfile" onChange={this.fileSelectedHandler}/>
+                            <input type="file" name="file" id="file" className="inputfile"
+                                   onChange={this.fileSelectedHandler}/>
                             <label htmlFor="file">+ Upload image</label>
                             {this.state.selectedFile &&
                             <label className="selected-file">
@@ -280,15 +341,13 @@ class AddMenuItemModal extends Component {
                                   className="remove-button">
                                 X
                             </span>
-                                {this.state.selectedFile.name }
+                                {this.state.selectedFile.name}
                             </label>
                             }
                         </div>
-                        {/*
                         <div className="error-block">
                             <small>{this.state.imageMessage}</small>
                         </div>
-                         */}
 
                         <div className="input-field">
                             <label>Tags</label>
@@ -307,6 +366,7 @@ class AddMenuItemModal extends Component {
             </Modal.Body>
         )
     }
+
     //</editor-fold>
 }
 
