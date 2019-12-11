@@ -7,7 +7,9 @@ import {
   ScrollView,
   SafeAreaView,
   TouchableOpacity,
-  FlatList
+  FlatList,
+  Modal,
+
 } from "react-native";
 import MapView from "react-native-maps";
 import * as Typography from "../../styles/typography";
@@ -19,7 +21,7 @@ function Rating(score) {
   for (let i = 0; i < 4; i++) {
     stars.push(
       <Image
-          key={i.toString()}
+        key={i.toString()}
         source={require("../../assets/icon-star.png")}
         style={{ height: 13, width: 13 }}
       />
@@ -29,7 +31,7 @@ function Rating(score) {
     for (let i = 0; i < 5 - stars.length; i++) {
       stars.push(
         <Image
-            key={(i+5).toString()}
+          key={(i + 5).toString()}
           source={require("../../assets/icon-star-empty.png")}
           style={{ height: 13, width: 13 }}
         />
@@ -53,7 +55,10 @@ function MenuItem({
   for (let i = 0; i < tags.length; i++) {
     const color = tags[i]["color"];
     const tag = [
-      <View key={i.toString()} style={[styles.bgLabel, { backgroundColor: color }]}>
+      <View
+        key={i.toString()}
+        style={[styles.bgLabel, { backgroundColor: color }]}
+      >
         <Text style={[Typography.FONT_TAG, { marginHorizontal: 10 }]}>
           {tags[i]["name"]}
         </Text>
@@ -134,7 +139,8 @@ export default class Menu extends Component {
       searchResults: null,
       isLoading: true,
       dishItems: "",
-      drinkItems: ""
+      drinkItems: "",
+      modalVisible: false
     };
   }
 
@@ -152,7 +158,7 @@ export default class Menu extends Component {
     try {
       //change to port 80 if not using the stub
       const response = await fetch(
-        `http://192.168.1.101:8080/api/user/customer/menu/${menuId}`,
+        `http://192.168.1.103:8080/api/user/customer/menu/${menuId}`,
         {
           method: "GET",
           accept: "application/json"
@@ -241,7 +247,10 @@ export default class Menu extends Component {
     for (let i = 0; i < tags.length; i++) {
       const color = tags[i]["color"];
       const tag = [
-        <View key={i.toString()} style={[styles.bgLabel, { backgroundColor: color }]}>
+        <View
+          key={i.toString()}
+          style={[styles.bgLabel, { backgroundColor: color }]}
+        >
           <Text style={[Typography.FONT_TAG, { marginHorizontal: 10 }]}>
             {tags[i]["name"]}
           </Text>
@@ -251,6 +260,10 @@ export default class Menu extends Component {
         i < 2 ? this.tags1Row.push(tag) : this.tags2Row.push(tag);
       }
     }
+  }
+
+  setModalVisible() {
+    this.setState({ modalVisible: !this.state.modalVisible });
   }
 
   render() {
@@ -325,15 +338,17 @@ export default class Menu extends Component {
                 <FlatList
                   data={this.state.dishItems}
                   renderItem={({ item }) => (
-                    <MenuItem
-                      id={item.id}
-                      menuItemName={item.menuItemName}
-                      menuItemDescription={item.menuItemDescription}
-                      priceEuros={item.priceEuros + " €"}
-                      menuItemImage={item.menuItemImage}
-                      tags={item.tags}
-                      score={item.score}
-                    />
+                    <TouchableOpacity onPress={() => this.setModalVisible()}>
+                      <MenuItem
+                        id={item.id}
+                        menuItemName={item.menuItemName}
+                        menuItemDescription={item.menuItemDescription}
+                        priceEuros={item.priceEuros + " €"}
+                        menuItemImage={item.menuItemImage}
+                        tags={item.tags}
+                        score={item.score}
+                      />
+                    </TouchableOpacity>
                   )}
                   keyExtractor={item => item.id}
                 />
