@@ -54,10 +54,14 @@ Menu.hasMany(TaggedMenu, {
     foreignKey: 'Menu_ID'
 });
 
-
 Menu.hasMany(MenuReview, {
     foreignKey: 'Menu_ID'
 });
+
+MenuReview.belongsTo(Menu, {
+    foreignKey: 'Menu_ID'
+});
+
 
 
 module.exports = Menu;

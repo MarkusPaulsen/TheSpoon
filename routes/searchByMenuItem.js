@@ -7,7 +7,6 @@ const Menu = require('../models/menu.js');
 const MenuItem = require('../models/menuItem.js');
 const Restaurant = require('../models/restaurants.js');
 const TaggedMenu = require('../models/taggedMenu.js');
-const MenuReview = require('../models/menuReview.js');
 const Tag = require('../models/tag.js');
 
 const Sequelize = require('sequelize');
@@ -15,16 +14,18 @@ const Op = Sequelize.Op;
 
 
 router.get('/', async (req, res) => {
+    let searchWord = req.query.menuItemName;
+    console.log('searchWord: ' + searchWord);
+    searchWord = searchWord.toString();
     let matchingItems;
     try {
         matchingItems = await MenuItem.findAll({
             attributes: ['Name', 'Menu_ID'],
             where: {
-                Name: {[Op.substring]: req.query.menuItemName}
+                Name: {[Op.substring]: searchWord}
             }
         });
         matchingItems = await pruneByMenuID(matchingItems);
-
 
         let promises = await matchingItems.map(async mi => {
             let menuInfo = await Menu.findOne({
@@ -45,8 +46,6 @@ router.get('/', async (req, res) => {
                 }]
             });
             const tags = await formatTags(menuInfo.TaggedMenus);
-            //const rating = await aggregateRating(menuInfo.MenuReviews);
-
             menuInfo = {
                 restaurantData: {
                     restaurantName: menuInfo.Restaurant.Name,
@@ -67,7 +66,7 @@ router.get('/', async (req, res) => {
 
         res.status(200).send(result);
     } catch (error) {
-        res.status(404).send(error + ' :(');
+        res.status(404).send(error + ' :(    , searchWord: ' + searchWord);
     }
 });
 
