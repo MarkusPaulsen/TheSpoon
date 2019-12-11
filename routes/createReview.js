@@ -76,11 +76,13 @@ router.get('/', auth, isCustomer, async (req, res) => {
         attributes: ['Name', 'Restaurant_ID']
     });
 
+    const numberOfRestaurantsFound = restaurantsFound.length;
+
     //initialize empty response
     let restaurants = [];
 
     //format the response
-    for (let i = 0; i < restaurantsFound.length; i++){
+    for (let i = 0; i < numberOfRestaurantsFound; i++){
         restaurants[i] = {name: restaurantsFound[i].dataValues.Name, restaurantID: restaurantsFound[i].dataValues.Restaurant_ID}
     }
 
