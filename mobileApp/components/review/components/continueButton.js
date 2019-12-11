@@ -12,6 +12,7 @@ export default class ContinueButton extends Component {
     const text = this.props.text;
     const imageID = this.props.imageID;
     const id = this.props.id;
+    const token = this.props.token;
     const restaurant = this.props.restaurant;
     const menuItems = this.props.menuItems;
     const menuID = this.props.menuID;
@@ -37,7 +38,8 @@ export default class ContinueButton extends Component {
                 menuID: menuID,
                 restaurant: restaurant,
                 menuName: menuName,
-                menuItemReviews: menuItemReviews
+                menuItemReviews: menuItemReviews,
+                token: token
               })
             }
             style={[styles.button, { backgroundColor: Colors.PINK }]}

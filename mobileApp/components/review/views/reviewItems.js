@@ -16,18 +16,20 @@ export default class ReviewItems extends Component {
       menuName: null,
       restaurant: null,
       colorIndex: 4,
-      reviewedScores: []
+      reviewedScores: [],
+      token: null
     };
   }
 
   componentDidMount = async () => {
     const { navigation } = this.props;
+    const token = navigation.getParam("token", "0");
     const menuItems = navigation.getParam("menuItems", "no-values");
     const imageID = navigation.getParam("imageID", "0");
     const menuID = navigation.getParam("menuID", "00");
     const menuName = navigation.getParam("menuName", "no-menu");
     const restaurant = navigation.getParam("restaurant", "no-restaurant");
-    this.setState({ imageID, menuItems, menuID, menuName, restaurant });
+    this.setState({ imageID, menuItems, menuID, menuName, restaurant, token });
   };
 
   setRatingCount(rating, item, itemID) {
@@ -108,6 +110,7 @@ export default class ReviewItems extends Component {
           menuID={this.state.menuID}
           menuName={this.state.menuName}
           restaurant={this.state.restaurant}
+          token={this.state.token}
           view={"ReviewOverall"}
           text={"CONTINUE"}
           colorIndex={this.state.colorIndex}

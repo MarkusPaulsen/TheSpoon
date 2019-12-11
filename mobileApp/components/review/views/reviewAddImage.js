@@ -97,14 +97,17 @@ class ReviewAddImage extends Component {
                 </View>
               )}
             </View>
-            <ContinueButton
-              disableButton={this.state.disableButton}
-              navigation={this.props}
-              imageID={this.state.imageID}
-              view={"ReviewAddRestaurant"}
-              text={"CONTINUE"}
-              colorIndex={this.state.colorIndex}
-            />
+            <TouchableOpacity onPress={() => this.setState({ imageUrl: null })}>
+              <ContinueButton
+                disableButton={this.state.disableButton}
+                navigation={this.props}
+                imageID={this.state.imageID}
+                view={"ReviewAddRestaurant"}
+                token={this.state.token}
+                text={"CONTINUE"}
+                colorIndex={this.state.colorIndex}
+              />
+            </TouchableOpacity>
           </View>
         );
       }
@@ -211,8 +214,6 @@ class ReviewAddImage extends Component {
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       quality: 1
     });
-
-    console.log(result);
     if (!result.cancelled) {
       this.setState({ imageUrl: result.uri });
       this.postImage();

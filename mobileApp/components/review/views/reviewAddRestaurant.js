@@ -27,23 +27,27 @@ export default class ReviewAddRestaurant extends Component {
       restaurants: "",
       searchWord: "",
       searchResult: null,
-      imageID: null
+      imageID: null,
+      token: null
     };
   }
   componentDidMount = async () => {
     await this.getAllMenus();
     const imageID = this.props.navigation.getParam("imageID", "0");
-    this.setState({ imageID });
+    const token = this.props.navigation.getParam("token", "0");
+    this.setState({ imageID, token });
   };
 
   async getAllMenus() {
     try {
       const response = await fetch(Api.STUB_GET_RESTAURANTS, {
         method: "GET",
-        accept: "application/json"
+        headers: {
+          accept: "application/json",
+          "x-auth-token": this.state.token
+        }
       });
       const responseJson = await response.json();
-      console.log(responseJson);
       if (response.ok) {
         const restaurants = responseJson.map(index => ({
           restaurantID: index.restaurantID.toString(),
@@ -162,6 +166,7 @@ export default class ReviewAddRestaurant extends Component {
           id={this.state.selected}
           imageID={this.state.imageID}
           restaurant={this.state.restaurant}
+          token={this.state.token}
           view={"ReviewAddMenu"}
           text={"CONTINUE"}
           colorIndex={this.state.colorIndex}

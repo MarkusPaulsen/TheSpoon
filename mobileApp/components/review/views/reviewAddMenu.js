@@ -22,25 +22,32 @@ export default class ReviewAddMenu extends Component {
       imageID: null,
       backgroundColor: "#FFFFFF",
       colorIndex: 2,
-      menus: ""
+      menus: "",
+      token: null
     };
   }
 
   componentDidMount = async () => {
     const { navigation } = this.props;
+    const token = navigation.getParam("token", "0");
     const restaurantID = navigation.getParam("id", "000");
     const restaurant = navigation.getParam("restaurant", "no-restaurant");
     const imageID = navigation.getParam("imageID", "0");
-    this.setState({ restaurant, imageID });
+    this.setState({ restaurant, imageID, token });
     await this.getMenus(restaurantID);
   };
 
   async getMenus(restaurantID) {
     try {
-      const backendStubURL = `http://192.168.1.110:8080/api/user/customer/review/restaurant/${restaurantID}/menu`;
-      const response = await fetch(backendStubURL, {
+      const STUB_GET_MENUS = `http://192.168.1.110:8080/api/user/customer/review/restaurant/${restaurantID}/menu`;
+      const SERVER_GET_MENUS = `https://thespoon.herokuapp.com/api/user/customer/review/restaurant/${restaurantID}/menu`;
+
+      const response = await fetch(STUB_GET_MENUS, {
         method: "GET",
-        accept: "application/json"
+        headers: {
+          accept: "application/json",
+          "x-auth-token": this.state.token
+        }
       });
       const responseJson = await response.json();
       const menus = responseJson.map(index => ({
@@ -102,6 +109,7 @@ export default class ReviewAddMenu extends Component {
           navigation={this.props}
           menuID={this.state.selected}
           menuName={this.state.menuName}
+          token={this.state.token}
           imageID={this.state.imageID}
           restaurant={this.state.restaurant}
           view={"ReviewAddItems"}

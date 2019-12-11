@@ -9,7 +9,6 @@ import {
 import * as Typography from "../../../styles/typography";
 import * as Colors from "../../../styles/colors";
 import BackButton from "../components/backButton";
-import ContinueButton from "../components/continueButton";
 import { AirbnbRating } from "react-native-ratings";
 import Circles from "../components/circles";
 
@@ -58,8 +57,10 @@ export default class ReviewOverall extends Component {
       //  menuName: this.state.menuName,
         menuItemsReviews: menuItemsReview
       });
-      const backendStubURL = `http://192.168.1.110:8080/api/user/customer/review/restaurant/menu/${menuID}`;
-      const response = await fetch(backendStubURL, {
+      const STUB_POST_REVIEW = `http://192.168.1.110:8080/api/user/customer/review/restaurant/menu/${menuID}`;
+      const SERVER_POST_REVIEW = `https://thespoon.herokuapp.com/api/user/customer/review/restaurant/menu/${menuID}`;
+
+      const response = await fetch(STUB_POST_REVIEW, {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -169,7 +170,7 @@ export default class ReviewOverall extends Component {
             }}
           >
             <TouchableOpacity
-              onPress={() => this.postReview(this.state.menuID)}
+              onPress={() => {this.postReview(this.state.menuID); this.props.navigation.navigate("ReviewAddImage")}}
               style={[styles.button, { backgroundColor: Colors.PINK }]}
             >
               <Text style={[Typography.FONT_H4_WHITE, { textAlign: "center" }]}>
