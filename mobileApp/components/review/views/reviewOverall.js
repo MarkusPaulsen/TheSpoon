@@ -172,7 +172,7 @@ export default class ReviewOverall extends Component {
               style={[styles.button, { backgroundColor: Colors.GRAY_MEDIUM }]}
             >
               <Text style={[Typography.FONT_H4_WHITE, { textAlign: "center" }]}>
-                CONTINUE
+                SUBMIT REVIEW
               </Text>
             </View>
             <Circles colorIndex={this.state.colorIndex} />
@@ -193,7 +193,7 @@ export default class ReviewOverall extends Component {
               style={[styles.button, { backgroundColor: Colors.PINK }]}
             >
               <Text style={[Typography.FONT_H4_WHITE, { textAlign: "center" }]}>
-                CONTINUE
+                SUBMIT REVIEW
               </Text>
             </TouchableOpacity>
             <Circles colorIndex={this.state.colorIndex} />
