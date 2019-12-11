@@ -1,20 +1,31 @@
 import React, { Component } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { AsyncStorage, StyleSheet, Text, View, Image } from "react-native";
 import LoginScreen from "./components/login/login";
 import SearchPage from "./components/search/search";
 import LandingPage from "./components/landingpage/landingpage";
 import LoadingPage from "./components/loading";
-import MenuPage from "./components/menupage/menupage"
+import MenuPage from "./components/menupage/menupage";
+
+import ReviewAddImage from "./components/review/views/reviewAddImage";
+import ReviewAddRestaurant from "./components/review/views/reviewAddRestaurant";
+import ReviewAddMenu from "./components/review/views/reviewAddMenu";
+import ReviewAddItems from "./components/review/views/reviewAddItems";
+import ReviewItems from "./components/review/views/reviewItems";
+import ReviewOverall from "./components/review/views/reviewOverall";
+
+import ProfilePage from "./components/profile/profile";
 import { createAppContainer } from "react-navigation";
 import { createStackNavigator } from "react-navigation-stack";
+import { createBottomTabNavigator } from "react-navigation-tabs";
 import * as Font from "expo-font";
+import Icon from "react-native-vector-icons/MaterialIcons";
+import * as Colors from "./styles/colors";
+import { ActionSheetProvider } from "@expo/react-native-action-sheet";
 
-const RootStack = createStackNavigator(
+const SearchStack = createStackNavigator(
   {
     Search: SearchPage,
-    Login: LoginScreen,
     Loading: LoadingPage,
-    Start: LandingPage,
     Menu: MenuPage
   },
   {
@@ -24,7 +35,71 @@ const RootStack = createStackNavigator(
   }
 );
 
-const AppContainer = createAppContainer(RootStack);
+const ReviewStack = createStackNavigator(
+  {
+    ReviewAddImage: ReviewAddImage,
+    ReviewAddRestaurant: ReviewAddRestaurant,
+    ReviewAddMenu: ReviewAddMenu,
+    ReviewAddItems: ReviewAddItems,
+    ReviewItems: ReviewItems,
+    ReviewOverall: ReviewOverall,
+      Login:LoginScreen
+  },
+  {
+    initialRouteName: "ReviewAddImage",
+    header: null,
+    headerMode: "none"
+  }
+);
+const ProfileStack = createStackNavigator(
+  {
+    Profile: ProfilePage,
+    Login: LoginScreen
+  },
+  {
+    initialRouteName: "Profile",
+    header: null,
+    headerMode: "none"
+  }
+);
+
+const bottomTabNavigator = createBottomTabNavigator(
+  {
+    Search: {
+      screen: SearchStack,
+      navigationOptions: {
+        tabBarIcon: ({ tintColor }) => (
+          <Icon name="search" size={32} color={tintColor} />
+        )
+      }
+    },
+    AddReview: {
+      screen: ReviewStack,
+      navigationOptions: {
+        tabBarIcon: ({ tintColor }) => (
+          <Icon name="add-circle-outline" size={32} color={tintColor} />
+        )
+      }
+    },
+    Profile: {
+      screen: ProfileStack,
+      navigationOptions: {
+        tabBarIcon: ({ tintColor }) => (
+          <Icon name="person" size={32} color={tintColor} />
+        )
+      }
+    }
+  },
+  {
+    initialRouteName: "Search",
+    tabBarOptions: {
+      activeTintColor: "#F3A3A3",
+      height: 85
+    }
+  }
+);
+
+const AppContainer = createAppContainer(bottomTabNavigator);
 
 const styles = StyleSheet.create({
   container: {
@@ -44,13 +119,16 @@ export default class App extends Component {
     await Font.loadAsync({
       roboto: require("./assets/fonts/roboto-regular.ttf")
     });
-
     this.setState({ fontLoaded: true });
   }
   render() {
     if (this.state.fontLoaded) {
       console.log("font loaded");
-      return <AppContainer />;
+      return (
+        <ActionSheetProvider>
+          <AppContainer />
+        </ActionSheetProvider>
+      );
     } else {
       return <LoadingPage />;
     }

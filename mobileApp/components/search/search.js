@@ -18,6 +18,7 @@ import { TouchableWithoutFeedback } from "react-native-web";
 import * as Typography from "../../styles/typography";
 import * as Colors from "../../styles/colors";
 import Icon from "react-native-vector-icons/MaterialIcons";
+import * as Api from "../../services/api";
 
 function ResultItem({ menuName, restaurantName, tags, score, price }) {
   const tags1Row = [];
@@ -120,13 +121,10 @@ export default class Search extends Component {
       const lat = this.state.latitude;
       const long = this.state.longitude;
       //change to port 80 if not using the stub
-      const response = await fetch(
-        "http://192.168.1.103:8080/api/user/customer/menu/searchByMenuItem?menuItemName={searchString}&lat={lat}&long={long}",
-        {
-          method: "GET",
-          accept: "application/json"
-        }
-      );
+      const response = await fetch(Api.STUB_SEARCH, {
+        method: "GET",
+        accept: "application/json"
+      });
       const responseJson = await response.json();
       if (response.ok) {
         const searchResults = responseJson.map(index => ({
