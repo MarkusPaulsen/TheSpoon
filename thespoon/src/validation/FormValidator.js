@@ -5,6 +5,10 @@ import validator from "validator";
 class FormValidator {
     //<editor-fold desc="Constructor">
     constructor(validations) {
+
+        this.validate = this.validate.bind(this);
+        this.valid = this.valid.bind(this);
+
         // validations is an array of validation rules specific to a form
         this.validations = validations;
     }
@@ -17,6 +21,8 @@ class FormValidator {
 
         // for each validation rule
         this.validations.forEach(rule => {
+            console.log(rule.field)
+            console.log(rule.method)
 
             // if the field hasn"t already been marked invalid by an earlier rule
             if (!validation[rule.field].isInvalid) {

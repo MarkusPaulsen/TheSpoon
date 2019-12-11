@@ -5,5 +5,6 @@ export const initialStateLoginReducer = {
     surname: "",
     password: "",
     token: "",
+    isRestaurantOwner: false,
     loginStatus: "not logged in"
 };

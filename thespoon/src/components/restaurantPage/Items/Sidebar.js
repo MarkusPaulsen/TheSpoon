@@ -3,13 +3,13 @@ import React, {Component} from "react";
 //</editor-fold>
 
 //<editor-fold desc="Constants">
-import {modalVisibilityFilters} from "../../constants/modalVisibiltyFilters";
+import {modalVisibilityFilters} from "../../../constants/modalVisibiltyFilters";
 //</editor-fold>
 //<editor-fold desc="Containers">
-import FilterLink from "../../containers/FilterModalLink";
+import FilterLink from "../../../containers/FilterModalLink";
 //</editor-fold>
 //<editor-fold desc="Icons">
-import {IconLocationTurqoise, IconHoursTurqoise, IconEditPink} from "../Icons.js";
+import {IconLocationTurqoise, IconHoursTurqoise, IconEditPink} from "../../Icons.js";
 //</editor-fold>
 
 class Sidebar extends Component {
@@ -23,7 +23,7 @@ class Sidebar extends Component {
             <div className="sidebar">
                 <div className="image-setup">
                     <div className="image-wrapper">
-                        <div className="image" style={{backgroundImage: `url(${this.props.image})`}}/>
+                        <div className="image" style={{backgroundImage: `url(${this.props.imageLink})`}}/>
                     </div>
                 </div>
                 <h4 className="title">{this.props.name}</h4>
@@ -38,10 +38,10 @@ class Sidebar extends Component {
                     <IconHoursTurqoise/>
                     <ul>
                         {
-                            (typeof(this.props.openingHours) !== "undefined" && this.props.openingHours.length > 1) ?
+                            (typeof(this.props.openingHours) !== "undefined" && this.props.openingHours.length >= 1) ?
                                 this.props.openingHours.map((openingHour) => {
                                     return (
-                                        <li><span>{openingHour.day}:</span>{openingHour.openTime} - {openingHour.closeTime}</li>
+                                        <li><span>{openingHour.day}: </span>{openingHour.openTime} - {openingHour.closeTime}</li>
                                     )})
                                 :
                                 <li><span>No opening hours defined</span></li>
@@ -49,7 +49,7 @@ class Sidebar extends Component {
                     </ul>
                 </div>
                 <div className="modal-button">
-                    <FilterLink filter={modalVisibilityFilters.SHOW_EDIT_RESTAURANT_INFORMATION}><IconEditPink/>Edit information</FilterLink>
+                    <FilterLink filter={modalVisibilityFilters.SHOW_EDIT_RESTAURANT}><IconEditPink/>Edit information</FilterLink>
                 </div>
             </div>
         );

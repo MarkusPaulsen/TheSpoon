@@ -12,17 +12,16 @@ export const failLogIn = () => {
     };
 };
 
-export const successLogIn = (token) => {
+export const successLogIn = (token, isRestaurantOwner) => {
     return {
         type: LOGGING_IN_SUCCESSING,
-        token: token
+        token: token,
+        isRestaurantOwner: isRestaurantOwner
     };
 };
 
 export const logOut = () => {
     return {
-        type: LOGGING_OUT,
-        username: "",
-        token: ""
+        type: LOGGING_OUT
     };
 };

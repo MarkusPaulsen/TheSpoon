@@ -1027,6 +1027,10 @@ header {
   display: flex;
   //padding: 0.5rem;
   .image-setup {
+    background: lightgrey;
+    flex-direction: row;
+    display: flex;
+    border-radius: 100%;
     margin: 0.5rem;
     margin-left: 1rem;
   }

@@ -9,7 +9,7 @@ import {connect} from "react-redux";
 import MainLayout from "../layout/MainLayout.js"
 //</editor-fold>
 
-class Profile extends Component {
+class YourProfilePage extends Component {
     //<editor-fold desc="Render">
     render() {
         if(typeof this.props.loginStatus != "undefined" && this.props.loginStatus === "logged in"){
@@ -21,9 +21,6 @@ class Profile extends Component {
                                 <div className="row">
                                     <div className="col-sm-8">
                                         <h1 className="title">This is your profile page {this.props.username}</h1>
-                                        <Link to="/" className="logo">
-                                            <text>Back to Homepage</text>
-                                        </Link>
                                     </div>
                                 </div>
                             </div>
@@ -49,5 +46,5 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps, null)(Profile);
+export default connect(mapStateToProps, null)(YourProfilePage);
 //</editor-fold>

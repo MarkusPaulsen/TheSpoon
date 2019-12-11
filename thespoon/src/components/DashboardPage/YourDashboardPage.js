@@ -10,7 +10,7 @@ import {connect} from "react-redux";
 import MainLayout from "../layout/MainLayout.js"
 //</editor-fold>
 
-class Dashboard extends Component {
+class YourDashboardPage extends Component {
     //<editor-fold desc="Render">
     render() {
         if(typeof this.props.loginStatus != "undefined" && this.props.loginStatus === "logged in"){
@@ -22,9 +22,6 @@ class Dashboard extends Component {
                                 <div className="row">
                                     <div className="col-sm-8">
                                         <h1 className="title">This is your dashboard  {this.props.username}</h1>
-                                        <Link to="/" className="logo">
-                                            <text>Back to Homepage</text>
-                                        </Link>
                                     </div>
                                 </div>
                             </div>
@@ -50,5 +47,5 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps, null)(Dashboard);
+export default connect(mapStateToProps, null)(YourDashboardPage);
 //</editor-fold>
