@@ -15,6 +15,7 @@ import {
 } from "react-native";
 import * as Typography from "../../styles/typography";
 import * as Colors from "../../styles/colors";
+import * as Api from "../../services/api";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { AirbnbRating } from "react-native-ratings";
 
@@ -24,8 +25,8 @@ export default class Profile extends Component {
     this.state = {
       loggedIn: false,
       isLoaded: false,
-      modalItem: null,
-      userInfo: { username: "cathrbak", email: "cathrineakreaaas@gmail.com" },
+      token:null,
+      userInfo: "",
       reviews: [
         {
           reviewID: "2",
@@ -94,7 +95,7 @@ export default class Profile extends Component {
   componentDidMount = async () => {
     this.focusListener = this.props.navigation.addListener("didFocus", () => {
       AsyncStorage.getItem("userToken").then(token => {
-        this.setState({ loggedIn: token !== null, isLoaded: true });
+        this.setState({ loggedIn: token !== null, isLoaded: true, token:token });
         this.getUserInfo();
         this.getUserReviews();
       });
@@ -133,11 +134,12 @@ export default class Profile extends Component {
 
   async getUserInfo() {
     try {
-      const backendStubLink = `http://192.168.1.103:8080/api/user/customer/`;
-      const backendServerLink = `https://thespoon.herokuapp.com/api/user/customer/`;
-      const response = await fetch(backendStubLink, {
+      const response = await fetch(Api.STUB_PROFILE_USERINFO, {
         method: "GET",
-        accept: "application/json"
+        accept: "application/json",
+        headers:{
+           "X-Auth-Token": this.state.token
+        }
       });
       const responseJson = await response.json();
       const userInfo = {
@@ -145,6 +147,12 @@ export default class Profile extends Component {
         email: responseJson.email
       };
       this.setState({ userInfo });
+      if(response.ok){
+        console.log("Success fetching profileData")
+      }
+      if(!response.ok){
+        console.log("Fetching profileData failed");
+      }
     } catch (error) {
       console.log("Error fetching user info: ", error);
     }
@@ -152,20 +160,27 @@ export default class Profile extends Component {
 
   async getUserReviews() {
     try {
-      const backendStubLink = `http://192.168.1.103:8080/api/user/customer/review`;
-      const backendServerLink = `https://thespoon.herokuapp.com/api/user/customer/review`;
-      const response = await fetch(backendStubLink, {
+      const response = await fetch(Api.STUB_PROFILE_USERREVIEWS, {
         method: "GET",
-        accept: "application/json"
+        accept: "application/json",
+        headers:{
+          "X-Auth-Token": this.state.token
+        }
       });
       const responseJson = await response.json();
-      const reviews = responseJson["reviewID"].map(index => ({
-        reviewID: index,
-        menu: index.menu,
-        restaurant: index.restaurant,
+      const reviews = responseJson.map(index => ({
+        reviewID: index.menuID.toString(),
+        menu: index.menuID,
+        restaurant: index.menuID,
         status: index.status
       }));
-      //this.setState({ reviews });
+      this.setState({ reviews });
+      if(response.ok){
+        console.log("Success fetching reviews")
+      }
+      if(!response.ok){
+        console.log("Fetching reviews failed");
+      }
     } catch (error) {
       console.log("Error fetching reviews: ", error);
     }
@@ -236,7 +251,7 @@ export default class Profile extends Component {
                   marginTop: 12
                 }}
               >
-                {status === "approved" ? (
+                {status === "accepted" ? (
                   <Icon name={"done"} size={35} color={Colors.GREEN} />
                 ) : null}
                 {status === "declined" ? (

@@ -14,6 +14,7 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 import ContinueButton from "../components/continueButton";
 import * as ImagePicker from "expo-image-picker";
 import * as Permissions from "expo-permissions";
+import * as Api from "../../../services/api";
 import { connectActionSheet } from "@expo/react-native-action-sheet";
 
 class ReviewAddImage extends Component {
@@ -24,13 +25,19 @@ class ReviewAddImage extends Component {
       imageUrl: null,
       colorIndex: 0,
       loggedIn: false,
-      isLoaded: false
+      isLoaded: false,
+      imageID: null,
+      token: null
     };
   }
   componentDidMount = async () => {
     this.focusListener = this.props.navigation.addListener("didFocus", () => {
       AsyncStorage.getItem("userToken").then(token => {
-        this.setState({ loggedIn: token !== null, isLoaded: true });
+        this.setState({
+          loggedIn: token !== null,
+          isLoaded: true,
+          token: token
+        });
       });
     });
   };
@@ -90,28 +97,32 @@ class ReviewAddImage extends Component {
                 </View>
               )}
             </View>
-            <ContinueButton
-              disableButton={this.state.disableButton}
-              navigation={this.props}
-              view={"ReviewAddRestaurant"}
-              text={"CONTINUE"}
-              colorIndex={this.state.colorIndex}
-            />
+            <TouchableOpacity onPress={() => this.setState({ imageUrl: null })}>
+              <ContinueButton
+                disableButton={this.state.disableButton}
+                navigation={this.props}
+                imageID={this.state.imageID}
+                view={"ReviewAddRestaurant"}
+                token={this.state.token}
+                text={"CONTINUE"}
+                colorIndex={this.state.colorIndex}
+              />
+            </TouchableOpacity>
           </View>
         );
       }
       if (!this.state.loggedIn) {
         return (
-            <View style={styles.container}>
-              <Text style={Typography.FONT_H4_BLACK}>
-                You need to log in to write a review
-              </Text>
-              <TouchableOpacity
-                  onPress={() => this.props.navigation.navigate("Profile")}
-              >
-                <Text style={Typography.FONT_H4_PINK}>Click here to log in</Text>
-              </TouchableOpacity>
-            </View>
+          <View style={styles.container}>
+            <Text style={Typography.FONT_H4_BLACK}>
+              You need to log in to write a review
+            </Text>
+            <TouchableOpacity
+              onPress={() => this.props.navigation.navigate("Profile")}
+            >
+              <Text style={Typography.FONT_H4_PINK}>Click here to log in</Text>
+            </TouchableOpacity>
+          </View>
         );
       }
     }
@@ -155,9 +166,44 @@ class ReviewAddImage extends Component {
 
     if (!result.cancelled) {
       this.setState({ imageUrl: result.uri });
-      this.setState({ disableButton: false });
+      this.postImage();
     }
   };
+  createFormData = imageUrl => {
+    let uriParts = imageUrl.split(".");
+    let fileType = uriParts[uriParts.length - 1];
+    const data = new FormData();
+    data.append("image", {
+      name: `image.${fileType}`,
+      type: `image/${fileType}`,
+      uri: imageUrl
+    });
+    return data;
+  };
+
+  async postImage() {
+    try {
+      const data = this.createFormData(this.state.imageUrl);
+      const response = await fetch(Api.SERVER_POST_IMAGE, {
+        method: "POST",
+        headers: {
+          Accept: "*/*",
+          "x-auth-token": this.state.token
+        },
+        body: data
+      });
+      const responseText = await response.json();
+      if (response.ok) {
+        alert("Upload success!");
+        this.setState({ imageID: responseText.imageID, disableButton: false });
+      }
+      if (!response.ok) {
+        alert("Upload failed");
+      }
+    } catch (error) {
+      console.log("Error posting image: ", error);
+    }
+  }
 
   onChooseLibraryPress = async () => {
     const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
@@ -168,11 +214,9 @@ class ReviewAddImage extends Component {
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       quality: 1
     });
-
-    console.log(result);
     if (!result.cancelled) {
       this.setState({ imageUrl: result.uri });
-      this.setState({ disableButton: false });
+      this.postImage();
     }
   };
 }

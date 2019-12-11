@@ -3,7 +3,8 @@ import {
   View,
   Text,
   StyleSheet,
-  FlatList, TouchableOpacity
+  FlatList,
+  TouchableOpacity
 } from "react-native";
 import * as Typography from "../../../styles/typography";
 import BackButton from "../components/backButton";
@@ -19,22 +20,37 @@ export default class ReviewAddItems extends Component {
       backgroundColor: "#FFFFFF",
       colorIndex: 3,
       menuItems: "",
-      selectedMenuItems: []
+      imageID: null,
+      menuID: null,
+      menuName: null,
+      restaurant: null,
+      selectedMenuItems: [],
+      token: null
     };
   }
 
   componentDidMount = async () => {
     const { navigation } = this.props;
+    const token = navigation.getParam("token", "0");
     const menuID = navigation.getParam("menuID", "000");
+    const menuName = navigation.getParam("menuName", "no-menu");
+    const imageID = navigation.getParam("imageID", "0");
+    const restaurant = navigation.getParam("restaurant", "no-restaurant");
+    this.setState({ imageID, menuID, menuName, restaurant, token });
     await this.getMenuItems(menuID);
   };
 
   async getMenuItems(menuID) {
     try {
-      const backendStubURL = `http://192.168.1.110:8080/api/user/customer/review/restaurant/menu/${menuID}/menuItem`;
-      const response = await fetch(backendStubURL, {
+      const STUB_GET_MENUITEMS = `http://192.168.1.110:8080/api/user/customer/review/restaurant/menu/${menuID}/menuItem`;
+      const SERVER_GET_MENUITEMS = `https://thespoon.herokuapp.com/api/user/customer/review/restaurant/menu/${menuID}/menuItem`;
+
+      const response = await fetch(STUB_GET_MENUITEMS, {
         method: "GET",
-        accept: "application/json"
+        headers: {
+          accept: "application/json",
+          "x-auth-token": this.state.token
+        }
       });
       const responseJson = await response.json();
       const menuItems = responseJson.map(index => ({
@@ -47,27 +63,34 @@ export default class ReviewAddItems extends Component {
     }
   }
 
-  setSelected(id, name){
-    if(this.state.selectedMenuItems.some(e => e.menuItemID===id)){
+  setSelected(id, name) {
+    if (this.state.selectedMenuItems.some(e => e.menuItemID === id)) {
       this.setState(state => {
-        const selectedMenuItems = state.selectedMenuItems.filter(e => e.menuItemID!==id);
+        const selectedMenuItems = state.selectedMenuItems.filter(
+          e => e.menuItemID !== id
+        );
         return {
           selectedMenuItems
         };
       });
-      if(this.state.selectedMenuItems.length === 0){
-        this.setState({disableButton: true});
+      if (this.state.selectedMenuItems.length === 0) {
+        this.setState({ disableButton: true });
       }
     } else {
       this.setState(state => {
-        const selectedMenuItems = state.selectedMenuItems.concat({menuItemID: id, menuItemName: name, score: null, text: ""});
+        const selectedMenuItems = state.selectedMenuItems.concat({
+          menuItemID: id,
+          menuItemName: name,
+          rating: null,
+          content: ""
+        });
         return {
           selectedMenuItems
         };
       });
-      this.setState({disableButton: false});
+      this.setState({ disableButton: false });
     }
-  };
+  }
 
   render() {
     return (
@@ -82,33 +105,46 @@ export default class ReviewAddItems extends Component {
         </View>
         <View style={styles.resultList}>
           <FlatList
-              data={this.state.menuItems}
-              extraData={this.state}
-              renderItem={({ item }) => (
-                  <TouchableOpacity
-                      style={{backgroundColor: this.state.selectedMenuItems.some(e => e.menuItemID===item.menuItemID) ? Colors.TURQUOISE : Colors.WHITE}}
-                      onPress={() => this.setSelected(item.menuItemID, item.menuItemName)}
-                  >
-                    <Text
-                        style={[
-                          Typography.FONT_H4_BLACK,
-                          {
-                            marginVertical: 10,
-                            marginLeft: 50
-                          }
-                        ]}
-                    >
-                      {item.menuItemName}
-                    </Text>
-                  </TouchableOpacity>
-              )}
-              keyExtractor={item => item.menuItemID}
+            data={this.state.menuItems}
+            extraData={this.state}
+            renderItem={({ item }) => (
+              <TouchableOpacity
+                style={{
+                  backgroundColor: this.state.selectedMenuItems.some(
+                    e => e.menuItemID === item.menuItemID
+                  )
+                    ? Colors.TURQUOISE
+                    : Colors.WHITE
+                }}
+                onPress={() =>
+                  this.setSelected(item.menuItemID, item.menuItemName)
+                }
+              >
+                <Text
+                  style={[
+                    Typography.FONT_H4_BLACK,
+                    {
+                      marginVertical: 10,
+                      marginLeft: 50
+                    }
+                  ]}
+                >
+                  {item.menuItemName}
+                </Text>
+              </TouchableOpacity>
+            )}
+            keyExtractor={item => item.menuItemID}
           />
         </View>
         <ContinueButton
           disableButton={this.state.disableButton}
           navigation={this.props}
           menuItems={this.state.selectedMenuItems}
+          imageID={this.state.imageID}
+          menuID={this.state.menuID}
+          menuName={this.state.menuName}
+          restaurant={this.state.restaurant}
+          token={this.state.token}
           view={"ReviewItems"}
           text={"CONTINUE"}
           colorIndex={this.state.colorIndex}

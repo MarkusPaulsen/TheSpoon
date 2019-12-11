@@ -11,20 +11,29 @@ export default class ReviewItems extends Component {
     super(props);
     this.state = {
       disableButton: true,
+      imageID: null,
       menuItems: "",
+      menuName: null,
+      restaurant: null,
       colorIndex: 4,
-      reviewedScores: []
+      reviewedScores: [],
+      token: null
     };
   }
 
   componentDidMount = async () => {
     const { navigation } = this.props;
+    const token = navigation.getParam("token", "0");
     const menuItems = navigation.getParam("menuItems", "no-values");
-    this.setState({ menuItems });
+    const imageID = navigation.getParam("imageID", "0");
+    const menuID = navigation.getParam("menuID", "00");
+    const menuName = navigation.getParam("menuName", "no-menu");
+    const restaurant = navigation.getParam("restaurant", "no-restaurant");
+    this.setState({ imageID, menuItems, menuID, menuName, restaurant, token });
   };
 
   setRatingCount(rating, item, itemID) {
-    item.score = rating;
+    item.rating = rating;
 
     this.setState(state => {
       const menuItems = state.menuItems.filter(e => e.menuItemID !== itemID);
@@ -37,7 +46,7 @@ export default class ReviewItems extends Component {
   }
 
   onChangeText(text, item, itemID) {
-    item.text = text;
+    item.content = text;
     this.setState(state => {
       const menuItems = state.menuItems.filter(e => e.menuItemID !== itemID);
       return menuItems.concat(item);
@@ -96,6 +105,12 @@ export default class ReviewItems extends Component {
         <ContinueButton
           disableButton={this.state.disableButton}
           navigation={this.props}
+          menuItemReviews={this.state.menuItems}
+          imageID={this.state.imageID}
+          menuID={this.state.menuID}
+          menuName={this.state.menuName}
+          restaurant={this.state.restaurant}
+          token={this.state.token}
           view={"ReviewOverall"}
           text={"CONTINUE"}
           colorIndex={this.state.colorIndex}

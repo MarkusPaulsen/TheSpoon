@@ -5,10 +5,12 @@ import {
   StyleSheet,
   FlatList,
   TouchableOpacity,
-  SafeAreaView, TextInput
+  SafeAreaView,
+  TextInput
 } from "react-native";
 import * as Typography from "../../../styles/typography";
 import * as Colors from "../../../styles/colors";
+import * as Api from "../../../services/api";
 import ContinueButton from "../components/continueButton";
 import BackButton from "../components/backButton";
 import Icon from "react-native-vector-icons/MaterialIcons";
@@ -19,26 +21,33 @@ export default class ReviewAddRestaurant extends Component {
     this.state = {
       disableButton: true,
       selected: null,
+      restaurant: "",
       colorIndex: 1,
       backgroundColor: null,
       restaurants: "",
       searchWord: "",
-      searchResult: null
+      searchResult: null,
+      imageID: null,
+      token: null
     };
   }
   componentDidMount = async () => {
     await this.getAllMenus();
+    const imageID = this.props.navigation.getParam("imageID", "0");
+    const token = this.props.navigation.getParam("token", "0");
+    this.setState({ imageID, token });
   };
 
   async getAllMenus() {
     try {
-      const backendStubURL = `http://192.168.1.110:8080/api/user/customer/review/restaurant`;
-      const response = await fetch(backendStubURL, {
+      const response = await fetch(Api.STUB_GET_RESTAURANTS, {
         method: "GET",
-        accept: "application/json"
+        headers: {
+          accept: "application/json",
+          "x-auth-token": this.state.token
+        }
       });
       const responseJson = await response.json();
-      console.log(responseJson);
       if (response.ok) {
         const restaurants = responseJson.map(index => ({
           restaurantID: index.restaurantID.toString(),
@@ -51,27 +60,27 @@ export default class ReviewAddRestaurant extends Component {
     }
   }
 
-  setSelected(id){
-    this.setState({selected: id});
-    this.setState({disableButton: false});
-  };
+  setSelected(id, restaurant) {
+    this.setState({ selected: id, restaurant: restaurant });
+    this.setState({ disableButton: false });
+  }
 
   updateSearchText = searchWord => {
     this.setState({ searchWord });
   };
 
-  searchBySearchWord(restaurants, searchWordOriginal){
-    if(!restaurants){
+  searchBySearchWord(restaurants, searchWordOriginal) {
+    if (!restaurants) {
       return null;
     }
     const searchWord = searchWordOriginal.toLowerCase();
     const result = [];
     restaurants.map(restaurant => {
-      if(restaurant.name.toLowerCase().includes(searchWord)){
+      if (restaurant.name.toLowerCase().includes(searchWord)) {
         result.push(restaurant);
       }
     });
-    if(result.length < 1){
+    if (result.length < 1) {
       return null;
     }
     return result;
@@ -79,11 +88,14 @@ export default class ReviewAddRestaurant extends Component {
 
   getSearchResult() {
     const searchWord = this.state.searchWord;
-    if(searchWord === ""){
-      this.setState({searchResult: this.state.restaurants});
+    if (searchWord === "") {
+      this.setState({ searchResult: this.state.restaurants });
     } else {
-      const searchResult = this.searchBySearchWord(this.state.restaurants, searchWord);
-      this.setState({searchResult});
+      const searchResult = this.searchBySearchWord(
+        this.state.restaurants,
+        searchWord
+      );
+      this.setState({ searchResult });
     }
   }
 
@@ -102,27 +114,33 @@ export default class ReviewAddRestaurant extends Component {
               <Icon name={"search"} size={22} color={Colors.PINK} />
             </TouchableOpacity>
             <TextInput
-                style={[Typography.FONT_INPUT, styles.textInput]}
-                placeholder="Search..."
-                placeholderTextColor={Colors.GRAY_MEDIUM}
-                onChangeText={this.updateSearchText}
-                value={this.state.searchWord}
-                onSubmitEditing={() => this.getSearchResult()}
+              style={[Typography.FONT_INPUT, styles.textInput]}
+              placeholder="Search..."
+              placeholderTextColor={Colors.GRAY_MEDIUM}
+              onChangeText={this.updateSearchText}
+              value={this.state.searchWord}
+              onSubmitEditing={() => this.getSearchResult()}
             />
           </View>
         </View>
         <View style={styles.resultList}>
           <SafeAreaView>
             <FlatList
-              data={this.state.searchResult ? this.state.searchResult : this.state.restaurants}
+              data={
+                this.state.searchResult
+                  ? this.state.searchResult
+                  : this.state.restaurants
+              }
               extraData={this.state}
               renderItem={({ item }) => (
                 <TouchableOpacity
                   activeOpacity={0.5}
-                  onPress={() => this.setSelected(item.restaurantID)}
+                  onPress={() => this.setSelected(item.restaurantID, item.name)}
                   style={{
-
-                    backgroundColor: this.state.selected === item.restaurantID ? Colors.TURQUOISE : Colors.WHITE
+                    backgroundColor:
+                      this.state.selected === item.restaurantID
+                        ? Colors.TURQUOISE
+                        : Colors.WHITE
                   }}
                 >
                   <Text
@@ -146,6 +164,9 @@ export default class ReviewAddRestaurant extends Component {
           disableButton={this.state.disableButton}
           navigation={this.props}
           id={this.state.selected}
+          imageID={this.state.imageID}
+          restaurant={this.state.restaurant}
+          token={this.state.token}
           view={"ReviewAddMenu"}
           text={"CONTINUE"}
           colorIndex={this.state.colorIndex}
@@ -171,7 +192,8 @@ const styles = StyleSheet.create({
     bottom: 0,
     justifyContent: "center",
     alignItems: "center"
-  }, textInput: {
+  },
+  textInput: {
     height: 42,
     width: 240,
     borderBottomColor: Colors.PINK,
@@ -183,5 +205,4 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 10
   }
-
 });
