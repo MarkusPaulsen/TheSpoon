@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import TheSpoonLogo from "../../assets/thespoon-logo.png";
 import SpoonBackground from "../../assets/spoon-background.png";
-import CustomizedButton from "../button.js";
+import CustomizedButton from "../CustomizedButton.js";
 
 export default class LandingPage extends Component {
   render() {
