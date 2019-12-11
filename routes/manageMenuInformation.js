@@ -72,7 +72,7 @@ router.get('/', auth, isOwner, findRestaurant, async (req, res) => {
                     include: [{
                         model: Tag,
                         as: 'Tags'
-                    },]
+                    }]
                 },
                 {
                     model: ItemReview,
