@@ -290,7 +290,7 @@ class FillRestaurantInfo extends Component {
             <Modal.Body>
                 <div className="modal-wrapper restaurant-info">
                     <Form ref={ (c) => { this.form = c; }} onSubmit={this.handleSubmit}>
-                    <h2>Configure restaurant data</h2>
+                    <h2 className="title">Configure restaurant data</h2>
 
                     <div className="input-field">
                         <label>Restaurant name</label>
