@@ -29,3 +29,12 @@ copyProps(window, global);
  */
 
 configure({ adapter: new Adapter() });
+
+const originalConsoleError = console.error;
+console.error = (message) => {
+    if (message.startsWith('Warning:')) {
+        return;
+    }
+
+    originalConsoleError(message);
+};
