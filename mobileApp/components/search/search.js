@@ -10,7 +10,8 @@ import {
   TouchableOpacity,
   Keyboard,
   Dimensions,
-  Modal
+  Modal,
+    Alert
 } from "react-native";
 import Validate from "./searchvalidation.js";
 import { TouchableWithoutFeedback } from "react-native-web";
@@ -78,10 +79,25 @@ export default class Search extends Component {
       searched: false,
       modalVisible: false,
       filters: ["Price", "Review", "Distance"],
-      selectedFilter: ""
+      selectedFilter: "",
+      latitude: "",
+      longitude: ""
     };
     this.validateSearch = this.validateSearch.bind(this);
   }
+
+  findCoordinates = () => {
+    navigator.geolocation.getCurrentPosition(
+        position => {
+          const latitude = JSON.stringify(position.coords.latitude);
+          const longitude = JSON.stringify(position.coords.longitude);
+          this.setState({latitude: latitude});
+          this.setState({longitude: longitude});
+        },
+        error => Alert.alert(error.message),
+        { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
+    );
+  };
 
   updateSearchText = searchWord => {
     this.setState({ searchWord, searched: false });
@@ -101,9 +117,11 @@ export default class Search extends Component {
   async getResults() {
     try {
       const searchString = this.state.searchWord;
+      const lat = this.state.latitude;
+      const long = this.state.longitude;
       //change to port 80 if not using the stub
       const response = await fetch(
-        "http://192.168.1.103:8080/api/user/customer/menu/searchByMenuItem?menuItemName={searchString}",
+        "http://192.168.1.103:8080/api/user/customer/menu/searchByMenuItem?menuItemName={searchString}&lat={lat}&long={long}",
         {
           method: "GET",
           accept: "application/json"
@@ -167,6 +185,7 @@ export default class Search extends Component {
   }
 
   distanceFilter(){
+    this.findCoordinates();
     const sorted = this.state.searchResults;
     sorted.sort((a, b) => (a.distance > b.distance) ? 1 : (a.distance === b.distance) ? ((a.menuName > b.menuName) ? 1 : -1) : -1 );
     this.setState({searchResults: sorted});
