@@ -25,15 +25,15 @@ app.use('/api/image', image);
 app.use('/api/user/login', login);
 app.use('/api/user/owner/tag', getTags);
 app.use('/api/user/owner/register', registrationOwner);
-app.use('/api/user/owner/restaurant', manageRestaurantInformation);
 app.use('/api/user/owner/restaurant/menu', manageMenuInformation);
 app.use('/api/user/owner/restaurant/review', pendingReviews);
-app.use('/api/user/customer', manageCustomerInformation);
+app.use('/api/user/owner/restaurant', manageRestaurantInformation);
 app.use('/api/user/customer/register', registrationCustomer);
-app.use('/api/user/customer/menu', searchMenu);
 app.use('/api/user/customer/menu/searchByMenuItem', searchByMenuItem);
-app.use('/api/user/customer/review', manageCustomerReviews);
+app.use('/api/user/customer/menu', searchMenu);
 app.use('/api/user/customer/review/restaurant', createReview);
+app.use('/api/user/customer/review', manageCustomerReviews);
+app.use('/api/user/customer', manageCustomerInformation);
 
 
 app.use(bodyParser.json());
