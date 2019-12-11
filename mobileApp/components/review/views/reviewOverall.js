@@ -11,6 +11,7 @@ import * as Colors from "../../../styles/colors";
 import BackButton from "../components/backButton";
 import { AirbnbRating } from "react-native-ratings";
 import Circles from "../components/circles";
+import { NavigationActions, StackActions } from "react-navigation";
 
 export default class ReviewOverall extends Component {
   constructor(props) {
@@ -30,22 +31,25 @@ export default class ReviewOverall extends Component {
   componentDidMount = async () => {
     AsyncStorage.getItem("userToken").then(token => {
       this.setState({ token: token });
+      const { navigation } = this.props;
+      const menuID = navigation.getParam("menuID", "00");
+      const imageID = navigation.getParam("imageID", "0");
+      const menuName = navigation.getParam("menuName", "no-menu");
+      const restaurant = navigation.getParam("restaurant", "no-restaurant");
+      this.setState({ imageID, menuID, menuName, restaurant });
     });
-    const { navigation } = this.props;
-    const menuID = navigation.getParam("menuID", "00");
-    const imageID = navigation.getParam("imageID", "0");
-    const menuName = navigation.getParam("menuName", "no-menu");
-    const restaurant = navigation.getParam("restaurant", "no-restaurant");
-    this.setState({ imageID, menuID, menuName, restaurant });
   };
 
   async postReview(menuID) {
     const date = new Date().toISOString().slice(0, 10);
-    const menuItemReviewsWithMenuName = this.props.navigation.getParam("menuItemReviews", "no-reviews");
+    const menuItemReviewsWithMenuName = this.props.navigation.getParam(
+      "menuItemReviews",
+      "no-reviews"
+    );
     const menuItemsReview = menuItemReviewsWithMenuName.map(index => ({
-      menuItemID :parseInt(index.menuItemID),
-      rating:index.rating,
-      content:index.content,
+      menuItemID: parseInt(index.menuItemID),
+      rating: index.rating,
+      content: index.content
     }));
     try {
       const data = JSON.stringify({
@@ -53,8 +57,8 @@ export default class ReviewOverall extends Component {
         qualityOverPriceRating: this.state.qualityOverPriceRating,
         date: date,
         receiptImageID: parseInt(this.state.imageID),
-       // restaurant: this.state.restaurant,
-      //  menuName: this.state.menuName,
+        // restaurant: this.state.restaurant,
+        //  menuName: this.state.menuName,
         menuItemsReviews: menuItemsReview
       });
       const STUB_POST_REVIEW = `http://192.168.1.110:8080/api/user/customer/review/restaurant/menu/${menuID}`;
@@ -102,6 +106,18 @@ export default class ReviewOverall extends Component {
   }
 
   render() {
+    const resetStack = () => {
+      this.props.navigation.dispatch(
+        StackActions.reset({
+          index: 0,
+          actions: [
+            NavigationActions.navigate({
+              routeName: "ReviewAddImage"
+            })
+          ]
+        })
+      );
+    };
     return (
       <View style={styles.container}>
         <View>
@@ -170,7 +186,10 @@ export default class ReviewOverall extends Component {
             }}
           >
             <TouchableOpacity
-              onPress={() => {this.postReview(this.state.menuID); this.props.navigation.navigate("ReviewAddImage")}}
+              onPress={() => {
+                this.postReview(this.state.menuID);
+                resetStack();
+              }}
               style={[styles.button, { backgroundColor: Colors.PINK }]}
             >
               <Text style={[Typography.FONT_H4_WHITE, { textAlign: "center" }]}>
