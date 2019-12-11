@@ -30,6 +30,9 @@ const Menu = db.define('Menu', {
         },
         Service: {
             type: Sequelize.FLOAT
+        },
+        AveragePrice: {
+            type: Sequelize.FLOAT
         }
     },
     {

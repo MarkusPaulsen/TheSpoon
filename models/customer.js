@@ -18,10 +18,13 @@ const Customer = db.define('Customer', {
     Nationality: {
         type: Sequelize.STRING
     },
-    Birthday: {
+    AgeRange: {
         type: Sequelize.DATE
     },
     Email: {
+        type: Sequelize.STRING
+    },
+    Gender: {
         type: Sequelize.STRING
     }
 }, {

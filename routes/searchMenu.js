@@ -36,7 +36,9 @@ router.get('/:menuID', async (req, res) => {
                 attributes: ['ServiceRating', 'QualityRating']
             }]
         });
-
+        if (menuInfo === null) {
+            return res.send(404).status('Menu not found');
+        }
         const menuTags = formatTags(menuInfo.TaggedMenus);
         serviceRating = averageRating(menuInfo.MenuReviews, 'ServiceRating');
         qualityRating = averageRating(menuInfo.MenuReviews, 'QualityRating');
@@ -156,11 +158,10 @@ const computeMenuRating = (qualityAverage, serviceAverage, menuItemsAverage, nrM
     nrMenuRatings = parseFloat(nrMenuRatings);
     nrMenuItemRatings = parseFloat(nrMenuItemRatings);
     const totalRatings = nrMenuItemRatings + nrMenuRatings;
-    const menuRatings = ((qualityAverage + serviceAverage)/2)/(2*nrMenuRatings/totalRatings);
+    const menuRatings = ((qualityAverage + serviceAverage))/(2*nrMenuRatings/totalRatings);
     const itemRatings = menuItemsAverage/(nrMenuItemRatings/totalRatings);
     console.log(menuRatings);
     console.log(itemRatings);
     return  ((menuRatings + itemRatings)/2).toFixed(1);
 };
-
 module.exports = router;

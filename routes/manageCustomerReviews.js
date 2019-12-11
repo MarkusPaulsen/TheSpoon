@@ -14,8 +14,6 @@ const Restaurant = require('../models/restaurants.js');
 // req.username for retrieving customers username.
 // Get all  reviews of a customer
 
-//TODO: Should it also return some information about the restaurant??
-
 router.get('/', auth, isCustomer , async (req, res) => {
     try {
         const reviews = await MenuReview.findAll ({
@@ -49,6 +47,7 @@ router.get('/', auth, isCustomer , async (req, res) => {
             });
             formattedItemReview = await Promise.all(formattedItemReview);
             return {
+                menuReviewID: r.Review_ID,
                 restaurantName: r.Menu.Restaurant.Name,
                 menuID: r.Menu_ID,
                 menuName: r.Menu.Name,
@@ -79,8 +78,10 @@ router.delete('/:reviewID', auth, isCustomer, async (req, res) => {
         }
     });
     // If no review is found, return 404 Not found.
-    if (reviewFound.length <= 0) return res.status(404).send('Menu not found');
-
+    if (reviewFound === null) {
+        return res.status(404).send('Review not found');
+    }
+    
     // Delete review from system.
     if (reviewFound.Username === req.username) {
         await MenuReview.destroy({
