@@ -19,7 +19,7 @@ const Customer = db.define('Customer', {
         type: Sequelize.STRING
     },
     AgeRange: {
-        type: Sequelize.DATE
+        type: Sequelize.STRING
     },
     Email: {
         type: Sequelize.STRING
