@@ -74,10 +74,10 @@ export default class ReviewAddMenu extends Component {
     return (
       <View style={styles.container}>
         <View>
-          <BackButton navigation={this.props.navigation} />
           <View style={styles.header}>
             <Text style={Typography.FONT_H3_BLACK}>Choose Menu</Text>
           </View>
+          <BackButton navigation={this.props.navigation} />
         </View>
         <View style={styles.resultList}>
           <FlatList

@@ -46,7 +46,7 @@ export default class ReviewAddRestaurant extends Component {
         headers: {
           accept: "application/json",
           "x-auth-token": JSON.parse(token),
-          "Content-Type":"application/json"
+          "Content-Type": "application/json"
         }
       });
       const responseJson = await response.json();
@@ -57,7 +57,7 @@ export default class ReviewAddRestaurant extends Component {
         }));
         this.setState({ restaurants });
       }
-      if(!response.ok){
+      if (!response.ok) {
         console.log("Fetching menus failed");
       }
     } catch (e) {
@@ -108,10 +108,10 @@ export default class ReviewAddRestaurant extends Component {
     return (
       <View style={styles.container}>
         <View>
-          <BackButton navigation={this.props.navigation} />
           <View style={styles.header}>
             <Text style={Typography.FONT_H3_BLACK}>Choose Restaurant</Text>
           </View>
+          <BackButton navigation={this.props.navigation} />
         </View>
         <View style={{ alignItems: "center" }}>
           <View style={[styles.searchBar, { marginTop: 20 }]}>

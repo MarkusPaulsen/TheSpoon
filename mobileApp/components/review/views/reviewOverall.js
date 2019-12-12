@@ -121,12 +121,12 @@ export default class ReviewOverall extends Component {
     return (
       <View style={styles.container}>
         <View>
-          <BackButton navigation={this.props.navigation} />
           <View style={styles.header}>
             <Text style={[Typography.FONT_H3_BLACK, { textAlign: "center" }]}>
               What's your overall{"\n"}impression?
             </Text>
           </View>
+          <BackButton navigation={this.props.navigation} />
         </View>
         <View style={{ alignItems: "center", flex: 5 }}>
           <Text

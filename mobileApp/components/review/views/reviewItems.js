@@ -57,10 +57,10 @@ export default class ReviewItems extends Component {
     return (
       <View style={styles.container}>
         <View>
-          <BackButton navigation={this.props.navigation} />
           <View style={styles.header}>
             <Text style={Typography.FONT_H3_BLACK}>Write review</Text>
           </View>
+          <BackButton navigation={this.props.navigation} />
         </View>
         <FlatList
           data={this.state.menuItems}
