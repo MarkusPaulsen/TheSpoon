@@ -5,10 +5,28 @@ export const STUB_LOGIN = `http://192.168.1.110:8080/api/user/login/`;
 export const SERVER_LOGIN = `https://thespoon.herokuapp.com/api/user/login`;
 
 //Search
-export const STUB_SEARCH =
-  "http://192.168.1.110:8080/api/user/customer/menu/searchByMenuItem?menuItemName={searchString}";
-export const SERVER_SEARCH =
-  "https://thespoon.herokuapp.com/api/user/customer/menu/searchByMenuItem?menuItemName={searchString}";
+export const STUB_SEARCH = (searchString, lat, long )=> {
+  let url =
+    "http://192.168.1.110:8080/api/user/customer/menu/searchByMenuItem?menuItemName=";
+  url += searchString;
+  url +="&${";
+  url += lat;
+  url +="}&${";
+  url += long;
+  url += "}";
+  return url;
+};
+export const SERVER_SEARCH = (searchString, lat, long )=> {
+  let url =
+    "https://thespoon.herokuapp.com/api/user/customer/menu/searchByMenuItem?menuItemName=";
+  url += searchString;
+  url +="&${";
+  url +=lat;
+  url +="}&${";
+  url += long;
+  url += "}";
+  return url;
+};
 
 //MenuPage
 export const STUB_GET_MENUITEM = menuId => {
