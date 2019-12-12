@@ -3,6 +3,18 @@
 var utils = require('../utils/writer.js');
 var Frikk = require('../service/FrikkService');
 
+module.exports.apiUserCustomerMenuMenuIDMenuItemMenuItemIDReviewGET = function apiUserCustomerMenuMenuIDMenuItemMenuItemIDReviewGET (req, res, next) {
+  var menuID = req.swagger.params['menuID'].value;
+  var menuItemID = req.swagger.params['menuItemID'].value;
+  Frikk.apiUserCustomerMenuMenuIDMenuItemMenuItemIDReviewGET(menuID,menuItemID)
+    .then(function (response) {
+      utils.writeJson(res, response);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
+};
+
 module.exports.getMenuCustomer = function getMenuCustomer (req, res, next) {
   var menuID = req.swagger.params['menuID'].value;
   Frikk.getMenuCustomer(menuID)

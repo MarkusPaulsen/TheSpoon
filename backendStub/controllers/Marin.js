@@ -36,6 +36,28 @@ module.exports.apiUserCustomerReviewReviewIDDELETE = function apiUserCustomerRev
     });
 };
 
+module.exports.apiUserOwnerRestaurantReviewGET = function apiUserOwnerRestaurantReviewGET (req, res, next) {
+  Marin.apiUserOwnerRestaurantReviewGET()
+    .then(function (response) {
+      utils.writeJson(res, response);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
+};
+
+module.exports.apiUserOwnerRestaurantReviewReviewIDPOST = function apiUserOwnerRestaurantReviewReviewIDPOST (req, res, next) {
+  var reviewID = req.swagger.params['reviewID'].value;
+  var body = req.swagger.params['body'].value;
+  Marin.apiUserOwnerRestaurantReviewReviewIDPOST(reviewID,body)
+    .then(function (response) {
+      utils.writeJson(res, response);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
+};
+
 module.exports.deleteMenuItem = function deleteMenuItem (req, res, next) {
   var menuID = req.swagger.params['menuID'].value;
   var menuItemID = req.swagger.params['menuItemID'].value;
