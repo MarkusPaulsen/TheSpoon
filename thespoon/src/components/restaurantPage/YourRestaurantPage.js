@@ -35,13 +35,18 @@ import Menu from "./Items/Menu";
 class YourRestaurantPage extends Component {
     constructor(props) {
         super(props);
+
+        // this.handleSubmit = this.handleSubmit.bind(this);
+        this.update = this.update.bind(this);
+
         this.state = {
             restaurant: {},
             menus: [],
             serverMessageFinishedLoadingRestaurantData:"",
             serverMessageFinishedLoadingMenuData:"",
             finishedLoadingRestaurantData: false,
-            finishedLoadingMenuData: false
+            finishedLoadingMenuData: false,
+            toUpdate: false
         };
     }
 
@@ -138,6 +143,115 @@ class YourRestaurantPage extends Component {
         this.$menuData.unsubscribe();
     }
 
+    componentDidUpdate(prevProps, prevState, snapshot) {
+
+
+        if(this.state.toUpdate) {
+
+            this.setState({toUpdate: false});
+
+            this.$restaurantdata.unsubscribe();
+            this.$menuData.unsubscribe();
+
+
+
+            const thisTemp = this;
+            this.$restaurantdata = ajax({
+                url: paths["restApi"]["restaurant"],
+                method: "GET",
+                headers: {"X-Auth-Token": thisTemp.props.token},
+                timeout: timeout,
+                responseType: "text"
+            })
+                .pipe(
+                    exhaustMap((next) => {
+                        let response = JSON.parse(next.response);
+                        return bindCallback(thisTemp.setState).call(thisTemp, {
+                            restaurant: response
+                        });
+                    }),
+                    catchError((error) => {
+                        throw error
+                    }))
+                .subscribe(
+                    (next) => {
+                        thisTemp.setState({serverMessageFinishedLoadingRestaurantData: "", finishedLoadingRestaurantData: true});
+                    }, (error) => {
+                        switch (error.name) {
+                            case "AjaxTimeoutError":
+                                thisTemp.setState({serverMessageFinishedLoadingRestaurantData: ""  +"The request timed out.", finishedLoadingRestaurantData: true});
+                                break;
+                            case "InternalError":
+                            case "AjaxError":
+                                if (error.status === 0 && error.response === "") {
+                                    thisTemp.setState({serverMessageFinishedLoadingRestaurantData: "There is no connection to the server.", finishedLoadingRestaurantData: true});
+                                } else if (error.status === 400) {
+                                    this.props.openRestaurantConfiguration();
+                                    thisTemp.setState({serverMessageFinishedLoadingRestaurantData: "", finishedLoadingRestaurantData: true});
+                                } else {
+                                    thisTemp.setState({serverMessageFinishedLoadingRestaurantData: error.response, finishedLoadingRestaurantData: true});
+                                }
+                                break;
+                            default:
+                                console.log(error);
+                                thisTemp.setState({serverMessageFinishedLoadingRestaurantData: "Something is not like it is supposed to be.", finishedLoadingMenuData: true});
+                                break;
+                        }
+                    }
+                );
+
+            this.$menuData = ajax({
+                url: paths["restApi"]["menu"],
+                method: "GET",
+                headers: {"X-Auth-Token": thisTemp.props.token},
+                timeout: timeout,
+                responseType: "text"
+            })
+                .pipe(
+                    exhaustMap((next) => {
+                        let response = JSON.parse(next.response);
+                        return bindCallback(thisTemp.setState).call(thisTemp, {
+                            menus: response
+                        });
+                    }),
+                    catchError((error) => {
+                        throw error
+                    }))
+                .subscribe(
+                    (next) => {
+                        thisTemp.setState({serverMessageFinishedLoadingMenuData: "", finishedLoadingMenuData: true});
+                    }, (error) => {
+                        switch (error.name) {
+                            case "AjaxTimeoutError":
+                                thisTemp.setState({serverMessageFinishedLoadingMenuData: "The request timed out.", finishedLoadingMenuData: true});
+                                break;
+                            case "InternalError":
+                            case "AjaxError":
+                                if (error.status === 0 && error.response === "") {
+                                    thisTemp.setState({serverMessageFinishedLoadingMenuData: "There is no connection to the server.", finishedLoadingMenuData: true});
+                                } else {
+                                    thisTemp.setState({serverMessageFinishedLoadingMenuData: error.response, finishedLoadingMenuData: true});
+                                }
+                                break;
+                            default:
+                                console.log(error);
+                                thisTemp.setState({serverMessageFinishedLoadingMenuData: "Something is not like it is supposed to be.", finishedLoadingMenuData: true});
+                                break;
+                        }
+                    }
+                );
+        }
+    }
+
+
+    update() {
+        this.setState({toUpdate: true});
+        this.forceUpdate()
+    }
+
+    //componentWillUpdate(nextProps, nextState, nextContext) {
+    //}
+
     render() {
         if (typeof this.props.loginStatus != "undefined" && this.props.loginStatus === "logged in") {
             if (!this.state.finishedLoadingRestaurantData || !this.state.finishedLoadingMenuData) {
@@ -159,6 +273,7 @@ class YourRestaurantPage extends Component {
                                         />
                                     </div>
                                     <div className="col-sm-8">
+                                        <button type="button" onClick={this.update}>update</button>
                                         <div className="error-block">
                                             <small>{this.state.serverMessageFinishedLoadingRestaurantData}</small>
                                         </div>
@@ -168,7 +283,7 @@ class YourRestaurantPage extends Component {
                                         <h3 className="title">Your menus</h3>
                                         <div className="no-menus">
                                             <button className="wide">
-                                                <FilterLink filter={modalVisibilityFilters.SHOW_ADD_MENU}>
+                                                <FilterLink filter={modalVisibilityFilters.SHOW_ADD_MENU} currentRestaurantPage={this}>
                                                     Create new menu
                                                 </FilterLink>
                                             </button>
@@ -184,6 +299,7 @@ class YourRestaurantPage extends Component {
                                                         tags={menu.tags}
                                                         description={menu.description}
                                                         menuItems={menu.menuItems}
+                                                        currentRestaurantPage={this}
                                                     />
                                                 );
                                             })

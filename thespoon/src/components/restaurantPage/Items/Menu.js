@@ -40,7 +40,7 @@ class Menu extends Component {
                     })}
                 </div>
                 <div className="modal-button">
-                    <FilterLink filter={modalVisibilityFilters.SHOW_EDIT_MENU} currentMenu={this.props}><IconEditPink/> Edit menu</FilterLink>
+                    <FilterLink filter={modalVisibilityFilters.SHOW_EDIT_MENU} currentMenu={this.props} currentRestaurantPage={this.props.currentRestaurantPage}><IconEditPink/> Edit menu</FilterLink>
                 </div>
                 <div className="row">
                     <div className="col"><hr/></div>

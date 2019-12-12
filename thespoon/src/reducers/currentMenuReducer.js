@@ -11,6 +11,10 @@ const currentMenuReducer = (state = initialStateCurrentMenuReducer, action) => {
             return Object.assign({}, state, {
                 currentMenuItem: action.currentMenuItem
             });
+        case menuActions.SET_CURRENT_RESTAURANT_PAGE:
+            return Object.assign({}, state, {
+                currentRestaurantPage: action.currentRestaurantPage
+            });
         default:
             return Object.assign({}, state, {});
     }

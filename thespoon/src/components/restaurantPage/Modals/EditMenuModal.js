@@ -156,6 +156,8 @@ class EditMenuModal extends Component {
             .pipe(take(1))
             .subscribe(
                 () => {
+                    thisTemp.props.currentRestaurantPage.setState({toUpdate: true});
+                    thisTemp.props.currentRestaurantPage.forceUpdate();
                     thisTemp.props.onHide();
                 }, (error) => {
                     switch (error.name) {
@@ -194,6 +196,8 @@ class EditMenuModal extends Component {
             .pipe(take(1))
             .subscribe(
                 () => {
+                    thisTemp.props.currentRestaurantPage.setState({toUpdate: true});
+                    thisTemp.props.currentRestaurantPage.forceUpdate();
                     thisTemp.props.onHide();
                 }, (error) => {
                     switch (error.name) {
@@ -277,7 +281,7 @@ class EditMenuModal extends Component {
 const mapStateToProps = (state) => {
     return {
         token: state.logInReducer.token,
-        currentMenu: state.currentMenuReducer.currentMenu
+        currentRestaurantPage: state.currentMenuReducer.currentRestaurantPage
     };
 };
 
