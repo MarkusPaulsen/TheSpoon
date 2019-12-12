@@ -406,7 +406,8 @@ const styles = StyleSheet.create({
   },
   text: {
     flex: 1,
-    marginTop: 60
+    marginTop: 60,
+    marginLeft: 25
   },
   textInput: {
     height: 42,

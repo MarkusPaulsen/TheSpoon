@@ -17,7 +17,8 @@ export default class ItemReview extends Component {
     super(props);
     this.state = {
       reviews: null,
-      item: ""
+      item: "",
+      isLoading: true
     };
   }
 
@@ -55,14 +56,13 @@ export default class ItemReview extends Component {
         }
       );
       const responseJson = await response.json();
-      this.setState({reviews:
-        responseJson
-      });
-      if(response.ok){
+      this.setState({ reviews: responseJson });
+      if (response.ok) {
         console.log("Success");
+        this.setState({ isLoading: false });
       }
-      if(!response.ok){
-        console.log("Failed")
+      if (!response.ok) {
+        console.log("Failed");
       }
     } catch (e) {
       console.error(e);
@@ -75,43 +75,65 @@ export default class ItemReview extends Component {
         <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
           <Icon name={"chevron-left"} size={40} style={styles.button} />
         </TouchableOpacity>
-        <View style={{ alignItems: "center" }}>
-          <Text
-            style={[
-              Typography.FONT_H3_BLACK,
-              { alignSelf: "center", marginBottom: 30 }
-            ]}
-          >
-            {this.state.item.menuItemName}
-          </Text>
-          <View style={{ flexDirection: "row" }}>
-            <Text style={Typography.FONT_MED_BLACK}>Total Score: </Text>
-            <Icon name={"star"} size={20} color={Colors.PINK} />
-            <Text style={Typography.FONT_MED_BLACK}>
-              {this.state.item.score}
-            </Text>
-          </View>
-          <FlatList
-            data={this.state.reviews}
-            renderItem={({item}) => (
-                <View style={styles.review}>
-                  <View
-                      style={{ flexDirection: "row", justifyContent: "space-between" }}
-                  >
-                    <Text style={Typography.FONT_MED_BLACK}>{item.username}</Text>
-                    <Text style={Typography.FONT_MED_BLACK}>{item.date}</Text>
+        {!this.state.isLoading ? (
+          this.state.reviews.length !== 0 ? (
+            <View style={{ alignItems: "center" }}>
+              <Text
+                style={[
+                  Typography.FONT_H3_BLACK,
+                  { alignSelf: "center", marginBottom: 30 }
+                ]}
+              >
+                {this.state.item.menuItemName}
+              </Text>
+              <View style={{ flexDirection: "row", marginBottom: 20 }}>
+                <Text style={Typography.FONT_MED_BLACK}>Total Score: </Text>
+                <Icon name={"star"} size={20} color={Colors.PINK} />
+                <Text style={Typography.FONT_MED_BLACK}>
+                  {this.state.item.score}
+                </Text>
+              </View>
+              <FlatList
+                data={this.state.reviews}
+                renderItem={({ item }) => (
+                  <View style={styles.review}>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        justifyContent: "space-between"
+                      }}
+                    >
+                      <Text style={Typography.FONT_MED_BLACK}>
+                        {item.username}
+                      </Text>
+                      <Text style={Typography.FONT_MED_BLACK}>{item.Date}</Text>
+                    </View>
+                    <View style={{ alignItems: "flex-start" }}>
+                      {this.getRating(item.rating)}
+                    </View>
+                    <Text
+                      style={[styles.underline, Typography.FONT_REGULAR_THIN]}
+                    >
+                      {item.content}
+                    </Text>
                   </View>
-                  <View style={{ alignItems: "flex-start" }}>
-                    {this.getRating(item.rating)}
-                  </View>
-                  <Text style={[styles.underline, Typography.FONT_REGULAR_THIN]}>
-                    {item.content}
-                  </Text>
-                </View>
-            )}
-            keyExtractor={(index) => index.toString()}
-          />
-        </View>
+                )}
+                keyExtractor={index => index.toString()}
+              />
+            </View>
+          ) : (
+            <View style={{ marginTop: 75 }}>
+              <Text
+                style={[
+                  Typography.FONT_H3_BLACK,
+                  { textAlign: "center", alignSelf: "center" }
+                ]}
+              >
+                This menu doesn't have any reviews yet
+              </Text>
+            </View>
+          )
+        ) : null}
       </View>
     );
   }
