@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Alert,
   StyleSheet,
+  Image,
   AsyncStorage,
   FlatList,
   SafeAreaView,
@@ -112,13 +113,14 @@ export default class Profile extends Component {
       });
       const responseJson = await response.json();
       const reviews = responseJson.map(index => ({
-        reviewID: index.menuID.toString(),
+        menuReviewID: index.menuReviewID.toString(),
+        menuID: index.menuID,
+        menuName: index.menuName,
+        restaurantName: index.restaurantName,
         serviceRating: index.serviceRating,
         qualityOverPriceRating: index.qualityOverPriceRating,
-        receiptImageID: index.receiptImageID,
         date: index.date,
-        menu: index.menuID,
-        restaurant: index.menuID,
+        receiptImageID: index.receiptImageID,
         status: index.status,
         menuItemsReviews: index.menuItemsReviews
       }));
@@ -135,6 +137,8 @@ export default class Profile extends Component {
   }
 
   async deleteReview(reviewID, token) {
+    console.log(reviewID);
+    console.log(token);
     try {
       const response = await fetch(Api.SERVER_DELETE_REVIEW(reviewID), {
         method: "DELETE",
@@ -143,12 +147,15 @@ export default class Profile extends Component {
           "x-auth-token": JSON.parse(token)
         }
       });
+      console.log(response);
       const responseJson = await response.json();
       console.log(responseJson);
       if (response.ok) {
+        console.log("Deletion success");
         alert("Review deleted");
       }
       if (!response.ok) {
+        console.log("Deletion failed");
         alert("Deletion failed");
       }
     } catch (error) {
@@ -186,7 +193,7 @@ export default class Profile extends Component {
                 <View style={{ flexDirection: "row" }}>
                   <Text
                     style={[
-                      Typography.FONT_H4_BLACK,
+                      Typography.FONT_MED_BLACK,
                       { marginTop: 12, marginLeft: 21, marginBottom: 0 }
                     ]}
                   >
@@ -206,12 +213,12 @@ export default class Profile extends Component {
                 }}
               >
                 {status === "accepted" ? (
-                  <Icon name={"done"} size={35} color={Colors.GREEN} />
+                  <Icon name={"done"} size={25} color={Colors.GREEN} />
                 ) : null}
                 {status === "declined" ? (
                   <Icon name={"clear"} size={35} color={Colors.PINK} />
                 ) : null}
-                {status === "pending" ? (
+                {status === "Pending" ? (
                   <Text style={[Typography.FONT_MED_GRAY, { marginTop: 12 }]}>
                     Pending...
                   </Text>
@@ -230,7 +237,7 @@ export default class Profile extends Component {
       return (
         <Modal animationType="slide" transparent={false} visible={visible}>
           <ScrollView>
-            <View
+            <SafeAreaView
               style={[
                 styles.modalContainer,
                 {
@@ -262,27 +269,37 @@ export default class Profile extends Component {
                   marginTop: 20
                 }}
               >
-                DISPLAY IMAGE HERE
+                <Image
+                  style={{ width: 120, height: 120 }}
+                  source={{
+                    uri:
+                      "https://the-spoon.s3.eu-central-1.amazonaws.com/" +
+                      review.receiptImageID
+                  }}
+                />
               </Text>
               <View style={[styles.field, { marginVertical: 30 }]}>
                 <Text style={Typography.FONT_H4_BLACK}>Restaurant </Text>
-                <Text style={Typography.FONT_H4_PINK}>{review.restaurant}</Text>
+                <Text style={Typography.FONT_H4_PINK}>
+                  {review.restaurantName}
+                </Text>
               </View>
               <View style={[styles.field, { marginBottom: 10 }]}>
                 <Text style={Typography.FONT_H4_BLACK}>Menu </Text>
-                <Text style={Typography.FONT_H4_PINK}>{review.menu}</Text>
+                <Text style={Typography.FONT_H4_PINK}>{review.menuName}</Text>
               </View>
               <View style={styles.line} />
               <Text style={[Typography.FONT_H4_BLACK, { marginTop: 10 }]}>
                 What did you eat/drink?
               </Text>
               {review.menuItemsReviews.map(item => {
+                //TODO: add menuItemName when it is in EP
                 return (
-                  <View key={item.itemName}>
+                  <View key={item.menuItemID}>
                     <View style={[styles.field, { marginVertical: 15 }]}>
                       <Text style={Typography.FONT_MED_BLACK}>Item</Text>
                       <Text style={Typography.FONT_MED_PINK}>
-                        {item.itemName}
+                        {item.menuItemName}
                       </Text>
                     </View>
                     {this.getRating(item.score)}
@@ -331,8 +348,14 @@ export default class Profile extends Component {
                         },
                         {
                           text: "Yes",
-                          onPress: () => {console.log("Yes Pressed");
-                        //  this.deleteReview(review.reviewID, this.state.token)
+                          onPress: () => {
+                            console.log("Yes Pressed");
+                            this.deleteReview(
+                              review.menuReviewID,
+                              this.state.token
+                            );
+                            this.setState({ modalItem: null });
+                            this.getUserReviews(this.state.token);
                           }
                         }
                       ],
@@ -347,7 +370,7 @@ export default class Profile extends Component {
                   </Text>
                 </TouchableOpacity>
               </View>
-            </View>
+            </SafeAreaView>
           </ScrollView>
         </Modal>
       );
@@ -415,16 +438,17 @@ export default class Profile extends Component {
               <SafeAreaView style={styles.reviewsList}>
                 <FlatList
                   data={this.state.reviews}
+                  extraData={this.state}
                   contentContainerStyle={{ flex: 1 }}
                   renderItem={({ item }) => (
                     <YourReviews
-                      menu={item.menu}
-                      restaurant={item.restaurant}
+                      menu={item.menuName}
+                      restaurant={item.restaurantName}
                       status={item.status}
                       item={item}
                     />
                   )}
-                  keyExtractor={item => item.reviewID}
+                  keyExtractor={item => item.menuReviewID}
                 />
               </SafeAreaView>
               <FullReviewModal
