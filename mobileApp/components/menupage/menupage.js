@@ -8,8 +8,6 @@ import {
   SafeAreaView,
   TouchableOpacity,
   FlatList,
-  Modal,
-
 } from "react-native";
 import MapView from "react-native-maps";
 import * as Typography from "../../styles/typography";
@@ -140,7 +138,6 @@ export default class Menu extends Component {
       isLoading: true,
       dishItems: "",
       drinkItems: "",
-      modalVisible: false
     };
   }
 
@@ -264,10 +261,6 @@ export default class Menu extends Component {
     }
   }
 
-  setModalVisible() {
-    this.setState({ modalVisible: !this.state.modalVisible });
-  }
-
   render() {
     return (
       <SafeAreaView style={styles.container}>
@@ -340,7 +333,11 @@ export default class Menu extends Component {
                 <FlatList
                   data={this.state.dishItems}
                   renderItem={({ item }) => (
-                    <TouchableOpacity onPress={() => this.setModalVisible()}>
+                    <TouchableOpacity onPress={() => {
+                      this.props.navigation.navigate("ItemReview", {
+                        item: item
+                      });
+                    }}>
                       <MenuItem
                         id={item.id}
                         menuItemName={item.menuItemName}

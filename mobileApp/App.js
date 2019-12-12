@@ -5,6 +5,7 @@ import SearchPage from "./components/search/search";
 import LandingPage from "./components/landingpage/landingpage";
 import LoadingPage from "./components/loading";
 import MenuPage from "./components/menupage/menupage";
+import ItemReview from "./components/menupage/ItemReview";
 
 import ReviewAddImage from "./components/review/views/reviewAddImage";
 import ReviewAddRestaurant from "./components/review/views/reviewAddRestaurant";
@@ -26,7 +27,8 @@ const SearchStack = createStackNavigator(
   {
     Search: SearchPage,
     Loading: LoadingPage,
-    Menu: MenuPage
+    Menu: MenuPage,
+    ItemReview: ItemReview
   },
   {
     initialRouteName: "Search",
@@ -43,7 +45,7 @@ const ReviewStack = createStackNavigator(
     ReviewAddItems: ReviewAddItems,
     ReviewItems: ReviewItems,
     ReviewOverall: ReviewOverall,
-      Login:LoginScreen
+    Login: LoginScreen
   },
   {
     initialRouteName: "ReviewAddImage",
