@@ -36,6 +36,11 @@ export const SERVER_GET_MENUITEM = menuId => {
   return `https://thespoon.herokuapp.com/api/user/customer/menu/${menuId}`;
 };
 
+//ItemReview
+export const SERVER_GET_ITEMREVIEWS = (menuID, menuItemID) => {
+  return  `https://thespoon.herokuapp.com/api/user/customer/menu/${menuID}/menuItem/${menuItemID}/review`;
+};
+
 //Profile
 export const STUB_PROFILE_USERINFO = `http://192.168.1.110:8080/api/user/customer/`;
 export const SERVER_PROFILE_USERINFO = `https://thespoon.herokuapp.com/api/user/customer/`;

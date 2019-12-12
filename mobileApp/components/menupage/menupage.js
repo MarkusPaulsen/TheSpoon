@@ -86,9 +86,7 @@ function MenuItem({
           }}
         >
           <Image
-            // USE THIS WHEN DB HAS REAL LINKS
-            //source={{uri:menuItemImage}}
-            source={require("../../assets/burgerPhoto.png")}
+            source={{ uri: menuItemImage }}
             style={[
               styles.imageCircle,
               { alignSelf: "center", marginBottom: 5 }
@@ -138,13 +136,15 @@ export default class Menu extends Component {
       searchResults: null,
       isLoading: true,
       dishItems: "",
-      drinkItems: ""
+      drinkItems: "",
+      menuID: null
     };
   }
 
   componentDidMount = async () => {
     const { navigation } = this.props;
     const menuId = navigation.getParam("menuId", "000");
+    this.setState({ menuID: menuId });
     const restaurantName = navigation.getParam(
       "restaurantName",
       "default value"
@@ -181,8 +181,8 @@ export default class Menu extends Component {
         type: index["type"]
       }));
       const restaurantInfo = {
-        latitude: responseJson["restaurant"]["latitude"],
-        longitude: responseJson["restaurant"]["longitude"],
+        latitude: parseInt(responseJson["restaurant"]["latitude"]),
+        longitude: parseInt(responseJson["restaurant"]["longitude"]),
         address: responseJson["restaurant"]["address"],
         city: responseJson["restaurant"]["city"],
         country: responseJson["restaurant"]["country"]
@@ -331,7 +331,8 @@ export default class Menu extends Component {
                     <TouchableOpacity
                       onPress={() => {
                         this.props.navigation.navigate("ItemReview", {
-                          item: item
+                          item: item,
+                          menuID: this.state.menuID
                         });
                       }}
                     >
@@ -364,15 +365,24 @@ export default class Menu extends Component {
                 <FlatList
                   data={this.state.drinkItems}
                   renderItem={({ item }) => (
-                    <MenuItem
-                      id={item.id}
-                      menuItemName={item.menuItemName}
-                      menuItemDescription={item.menuItemDescription}
-                      priceEuros={item.priceEuros + " €"}
-                      menuItemImage={item.menuItemImage}
-                      tags={item.tags}
-                      score={item.score}
-                    />
+                    <TouchableOpacity
+                      onPress={() => {
+                        this.props.navigation.navigate("ItemReview", {
+                          item: item,
+                          menuID: this.state.menuID
+                        });
+                      }}
+                    >
+                      <MenuItem
+                        id={item.id}
+                        menuItemName={item.menuItemName}
+                        menuItemDescription={item.menuItemDescription}
+                        priceEuros={item.priceEuros + " €"}
+                        menuItemImage={item.menuItemImage}
+                        tags={item.tags}
+                        score={item.score}
+                      />
+                    </TouchableOpacity>
                   )}
                   keyExtractor={item => item.id}
                 />

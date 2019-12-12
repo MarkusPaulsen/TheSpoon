@@ -126,6 +126,7 @@ export default class Search extends Component {
         accept: "application/json"
       });
       const responseJson = await response.json();
+      console.log(responseJson);
       if (response.ok) {
         const searchResults = responseJson.map(index => ({
           id: index.menu.menuID.toString(),
