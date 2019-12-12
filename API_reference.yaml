@@ -1,7 +1,7 @@
 swagger: "2.0"
 info:
   description: "This is the API reference of The Spoon project.\n \n VERSIONING: The version number works in this way: it's composed of two numbers separated by a point. The first number identifies the Sprint, so for example the version 2.1 of the API reference is related to the Sprint number 2. The second number starts from 0 and has to be increased by one each time the file is modified. The person who modifies this document is responsible for increasing the number.\n \n GROUPING OF ENDPOINTS: The endpoints are grouped by dividing them into customers' operations and owners' operations. All the endpoints that are not strictly related to customers nor owners remain inside the default group.\n \n AUTHENTICATION/AUTHORIZATION: The json web token returned when the login is performed is supposed to be put into x-auth-token header in the endpoints that require authorization"
-  version: "6.4"
+  version: "6.5"
   title: "The Spoon API reference"
 tags:
   - name: "customer"
@@ -1196,6 +1196,17 @@ definitions:
         type: "number"
       content:
         type: "string"
+  MenuItemReviewWithItemName:
+    type: "object"
+    properties:
+      menuItemID:
+        type: "integer"
+      menuItemName:
+        type: "string"
+      rating:
+        type: "number"
+      content:
+        type: "string"
   MenuReviewWithIDAndStatus:
     type: "object"
     properties:
@@ -1220,7 +1231,7 @@ definitions:
       menuItemsReviews:
         type: "array"
         items:
-          $ref: "#/definitions/MenuItemReview"
+          $ref: "#/definitions/MenuItemReviewWithItemName"
     example:
       menuReviewID: 34342
       menuID: 343
@@ -1231,7 +1242,7 @@ definitions:
       date: "2019-12-01"
       receiptImageID: 67
       status: "accepted"
-      menuItemsReviews: [{"menuItemID": 34, "rating": 4.1, "content": "That was delicious!"},{"menuItemID": 58, "rating": 0.5, "content": "It was an insult, I will never eat that trash again in my whole life"}]
+      menuItemsReviews: [{"menuItemID": 34, "menuItemName": "Pizza margherita", "rating": 4.1, "content": "That was delicious!"},{"menuItemID": 58, "menuItemName": "Pasta alla carbonara with cream", "rating": 0.5, "content": "It was an insult, I will never eat that trash again in my whole life"}]
   CustomerUsernameAndEmail:
     type: "object"
     properties:
