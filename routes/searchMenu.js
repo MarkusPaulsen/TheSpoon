@@ -12,8 +12,6 @@ const Tag = require('../models/tag.js');
 const ItemReview = require('../models/itemReview.js');
 const MenuReview = require('../models/menuReview.js');
 
-// TODO: Fix calculation of rating
-// TODO: Fix common function for computing average rating of a specific column in the DB.
 
 router.get('/:menuID', async (req, res) => {
     let serviceRating, qualityRating;
@@ -38,7 +36,9 @@ router.get('/:menuID', async (req, res) => {
                 attributes: ['ServiceRating', 'QualityRating']
             }]
         });
-
+        if (menuInfo === null) {
+            return res.send(404).status('Menu not found');
+        }
         const menuTags = formatTags(menuInfo.TaggedMenus);
         serviceRating = averageRating(menuInfo.MenuReviews, 'ServiceRating');
         qualityRating = averageRating(menuInfo.MenuReviews, 'QualityRating');
@@ -101,7 +101,28 @@ router.get('/:menuID', async (req, res) => {
     }
 });
 
-
+router.get('/:menuID/menuItem/:menuItemID/review', async (req, res) => {
+    try{
+        let itemReviews = await ItemReview.findAll({
+            attributes: ['Username', 'ItemRating', 'Content', 'Date'],
+            where: {
+                MI_ID: req.params.menuItemID
+            }
+        });
+        itemReviews = await itemReviews.map( async ir => {
+            return {
+                username: ir.Username,
+                rating: ir.ItemRating,
+                content: ir.Content,
+                Date: ir.Date
+            }
+        });
+        itemReviews = await Promise.all(itemReviews);
+        res.status(200).send(itemReviews)
+    } catch (error){
+        res.status(404).send(error +' :(');
+    }
+});
 
 
 const formatTags = (arr) => {
@@ -137,11 +158,10 @@ const computeMenuRating = (qualityAverage, serviceAverage, menuItemsAverage, nrM
     nrMenuRatings = parseFloat(nrMenuRatings);
     nrMenuItemRatings = parseFloat(nrMenuItemRatings);
     const totalRatings = nrMenuItemRatings + nrMenuRatings;
-    const menuRatings = ((qualityAverage + serviceAverage)/2)/(2*nrMenuRatings/totalRatings);
+    const menuRatings = ((qualityAverage + serviceAverage))/(2*nrMenuRatings/totalRatings);
     const itemRatings = menuItemsAverage/(nrMenuItemRatings/totalRatings);
     console.log(menuRatings);
     console.log(itemRatings);
     return  ((menuRatings + itemRatings)/2).toFixed(1);
 };
-
 module.exports = router;

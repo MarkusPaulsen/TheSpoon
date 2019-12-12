@@ -1,28 +1,32 @@
 //<editor-fold desc="React">
 import React, {Component} from "react";
-import {Redirect} from "react-router";
-//</editor-fold>
-//<editor-fold desc="Redux">
-import {connect} from "react-redux";
 //</editor-fold>
 //<editor-fold desc="RxJs">
 import {bindCallback, of, throwError} from "rxjs";
 import {ajax} from "rxjs/ajax";
-import {take, exhaustMap, map} from "rxjs/operators";
+import {exhaustMap, map, take} from "rxjs/operators";
+//</editor-fold>
+//<editor-fold desc="Redux">
+import {connect} from "react-redux";
 //</editor-fold>
 //<editor-fold desc="Bootstrap">
 import {Modal} from "react-bootstrap";
 //</editor-fold>
 //<editor-fold desc="Validator">
+import Form from "react-validation/build/form";
+import Input from "react-validation/build/input";
+import Button from "react-validation/build/button";
 import Textarea from "react-validation/build/textarea";
-import Form from 'react-validation/build/form';
-import Input from 'react-validation/build/input';
-import Button from 'react-validation/build/button';
-import FormValidator from "../../validation/FormValidator";
+import FormValidator from "../../../validation/FormValidator";
 //</editor-fold>
 
+//<editor-fold desc="Constants">
+import {paths} from "../../../constants/paths";
+//</editor-fold>
 //<editor-fold desc="Icons">
-import {IconExit} from "../Icons";
+import {IconExit} from "../../Icons";
+import {timeout} from "../../../constants/timeout";
+
 //</editor-fold>
 
 
@@ -32,23 +36,62 @@ class AddMenuModal extends Component {
         super(props);
 
         this.validator = new FormValidator([{
-                field: "name",
-                method: "isEmpty",
-                validWhen: false,
-                message: "Menu name is required"
+            field: "name",
+            method: "isEmpty",
+            validWhen: false,
+            message: "Name is required."
+        }, /*{
+            field: "name",
+            method: "isAlphanumeric",
+            validWhen: true,
+            message: "Name is required to be alphanumeric."
+        },*/ {
+            field: "name",
+            method: (name) => {return name.length >= 1},
+            validWhen: true,
+            message: "Name is required to be longer or equal 1 characters."
+        }, {
+            field: "description",
+            method: "isEmpty",
+            validWhen: false,
+            message: "Description name is required."
+        }, /*{
+            field: "description",
+            method: "isAlphanumeric",
+            validWhen: true,
+            message: "Description is required to be alphanumeric."
+        },*/ {
+            field: "description",
+            method: (description) => {return description.length >= 1},
+            validWhen: true,
+            message: "Description is required to be longer or equal 1 characters."
+        }, {
+            field: "tags",
+            method: "isEmpty",
+            validWhen: false,
+            message: "Tags are required."
+        }, /*{
+            field: "tags",
+            method: "isAlphanumeric (plus comma)",
+            validWhen: true,
+            message: "Tags are required to be alphanumeric."
+        },*/ {
+            field: "tags",
+            method: (tags) => {
+                return tags.split(",")
+                    .map((tag) => {
+                        return tag.trim()
+                    })
+                    .map((tag) => {
+                        return tag.length >= 1
+                    })
+                    .reduce((total, minLength) => {
+                        return total && minLength
+                    }, true)
             },
-            {
-                field: "description",
-                method: "isEmpty",
-                validWhen: false,
-                message: "Description name is required"
-            },
-            {
-                field: "tags",
-                method: "isEmpty",
-                validWhen: false,
-                message: "Tags are required"
-            }]);
+            validWhen: true,
+            message: "Each tag is required to be longer or equal 1 characters."
+        }]);
 
         this.handleSubmit = this.handleSubmit.bind(this);
 
@@ -77,7 +120,7 @@ class AddMenuModal extends Component {
                 return bindCallback(thisTemp.setState).call(thisTemp, {
                     name: values.name,
                     description: values.description,
-                    tags: values.tags.split(","),
+                    tags: values.tags.split(",").map(tag => tag.trim())
                 });
             }))
             .pipe(exhaustMap(() => {
@@ -88,44 +131,48 @@ class AddMenuModal extends Component {
                 });
             }))
             .pipe(exhaustMap(() => {
-                console.log(thisTemp.state)
                 if (thisTemp.state.validation.isValid) {
                     thisTemp.setState({serverMessage: "Menu is created"});
                     return ajax({
-                        url: "/api/user/owner/restaurant/menu",
+                        url: paths["restApi"]["menu"],
                         method: "POST",
                         headers: {"Content-Type": "application/json", "X-Auth-Token": this.props.token},
                         body: {
                             name: thisTemp.state.name,
                             description: thisTemp.state.description,
                             tags: thisTemp.state.tags
-                        }
+                        },
+                        timeout: timeout,
+                        responseType: "text"
                     })
                 } else {
-                    thisTemp.setState({serverMessage: ""});
-                    return throwError({status: 0});
+                    return throwError({
+                        name: "InternalError",
+                        status: 0,
+                        response: null
+                    });
                 }
             }))
             .pipe(take(1))
             .subscribe(
                 () => {
-                    thisTemp.setState(
-                        {serverMessage: <Redirect to={{pathname: "/Mainpage"}}/>}
-                    );
                     thisTemp.props.onHide();
-                },
-                (error) => {
-                    switch (error.status) {
-                        case 400:
-                            thisTemp.setState({serverMessage: "Access denied"});
+                }, (error) => {
+                    switch (error.name) {
+                        case "AjaxTimeoutError":
+                            thisTemp.setState({serverMessage: "The request timed out."});
                             break;
-                        case 404:
-                            thisTemp.setState({serverMessage: "No connection to the server"});
-                            break;
-                        case 0:
+                        case "InternalError":
+                        case "AjaxError":
+                            if (error.status === 0 && error.response === "") {
+                                thisTemp.setState({serverMessage: "There is no connection to the server."});
+                            } else {
+                                thisTemp.setState({serverMessage: error.response});
+                            }
                             break;
                         default:
-                            thisTemp.setState({serverMessage: "General error"});
+                            console.log(error);
+                            thisTemp.setState({serverMessage: "Something is not like it is supposed to be."});
                             break;
                     }
                 }
@@ -140,9 +187,11 @@ class AddMenuModal extends Component {
             this.state.validation;
         return (
             <Modal.Body>
-                <button className="exit" onClick={this.props.onHide}><IconExit /></button>
+                <button className="exit" onClick={this.props.onHide}><IconExit/></button>
                 <div className="modal-wrapper add-menu">
-                    <Form ref={(c) => {this.form = c; }} onSubmit={(e) => this.handleSubmit(e)}>
+                    <Form ref={(c) => {
+                        this.form = c;
+                    }} onSubmit={(e) => this.handleSubmit(e)}>
                         <h2 className="title">Create menu</h2>
 
                         <div className="input-field">
@@ -178,6 +227,7 @@ class AddMenuModal extends Component {
             </Modal.Body>
         )
     }
+
     //</editor-fold>
 }
 

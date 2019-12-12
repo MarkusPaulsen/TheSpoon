@@ -20,10 +20,17 @@ import Layout from "./../layout/Layout.js"
 class Homepage extends Component {
     //<editor-fold desc="Render">
     render() {
-        if(typeof this.props.loginStatus != "undefined" && this.props.loginStatus === "logged in"){
-            return(
-                <Redirect to={{pathname: "/Mainpage/"}}/>
-            );
+        if(typeof this.props.loginStatus != "undefined" && this.props.loginStatus === "logged in") {
+            if(typeof this.props.isRestaurantOwner != "undefined" && this.props.isRestaurantOwner) {
+                return(
+                    <Redirect to={{pathname: "/Mainpage/"}}/>
+                );
+            }
+            else {
+                return(
+                    <Redirect to={{pathname: "/CustomerPage/"}}/>
+                );
+            }
         }
         else {
             return (
@@ -34,7 +41,7 @@ class Homepage extends Component {
                                 <div className="row">
                                     <div className="col-sm-8">
                                         <h1 className="title">Share your menus</h1>
-                                        <button className="normal"><FilterLink filter={modalVisibilityFilters.SHOW_REGISTER_RESTAURANT_OWNER}>Get started</FilterLink></button>
+                                        <button className="normal"><FilterLink filter={modalVisibilityFilters.SHOW_CHOOSE_ROLE}>Get started</FilterLink></button>
                                     </div>
                                 </div>
                             </div>
@@ -50,6 +57,7 @@ class Homepage extends Component {
 //<editor-fold desc="Redux">
 const mapStateToProps = (state) => {
     return {
+        isRestaurantOwner: state.logInReducer.isRestaurantOwner,
         loginStatus: state.logInReducer.loginStatus
     };
 };
