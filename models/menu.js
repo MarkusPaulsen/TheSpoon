@@ -23,7 +23,16 @@ const Menu = db.define('Menu', {
             type: Sequelize.STRING
         },
         Rating: {
-            type:  Sequelize.INTEGER
+            type:  Sequelize.FLOAT
+        },
+        Quality: {
+            type: Sequelize.FLOAT
+        },
+        Service: {
+            type: Sequelize.FLOAT
+        },
+        AveragePrice: {
+            type: Sequelize.FLOAT
         }
     },
     {
@@ -48,10 +57,14 @@ Menu.hasMany(TaggedMenu, {
     foreignKey: 'Menu_ID'
 });
 
-
 Menu.hasMany(MenuReview, {
     foreignKey: 'Menu_ID'
 });
+
+MenuReview.belongsTo(Menu, {
+    foreignKey: 'Menu_ID'
+});
+
 
 
 module.exports = Menu;

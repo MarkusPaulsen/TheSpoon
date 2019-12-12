@@ -53,14 +53,15 @@ describe('/api/user/login', () => {
             };
 
             const res = await exec();
-            expect(res.status).toBe(201);
 
             //remove the previously created user from the database
             await Owner.destroy({
                 where: {
                     Username: "xXEmilioXx"
                 }
-            })
+            });
+
+            expect(res.status).toBe(201);
         })
 
 
