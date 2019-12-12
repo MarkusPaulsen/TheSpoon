@@ -64,11 +64,11 @@ export default class ReviewOverall extends Component {
       const STUB_POST_REVIEW = `http://192.168.1.110:8080/api/user/customer/review/restaurant/menu/${menuID}`;
       const SERVER_POST_REVIEW = `https://thespoon.herokuapp.com/api/user/customer/review/restaurant/menu/${menuID}`;
 
-      const response = await fetch(STUB_POST_REVIEW, {
+      const response = await fetch(SERVER_POST_REVIEW, {
         method: "POST",
         headers: {
           Accept: "application/json",
-          "x-auth-token": this.state.token,
+          "x-auth-token": JSON.parse(this.state.token),
           "Content-Type": "application/json"
         },
         body: data

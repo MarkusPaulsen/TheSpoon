@@ -96,8 +96,8 @@ export default class Profile extends Component {
     this.focusListener = this.props.navigation.addListener("didFocus", () => {
       AsyncStorage.getItem("userToken").then(token => {
         this.setState({ loggedIn: token !== null, isLoaded: true, token:token });
-        this.getUserInfo();
-        this.getUserReviews();
+        this.getUserInfo(token);
+        this.getUserReviews(token);
       });
     });
   };
@@ -132,13 +132,13 @@ export default class Profile extends Component {
     );
   }
 
-  async getUserInfo() {
+  async getUserInfo(token) {
     try {
-      const response = await fetch(Api.STUB_PROFILE_USERINFO, {
+      const response = await fetch(Api.SERVER_PROFILE_USERINFO, {
         method: "GET",
         accept: "application/json",
         headers:{
-           "X-Auth-Token": this.state.token
+           "X-Auth-Token": JSON.parse(token)
         }
       });
       const responseJson = await response.json();
@@ -158,13 +158,13 @@ export default class Profile extends Component {
     }
   }
 
-  async getUserReviews() {
+  async getUserReviews(token) {
     try {
-      const response = await fetch(Api.STUB_PROFILE_USERREVIEWS, {
+      const response = await fetch(Api.SERVER_PROFILE_USERREVIEWS, {
         method: "GET",
         accept: "application/json",
         headers:{
-          "X-Auth-Token": this.state.token
+          "x-auth-token": JSON.parse(token)
         }
       });
       const responseJson = await response.json();

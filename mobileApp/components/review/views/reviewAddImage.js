@@ -97,7 +97,6 @@ class ReviewAddImage extends Component {
                 </View>
               )}
             </View>
-            <TouchableOpacity onPress={() => this.setState({ imageUrl: null })}>
               <ContinueButton
                 disableButton={this.state.disableButton}
                 navigation={this.props}
@@ -107,7 +106,6 @@ class ReviewAddImage extends Component {
                 text={"CONTINUE"}
                 colorIndex={this.state.colorIndex}
               />
-            </TouchableOpacity>
           </View>
         );
       }
@@ -183,12 +181,13 @@ class ReviewAddImage extends Component {
 
   async postImage() {
     try {
+      const token=JSON.parse(this.state.token);
       const data = this.createFormData(this.state.imageUrl);
       const response = await fetch(Api.SERVER_POST_IMAGE, {
         method: "POST",
         headers: {
           Accept: "*/*",
-          "x-auth-token": this.state.token
+          "x-auth-token": token
         },
         body: data
       });

@@ -34,19 +34,19 @@ export default class ReviewAddMenu extends Component {
     const restaurant = navigation.getParam("restaurant", "no-restaurant");
     const imageID = navigation.getParam("imageID", "0");
     this.setState({ restaurant, imageID, token });
-    await this.getMenus(restaurantID);
+    await this.getMenus(restaurantID, token);
   };
 
-  async getMenus(restaurantID) {
+  async getMenus(restaurantID, token) {
     try {
       const STUB_GET_MENUS = `http://192.168.1.110:8080/api/user/customer/review/restaurant/${restaurantID}/menu`;
       const SERVER_GET_MENUS = `https://thespoon.herokuapp.com/api/user/customer/review/restaurant/${restaurantID}/menu`;
 
-      const response = await fetch(STUB_GET_MENUS, {
+      const response = await fetch(SERVER_GET_MENUS, {
         method: "GET",
         headers: {
           accept: "application/json",
-          "x-auth-token": this.state.token
+          "x-auth-token": JSON.parse(token)
         }
       });
       const responseJson = await response.json();
@@ -54,7 +54,12 @@ export default class ReviewAddMenu extends Component {
         menuID: index.menuID.toString(),
         menuName: index.name
       }));
-      this.setState({ menus });
+      if (response.ok) {
+        this.setState({ menus });
+      }
+      if (!response.ok) {
+        console.log("Fetching menus failed");
+      }
     } catch (e) {
       console.log("ERROR fetching menus", e);
     }

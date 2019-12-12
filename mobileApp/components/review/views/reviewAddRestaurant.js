@@ -32,19 +32,21 @@ export default class ReviewAddRestaurant extends Component {
     };
   }
   componentDidMount = async () => {
-    await this.getAllMenus();
     const imageID = this.props.navigation.getParam("imageID", "0");
     const token = this.props.navigation.getParam("token", "0");
+    console.log("COMP", token);
     this.setState({ imageID, token });
+    await this.getAllMenus(token);
   };
 
-  async getAllMenus() {
+  async getAllMenus(token) {
     try {
-      const response = await fetch(Api.STUB_GET_RESTAURANTS, {
+      const response = await fetch(Api.SERVER_GET_RESTAURANTS, {
         method: "GET",
         headers: {
           accept: "application/json",
-          "x-auth-token": this.state.token
+          "x-auth-token": JSON.parse(token),
+          "Content-Type":"application/json"
         }
       });
       const responseJson = await response.json();
@@ -54,6 +56,9 @@ export default class ReviewAddRestaurant extends Component {
           name: index.name
         }));
         this.setState({ restaurants });
+      }
+      if(!response.ok){
+        console.log("Fetching menus failed");
       }
     } catch (e) {
       console.log("ERROR fetching restaurants", e);

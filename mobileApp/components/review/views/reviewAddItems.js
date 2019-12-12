@@ -37,19 +37,19 @@ export default class ReviewAddItems extends Component {
     const imageID = navigation.getParam("imageID", "0");
     const restaurant = navigation.getParam("restaurant", "no-restaurant");
     this.setState({ imageID, menuID, menuName, restaurant, token });
-    await this.getMenuItems(menuID);
+    await this.getMenuItems(menuID, token);
   };
 
-  async getMenuItems(menuID) {
+  async getMenuItems(menuID, token) {
     try {
       const STUB_GET_MENUITEMS = `http://192.168.1.110:8080/api/user/customer/review/restaurant/menu/${menuID}/menuItem`;
       const SERVER_GET_MENUITEMS = `https://thespoon.herokuapp.com/api/user/customer/review/restaurant/menu/${menuID}/menuItem`;
 
-      const response = await fetch(STUB_GET_MENUITEMS, {
+      const response = await fetch(SERVER_GET_MENUITEMS, {
         method: "GET",
         headers: {
           accept: "application/json",
-          "x-auth-token": this.state.token
+          "x-auth-token": JSON.parse(token)
         }
       });
       const responseJson = await response.json();
