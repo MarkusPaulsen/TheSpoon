@@ -121,7 +121,7 @@ export default class Search extends Component {
       const lat = this.state.latitude;
       const long = this.state.longitude;
       //change to port 80 if not using the stub
-      const response = await fetch(Api.SERVER_SEARCH, {
+      const response = await fetch(Api.SERVER_SEARCH(searchString), {
         method: "GET",
         accept: "application/json"
       });

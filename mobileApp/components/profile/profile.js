@@ -25,77 +25,20 @@ export default class Profile extends Component {
     this.state = {
       loggedIn: false,
       isLoaded: false,
-      token:null,
+      token: null,
       userInfo: "",
-      reviews: [
-        {
-          reviewID: "2",
-          menu: "Lunch menu",
-          restaurant: "AUUM",
-          status: "approved",
-          serviceRating: 4,
-          qualityOverPriceRating: 5,
-          menuItemsReviews: [
-            {
-              itemName: "Pizza Margherita",
-              score: 4,
-              text: "This is the review text"
-            },
-            {
-              itemName: "Blue Cheese Burger",
-              score: 3,
-              text: "This is the other review text"
-            }
-          ]
-        },
-        {
-          reviewID: "3",
-          menu: "Dinner menu",
-          restaurant: "AUUM",
-          status: "pending",
-          serviceRating: 4,
-          qualityOverPriceRating: 5,
-          menuItemsReviews: [
-            {
-              itemName: "Pizza Margherita",
-              score: 4,
-              text: "This is the review text"
-            },
-            {
-              itemName: "Blue Cheese Burger",
-              score: 3,
-              text: "This is the other review text"
-            }
-          ]
-        },
-        {
-          reviewID: "9",
-          menu: "Lunch menu",
-          restaurant: "Da Zero",
-          status: "declined",
-          serviceRating: 4,
-          qualityOverPriceRating: 5,
-          menuItemsReviews: [
-            {
-              itemName: "Pizza Margherita",
-              score: 4,
-              text: "This is the review text"
-            },
-            {
-              itemName: "Blue Cheese Burger",
-              score: 3,
-              text: "This is the other review text"
-            }
-          ]
-        }
-      ]
+      reviews: []
     };
   }
 
   componentDidMount = async () => {
     this.focusListener = this.props.navigation.addListener("didFocus", () => {
       AsyncStorage.getItem("userToken").then(token => {
-        this.setState({ loggedIn: token !== null, isLoaded: true, token:token });
+        this.setState({
+          loggedIn: token !== null,
+          isLoaded: true,
+          token: token
+        });
         this.getUserInfo(token);
         this.getUserReviews(token);
       });
@@ -137,8 +80,8 @@ export default class Profile extends Component {
       const response = await fetch(Api.SERVER_PROFILE_USERINFO, {
         method: "GET",
         accept: "application/json",
-        headers:{
-           "X-Auth-Token": JSON.parse(token)
+        headers: {
+          "X-Auth-Token": JSON.parse(token)
         }
       });
       const responseJson = await response.json();
@@ -147,10 +90,10 @@ export default class Profile extends Component {
         email: responseJson.email
       };
       this.setState({ userInfo });
-      if(response.ok){
-        console.log("Success fetching profileData")
+      if (response.ok) {
+        console.log("Success fetching profileData");
       }
-      if(!response.ok){
+      if (!response.ok) {
         console.log("Fetching profileData failed");
       }
     } catch (error) {
@@ -163,22 +106,27 @@ export default class Profile extends Component {
       const response = await fetch(Api.SERVER_PROFILE_USERREVIEWS, {
         method: "GET",
         accept: "application/json",
-        headers:{
+        headers: {
           "x-auth-token": JSON.parse(token)
         }
       });
       const responseJson = await response.json();
       const reviews = responseJson.map(index => ({
         reviewID: index.menuID.toString(),
+        serviceRating: index.serviceRating,
+        qualityOverPriceRating: index.qualityOverPriceRating,
+        receiptImageID: index.receiptImageID,
+        date: index.date,
         menu: index.menuID,
         restaurant: index.menuID,
-        status: index.status
+        status: index.status,
+        menuItemsReviews: index.menuItemsReviews
       }));
       this.setState({ reviews });
-      if(response.ok){
-        console.log("Success fetching reviews")
+      if (response.ok) {
+        console.log("Success fetching reviews");
       }
-      if(!response.ok){
+      if (!response.ok) {
         console.log("Fetching reviews failed");
       }
     } catch (error) {
@@ -186,17 +134,23 @@ export default class Profile extends Component {
     }
   }
 
-  async deleteReview(reviewID) {
+  async deleteReview(reviewID, token) {
     try {
-      const backendStubLink = `http://192.168.1.103:8080/api/user/customer/review/${reviewID}`;
-      // FILL IN CORRECT LINK
-      const backendServerLink = `https://thespoon.herokuapp.com/api/user/customer/review`;
-      const response = await fetch(backendStubLink, {
+      const response = await fetch(Api.SERVER_DELETE_REVIEW(reviewID), {
         method: "DELETE",
-        accept: "application/json"
+        headers: {
+          accept: "application/json",
+          "x-auth-token": JSON.parse(token)
+        }
       });
       const responseJson = await response.json();
       console.log(responseJson);
+      if (response.ok) {
+        alert("Review deleted");
+      }
+      if (!response.ok) {
+        alert("Deletion failed");
+      }
     } catch (error) {
       console.log("Error deleting review: ", error);
     }
@@ -324,7 +278,7 @@ export default class Profile extends Component {
               </Text>
               {review.menuItemsReviews.map(item => {
                 return (
-                  <View>
+                  <View key={item.itemName}>
                     <View style={[styles.field, { marginVertical: 15 }]}>
                       <Text style={Typography.FONT_MED_BLACK}>Item</Text>
                       <Text style={Typography.FONT_MED_PINK}>
@@ -341,11 +295,27 @@ export default class Profile extends Component {
                   </View>
                 );
               })}
-              <Text style={[Typography.FONT_H4_BLACK, {marginTop: 15}]}>What's you overall impression?</Text>
-              <View style={{alignItems: "center"}}>
-                <Text style={[Typography.FONT_H4_BLACK, {marginTop: 20, marginBottom: 10}]}>Service</Text>
+              <Text style={[Typography.FONT_H4_BLACK, { marginTop: 15 }]}>
+                What's you overall impression?
+              </Text>
+              <View style={{ alignItems: "center" }}>
+                <Text
+                  style={[
+                    Typography.FONT_H4_BLACK,
+                    { marginTop: 20, marginBottom: 10 }
+                  ]}
+                >
+                  Service
+                </Text>
                 {this.getRating(review.serviceRating)}
-                <Text style={[Typography.FONT_H4_BLACK, {marginTop: 20, marginBottom: 10}]}>Quality/price</Text>
+                <Text
+                  style={[
+                    Typography.FONT_H4_BLACK,
+                    { marginTop: 20, marginBottom: 10 }
+                  ]}
+                >
+                  Quality/price
+                </Text>
                 {this.getRating(review.qualityOverPriceRating)}
                 <TouchableOpacity
                   style={styles.deleteButton}
@@ -361,7 +331,9 @@ export default class Profile extends Component {
                         },
                         {
                           text: "Yes",
-                          onPress: () => console.log("Yes Pressed")
+                          onPress: () => {console.log("Yes Pressed");
+                        //  this.deleteReview(review.reviewID, this.state.token)
+                          }
                         }
                       ],
                       { cancelable: false }

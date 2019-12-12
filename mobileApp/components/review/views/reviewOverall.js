@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import * as Typography from "../../../styles/typography";
 import * as Colors from "../../../styles/colors";
+import * as Api from "../../../services/api";
 import BackButton from "../components/backButton";
 import { AirbnbRating } from "react-native-ratings";
 import Circles from "../components/circles";
@@ -57,14 +58,9 @@ export default class ReviewOverall extends Component {
         qualityOverPriceRating: this.state.qualityOverPriceRating,
         date: date,
         receiptImageID: parseInt(this.state.imageID),
-        // restaurant: this.state.restaurant,
-        //  menuName: this.state.menuName,
         menuItemsReviews: menuItemsReview
       });
-      const STUB_POST_REVIEW = `http://192.168.1.110:8080/api/user/customer/review/restaurant/menu/${menuID}`;
-      const SERVER_POST_REVIEW = `https://thespoon.herokuapp.com/api/user/customer/review/restaurant/menu/${menuID}`;
-
-      const response = await fetch(SERVER_POST_REVIEW, {
+      const response = await fetch(Api.SERVER_POST_REVIEW(menuID), {
         method: "POST",
         headers: {
           Accept: "application/json",

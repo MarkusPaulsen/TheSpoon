@@ -7,11 +7,12 @@ import {
   ScrollView,
   SafeAreaView,
   TouchableOpacity,
-  FlatList,
+  FlatList
 } from "react-native";
 import MapView from "react-native-maps";
 import * as Typography from "../../styles/typography";
 import * as Colors from "../../styles/colors";
+import * as Api from "../../services/api";
 
 // TODO: connect to score from DB
 function Rating(score) {
@@ -137,7 +138,7 @@ export default class Menu extends Component {
       searchResults: null,
       isLoading: true,
       dishItems: "",
-      drinkItems: "",
+      drinkItems: ""
     };
   }
 
@@ -153,16 +154,10 @@ export default class Menu extends Component {
 
   async getMenuItem(menuId, restaurantName) {
     try {
-      //change to port 80 if not using the stub
-      const backendStubLink = `http://192.168.1.110:8080/api/user/customer/menu/${menuId}`;
-      const backendServerLink = `https://thespoon.herokuapp.com/api/user/customer/menu/${menuId}`;
-      const response = await fetch(
-        backendServerLink,
-        {
-          method: "GET",
-          accept: "application/json"
-        }
-      );
+      const response = await fetch(Api.SERVER_GET_MENUITEM(menuId), {
+        method: "GET",
+        accept: "application/json"
+      });
       const responseJson = await response.json();
       const tags = this.getMenuTagsInfo(responseJson);
       this.setMenuInfoTags(tags);
@@ -333,11 +328,13 @@ export default class Menu extends Component {
                 <FlatList
                   data={this.state.dishItems}
                   renderItem={({ item }) => (
-                    <TouchableOpacity onPress={() => {
-                      this.props.navigation.navigate("ItemReview", {
-                        item: item
-                      });
-                    }}>
+                    <TouchableOpacity
+                      onPress={() => {
+                        this.props.navigation.navigate("ItemReview", {
+                          item: item
+                        });
+                      }}
+                    >
                       <MenuItem
                         id={item.id}
                         menuItemName={item.menuItemName}

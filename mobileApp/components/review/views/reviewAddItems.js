@@ -10,6 +10,7 @@ import * as Typography from "../../../styles/typography";
 import BackButton from "../components/backButton";
 import ContinueButton from "../components/continueButton";
 import * as Colors from "../../../styles/colors";
+import * as Api from "../../../services/api";
 
 export default class ReviewAddItems extends Component {
   constructor(props) {
@@ -42,10 +43,7 @@ export default class ReviewAddItems extends Component {
 
   async getMenuItems(menuID, token) {
     try {
-      const STUB_GET_MENUITEMS = `http://192.168.1.110:8080/api/user/customer/review/restaurant/menu/${menuID}/menuItem`;
-      const SERVER_GET_MENUITEMS = `https://thespoon.herokuapp.com/api/user/customer/review/restaurant/menu/${menuID}/menuItem`;
-
-      const response = await fetch(SERVER_GET_MENUITEMS, {
+      const response = await fetch(Api.SERVER_GET_MENUITEMS(menuID), {
         method: "GET",
         headers: {
           accept: "application/json",
