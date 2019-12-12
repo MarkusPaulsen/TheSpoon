@@ -248,9 +248,9 @@ export default class Profile extends Component {
             >
               <TouchableOpacity
                 onPress={() => this.setState({ modalItem: null })}
-            >
-              <Icon name={"chevron-left"} size={40} style={styles.button} />
-            </TouchableOpacity>
+              >
+                <Icon name={"chevron-left"} size={40} style={styles.button} />
+              </TouchableOpacity>
               <View style={{ flexDirection: "row" }}>
                 <Text style={Typography.FONT_H2_BLACK}>Your </Text>
                 <Text style={Typography.FONT_H2_PINK}>Review</Text>
@@ -270,8 +270,11 @@ export default class Profile extends Component {
                 }}
               >
                 <Image
+                  style={{ width: 120, height: 120 }}
                   source={{
-                    uri: "www.cloudStorage.com/" + review.receiptImageID
+                    uri:
+                      "https://the-spoon.s3.eu-central-1.amazonaws.com/" +
+                      review.receiptImageID
                   }}
                 />
               </Text>
