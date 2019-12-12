@@ -12,7 +12,7 @@ info:
     \ to customers nor owners remain inside the default group.\n \n AUTHENTICATION/AUTHORIZATION:\
     \ The json web token returned when the login is performed is supposed to be put\
     \ into x-auth-token header in the endpoints that require authorization"
-  version: "6.3"
+  version: "6.4"
   title: "The Spoon API reference"
 tags:
 - name: "customer"
@@ -180,6 +180,7 @@ paths:
     put:
       tags:
       - "owner"
+      - "Emilio"
       summary: "Edit restaurant's information"
       description: "Edit the information of the restaurant"
       operationId: "editRestaurant"
@@ -734,6 +735,7 @@ paths:
     get:
       tags:
       - "owner"
+      - "Marin"
       summary: "Return pending reviews"
       description: "Return all the pending reviews of the owner's restaurant. Only\
         \ the image of the receipt is sent (the link to download it from the cloud),\
@@ -763,6 +765,7 @@ paths:
     post:
       tags:
       - "owner"
+      - "Marin"
       summary: "Approve or disapprove pending review"
       description: "Submit the decision of the restaurant owner about the pending\
         \ review with given reviewID (approved or disapproved). In case of a successful\
@@ -804,10 +807,10 @@ paths:
     get:
       tags:
       - "customer"
+      - "Frikk"
       summary: "Return all the reviews of the menu item"
       description: "Return all the reviews of the menu item with given menuItemID\
-        \ contained in the menu with given menuID. It also returns the overall score\
-        \ of the menu item."
+        \ contained in the menu with given menuID."
       operationId: "apiUserCustomerMenuMenuIDMenuItemMenuItemIDReviewGET"
       produces:
       - "application/json"
@@ -826,7 +829,9 @@ paths:
         "200":
           description: "Successful operation"
           schema:
-            $ref: "#/definitions/ReviewsOfMenuItem"
+            type: "array"
+            items:
+              $ref: "#/definitions/ReviewsOfMenuItemWithoutOverall"
         "404":
           description: "Menu or menu item not found"
       x-swagger-router-controller: "Customer"
@@ -834,6 +839,7 @@ paths:
     get:
       tags:
       - "owner"
+      - "Emilio"
       summary: "Return all the available tags"
       description: "When a restaurant owner is creating a menu or a menu item, he/she\
         \ needs to know the list of the available tags."
@@ -1130,6 +1136,8 @@ definitions:
         type: "string"
       description:
         type: "string"
+      averagePrice:
+        type: "number"
       tags:
         type: "array"
         items:
@@ -1140,6 +1148,7 @@ definitions:
       menuID: 2
       name: "Emilio's menu of the day"
       description: "Our special menu of today"
+      averagePrice: 9.5
       tags:
       - name: "Italian"
         color: "#FFBC8C"
@@ -1157,10 +1166,12 @@ definitions:
       restaurantData:
         restaurantName: "Emilio's Pizza"
         restaurantImageLink: "www.cloudStorage.com/Restaurant"
+        distance: 10
       menu:
         menuID: 2
         name: "Emilio's menu of the day"
         description: "Our special menu of today"
+        averagePrice: 9.5
         tags:
         - name: "Italian"
           color: "#FFBC8C"
@@ -1464,8 +1475,14 @@ definitions:
   MenuReviewWithIDAndStatus:
     type: "object"
     properties:
+      menuReviewID:
+        type: "integer"
       menuID:
         type: "integer"
+      menuName:
+        type: "string"
+      restaurantName:
+        type: "string"
       serviceRating:
         type: "number"
       qualityOverPriceRating:
@@ -1481,7 +1498,10 @@ definitions:
         items:
           $ref: "#/definitions/MenuItemReview"
     example:
+      menuReviewID: 34342
       menuID: 343
+      menuName: "Fish menu"
+      restaurantName: "Emilio's Restaurant"
       serviceRating: 4.5999999999999996447286321199499070644378662109375
       qualityOverPriceRating: 4.70000000000000017763568394002504646778106689453125
       date: "2019-12-01"
@@ -1556,6 +1576,22 @@ definitions:
       - username: "Emilio"
         rating: 4
         content: "Nice pizza!"
+  ReviewsOfMenuItemWithoutOverall:
+    type: "object"
+    properties:
+      username:
+        type: "string"
+      rating:
+        type: "number"
+      content:
+        type: "string"
+      date:
+        type: "string"
+    example:
+      username: "Janine"
+      rating: 5
+      content: "Best pizza I have tasted in ages!"
+      date: "2019-12-01"
   MenuItemWithIDAndReviews:
     type: "object"
     properties:
@@ -1586,6 +1622,8 @@ definitions:
         type: "string"
       restaurantImageLink:
         type: "string"
+      distance:
+        type: "number"
   MenuRetrievedToCustomer_restaurant:
     type: "object"
     properties:
