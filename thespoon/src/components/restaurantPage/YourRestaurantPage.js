@@ -3,16 +3,13 @@ import React, {Component} from "react";
 import {Redirect} from "react-router";
 //</editor-fold>
 //<editor-fold desc="RxJs">
-import {bindCallback, of, throwError} from "rxjs";
+import {bindCallback} from "rxjs";
 import {ajax} from "rxjs/ajax";
 import {exhaustMap, catchError} from "rxjs/operators";
 //</editor-fold>
 //<editor-fold desc="Redux">
 import {connect} from "react-redux";
 import {setModalVisibilityFilterAction} from "../../actionCreators/modalVisibilityFilterActionCreators";
-//</editor-fold>
-//<editor-fold desc="Bootstrap">
-import {Modal} from "react-bootstrap";
 //</editor-fold>
 
 //<editor-fold desc="Constants">
@@ -70,7 +67,7 @@ class YourRestaurantPage extends Component {
                     throw error
                 }))
             .subscribe(
-                (next) => {
+                () => {
                     thisTemp.setState({serverMessageFinishedLoadingRestaurantData: "", finishedLoadingRestaurantData: true});
                 }, (error) => {
                     switch (error.name) {
@@ -114,7 +111,7 @@ class YourRestaurantPage extends Component {
                     throw error
                 }))
             .subscribe(
-                (next) => {
+                () => {
                     thisTemp.setState({serverMessageFinishedLoadingMenuData: "", finishedLoadingMenuData: true});
                 }, (error) => {
                     switch (error.name) {
@@ -174,7 +171,7 @@ class YourRestaurantPage extends Component {
                         throw error
                     }))
                 .subscribe(
-                    (next) => {
+                    () => {
                         thisTemp.setState({serverMessageFinishedLoadingRestaurantData: "", finishedLoadingRestaurantData: true});
                     }, (error) => {
                         switch (error.name) {
@@ -218,7 +215,7 @@ class YourRestaurantPage extends Component {
                         throw error
                     }))
                 .subscribe(
-                    (next) => {
+                    () => {
                         thisTemp.setState({serverMessageFinishedLoadingMenuData: "", finishedLoadingMenuData: true});
                     }, (error) => {
                         switch (error.name) {
@@ -336,7 +333,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         openRestaurantConfiguration: () => {
-            dispatch(setModalVisibilityFilterAction(modalVisibilityFilters.SHOW_RESTAURANT_INFORMATION));
+            dispatch(setModalVisibilityFilterAction(modalVisibilityFilters.SHOW_ADD_RESTAURANT));
         }
     };
 };
