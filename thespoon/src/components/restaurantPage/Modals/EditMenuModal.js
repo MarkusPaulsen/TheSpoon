@@ -183,7 +183,6 @@ class EditMenuModal extends Component {
 
     handleDelete = (event) => {
         event.preventDefault();
-
         const thisTemp = this;
         of(1)
             .pipe(exhaustMap(() => {
@@ -281,6 +280,7 @@ class EditMenuModal extends Component {
 const mapStateToProps = (state) => {
     return {
         token: state.logInReducer.token,
+        currentMenu: state.currentMenuReducer.currentMenu,
         currentRestaurantPage: state.currentMenuReducer.currentRestaurantPage
     };
 };
