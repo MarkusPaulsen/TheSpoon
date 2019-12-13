@@ -36,7 +36,7 @@ app.get("*", (req, res) => {
 
 //END OF THE REQUIRED CODE TO MAKE THE DEPLOY WORK
 
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 80;
 
 app.listen(port, () => console.log('Server started on port ' + port));
 
