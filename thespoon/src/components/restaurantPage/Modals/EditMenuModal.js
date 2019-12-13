@@ -281,6 +281,7 @@ class EditMenuModal extends Component {
 const mapStateToProps = (state) => {
     return {
         token: state.logInReducer.token,
+        currentMenu: state.currentMenuReducer.currentMenu,
         currentRestaurantPage: state.currentMenuReducer.currentRestaurantPage
     };
 };
