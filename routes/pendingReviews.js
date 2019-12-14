@@ -4,6 +4,7 @@ router.use(express.json());
 
 const auth = require('../middleware/authorizationMiddleware.js');
 const isOwner = require('../middleware/checkIfOwnerMiddleware');
+const findRestaurant = require('../middleware/findRestaurantOfOwnerMiddleware.js');
 
 const Restaurant = require('../models/restaurant.js');
 const Menu = require('../models/menu.js');
@@ -14,7 +15,9 @@ const PENDING='Pending';
 const APPROVED='Approved';
 const DISAPPROVED='Disapproved';
 
-router.get('/', auth, isOwner, async (req, res) => {
+//Return pending reviews
+router.get('/', auth, isOwner, findRestaurant, async (req, res) => {
+    //TODO: cancel this consol log
     console.log('In GET /api/user/owner/restaurant/review')
     const username=req.username;
 
@@ -44,7 +47,8 @@ router.get('/', auth, isOwner, async (req, res) => {
 
 });
 
-router.post('/:reviewID', auth, isOwner, async (req, res) => {
+//Approve or disapprove pending review
+router.post('/:reviewID', auth, isOwner, findRestaurant, async (req, res) => {
     const username=req.username;
     const reviewID=req.params.reviewID;
     const status=req.body.isApproved? 'Approved' : 'Disapproved';

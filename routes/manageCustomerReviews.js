@@ -82,7 +82,7 @@ router.delete('/:reviewID', auth, isCustomer, async (req, res) => {
     });
     // If no review is found, return 404 Not found.
     if (reviewFound === null) {
-        return res.status(404).send('Review not found');
+        return res.status(404).send('Review not found.');
     }
     
     // Delete review from system.
@@ -102,7 +102,7 @@ router.delete('/:reviewID', auth, isCustomer, async (req, res) => {
 
         res.status(200).send({reviewID: req.params.reviewID});
     } else {
-        res.status(403).send('Forbidden request');
+        res.status(403).send('Forbidden request.');
     }
 
 });
