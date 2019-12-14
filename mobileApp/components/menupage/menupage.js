@@ -13,32 +13,8 @@ import MapView from "react-native-maps";
 import * as Typography from "../../styles/typography";
 import * as Colors from "../../styles/colors";
 import * as Api from "../../services/api";
-
-// TODO: connect to score from DB
-function Rating(score) {
-  let stars = [];
-  for (let i = 0; i < 4; i++) {
-    stars.push(
-      <Image
-        key={i.toString()}
-        source={require("../../assets/icon-star.png")}
-        style={{ height: 13, width: 13 }}
-      />
-    );
-  }
-  if (stars.length < 5) {
-    for (let i = 0; i < 5 - stars.length; i++) {
-      stars.push(
-        <Image
-          key={(i + 5).toString()}
-          source={require("../../assets/icon-star-empty.png")}
-          style={{ height: 13, width: 13 }}
-        />
-      );
-    }
-  }
-  return <View style={{ flexDirection: "row" }}>{stars}</View>;
-}
+import { AirbnbRating } from "react-native-ratings";
+import Icon from "react-native-vector-icons/MaterialIcons";
 
 function MenuItem({
   menuItemName,
@@ -93,8 +69,10 @@ function MenuItem({
             ]}
           />
           <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Image source={require("../../assets/icon-star.png")} />
-            <Text style={Typography.FONT_SMALL_BLACK}> {score} </Text>
+            <Icon name={"star"} color={Colors.PINK} size={15} />
+            <Text style={Typography.FONT_SMALL_BLACK}>
+              {score === null ? "-" : score}{" "}
+            </Text>
           </View>
         </View>
         <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
@@ -137,7 +115,8 @@ export default class Menu extends Component {
       isLoading: true,
       dishItems: "",
       drinkItems: "",
-      menuID: null
+      menuID: null,
+      restaurantImage: null
     };
   }
 
@@ -149,6 +128,8 @@ export default class Menu extends Component {
       "restaurantName",
       "default value"
     );
+    const restaurantImage = navigation.getParam("restaurantImage");
+    this.setState({restaurantImage: restaurantImage});
     await this.getMenuItem(menuId, restaurantName);
   };
 
@@ -159,6 +140,7 @@ export default class Menu extends Component {
         accept: "application/json"
       });
       const responseJson = await response.json();
+      console.log(responseJson);
       const tags = this.getMenuTagsInfo(responseJson);
       this.setMenuInfoTags(tags);
       const menuInfo = {
@@ -176,8 +158,7 @@ export default class Menu extends Component {
         priceEuros: index["priceEuros"],
         menuItemImage: index["imageLink"],
         tags: this.getMenuItemTagsInfo(index),
-        // TODO: Add right rating-score
-        score: "4.6",
+        score: index["itemRating"],
         type: index["type"]
       }));
       const restaurantInfo = {
@@ -267,7 +248,7 @@ export default class Menu extends Component {
         >
           <View>
             <View>
-              <Image source={require("../../assets/auum.png")} />
+              <Image source={{uri: this.state.restaurantImage}} style={{ width: 370, height: 180, justifyContent: "center" }}/>
               <View
                 style={{ marginTop: 40, marginLeft: 30, position: "absolute" }}
               >
@@ -275,6 +256,7 @@ export default class Menu extends Component {
                   onPress={() => {
                     this.props.navigation.goBack();
                   }}
+                  style={styles.button}
                 >
                   <Image source={require("../../assets/go-back.png")} />
                 </TouchableOpacity>
@@ -291,7 +273,13 @@ export default class Menu extends Component {
                 </Text>
               </View>
               <View style={{ flexDirection: "row", marginBottom: 10 }}>
-                <Rating />
+                <AirbnbRating
+                  isDisabled={true}
+                  defaultRating={this.state.menuInfo.score}
+                  showRating={false}
+                  size={17}
+                  selectedColor={Colors.PINK}
+                />
               </View>
               <Text
                 style={[
@@ -345,6 +333,7 @@ export default class Menu extends Component {
                         tags={item.tags}
                         score={item.score}
                       />
+                      {console.log(item.menuItemImage)}
                     </TouchableOpacity>
                   )}
                   keyExtractor={item => item.id}
@@ -481,6 +470,15 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginRight: 5,
     marginTop: 6,
+    justifyContent: "center"
+  },
+  button: {
+    backgroundColor: Colors.WHITE,
+    width: 50,
+    height: 40,
+    borderBottomRightRadius: 10,
+    borderTopRightRadius: 10,
+    alignContent: "center",
     justifyContent: "center"
   }
 });

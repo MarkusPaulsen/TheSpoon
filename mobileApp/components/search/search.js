@@ -11,7 +11,7 @@ import {
   Keyboard,
   Dimensions,
   Modal,
-    Alert
+  Alert
 } from "react-native";
 import Validate from "./searchvalidation.js";
 import { TouchableWithoutFeedback } from "react-native-web";
@@ -20,7 +20,7 @@ import * as Colors from "../../styles/colors";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import * as Api from "../../services/api";
 
-function ResultItem({ menuName, restaurantName, tags, score, price }) {
+function ResultItem({ menuName, restaurantName, tags, score, avgPrice, image }) {
   const tags1Row = [];
   const tags2Row = [];
   for (let i = 0; i < tags.length; i++) {
@@ -44,7 +44,7 @@ function ResultItem({ menuName, restaurantName, tags, score, price }) {
     <View style={styles.resultsItem}>
       <View style={styles.imageBox}>
         <Image
-          source={require("../../assets/no_image.png")}
+          source={{ uri: image }}
           style={{ width: 322, height: 137, justifyContent: "center" }}
         />
       </View>
@@ -57,9 +57,13 @@ function ResultItem({ menuName, restaurantName, tags, score, price }) {
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
           <View style={{ flexDirection: "row" }}>{tags1Row}</View>
           <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
-            <Text style={{marginRight: 5}}>{price}</Text>
-            <Image source={require("../../assets/icon-star.png")} />
-            <Text style={Typography.FONT_SMALL_BLACK}>{score}</Text>
+            <Text style={{ marginRight: 5 }}>{getPriceCategory(avgPrice)}</Text>
+            <Icon name={"star"} color={Colors.PINK} size={15} />
+            {score === null ? (
+              <Text style={Typography.FONT_SMALL_BLACK}>-</Text>
+            ) : (
+              <Text style={Typography.FONT_SMALL_BLACK}>{score}</Text>
+            )}
           </View>
         </View>
         <View>
@@ -68,6 +72,18 @@ function ResultItem({ menuName, restaurantName, tags, score, price }) {
       </View>
     </View>
   );
+}
+
+function getPriceCategory(avgPrice){
+  if(1 < avgPrice <= 10){
+    return "$" + avgPrice
+  } else if(10 < avgPrice <= 20){
+    return "$$" + avgPrice
+  } else if(20 < avgPrice <= 30){
+    return "$$$" + avgPrice
+  } else{
+    return "$$$$" + avgPrice
+  }
 }
 
 export default class Search extends Component {
@@ -87,16 +103,20 @@ export default class Search extends Component {
     this.validateSearch = this.validateSearch.bind(this);
   }
 
+  componentDidMount = async () => {
+    await this.findCoordinates();
+  };
+
   findCoordinates = () => {
     navigator.geolocation.getCurrentPosition(
-        position => {
-          const latitude = JSON.stringify(position.coords.latitude);
-          const longitude = JSON.stringify(position.coords.longitude);
-          this.setState({latitude: latitude});
-          this.setState({longitude: longitude});
-        },
-        error => Alert.alert(error.message),
-        { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
+      position => {
+        const latitude = JSON.stringify(position.coords.latitude);
+        const longitude = JSON.stringify(position.coords.longitude);
+        this.setState({ latitude: latitude });
+        this.setState({ longitude: longitude });
+      },
+      error => Alert.alert(error.message),
+      { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
     );
   };
 
@@ -115,16 +135,20 @@ export default class Search extends Component {
     }
     this.setState({ searched: true });
   }
+
   async getResults() {
     try {
       const searchString = this.state.searchWord;
       const lat = this.state.latitude;
       const long = this.state.longitude;
       console.log(Api.SERVER_SEARCH(searchString, lat, long));
-      const response = await fetch(Api.SERVER_SEARCH(searchString, lat, long), {
-        method: "GET",
-        accept: "application/json"
-      });
+      const response = await fetch(
+        `https://thespoon.herokuapp.com/api/user/customer/menu/searchByMenuItem?menuItemName=${searchString}&lat=${lat}&long=${long}`,
+        {
+          method: "GET",
+          accept: "application/json"
+        }
+      );
       const responseJson = await response.json();
       console.log(responseJson);
       if (response.ok) {
@@ -134,7 +158,9 @@ export default class Search extends Component {
           restaurantName: index.restaurantData.restaurantName,
           tags: this.getTagsInfo(index),
           score: index.menu.rating,
-          price: index.menu.price,
+          price: index.menu.averagePrice,
+          image: index.restaurantData.restaurantImageLink,
+          distance: index.restaurantData.distance
         }));
         this.setState({ searchResults });
       }
@@ -164,41 +190,52 @@ export default class Search extends Component {
   }
 
   setFilter(item) {
-    if(this.state.selectedFilter === item){
-      this.setState({selectedFilter: ""});
-    } else{
-      this.setState({ selectedFilter: item })
+    if (this.state.selectedFilter === item) {
+      this.setState({ selectedFilter: "" });
+    } else {
+      this.setState({ selectedFilter: item });
     }
-  }
-
-  ratingFilter(){
-    const sorted = this.state.searchResults;
-    sorted.sort((a, b) => (a.score > b.score) ? 1 : (a.score === b.score) ? ((a.menuName > b.menuName) ? 1 : -1) : -1 );
-    this.setState({searchResults: sorted});
-  }
-
-  priceFilter(){
-    const sorted = this.state.searchResults;
-    sorted.sort((a, b) => (a.price > b.price) ? 1 : (a.price === b.price) ? ((a.menuName > b.menuName) ? 1 : -1) : -1 );
-    this.setState({searchResults: sorted});
-  }
-
-  distanceFilter(){
-    this.findCoordinates();
-    const sorted = this.state.searchResults;
-    sorted.sort((a, b) => (a.distance > b.distance) ? 1 : (a.distance === b.distance) ? ((a.menuName > b.menuName) ? 1 : -1) : -1 );
-    this.setState({searchResults: sorted});
   }
 
   applyFilter() {
     this.setModalVisible();
     console.log("FILTER: ", this.state.selectedFilter);
-    if(this.state.selectedFilter === "Price"){
-      this.priceFilter();
-    } else if(this.state.selectedFilter === "Review"){
-      this.ratingFilter()
+    const sorted = this.state.searchResults;
+    console.log(sorted);
+    if (this.state.selectedFilter === "Price") {
+      sorted.sort((a, b) =>
+        a.price > b.price
+          ? 1
+          : a.price === b.price
+          ? a.menuName > b.menuName
+            ? 1
+            : -1
+          : -1
+      );
+      this.setState({ searchResults: sorted });
+    } else if (this.state.selectedFilter === "Review") {
+      sorted.sort((a, b) =>
+        a.score > b.score
+          ? 1
+          : a.score === b.score
+          ? a.menuName > b.menuName
+            ? 1
+            : -1
+          : -1
+      );
+      this.setState({ searchResults: sorted });
     } else {
-      this.distanceFilter()
+      const sorted = this.state.searchResults;
+      sorted.sort((a, b) =>
+        a.distance > b.distance
+          ? 1
+          : a.distance === b.distance
+          ? a.menuName > b.menuName
+            ? 1
+            : -1
+          : -1
+      );
+      this.setState({ searchResults: sorted });
     }
   }
 
@@ -222,7 +259,7 @@ export default class Search extends Component {
                 <Text style={Typography.FONT_H4_BLACK}>today </Text>
               </View>
             </View>
-            {(this.state.searchResults !== null) && (this.state.searched) ? (
+            {this.state.searchResults !== null && this.state.searched ? (
               <TouchableOpacity
                 style={styles.filterButton}
                 onPress={() => this.setModalVisible()}
@@ -317,10 +354,7 @@ export default class Search extends Component {
               value={this.state.searchWord}
               onPress={this.validateSearch}
             >
-              <Image
-                source={require("../../assets/search.png")}
-                style={{ alignSelf: "center", marginTop: 10 }}
-              />
+              <Icon name={"search"} size={28} color={Colors.PINK}/>
             </TouchableOpacity>
             <TextInput
               style={[Typography.FONT_INPUT, styles.textInput]}
@@ -350,7 +384,8 @@ export default class Search extends Component {
                       onPress={() => {
                         this.props.navigation.navigate("Menu", {
                           menuId: item.id,
-                          restaurantName: item.restaurantName
+                          restaurantName: item.restaurantName,
+                          restaurantImage: item.image
                         });
                       }}
                     >
@@ -360,7 +395,8 @@ export default class Search extends Component {
                         restaurantName={item.restaurantName}
                         tags={item.tags}
                         score={item.score}
-                        price={item.price}
+                        avgPrice={item.price}
+                        image={item.image}
                       />
                     </TouchableOpacity>
                   )}
