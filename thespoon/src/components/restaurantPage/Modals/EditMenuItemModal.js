@@ -340,7 +340,7 @@ class EditMenuItemModal extends Component {
     //</editor-fold>
     //<editor-fold desc="Render">
     render() {
-        console.log("here item")
+        console.log("here menu item")
         console.log(this.props)
         let validation = !this.submitted ? this.state.validation : this.validator.validate(this.state);
         return (

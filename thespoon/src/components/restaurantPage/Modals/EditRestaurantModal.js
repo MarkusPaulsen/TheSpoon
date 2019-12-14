@@ -4,7 +4,7 @@ import Select from "react-select";
 //</editor-fold>
 //<editor-fold desc="Redux">
 import {connect} from "react-redux";
-import {setRestaurantID} from "../../../actionCreators/restaurantActionCreators";
+import {setRestaurantID, setRestaurantName} from "../../../actionCreators/restaurantActionCreators";
 //</editor-fold>
 //<editor-fold desc="RxJs">
 import {bindCallback, of, throwError} from "rxjs";
@@ -26,6 +26,7 @@ import {paths} from "../../../constants/paths";
 import {days} from "../../../constants/days";
 import {hours} from "../../../constants/hours";
 import {timeout} from "../../../constants/timeout";
+import {IconExit} from "../../Icons";
 //</editor-fold>
 
 
@@ -143,7 +144,7 @@ class EditRestaurantModal extends Component {
             reader.onload = () => {
                 ajax({
                     url: paths["restApi"]["image"],
-                    method: "POST",
+                    method: "PUT",
                     headers: {"X-Auth-Token": thisTemp.props.token},
                     body: formData,
                     timeout: timeout,
@@ -263,8 +264,8 @@ class EditRestaurantModal extends Component {
                 if (Array.isArray(osmData.response) && osmData.response.length > 0) {
                     thisTemp.setState({serverMessage: "Restaurant information publication is processed"});
                     return ajax({
-                        url: paths["restApi"]["restaurant"],
-                        method: "POST",
+                        url: paths["restApi"]["restaurant"]+ "/" + this.props.restaurant.restaurantID,
+                        method: "PUT",
                         headers: {"Content-Type": "application/json", "X-Auth-Token": thisTemp.props.token},
                         body: {
                             name: thisTemp.state.name,
@@ -323,11 +324,16 @@ class EditRestaurantModal extends Component {
 
     //<editor-fold desc="Render">
     render() {
+        console.log("here restaurant info")
+        console.log(this.props)
+        console.log("here state")
+        console.log(this.state)
         let validation = this.submitted ?                         // if the form has been submitted at least once
             this.validator.validate(this.state) :               // then check validity every time we render
             this.state.validation;
         return (
             <Modal.Body>
+                <button className="exit" onClick={this.props.onHide}><IconExit /></button>
                 <div className="modal-wrapper restaurant-info">
                     <Form ref={(c) => {
                         this.form = c;
@@ -336,7 +342,7 @@ class EditRestaurantModal extends Component {
 
                         <div className="input-field">
                             <label>Restaurant name</label>
-                            <Input type="text" name="name" placeholder="Restaurant name"/>
+                            <Input type="text" name="name"/>
                         </div>
                         <div className="error-block">
                             <small>{validation.name.message}</small>
@@ -447,16 +453,19 @@ class EditRestaurantModal extends Component {
 //<editor-fold desc="Redux">
 const mapStateToProps = (state) => {
     return {
-        token: state.logInReducer.token
+        token: state.logInReducer.token,
+        modalVisibilityFilter: state.modalVisibiltyFilterReducer.modalVisibilityFilter,
+        currentRestaurantInformation: state.restaurantReducer.currentRestaurantInformation,
     };
 };
-
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        setRestaurantID: (restaurantID) => dispatch(setRestaurantID(restaurantID))
+        setRestaurantID: (restaurantID) => dispatch(setRestaurantID(restaurantID)),
+        setRestaurantName: (name)=> dispatch(setRestaurantName(name))
     };
 };
+
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditRestaurantModal);
 //</editor-fold>

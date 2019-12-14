@@ -1,13 +1,18 @@
-import {SETTING_UP_RESTAURANT} from "../actions/restaurantActions";
+import * as currentRestaurantInformationAction from "../actions/restaurantActions";
 import {initialStateRestaurantReducer} from "./initialStateRestaurantReducer"
 
 const restaurantReducer = (state = initialStateRestaurantReducer, action) => {
-    if (action.type === SETTING_UP_RESTAURANT) {
-        return Object.assign({}, state, {
+    switch (action.type) {
+        case currentRestaurantInformationAction.SETTING_UP_RESTAURANT_ID:
+            return Object.assign({}, state, {
             restaurantID: action.restaurantID,
         });
-    } else {
-        return Object.assign({}, state, {});
+        case currentRestaurantInformationAction.SETTING_UP_RESTAURANT:
+            return Object.assign({}, state, {
+                currentRestaurantInformation: action.currentRestaurantInformation,
+            });
+        default:
+            return Object.assign({}, state, {});
     }
 };
 
