@@ -212,10 +212,10 @@ export default class Profile extends Component {
                   marginTop: 12
                 }}
               >
-                {status === "accepted" ? (
+                {status === "Approved" ? (
                   <Icon name={"done"} size={25} color={Colors.GREEN} />
                 ) : null}
-                {status === "declined" ? (
+                {status === "Disapproved" ? (
                   <Icon name={"clear"} size={35} color={Colors.PINK} />
                 ) : null}
                 {status === "Pending" ? (
@@ -234,6 +234,7 @@ export default class Profile extends Component {
       if (review == null) {
         return null;
       }
+      console.log(review);
       return (
         <Modal animationType="slide" transparent={false} visible={visible}>
           <ScrollView>
@@ -293,6 +294,7 @@ export default class Profile extends Component {
                 What did you eat/drink?
               </Text>
               {review.menuItemsReviews.map(item => {
+                console.log(item, item.score);
                 //TODO: add menuItemName when it is in EP
                 return (
                   <View key={item.menuItemID}>
@@ -302,11 +304,11 @@ export default class Profile extends Component {
                         {item.menuItemName}
                       </Text>
                     </View>
-                    {this.getRating(item.score)}
+                    {this.getRating(item.rating)}
                     <View
                       style={[styles.textBox, { width: screenWidth * 0.85 }]}
                     >
-                      <Text style={styles.text}>{item.text}</Text>
+                      <Text style={styles.text}>{item.content}</Text>
                     </View>
                     <View style={styles.line} />
                   </View>
@@ -514,7 +516,7 @@ const styles = StyleSheet.create({
     width: 150,
     height: 30,
     borderRadius: 50,
-    backgroundColor: Colors.GRAY_MEDIUM,
+    backgroundColor: Colors.PINK,
     marginBottom: 30,
     marginTop: 40,
     justifyContent: "center"
