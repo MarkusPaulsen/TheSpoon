@@ -96,9 +96,13 @@ class EditMenuModal extends Component {
         this.handleDelete = this.handleDelete.bind(this);
 
         this.state = {
-            name: "",
-            description: "",
-            tags: "",
+            name: this.props.menu.name,
+            description: this.props.menu.description,
+            tags: this.props.menu.tags.map((tag) => {
+                return tag.name + ", "
+            }).reduce((total, tagName) => {
+                return total + tagName
+            }).slice(0, -2),
             validation: this.validator.valid(),
             serverMessage: "",
             submitted: false
@@ -229,12 +233,6 @@ class EditMenuModal extends Component {
         let validation = this.state.submitted ?                         // if the form has been submitted at least once
             this.validator.validate(this.state) :               // then check validity every time we render
             this.state.validation;
-
-        let tagsString = "";
-        this.props.menu.tags.map(tag => {
-            tagsString += tag.name + ", ";
-        });
-        tagsString = tagsString.slice(0, -2);
         return (
             <Modal.Body>
                 <button className="exit" onClick={this.props.onHide}><IconExit /></button>
@@ -244,7 +242,7 @@ class EditMenuModal extends Component {
 
                         <div className="input-field">
                             <label>Name</label>
-                            <Input type="text" name="name" value={this.props.menu.name}/>
+                            <Input type="text" name="name" value={this.state.name}/>
                         </div>
                         <div className="error-block">
                             <small>{validation.name.message}</small>
@@ -252,7 +250,7 @@ class EditMenuModal extends Component {
 
                         <div className="input-field">
                             <label>Description</label>
-                            <Textarea name="description" value={this.props.menu.description}/>
+                            <Textarea name="description" value={this.state.description}/>
                         </div>
                         <div className="error-block">
                             <small>{validation.description.message}</small>
@@ -260,7 +258,7 @@ class EditMenuModal extends Component {
 
                         <div className="input-field">
                             <label>Tags</label>
-                            <Input type="tags" name="tags" value={tagsString}/>
+                            <Input type="tags" name="tags" value={this.state.tags}/>
                         </div>
                         <div className="error-block">
                             <small>{validation.tags.message}</small>

@@ -267,6 +267,7 @@ class YourRestaurantPage extends Component {
                                             country={this.state.restaurant.country}
                                             imageLink={this.state.restaurant.imageLink}
                                             openingHours={this.state.restaurant.openingHours}
+                                            currentRestaurantPage={this}
                                         />
                                     </div>
                                     <div className="col-sm-8">

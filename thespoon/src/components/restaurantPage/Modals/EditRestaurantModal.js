@@ -84,17 +84,32 @@ class EditRestaurantModal extends Component {
         this.removeFile = this.removeFile.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.state = {
-            name: "",
-            address: "",
-            city: "",
-            country: "",
-            selectedOpeningHours: [],
+            name: this.props.currentRestaurantInformation.name,
+            address: this.props.currentRestaurantInformation.address,
+            city: this.props.currentRestaurantInformation.city,
+            country: this.props.currentRestaurantInformation.country,
+            selectedOpeningHours: this.props.currentRestaurantInformation.openingHours.map(openingHour => {
+                return {
+                    day: {
+                        value: openingHour.day,
+                        label: openingHour.day
+                    },
+                    openTime: {
+                        value: openingHour.openTime.split(".")[0],
+                        label: openingHour.openTime.split(".")[0]
+                    },
+                    closeTime: {
+                        value: openingHour.closeTime.split(".")[0],
+                        label: openingHour.closeTime.split(".")[0]
+                    }
+                }
+            }),
             selectedOpeningHoursMessage: "",
             selectedDay: null,
             selectedOpenTime: null,
             selectedCloseTime: null,
             selectedFile: null,
-            imageID: 0,
+            imageID: this.props.currentRestaurantInformation.imageID,
             imageMessage: "",
             validation: this.validator.valid(),
             serverMessage: "",
@@ -264,7 +279,7 @@ class EditRestaurantModal extends Component {
                 if (Array.isArray(osmData.response) && osmData.response.length > 0) {
                     thisTemp.setState({serverMessage: "Restaurant information publication is processed"});
                     return ajax({
-                        url: paths["restApi"]["restaurant"]+ "/" + this.props.restaurant.restaurantID,
+                        url: paths["restApi"]["restaurant"],
                         method: "PUT",
                         headers: {"Content-Type": "application/json", "X-Auth-Token": thisTemp.props.token},
                         body: {
@@ -297,6 +312,8 @@ class EditRestaurantModal extends Component {
                     (next) => {
                         let response = JSON.parse(next.response);
                         thisTemp.props.setRestaurantID(response.restaurantID);
+                        thisTemp.props.currentMenu.currentRestaurantPage.setState({toUpdate: true});
+                        thisTemp.props.currentMenu.currentRestaurantPage.forceUpdate();
                         thisTemp.props.onHide();
                     }, (error) => {
                         switch (error.name) {
@@ -342,7 +359,7 @@ class EditRestaurantModal extends Component {
 
                         <div className="input-field">
                             <label>Restaurant name</label>
-                            <Input type="text" name="name"/>
+                            <Input type="text" name="name" value={this.state.name}/>
                         </div>
                         <div className="error-block">
                             <small>{validation.name.message}</small>
@@ -371,7 +388,7 @@ class EditRestaurantModal extends Component {
 
                         <div className="input-field">
                             <label>Address</label>
-                            <Input type="text" name="address" placeholder="Address"/>
+                            <Input type="text" name="address" placeholder="Address"  value={this.state.address}/>
                         </div>
                         <div className="error-block">
                             <small>{validation.address.message}</small>
@@ -379,7 +396,7 @@ class EditRestaurantModal extends Component {
 
                         <div className="input-field">
                             <label>City</label>
-                            <Input type="text" name="city" placeholder="City"/>
+                            <Input type="text" name="city" placeholder="City"  value={this.state.city}/>
                         </div>
                         <div className="error-block">
                             <small>{validation.city.message}</small>
@@ -387,7 +404,7 @@ class EditRestaurantModal extends Component {
 
                         <div className="input-field">
                             <label>Country</label>
-                            <Input type="text" name="country" placeholder="Country"/>
+                            <Input type="text" name="country" placeholder="Country"  value={this.state.country}/>
                         </div>
                         <div className="error-block">
                             <small>{validation.country.message}</small>
@@ -461,8 +478,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        setRestaurantID: (restaurantID) => dispatch(setRestaurantID(restaurantID)),
-        setRestaurantName: (name)=> dispatch(setRestaurantName(name))
+        setRestaurantID: (restaurantID) => dispatch(setRestaurantID(restaurantID))
     };
 };
 

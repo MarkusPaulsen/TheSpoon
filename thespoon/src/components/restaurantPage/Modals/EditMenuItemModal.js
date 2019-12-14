@@ -122,13 +122,17 @@ class EditMenuItemModal extends Component {
         this.handleDelete = this.handleDelete.bind(this);
 
         this.state = {
-            name: "",
-            description: "",
-            priceEuros: 0,
+            name: this.props.currentMenuItem.name,
+            description: this.props.currentMenuItem.description,
+            priceEuros: this.props.currentMenuItem.priceEuros,
             type: "",
-            imageID: 0,
+            imageID: this.props.currentMenuItem.imageID,
             imageMessage: "",
-            tags: "",
+            tags: this.props.currentMenuItem.tags.map(tag => {
+                return tag.name + ","
+            }).reduce((total, tagName) => {
+                return total + tagName
+            }, "").slice(0, -1),
             validation: this.validator.valid(),
             serverMessage: "",
             submitted: false
@@ -357,7 +361,7 @@ class EditMenuItemModal extends Component {
 
                         <div className="input-field">
                             <label>Dish name</label>
-                            <Input type="text" name="name" value={this.props.currentMenuItem.name}/>
+                            <Input type="text" name="name" value={this.state.name}/>
                         </div>
                         <div className="error-block">
                             <small>{validation.name.message}</small>
@@ -365,7 +369,7 @@ class EditMenuItemModal extends Component {
 
                         <div className="input-field">
                             <label>Description</label>
-                            <Textarea name="description" value={this.props.currentMenuItem.description}/>
+                            <Textarea name="description" value={this.state.description}/>
                         </div>
                         <div className="error-block">
                             <small>{validation.description.message}</small>
@@ -374,7 +378,7 @@ class EditMenuItemModal extends Component {
 
                         <div className="input-field">
                             <label>Price in Euro (€)</label>
-                            <Input name="priceEuros" placeholder="Price" value={this.props.currentMenuItem.priceEuros}/>
+                            <Input name="priceEuros" placeholder="Price" value={this.state.priceEuros}/>
                         </div>
                         <div className="error-block">
                             <small>{validation.priceEuros.message}</small>
@@ -402,7 +406,7 @@ class EditMenuItemModal extends Component {
 
                         <div className="input-field">
                             <label>Tags</label>
-                            <Input type="tags" name="tags" value={this.props.currentMenuItem.tags.map(tag => tag.name).reduce((total, tagName) => {return total + tagName}, "")}/>
+                            <Input type="tags" name="tags" value={this.state.tags}/>
                         </div>
                         <div className="error-block">
                             <small>{validation.tags.message}</small>
