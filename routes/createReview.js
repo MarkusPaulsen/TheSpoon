@@ -12,6 +12,8 @@ const MenuReview = require('../models/menuReview.js');
 const MenuItem = require('../models/menuItem.js');
 const Restaurant = require('../models/restaurants.js');
 
+const PENDING='Pending';
+
 
 router.post('/menu/:menuID', auth, isCustomer, async (req, res) => {
     console.log('In POST /api/user/customer/review/restaurant/menu/' + req.params.menuID);
@@ -45,7 +47,7 @@ router.post('/menu/:menuID', auth, isCustomer, async (req, res) => {
         Date: req.body.date,
         ServiceRating: req.body.serviceRating,
         QualityRating: req.body.qualityOverPriceRating,
-        Status: "Pending",
+        Status: PENDING,
         Image_ID: req.body.receiptImageID
     });
 
