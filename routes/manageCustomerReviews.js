@@ -10,6 +10,7 @@ const ItemReview = require('../models/itemReview.js');
 const MenuReview = require('../models/menuReview.js');
 const Menu = require('../models/menu.js');
 const Restaurant = require('../models/restaurants.js');
+const MenuItem = require('../models/menuItem.js');
 
 
 // Get all  reviews of a customer
@@ -24,7 +25,11 @@ router.get('/', auth, isCustomer , async (req, res) => {
                 attributes: ['MI_ID', 'ItemRating', 'Content', 'Date'],
                 where: {
                     Username: req.username
-                }
+                },
+                include: [{
+                    model: MenuItem,
+                    attributes: ['Name']
+                }]
             },{
                 model: Menu,
                 attributes: ['Name'],
@@ -40,7 +45,7 @@ router.get('/', auth, isCustomer , async (req, res) => {
             let formattedItemReview = await r.ItemReviews.map( async i => {
                 return {
                     menuItemID: i.MI_ID,
-                    menuItemName: i.Name,
+                    menuItemName: i.MenuItem.Name,
                     rating: i.ItemRating,
                     content: i.Content,
                 }
