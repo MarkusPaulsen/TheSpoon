@@ -10,7 +10,8 @@ const auth = require('../middleware/authorizationMiddleware.js');
 const isOwner = require('../middleware/checkIfOwnerMiddleware.js');
 const findRestaurant = require('../middleware/findRestaurantOfOwnerMiddleware.js');
 
-router.post('/', auth, async (req, res) => {
+//Configure data of the restaurant
+router.post('/', auth, isOwner, async (req, res) => {
     const latlong = await openGeocoder()
         .geocode(req.body.address + ', ' + req.body.city)
         .end(async (err, geo) => {
@@ -37,6 +38,7 @@ router.post('/', auth, async (req, res) => {
         });
 });
 
+//Get data of own restaurant
 router.get('/', auth, isOwner, findRestaurant, async (req, res) => {
     try {
         let restaurant = await Restaurant.findOne({
@@ -66,6 +68,45 @@ router.get('/', auth, isOwner, findRestaurant, async (req, res) => {
     } catch (error) {
         res.status(400).send(error+ ' :(');
     }
+});
+
+router.put('/', auth, isOwner, findRestaurant, async (req, res) => {
+    await openGeocoder()
+        .geocode(req.body.address + ', ' + req.body.city)
+        .end(async (err, geo) => {
+            await Restaurant.update({
+                Owner: req.username,
+                Name: req.body.name,
+                Address: req.body.address,
+                City: req.body.city,
+                Country: req.body.country,
+                Latitude: geo[0].lat,
+                Longitude: geo[0].lon,
+                ImageLink: 'https://the-spoon.s3.eu-central-1.amazonaws.com/'+req.body.imageID},
+                {
+                    where: {
+                    Restaurant_ID: req.restaurant.Restaurant_ID
+                }
+            });
+
+            //delete old opening hours to recreate them
+            await OpeningHours.destroy({
+                where: {
+                    Restaurant_ID: req.restaurant.Restaurant_ID
+                }
+            });
+
+            //recreate the opening hours
+            await req.body.openingHours.map( async o => {
+                await OpeningHours.create({
+                    Restaurant_ID: req.restaurant.Restaurant_ID,
+                    Day: o.day,
+                    OpenTime: o.openTime,
+                    CloseTime: o.closeTime
+                });
+            });
+            res.status(200).send({restaurantID: req.restaurant.Restaurant_ID});
+        });
 });
 
 module.exports = router;

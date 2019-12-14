@@ -24,6 +24,25 @@ exports.addMenu = function(body) {
 
 
 /**
+ * Return all the available tags
+ * When a restaurant owner is creating a menu or a menu item, he/she needs to know the list of the available tags.
+ *
+ * returns List
+ **/
+exports.apiUserOwnerTagGET = function() {
+  return new Promise(function(resolve, reject) {
+    var examples = {};
+    examples['application/json'] = [ "Italian", "Dinner" ];
+    if (Object.keys(examples).length > 0) {
+      resolve(examples[Object.keys(examples)[0]]);
+    } else {
+      resolve();
+    }
+  });
+}
+
+
+/**
  * Delete a menu
  * Delete a menu of the restaurant. Authentication is required
  *
@@ -50,6 +69,28 @@ exports.editMenu = function(menuID,body) {
     var examples = {};
     examples['application/json'] = {
   "menuID" : 2
+};
+    if (Object.keys(examples).length > 0) {
+      resolve(examples[Object.keys(examples)[0]]);
+    } else {
+      resolve();
+    }
+  });
+}
+
+
+/**
+ * Edit restaurant's information
+ * Edit the information of the restaurant
+ *
+ * body Restaurant Restaurant data
+ * returns RestaurantID
+ **/
+exports.editRestaurant = function(body) {
+  return new Promise(function(resolve, reject) {
+    var examples = {};
+    examples['application/json'] = {
+  "restaurantID" : 54
 };
     if (Object.keys(examples).length > 0) {
       resolve(examples[Object.keys(examples)[0]]);

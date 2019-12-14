@@ -102,6 +102,78 @@ exports.apiUserCustomerReviewReviewIDDELETE = function(reviewID) {
 
 
 /**
+ * Return pending reviews
+ * Return all the pending reviews of the owner's restaurant. Only the image of the receipt is sent (the link to download it from the cloud), together with the name of the reviewed menu and the list of the reviewed menu items.The pending reviews are sent in an array, which will be empty in case there are no pending reviews. With a POST the restaurant owner will approve or disapprove the review.
+ *
+ * returns List
+ **/
+exports.apiUserOwnerRestaurantReviewGET = function() {
+  return new Promise(function(resolve, reject) {
+    var examples = {};
+    examples['application/json'] = [ {
+  "reviewID" : 988,
+  "menuName" : "Sea menu",
+  "menuItemNames" : [ {
+    "menuItemName" : "Spaghetti allo scoglio"
+  }, {
+    "menuItemName" : "Sashimi"
+  } ]
+}, {
+  "reviewID" : 988,
+  "menuName" : "Sea menu",
+  "menuItemNames" : [ {
+    "menuItemName" : "Spaghetti allo scoglio"
+  }, {
+    "menuItemName" : "Sashimi"
+  } ]
+} ];
+    if (Object.keys(examples).length > 0) {
+      resolve(examples[Object.keys(examples)[0]]);
+    } else {
+      resolve();
+    }
+  });
+}
+
+
+/**
+ * Approve or disapprove pending review
+ * Submit the decision of the restaurant owner about the pending review with given reviewID (approved or disapproved). In case of a successful operation, an array containing all the pending reviews is sent, so that the frontend is able to refresh the list (the array sent is like the array sent with the GET endpoint).
+ *
+ * reviewID Integer ID of the pending review
+ * body ApprovalStatus Submitted status of pending review (approved or disapproved)
+ * returns List
+ **/
+exports.apiUserOwnerRestaurantReviewReviewIDPOST = function(reviewID,body) {
+  return new Promise(function(resolve, reject) {
+    var examples = {};
+    examples['application/json'] = [ {
+  "reviewID" : 988,
+  "menuName" : "Sea menu",
+  "menuItemNames" : [ {
+    "menuItemName" : "Spaghetti allo scoglio"
+  }, {
+    "menuItemName" : "Sashimi"
+  } ]
+}, {
+  "reviewID" : 988,
+  "menuName" : "Sea menu",
+  "menuItemNames" : [ {
+    "menuItemName" : "Spaghetti allo scoglio"
+  }, {
+    "menuItemName" : "Sashimi"
+  } ]
+} ];
+    if (Object.keys(examples).length > 0) {
+      resolve(examples[Object.keys(examples)[0]]);
+    } else {
+      resolve();
+    }
+  });
+}
+
+
+/**
  * Delete a menuItem
  * Delete the menuItem with given menuItemID of the menu with given menuID. Authentication required.
  *

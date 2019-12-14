@@ -156,6 +156,8 @@ class EditMenuModal extends Component {
             .pipe(take(1))
             .subscribe(
                 () => {
+                    thisTemp.props.currentRestaurantPage.setState({toUpdate: true});
+                    thisTemp.props.currentRestaurantPage.forceUpdate();
                     thisTemp.props.onHide();
                 }, (error) => {
                     switch (error.name) {
@@ -194,23 +196,25 @@ class EditMenuModal extends Component {
             .pipe(take(1))
             .subscribe(
                 () => {
+                    thisTemp.props.currentRestaurantPage.setState({toUpdate: true});
+                    thisTemp.props.currentRestaurantPage.forceUpdate();
                     thisTemp.props.onHide();
                 }, (error) => {
                     switch (error.name) {
                         case "AjaxTimeoutError":
-                            thisTemp.setState({serverMessage: "Error 408: The request timed out."});
+                            thisTemp.setState({serverMessage: "The request timed out."});
                             break;
                         case "InternalError":
                         case "AjaxError":
                             if (error.status === 0 && error.response === "") {
-                                thisTemp.setState({serverMessage: "Error " + error.status + ": " + "No connection to the server."});
+                                thisTemp.setState({serverMessage: "No connection to the server."});
                             } else {
-                                thisTemp.setState({serverMessage: "Error " + error.status + ": " + error.response});
+                                thisTemp.setState({serverMessage: error.response});
                             }
                             break;
                         default:
                             console.log(error);
-                            thisTemp.setState({serverMessage: "Code error"});
+                            thisTemp.setState({serverMessage: "Something is not like it is supposed to be."});
                             break;
                     }
                 }
@@ -277,7 +281,8 @@ class EditMenuModal extends Component {
 const mapStateToProps = (state) => {
     return {
         token: state.logInReducer.token,
-        currentMenu: state.currentMenuReducer.currentMenu
+        currentMenu: state.currentMenuReducer.currentMenu,
+        currentRestaurantPage: state.currentMenuReducer.currentRestaurantPage
     };
 };
 
