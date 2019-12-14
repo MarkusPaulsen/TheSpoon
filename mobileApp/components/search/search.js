@@ -20,7 +20,14 @@ import * as Colors from "../../styles/colors";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import * as Api from "../../services/api";
 
-function ResultItem({ menuName, restaurantName, tags, score, avgPrice, image }) {
+function ResultItem({
+  menuName,
+  restaurantName,
+  tags,
+  score,
+  avgPrice,
+  image
+}) {
   const tags1Row = [];
   const tags2Row = [];
   for (let i = 0; i < tags.length; i++) {
@@ -58,11 +65,13 @@ function ResultItem({ menuName, restaurantName, tags, score, avgPrice, image }) 
           <View style={{ flexDirection: "row" }}>{tags1Row}</View>
           <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
             <Text style={{ marginRight: 5 }}>{getPriceCategory(avgPrice)}</Text>
-            <Icon name={"star"} color={Colors.PINK} size={15} />
             {score === null ? (
-              <Text style={Typography.FONT_SMALL_BLACK}>-</Text>
+              <Text />
             ) : (
-              <Text style={Typography.FONT_SMALL_BLACK}>{score}</Text>
+              <View>
+                <Icon name={"star"} color={Colors.PINK} size={15} />
+                <Text style={Typography.FONT_SMALL_BLACK}>{score}</Text>
+              </View>
             )}
           </View>
         </View>
@@ -74,15 +83,18 @@ function ResultItem({ menuName, restaurantName, tags, score, avgPrice, image }) 
   );
 }
 
-function getPriceCategory(avgPrice){
-  if(1 < avgPrice <= 10){
-    return "$" + avgPrice
-  } else if(10 < avgPrice <= 20){
-    return "$$" + avgPrice
-  } else if(20 < avgPrice <= 30){
-    return "$$$" + avgPrice
-  } else{
-    return "$$$$" + avgPrice
+function getPriceCategory(avgPrice) {
+  avgPrice = parseInt(avgPrice);
+  if (!avgPrice) {
+    return "";
+  } else if (avgPrice > 30) {
+    return "$$$$";
+  } else if (avgPrice > 20) {
+    return "$$$";
+  } else if (avgPrice > 10) {
+    return "$$";
+  } else {
+    return "$";
   }
 }
 
@@ -95,7 +107,7 @@ export default class Search extends Component {
       searchResults: null,
       searched: false,
       modalVisible: false,
-      filters: ["Price", "Review", "Distance"],
+      filters: ["Price (high-low)", "Price (low-high)", "Review", "Distance"],
       selectedFilter: "",
       latitude: "",
       longitude: ""
@@ -150,7 +162,7 @@ export default class Search extends Component {
         }
       );
       const responseJson = await response.json();
-      console.log(responseJson);
+      console.log("RESPONS", responseJson);
       if (response.ok) {
         const searchResults = responseJson.map(index => ({
           id: index.menu.menuID.toString(),
@@ -202,7 +214,7 @@ export default class Search extends Component {
     console.log("FILTER: ", this.state.selectedFilter);
     const sorted = this.state.searchResults;
     console.log(sorted);
-    if (this.state.selectedFilter === "Price") {
+    if (this.state.selectedFilter === "Price (low-high)") {
       sorted.sort((a, b) =>
         a.price > b.price
           ? 1
@@ -213,15 +225,26 @@ export default class Search extends Component {
           : -1
       );
       this.setState({ searchResults: sorted });
+    } else if (this.state.selectedFilter === "Price (high-low)") {
+      sorted.sort((a, b) =>
+        a.price > b.price
+          ? -1
+          : a.price === b.price
+          ? a.menuName > b.menuName
+            ? 1
+            : -1
+          : 1
+      );
+      this.setState({ searchResults: sorted });
     } else if (this.state.selectedFilter === "Review") {
       sorted.sort((a, b) =>
         a.score > b.score
-          ? 1
+          ? -1
           : a.score === b.score
           ? a.menuName > b.menuName
             ? 1
             : -1
-          : -1
+          : 1
       );
       this.setState({ searchResults: sorted });
     } else {
@@ -354,7 +377,7 @@ export default class Search extends Component {
               value={this.state.searchWord}
               onPress={this.validateSearch}
             >
-              <Icon name={"search"} size={28} color={Colors.PINK}/>
+              <Icon name={"search"} size={28} color={Colors.PINK} />
             </TouchableOpacity>
             <TextInput
               style={[Typography.FONT_INPUT, styles.textInput]}

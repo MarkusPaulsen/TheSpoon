@@ -56,6 +56,7 @@ export default class ReviewAddRestaurant extends Component {
           name: index.name
         }));
         this.setState({ restaurants });
+        console.log(this.state.restaurants);
       }
       if (!response.ok) {
         console.log("Fetching menus failed");

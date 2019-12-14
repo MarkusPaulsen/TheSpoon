@@ -140,7 +140,7 @@ export default class Menu extends Component {
         accept: "application/json"
       });
       const responseJson = await response.json();
-      console.log(responseJson);
+      //console.log(responseJson);
       const tags = this.getMenuTagsInfo(responseJson);
       this.setMenuInfoTags(tags);
       const menuInfo = {
@@ -205,6 +205,7 @@ export default class Menu extends Component {
 
   getMenuItemTagsInfo(index) {
     const tagsObject = [];
+    console.log("INDEX", index);
     const numberOfTags = index.tags.length;
     for (let i = 0; i < numberOfTags; i++) {
       tagsObject.push({
@@ -333,7 +334,6 @@ export default class Menu extends Component {
                         tags={item.tags}
                         score={item.score}
                       />
-                      {console.log(item.menuItemImage)}
                     </TouchableOpacity>
                   )}
                   keyExtractor={item => item.id}
