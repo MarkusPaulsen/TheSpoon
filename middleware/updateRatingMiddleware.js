@@ -12,7 +12,10 @@ module.exports = async (menuItems, menu) => {
         // Loop through modified items and update the ItemRating-attribute.
         //TODO: This only maps through one menuitem
         console.log(menuItems);
+        menuItems = await Promise.all(menuItems);
+        console.log(menuItems);
         menuItems = await menuItems.map(async mi => {
+            console.log('MenuItemID: ' + mi.menuItemID);
             const reviews = await ItemReview.findAll({
                 attributes: ['ItemRating'],
                 where: {
