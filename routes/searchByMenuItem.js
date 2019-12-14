@@ -12,8 +12,6 @@ const Tag = require('../models/tag.js');
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
-//TODO: You get lat and lon from query. Retrieve lat and long from the restaurants and compute distance.
-
 router.get('/', async (req, res) => {
     let matchingItems;
     try {
@@ -23,6 +21,9 @@ router.get('/', async (req, res) => {
                 Name: {[Op.substring]: req.query.menuItemName}
             }
         });
+        if (matchingItems === null) {
+            return res.status(404).send('No matching Menus.');
+        }
         matchingItems = await pruneByMenuID(matchingItems);
 
         let promises = await matchingItems.map(async mi => {
@@ -95,19 +96,6 @@ const pruneByMenuID = (arr) => {
     return arr
 
 };
-
-const aggregateRating = (arr) => {
-    if (arr.length < 1){
-        return null;
-    } else {
-        let sum = 0;
-        for (let i = 0; i < arr.length; i++) {
-            sum += parseInt(arr[i].Rating);
-        }
-        return (sum/ (arr.length)).toFixed(1);
-    }
-};
-
 
 // Haversine formula for computing distance between two LatLongs.
 const computeDistance = (latCustomer, longCustomer, latRestaurant, longRestaurant) => {

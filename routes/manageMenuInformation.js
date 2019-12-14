@@ -179,6 +179,7 @@ router.put('/:menuID', auth, inputValidator(validationSchema.editMenuValidation)
     res.status(200).send({menuID: req.params.menuID});
 });
 
+
 //Delete a menu
 router.delete('/:menuID', auth, isOwner, findRestaurant, async (req,res) => {
 
