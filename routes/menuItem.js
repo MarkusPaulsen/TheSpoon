@@ -245,15 +245,12 @@ const updatePriceAverage = async (menuID) => {
             }]
         });
         let nrMenuItems = parseFloat(menu.MenuItems.length);
-        console.log('nrMenuItems: ' + nrMenuItems);
         let sum = 0;
         for (let i = 0; i < nrMenuItems; i++) {
             let price = parseFloat(menu.MenuItems[i].Price);
             sum += price;
         }
-        console.log('Sum: ' +  sum);
         let avgPrice = (sum / nrMenuItems).toFixed(0);
-        console.log('avgPrice: ' + avgPrice);
         Menu.update({
                 AveragePrice: avgPrice
             },
