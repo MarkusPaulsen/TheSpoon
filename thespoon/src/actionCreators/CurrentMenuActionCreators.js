@@ -13,3 +13,10 @@ export const setCurrentMenuItem = (currentMenuItem) => {
     currentMenuItem: currentMenuItem,
   };
 };
+
+export const setCurrentRestaurantPage = (currentRestaurantPage) => {
+  return {
+    type: currentMenuActions.SET_CURRENT_RESTAURANT_PAGE,
+    currentRestaurantPage: currentRestaurantPage,
+  };
+};

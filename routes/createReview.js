@@ -4,6 +4,7 @@ router.use(express.json());
 
 const auth = require('../middleware/authorizationMiddleware.js');
 const isCustomer = require('../middleware/checkIfCustomerMiddleware');
+const updateRating = require('../middleware/updateRatingMiddleware.js');
 
 const Menu = require('../models/menu.js');
 const ItemReview = require('../models/itemReview.js');
@@ -65,6 +66,9 @@ router.post('/menu/:menuID', auth, isCustomer, async (req, res) => {
             MenuReview_ID: menuReviewID
         })
     }
+    // Update ratings for Menu and MenuItems that are affected of this adding.
+    const addedToMenu = {Menu_ID: menuID};
+    await updateRating(itemReviews, addedToMenu);
 
     res.status(201).send('Successful operation');
 
@@ -151,5 +155,6 @@ router.get('/menu/:menuID/menuItem', auth, isCustomer, async (req, res) =>{
     res.status(200).send(menuItems);
 
 });
+
 
 module.exports = router;

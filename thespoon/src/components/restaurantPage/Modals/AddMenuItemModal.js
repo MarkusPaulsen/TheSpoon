@@ -264,6 +264,8 @@ class AddMenuItemModal extends Component {
             .pipe(take(1))
             .subscribe(
                 () => {
+                    thisTemp.props.currentMenu.currentRestaurantPage.setState({toUpdate: true});
+                    thisTemp.props.currentMenu.currentRestaurantPage.forceUpdate();
                     thisTemp.props.onHide();
                 }, (error) => {
                     switch (error.name) {
@@ -375,7 +377,8 @@ const mapStateToProps = (state) => {
     return {
         token: state.logInReducer.token,
         modalVisibilityFilter: state.modalVisibiltyFilterReducer.modalVisibilityFilter,
-        currentMenu: state.currentMenuReducer.currentMenu
+        currentMenu: state.currentMenuReducer.currentMenu,
+        currentRestaurantPage: state.currentMenuReducer.currentRestaurantPage
     };
 };
 

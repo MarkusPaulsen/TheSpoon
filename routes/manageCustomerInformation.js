@@ -16,10 +16,10 @@ router.get('/', auth, isCustomer, async (req, res) => {
         }
     });
 
-    const customerInfo={
+    const customerInfo = {
         username: customer.Username,
         email: customer.Email
-    }
+    };
 
     res.status(200).send(customerInfo);
 

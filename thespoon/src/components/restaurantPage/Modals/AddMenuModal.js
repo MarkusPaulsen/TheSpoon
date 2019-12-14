@@ -156,6 +156,8 @@ class AddMenuModal extends Component {
             .pipe(take(1))
             .subscribe(
                 () => {
+                    thisTemp.props.currentRestaurantPage.setState({toUpdate: true});
+                    thisTemp.props.currentRestaurantPage.forceUpdate();
                     thisTemp.props.onHide();
                 }, (error) => {
                     switch (error.name) {
@@ -227,14 +229,14 @@ class AddMenuModal extends Component {
             </Modal.Body>
         )
     }
-
     //</editor-fold>
 }
 
 //<editor-fold desc="Redux">
 const mapStateToProps = (state) => {
     return {
-        token: state.logInReducer.token
+        token: state.logInReducer.token,
+        currentRestaurantPage: state.currentMenuReducer.currentRestaurantPage
     };
 };
 

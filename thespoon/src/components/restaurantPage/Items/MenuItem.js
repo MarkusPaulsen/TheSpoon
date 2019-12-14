@@ -40,7 +40,7 @@ class MenuItem extends Component {
                 </div>
                 <div className="price">{this.props.priceEuros}</div>
                 <div className="edit-button">
-                    <FilterLink filter={this.props.type === "dish" ? modalVisibilityFilters.SHOW_EDIT_DISH : modalVisibilityFilters.SHOW_EDIT_DRINK} currentMenuItem={this.props}><IconEditGrey/></FilterLink>
+                    <FilterLink filter={this.props.type === "dish" ? modalVisibilityFilters.SHOW_EDIT_DISH : modalVisibilityFilters.SHOW_EDIT_DRINK} currentMenu={this.props.currentMenu} currentMenuItem={this.props} currentRestaurantPage={this.props.currentRestaurantPage}><IconEditGrey/></FilterLink>
                 </div>
             </div>
         )

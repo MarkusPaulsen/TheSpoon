@@ -4,6 +4,7 @@ router.use(express.json());
 
 const auth = require('../middleware/authorizationMiddleware.js');
 const isCustomer = require('../middleware/checkIfCustomerMiddleware.js');
+const updateRating = require('../middleware/updateRatingMiddleware.js');
 
 const ItemReview = require('../models/itemReview.js');
 const MenuReview = require('../models/menuReview.js');
@@ -11,9 +12,7 @@ const Menu = require('../models/menu.js');
 const Restaurant = require('../models/restaurants.js');
 
 
-// req.username for retrieving customers username.
 // Get all  reviews of a customer
-
 router.get('/', auth, isCustomer , async (req, res) => {
     try {
         const reviews = await MenuReview.findAll ({
@@ -41,6 +40,7 @@ router.get('/', auth, isCustomer , async (req, res) => {
             let formattedItemReview = await r.ItemReviews.map( async i => {
                 return {
                     menuItemID: i.MI_ID,
+                    menuItemName: i.Name,
                     rating: i.ItemRating,
                     content: i.Content,
                 }
@@ -66,7 +66,6 @@ router.get('/', auth, isCustomer , async (req, res) => {
     }
 });
 
-//TODO: Trigger function to update ratings.
 
 // Delete a specific menuReview of a customer, with all its associated itemReviews
 router.delete('/:reviewID', auth, isCustomer, async (req, res) => {
@@ -75,7 +74,11 @@ router.delete('/:reviewID', auth, isCustomer, async (req, res) => {
     const reviewFound = await MenuReview.findOne({
         where: {
             Review_ID: req.params.reviewID
-        }
+        },
+        include: [{
+            model: ItemReview,
+            attributes: ['MI_ID']
+        }]
     });
     // If no review is found, return 404 Not found.
     if (reviewFound === null) {
@@ -89,6 +92,14 @@ router.delete('/:reviewID', auth, isCustomer, async (req, res) => {
                 Review_ID: req.params.reviewID
             }
         });
+        const itemReviews = await reviewFound.ItemReviews.map( async r => {
+            console.log(r.MI_ID);
+            return {menuItemID: r.MI_ID}
+        });
+
+        //Update rating of Menu and MenuItems that are affected of this deletion.
+        await updateRating(itemReviews, reviewFound);
+
         res.status(200).send({reviewID: req.params.reviewID});
     } else {
         res.status(403).send('Forbidden request');

@@ -40,7 +40,7 @@ class Menu extends Component {
                     })}
                 </div>
                 <div className="modal-button">
-                    <FilterLink filter={modalVisibilityFilters.SHOW_EDIT_MENU} currentMenu={this.props}><IconEditPink/> Edit menu</FilterLink>
+                    <FilterLink filter={modalVisibilityFilters.SHOW_EDIT_MENU} currentMenu={this.props} currentRestaurantPage={this.props.currentRestaurantPage}><IconEditPink/>Edit menu</FilterLink>
                 </div>
                 <div className="row">
                     <div className="col"><hr/></div>
@@ -53,11 +53,12 @@ class Menu extends Component {
                         <MenuItem name={dishItem.name} description={dishItem.description}
                                   priceEuros={dishItem.priceEuros} tags={dishItem.tags}
                                   imageLink={dishItem.imageLink} type={dishItem.type}
-                                  menuID={this.props.menuID} menuItemID={dishItem.menuItemID}/>
+                                  currentMenu={this.props} menuItemID={dishItem.menuItemID}
+                                  currentRestaurantPage={this.props.currentRestaurantPage}/>
                     );
                 })}
                 <div className="modal-button">
-                    <FilterLink filter={modalVisibilityFilters.SHOW_ADD_DISH} currentMenu={this.props}><IconAddPink/> Add dish</FilterLink>
+                    <FilterLink filter={modalVisibilityFilters.SHOW_ADD_DISH} currentMenu={this.props} currentRestaurantPage={this.props.currentRestaurantPage}><IconAddPink/> Add dish</FilterLink>
                 </div>
 
                 <div className="row">
@@ -71,11 +72,12 @@ class Menu extends Component {
                         <MenuItem name={drinkItem.name} description={drinkItem.description}
                                   priceEuros={drinkItem.priceEuros} tags={drinkItem.tags}
                                   imageLink={drinkItem.imageLink} type={drinkItem.type}
-                                  menuID={this.props.menuID} menuItemID={drinkItem.menuItemID}/>
+                                  currentMenu={this.props} menuItemID={drinkItem.menuItemID}
+                                  currentRestaurantPage={this.props.currentRestaurantPage}/>
                     );
                 })}
                 <div className="modal-button">
-                    <FilterLink filter={modalVisibilityFilters.SHOW_ADD_DRINK} currentMenu={this.props}><IconAddPink/> Add drink</FilterLink>
+                    <FilterLink filter={modalVisibilityFilters.SHOW_ADD_DRINK} currentMenu={this.props} currentRestaurantPage={this.props.currentRestaurantPage}><IconAddPink/> Add drink</FilterLink>
                 </div>
             </div>
         );
