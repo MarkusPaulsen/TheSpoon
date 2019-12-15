@@ -64,11 +64,13 @@ function ResultItem({
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
           <View style={{ flexDirection: "row" }}>{tags1Row}</View>
           <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
-            <Text style={[Typography.FONT_SMALL_BLACK,{ marginRight: 5 }]}>{getPriceCategory(avgPrice)}</Text>
+            <Text style={[Typography.FONT_SMALL_BLACK, { marginRight: 5 }]}>
+              {getPriceCategory(avgPrice)}
+            </Text>
             {score === null ? (
               <Text />
             ) : (
-              <View style={{flexDirection: "row"}}>
+              <View style={{ flexDirection: "row" }}>
                 <Icon name={"star"} color={Colors.PINK} size={15} />
                 <Text style={Typography.FONT_SMALL_BLACK}>{score}</Text>
               </View>
@@ -83,7 +85,7 @@ function ResultItem({
   );
 }
 
-function getPriceCategory(avgPrice) {
+export function getPriceCategory(avgPrice) {
   avgPrice = parseInt(avgPrice);
   if (!avgPrice) {
     return "";
@@ -154,13 +156,10 @@ export default class Search extends Component {
       const lat = this.state.latitude;
       const long = this.state.longitude;
       console.log(Api.SERVER_SEARCH(searchString, lat, long));
-      const response = await fetch(
-          Api.SERVER_SEARCH(searchString, lat, long),
-        {
-          method: "GET",
-          accept: "application/json"
-        }
-      );
+      const response = await fetch(Api.SERVER_SEARCH(searchString, lat, long), {
+        method: "GET",
+        accept: "application/json"
+      });
       const responseJson = await response.json();
       console.log(responseJson);
       if (response.ok) {
@@ -275,15 +274,16 @@ export default class Search extends Component {
         >
           <View style={{ flexDirection: "row", alignItems: "space-between" }}>
             <View style={styles.text} testID="heading">
-              <Text style={Typography.FONT_H2_PINK}>What</Text>
+              <Text style={Typography.FONT_H2_PINK}>What </Text>
               <View style={{ flexDirection: "row" }}>
                 <Text style={Typography.FONT_H4_BLACK}>do you want to </Text>
                 <Text style={Typography.FONT_H4_PINK}>eat </Text>
-                <Text style={Typography.FONT_H4_BLACK}>today </Text>
+                <Text style={Typography.FONT_H4_BLACK}>today?</Text>
               </View>
             </View>
             {this.state.searchResults !== null && this.state.searched ? (
               <TouchableOpacity
+                testID="sortButton"
                 style={styles.filterButton}
                 onPress={() => this.setModalVisible()}
               >
@@ -291,6 +291,7 @@ export default class Search extends Component {
               </TouchableOpacity>
             ) : null}
             <Modal
+              testID="sortModal"
               visible={this.state.modalVisible}
               animationType="slide"
               transparent={false}
@@ -378,7 +379,12 @@ export default class Search extends Component {
               value={this.state.searchWord}
               onPress={this.validateSearch}
             >
-              <Icon testID="searchIcon" name={"search"} size={28} color={Colors.PINK} />
+              <Icon
+                testID="searchIcon"
+                name={"search"}
+                size={28}
+                color={Colors.PINK}
+              />
             </TouchableOpacity>
             <TextInput
               testID="searchField"

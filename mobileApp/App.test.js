@@ -14,15 +14,15 @@ describe("App", () => {
 
   it("Should render without errors", () => {
     const app = component.find("App");
+
     expect(app.length).toBe(1);
   });
 
-  it("Should render AppContainer when font loaded", () => {
-    component.setState({ fontLoaded: true });
+  it("ComponentDidMount", async () => {
+    const instance = component.instance();
+    await instance.componentDidMount();
 
-    const app = component.find("NavigationContainer");
-
-    expect(app.length).toBe(1);
+    expect(instance.state.fontLoaded).toBeTruthy();
   });
 
   it("Should render Loading when font not loaded", () => {

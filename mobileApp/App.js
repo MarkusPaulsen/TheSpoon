@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { AsyncStorage, StyleSheet, Text, View, Image } from "react-native";
-import LoginScreen from "./components/login/login";
-import SearchPage from "./components/search/search";
+import LoginScreen from "./components/login/LoginScreen";
+import SearchPage from "./components/search/Search";
 import Loading from "./components/Loading";
 import Menu from "./components/menupage/Menu";
 import ItemReview from "./components/menupage/ItemReview";
@@ -117,7 +117,6 @@ export default class App extends Component {
   }
   render() {
     if (this.state.fontLoaded) {
-      console.log("font loaded");
       return (
         <ActionSheetProvider>
           <AppContainer />
