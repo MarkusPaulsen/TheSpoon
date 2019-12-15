@@ -37,3 +37,6 @@ console.error = message => {
   }
   originalConsoleError(message);
 };
+
+// Setup mock
+global.fetch = require('jest-fetch-mock');

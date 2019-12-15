@@ -6,10 +6,10 @@ import Loading from "./components/Loading";
 import Menu from "./components/menupage/Menu";
 import ItemReview from "./components/menupage/ItemReview";
 
-import ReviewAddImage from "./components/review/views/reviewAddImage";
+import ReviewAddImage from "./components/review/views/ReviewAddImage";
 import ReviewAddRestaurant from "./components/review/views/reviewAddRestaurant";
 import ReviewAddMenu from "./components/review/views/reviewAddMenu";
-import ReviewAddItems from "./components/review/views/reviewAddItems";
+import ReviewAddItems from "./components/review/views/ReviewAddItems";
 import ReviewItems from "./components/review/views/reviewItems";
 import ReviewOverall from "./components/review/views/reviewOverall";
 
