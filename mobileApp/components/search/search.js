@@ -26,7 +26,8 @@ function ResultItem({
   tags,
   score,
   avgPrice,
-  image
+  image,
+  distance
 }) {
   const tags1Row = [];
   const tags2Row = [];
@@ -47,6 +48,8 @@ function ResultItem({
     }
   }
 
+  const dist = distance.toFixed(2);
+
   return (
     <View style={styles.resultsItem}>
       <View style={styles.imageBox}>
@@ -56,19 +59,24 @@ function ResultItem({
         />
       </View>
       <View style={styles.menuInfo}>
-        <View style={{ flexDirection: "row", marginBottom: 10, marginTop: 10 }}>
+        <View style={{ flexDirection: "row", marginTop: 10 }}>
           <Text style={Typography.FONT_H4_BLACK}>{menuName}</Text>
-          <Text style={Typography.FONT_SMALL_BLACK}>{" by "}</Text>
+        </View>
+        <View style={{ flexDirection: "row", marginBottom: 10 }}>
+          <Text style={Typography.FONT_SMALL_BLACK}>{"by "}</Text>
           <Text style={Typography.FONT_SMALL_PINK}>{restaurantName}</Text>
         </View>
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
           <View style={{ flexDirection: "row" }}>{tags1Row}</View>
           <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
-            <Text style={[Typography.FONT_SMALL_BLACK,{ marginRight: 5 }]}>{getPriceCategory(avgPrice)}</Text>
+            <Text style={[Typography.FONT_SMALL_BLACK, { marginRight: 5 }]}>{dist + "km"}</Text>
+            <Text style={[Typography.FONT_SMALL_BLACK, { marginRight: 5 }]}>
+              {getPriceCategory(avgPrice)}
+            </Text>
             {score === null ? (
               <Text />
             ) : (
-              <View style={{flexDirection: "row"}}>
+              <View style={{ flexDirection: "row" }}>
                 <Icon name={"star"} color={Colors.PINK} size={15} />
                 <Text style={Typography.FONT_SMALL_BLACK}>{score}</Text>
               </View>
@@ -154,13 +162,10 @@ export default class Search extends Component {
       const lat = this.state.latitude;
       const long = this.state.longitude;
       console.log(Api.SERVER_SEARCH(searchString, lat, long));
-      const response = await fetch(
-          Api.SERVER_SEARCH(searchString, lat, long),
-        {
-          method: "GET",
-          accept: "application/json"
-        }
-      );
+      const response = await fetch(Api.SERVER_SEARCH(searchString, lat, long), {
+        method: "GET",
+        accept: "application/json"
+      });
       const responseJson = await response.json();
       console.log(responseJson);
       if (response.ok) {
@@ -420,6 +425,7 @@ export default class Search extends Component {
                         score={item.score}
                         avgPrice={item.price}
                         image={item.image}
+                        distance={item.distance}
                       />
                     </TouchableOpacity>
                   )}
