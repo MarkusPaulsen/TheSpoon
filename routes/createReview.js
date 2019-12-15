@@ -77,84 +77,136 @@ router.post('/menu/:menuID', auth, isCustomer, async (req, res) => {
 //Return all the restaurants
 router.get('/', auth, isCustomer, async (req, res) => {
 
-    //find all the restaurants, with their names and IDs
-    const restaurantsFound = await Restaurant.findAll({
-        attributes: ['Name', 'Restaurant_ID']
-    });
+    try {
+        //find all the restaurants, with their names and IDs
+        let restaurantsFound = await Restaurant.findAll({
+            attributes: ['Name', 'Restaurant_ID']
+        });
 
-    const numberOfRestaurantsFound = restaurantsFound.length;
+        //initialize empty response
+        let restaurants = [];
 
-    //initialize empty response
-    let restaurants = [];
+        const numberOfRestaurantsFound = restaurantsFound.length;
 
-    //format the response
-    for (let i = 0; i < numberOfRestaurantsFound; i++){
-        restaurants[i] = {name: restaurantsFound[i].dataValues.Name, restaurantID: restaurantsFound[i].dataValues.Restaurant_ID}
+        //filter restaurants that don't have any menu and format the response
+        for (let i=0, j=0; i < numberOfRestaurantsFound; i++){
+            const hasMenusWithItems = await hasMenusWithMenuItems(restaurantsFound[i]);
+            if (hasMenusWithItems) {
+                restaurants[j] = {name: restaurantsFound[i].dataValues.Name, restaurantID: restaurantsFound[i].dataValues.Restaurant_ID};
+                j++;
+            }
+        }
+        res.status(200).send(restaurants);
+    } catch (error) {
+        res.status(500).send('Internal server error.');
     }
 
-    res.status(200).send(restaurants);
 });
 
 //Return all the menus of given restaurant
 router.get('/:restaurantID/menu', auth, isCustomer, async(req, res) => {
 
-    //check if a restaurant with given restaurantID exists
-    const restaurantFound = await Restaurant.findAll({
-        where: {
-            Restaurant_ID: req.params.restaurantID
+    try {
+        //check if a restaurant with given restaurantID exists
+        const restaurantFound = await Restaurant.findAll({
+            where: {
+                Restaurant_ID: req.params.restaurantID
+            }
+        });
+        if (restaurantFound.length <= 0) return res.status(404).send("Restaurant with given restaurantID not found.");
+
+        //find all the menus of the restaurant with given restaurantID
+        const menusFound = await Menu.findAll({
+            attributes: ['Name', 'Menu_ID'],
+            where: {
+                Restaurant_ID: req.params.restaurantID
+            }
+        });
+
+        //initialize empty response
+        let menus = [];
+
+        //filter menus that don't have any menu item and format the response
+        const numberOfMenusFound = menusFound.length;
+        for (let i=0, j=0; i < numberOfMenusFound; i++){
+            const hasItems = await hasMenuItems(menusFound[i]);
+            if (hasItems) {
+                menus[j] = {name: menusFound[i].dataValues.Name, menuID: menusFound[i].dataValues.Menu_ID};
+                j++;
+            }
         }
-    });
-    if (restaurantFound.length <= 0) return res.status(404).send("Restaurant with given restaurantID not found.");
-
-    //find all the menus of the restaurant with given restaurantID
-    const menusFound = await Menu.findAll({
-        attributes: ['Name', 'Menu_ID'],
-        where: {
-            Restaurant_ID: req.params.restaurantID
-        }
-    });
-
-    //initialize empty response
-    let menus = [];
-
-    //format the response
-    for (let i = 0; i < menusFound.length; i++){
-        menus[i] = {name: menusFound[i].dataValues.Name, menuID: menusFound[i].dataValues.Menu_ID}
+        res.status(200).send(menus);
+    } catch (error) {
+        res.status(500).send('Internal server error.');
     }
 
-    res.status(200).send(menus);
 });
 
 //Return all the menu items of given menu
 router.get('/menu/:menuID/menuItem', auth, isCustomer, async (req, res) =>{
 
-    //check if a menu with given menuID exists
-    const menuFound = await Menu.findAll({
-        where: {
-            Menu_ID: req.params.menuID
+    try {
+        //check if a menu with given menuID exists
+        const menuFound = await Menu.findAll({
+            where: {
+                Menu_ID: req.params.menuID
+            }
+        });
+        if (menuFound.length <= 0) return res.status(404).send("Menu with given menuID not found.");
+
+        //find all the menu items of the menu with given menuID
+        const menuItemsFound = await MenuItem.findAll({
+            attributes: ['Name', 'MI_ID'],
+            where: {
+                Menu_ID: req.params.menuID
+            }
+        });
+
+        //initialize empty response
+        let menuItems = [];
+
+        //format the response
+        for (let i = 0; i < menuItemsFound.length; i++){
+            menuItems[i] = {name: menuItemsFound[i].dataValues.Name, menuItemID: menuItemsFound[i].dataValues.MI_ID}
         }
-    });
-    if (menuFound.length <= 0) return res.status(404).send("Menu with given menuID not found.");
-
-    //find all the menu items of the menu with given menuID
-    const menuItemsFound = await MenuItem.findAll({
-        attributes: ['Name', 'MI_ID'],
-        where: {
-            Menu_ID: req.params.menuID
-        }
-    });
-
-    //initialize empty response
-    let menuItems = [];
-
-    //format the response
-    for (let i = 0; i < menuItemsFound.length; i++){
-        menuItems[i] = {name: menuItemsFound[i].dataValues.Name, menuItemID: menuItemsFound[i].dataValues.MI_ID}
+        res.status(200).send(menuItems);
+    } catch (error) {
+        res.status(500).send('Internal server error.');
     }
 
-    res.status(200).send(menuItems);
 
 });
 
+//check if a restaurant returned from a query has menus with menu items. Return true if that is the case, false otherwise
+async function hasMenusWithMenuItems(restaurantReturnedFromQuery){
+    //find all the menus of the restaurant with given restaurantID
+    const menusFound = await Menu.findAll({
+        where: {
+            Restaurant_ID: restaurantReturnedFromQuery.dataValues.Restaurant_ID
+        }
+    });
+
+    const numberOfMenusFound = menusFound.length;
+    let menusFiltered = [];
+    for (let i=0, j=0; i < numberOfMenusFound; i++){
+        const hasItems = await hasMenuItems(menusFound[i]);
+        if (hasItems) {
+            menusFiltered[j] = menusFound[i];
+            j++;
+        }
+    }
+
+    return menusFiltered.length > 0;
+}
+//check if a menu returned from a query has menu items. Return true if that is the case, false otherwise
+async function hasMenuItems(menuReturnedFromQuery){
+    //find all the menu items of the menu with given menuID
+    const menuItemsFound = await MenuItem.findAll({
+        where: {
+            Menu_ID: menuReturnedFromQuery.dataValues.Menu_ID
+        }
+    });
+    return menuItemsFound.length > 0;
+}
 
 module.exports = router;
