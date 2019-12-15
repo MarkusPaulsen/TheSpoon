@@ -25,7 +25,7 @@ import AddMenuItemModal from "../components/restaurantPage/Modals/AddMenuItemMod
 import EditMenuItemModal from "../components/restaurantPage/Modals/EditMenuItemModal";
 import ChooseRoleModal from "../components/homepage/Modals/ChooseRoleModal";
 import RegisterCustomer from "../components/homepage/Modals/RegisterCustomerModal";
-import PendingReviewModal from "../components/restaurantPage/PendingReviewModal";
+import PendingReviewModal from "../components/restaurantPage/Modals/PendingReviewModal";
 //</editor-fold>
 
 class CustomModal extends Component {

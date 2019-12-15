@@ -18,15 +18,15 @@ import Textarea from "react-validation/build/textarea";
 import Form from "react-validation/build/form";
 import Input from 'react-validation/build/input';
 import Button from 'react-validation/build/button';
-import FormValidator from "../../validation/FormValidator";
+import FormValidator from "../../../validation/FormValidator";
 //</editor-fold>
 
 //<editor-fold desc="Icons">
-import {IconExit} from "../Icons";
+import {IconExit} from "../../Icons";
 //</editor-fold>
 
 //<editor-fold desc="Components">
-import ReviewItem from "./ReviewItem";
+import ReviewItem from "../Items/ReviewItem";
 //</editor-fold>
 
 class PendingReviewModal extends Component {
