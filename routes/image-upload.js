@@ -11,7 +11,7 @@ router.post('/', authorization ,async (req,res) => {
 
     singleUpload(req, res, function(err) {
         if (err) {
-            return res.status(422).send({errors: [{title: 'Image Upload Error', detail: err.message}]});
+            return res.status(422).send({errors: [{title: 'Image upload error.', detail: err.message}]});
         }
         //every image is stored in form https://the-spoon.s3.eu-central-1.amazonaws.com/{id}
         const imageID=req.file.location.split("amazonaws.com/")[1];

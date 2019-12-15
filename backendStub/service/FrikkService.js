@@ -2,6 +2,37 @@
 
 
 /**
+ * Return all the reviews of the menu item
+ * Return all the reviews of the menu item with given menuItemID contained in the menu with given menuID.
+ *
+ * menuID Integer ID of the menu
+ * menuItemID Integer ID of the menu item
+ * returns List
+ **/
+exports.apiUserCustomerMenuMenuIDMenuItemMenuItemIDReviewGET = function(menuID,menuItemID) {
+  return new Promise(function(resolve, reject) {
+    var examples = {};
+    examples['application/json'] = [ {
+  "username" : "Janine",
+  "rating" : 5,
+  "content" : "Best pizza I have tasted in ages!",
+  "date" : "2019-12-01"
+}, {
+  "username" : "Janine",
+  "rating" : 5,
+  "content" : "Best pizza I have tasted in ages!",
+  "date" : "2019-12-01"
+} ];
+    if (Object.keys(examples).length > 0) {
+      resolve(examples[Object.keys(examples)[0]]);
+    } else {
+      resolve();
+    }
+  });
+}
+
+
+/**
  * Return data of a specific menu
  * Returns all the data about the menu with given menuID, even the menu items inside it. The photos of the menu items are saved in the Amazon s3 storage, so the links to the cloud storage are also returned. The frontend will directly download them from the cloud storage, they won't be sent by the backend with this endpoint.
  *
@@ -259,7 +290,10 @@ exports.getOwnReviews = function() {
   return new Promise(function(resolve, reject) {
     var examples = {};
     examples['application/json'] = [ {
+  "menuReviewID" : 34342,
   "menuID" : 343,
+  "menuName" : "Fish menu",
+  "restaurantName" : "Emilio's Restaurant",
   "serviceRating" : 4.6,
   "qualityOverPriceRating" : 4.7,
   "date" : "2019-12-01",
@@ -275,7 +309,10 @@ exports.getOwnReviews = function() {
     "content" : "It was an insult, I will never eat that trash again in my whole life"
   } ]
 }, {
+  "menuReviewID" : 34342,
   "menuID" : 343,
+  "menuName" : "Fish menu",
+  "restaurantName" : "Emilio's Restaurant",
   "serviceRating" : 4.6,
   "qualityOverPriceRating" : 4.7,
   "date" : "2019-12-01",
@@ -347,12 +384,14 @@ exports.searchByMenuItem = function(menuItemName) {
     examples['application/json'] = [ {
   "restaurantData" : {
     "restaurantName" : "Emilio's Pizza",
-    "restaurantImageLink" : "www.cloudStorage.com/Restaurant"
+    "restaurantImageLink" : "www.cloudStorage.com/Restaurant",
+    "distance" : 10
   },
   "menu" : {
     "menuID" : 2,
     "name" : "Emilio's menu of the day",
     "description" : "Our special menu of today",
+    "averagePrice" : 9.5,
     "tags" : [ {
       "name" : "Italian",
       "color" : "#FFBC8C"
@@ -365,12 +404,14 @@ exports.searchByMenuItem = function(menuItemName) {
 }, {
   "restaurantData" : {
     "restaurantName" : "Emilio's Pizza",
-    "restaurantImageLink" : "www.cloudStorage.com/Restaurant"
+    "restaurantImageLink" : "www.cloudStorage.com/Restaurant",
+    "distance" : 7.5
   },
   "menu" : {
     "menuID" : 3,
     "name" : "Emilio's menu of the day",
     "description" : "Our special menu of today",
+    "averagePrice" : 9.5,
     "tags" : [ {
       "name" : "Italian",
       "color" : "#FFBC8C"

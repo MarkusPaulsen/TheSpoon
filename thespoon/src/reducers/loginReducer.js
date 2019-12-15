@@ -10,17 +10,20 @@ const loginReducer = (state = initialStateLoginReducer, action) => {
             });
         case LOGGING_IN_FAILING:
             return Object.assign({}, state, {
+                username: "",
                 loginStatus: "not logged in"
             });
         case LOGGING_IN_SUCCESSING:
             return Object.assign({}, state, {
                 token: action.token,
+                isRestaurantOwner: action.isRestaurantOwner,
                 loginStatus: "logged in"
             });
         case LOGGING_OUT:
             return Object.assign({}, state, {
-                username: action.username,
-                token: action.token,
+                username: "",
+                token: "",
+                isRestaurantOwner: false,
                 loginStatus: "not logged in"
             });
         default:

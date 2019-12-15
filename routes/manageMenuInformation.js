@@ -7,6 +7,7 @@ const Tag = require('../models/tag.js');
 const TaggedMenu = require('../models/taggedMenu.js');
 const TaggedItem = require('../models/taggedItem.js');
 const MenuItem = require('../models/menuItem.js');
+const ItemReview = require('../models/itemReview.js');
 
 const inputValidator = require('../middleware/inputValidationMiddleware.js');
 const validationSchema = require('../validationSchemas.js');
@@ -47,14 +48,13 @@ router.post('/', auth, inputValidator(validationSchema.addMenuValidation), isOwn
     }
 
     //send the response
-    res.status(200).send({menuID: menuCreated.dataValues.Menu_ID});
+    res.status(201).send({menuID: menuCreated.dataValues.Menu_ID});
 });
 
 
 router.get('/', auth, isOwner, findRestaurant, async (req, res) => {
     try {
         let menus = await Menu.findAll({
-            attributes: ['Name', 'Description', 'Menu_ID', 'Restaurant_ID'],
             where: {
                 Restaurant_ID: req.restaurant.Restaurant_ID
             },
@@ -73,16 +73,26 @@ router.get('/', auth, isOwner, findRestaurant, async (req, res) => {
                         model: Tag,
                         as: 'Tags'
                     }]
+                },
+                {
+                    model: ItemReview,
+                    attributes: ['Username', 'ItemRating', 'Content']
                 }]
-            }
-            ]
+            }]
         });
-
         // Format the response
         menus = await menus.map( async m => {
             let menuTags = formatTags(m.TaggedMenus);
             let items = await m.MenuItems.map( async mi => {
                 let itemTags = await formatTags(mi.TaggedItems);
+                let itemReviews = await mi.ItemReviews.map( async ir => {
+                    return {
+                        username: ir.Username,
+                        rating: ir.ItemRating,
+                        content: ir.Content
+                    }
+                });
+                itemReviews = await Promise.all(itemReviews);
                 return {
                     menuItemID: mi.MI_ID,
                     name: mi.Name,
@@ -91,7 +101,11 @@ router.get('/', auth, isOwner, findRestaurant, async (req, res) => {
                     priceEuros: mi.Price,
                     imageLink: mi.ImageLink,
                     tags: itemTags,
-                    rating: mi.Rating
+                    rating: mi.Rating,
+                    menuItemReviews: {
+                        rating: mi.Rating,
+                        reviews:itemReviews
+                    }
                 };
             });
             items = await Promise.all(items);
@@ -100,6 +114,9 @@ router.get('/', auth, isOwner, findRestaurant, async (req, res) => {
                 name: m.Name,
                 description: m.Description,
                 tags: menuTags,
+                totalScore: m.Rating,
+                serviceScore: m.Service,
+                qualityOverPriceScore: m.Quality,
                 menuItems: items
             }
 
@@ -111,7 +128,6 @@ router.get('/', auth, isOwner, findRestaurant, async (req, res) => {
     }
 });
 
-
 //Edit a menu's information     (not its items)
 router.put('/:menuID', auth, inputValidator(validationSchema.editMenuValidation), isOwner, findRestaurant, async (req,res) => {
 
@@ -121,7 +137,7 @@ router.put('/:menuID', auth, inputValidator(validationSchema.editMenuValidation)
             Menu_ID: req.params.menuID
         }
     });
-    if (menuFound.length <= 0) return res.status(404).send('Menu not found');
+    if (menuFound.length <= 0) return res.status(404).send('Menu not found.');
 
     //check if the tags of the menu exist in the database
     for (let tag of req.body.tags) {
@@ -130,7 +146,7 @@ router.put('/:menuID', auth, inputValidator(validationSchema.editMenuValidation)
                 Name: tag
             }
         });
-        if (tagFound.length <= 0) return res.status(400).send('One or more tags are not valid');
+        if (tagFound.length <= 0) return res.status(400).send('One or more tags are not valid.');
     }
 
     //edit the corresponding row in Menu table
@@ -163,6 +179,7 @@ router.put('/:menuID', auth, inputValidator(validationSchema.editMenuValidation)
     res.status(200).send({menuID: req.params.menuID});
 });
 
+
 //Delete a menu
 router.delete('/:menuID', auth, isOwner, findRestaurant, async (req,res) => {
 
@@ -172,7 +189,7 @@ router.delete('/:menuID', auth, isOwner, findRestaurant, async (req,res) => {
             Menu_ID: req.params.menuID
         }
     });
-    if (menuFound.length <= 0) return res.status(404).send('Menu not found');
+    if (menuFound.length <= 0) return res.status(404).send('Menu not found.');
 
     //there is no need to manually delete the associated tags in the database: deleting the menu will also delete them
     //(on delete cascade)
@@ -192,8 +209,6 @@ router.use('/', menuItem);
 
 
 
-
-
 const formatTags = (arr) => {
     if (arr.length < 1){
         return null;
@@ -207,6 +222,5 @@ const formatTags = (arr) => {
         return arr;
     }
 };
-
 
 module.exports = router;

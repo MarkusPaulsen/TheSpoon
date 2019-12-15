@@ -7,7 +7,7 @@ module.exports = async (req, res, next) => {
             Owner: req.username
         }
     });
-    if (result.length <= 0) return res.status(400).send('No restaurant associated to this account');
+    if (result.length <= 0) return res.status(404).send('No restaurant associated to this account found.');
     else {
         req.restaurant = result[0].dataValues;
         next();

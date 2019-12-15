@@ -4,12 +4,15 @@ router.use(express.json());
 
 const auth = require('../middleware/authorizationMiddleware.js');
 const isCustomer = require('../middleware/checkIfCustomerMiddleware');
+const updateRating = require('../middleware/updateRatingMiddleware.js');
 
 const Menu = require('../models/menu.js');
 const ItemReview = require('../models/itemReview.js');
 const MenuReview = require('../models/menuReview.js');
 const MenuItem = require('../models/menuItem.js');
 const Restaurant = require('../models/restaurants.js');
+
+const PENDING='Pending';
 
 
 router.post('/menu/:menuID', auth, isCustomer, async (req, res) => {
@@ -44,7 +47,7 @@ router.post('/menu/:menuID', auth, isCustomer, async (req, res) => {
         Date: req.body.date,
         ServiceRating: req.body.serviceRating,
         QualityRating: req.body.qualityOverPriceRating,
-        Status: "Pending",
+        Status: PENDING,
         Image_ID: req.body.receiptImageID
     });
 
@@ -63,6 +66,9 @@ router.post('/menu/:menuID', auth, isCustomer, async (req, res) => {
             MenuReview_ID: menuReviewID
         })
     }
+    // Update ratings for Menu and MenuItems that are affected of this adding.
+    const addedToMenu = {Menu_ID: menuID};
+    await updateRating(itemReviews, addedToMenu);
 
     res.status(201).send('Successful operation');
 
@@ -76,11 +82,13 @@ router.get('/', auth, isCustomer, async (req, res) => {
         attributes: ['Name', 'Restaurant_ID']
     });
 
+    const numberOfRestaurantsFound = restaurantsFound.length;
+
     //initialize empty response
     let restaurants = [];
 
     //format the response
-    for (let i = 0; i < restaurantsFound.length; i++){
+    for (let i = 0; i < numberOfRestaurantsFound; i++){
         restaurants[i] = {name: restaurantsFound[i].dataValues.Name, restaurantID: restaurantsFound[i].dataValues.Restaurant_ID}
     }
 
@@ -96,7 +104,7 @@ router.get('/:restaurantID/menu', auth, isCustomer, async(req, res) => {
             Restaurant_ID: req.params.restaurantID
         }
     });
-    if (restaurantFound.length <= 0) return res.status(404).send("Restaurant with given restaurantID doesn't exist");
+    if (restaurantFound.length <= 0) return res.status(404).send("Restaurant with given restaurantID not found.");
 
     //find all the menus of the restaurant with given restaurantID
     const menusFound = await Menu.findAll({
@@ -126,7 +134,7 @@ router.get('/menu/:menuID/menuItem', auth, isCustomer, async (req, res) =>{
             Menu_ID: req.params.menuID
         }
     });
-    if (menuFound.length <= 0) return res.status(404).send("Menu with given menuID doesn't exist");
+    if (menuFound.length <= 0) return res.status(404).send("Menu with given menuID not found.");
 
     //find all the menu items of the menu with given menuID
     const menuItemsFound = await MenuItem.findAll({
@@ -147,5 +155,6 @@ router.get('/menu/:menuID/menuItem', auth, isCustomer, async (req, res) =>{
     res.status(200).send(menuItems);
 
 });
+
 
 module.exports = router;

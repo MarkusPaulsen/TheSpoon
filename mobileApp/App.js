@@ -1,21 +1,33 @@
 import React, { Component } from "react";
-import { StyleSheet, Text, View } from "react-native";
-import LoginScreen from "./components/login/LoginScreen";
-import SearchPage from "./components/search/Search";
-import LandingPage from "./components/landingpage/landingpage";
+import { AsyncStorage, StyleSheet, Text, View, Image } from "react-native";
+import LoginScreen from "./components/login/login";
+import SearchPage from "./components/search/search";
 import Loading from "./components/Loading";
-import Menu from "./components/menupage/Menu"
+import Menu from "./components/menupage/Menu";
+import ItemReview from "./components/menupage/ItemReview";
+
+import ReviewAddImage from "./components/review/views/reviewAddImage";
+import ReviewAddRestaurant from "./components/review/views/reviewAddRestaurant";
+import ReviewAddMenu from "./components/review/views/reviewAddMenu";
+import ReviewAddItems from "./components/review/views/reviewAddItems";
+import ReviewItems from "./components/review/views/reviewItems";
+import ReviewOverall from "./components/review/views/reviewOverall";
+
+import ProfilePage from "./components/profile/profile";
 import { createAppContainer } from "react-navigation";
 import { createStackNavigator } from "react-navigation-stack";
+import { createBottomTabNavigator } from "react-navigation-tabs";
 import * as Font from "expo-font";
+import Icon from "react-native-vector-icons/MaterialIcons";
+import * as Colors from "./styles/colors";
+import { ActionSheetProvider } from "@expo/react-native-action-sheet";
 
-const RootStack = createStackNavigator(
+const SearchStack = createStackNavigator(
   {
     Search: SearchPage,
-    Login: LoginScreen,
     Loading: Loading,
-    Start: LandingPage,
-    Menu: Menu
+    Menu: Menu,
+    ItemReview: ItemReview
   },
   {
     initialRouteName: "Search",
@@ -24,16 +36,71 @@ const RootStack = createStackNavigator(
   }
 );
 
-const AppContainer = createAppContainer(RootStack);
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center"
+const ReviewStack = createStackNavigator(
+  {
+    ReviewAddImage: ReviewAddImage,
+    ReviewAddRestaurant: ReviewAddRestaurant,
+    ReviewAddMenu: ReviewAddMenu,
+    ReviewAddItems: ReviewAddItems,
+    ReviewItems: ReviewItems,
+    ReviewOverall: ReviewOverall,
+    Login: LoginScreen
+  },
+  {
+    initialRouteName: "ReviewAddImage",
+    header: null,
+    headerMode: "none"
   }
-});
+);
+const ProfileStack = createStackNavigator(
+  {
+    Profile: ProfilePage,
+    Login: LoginScreen
+  },
+  {
+    initialRouteName: "Profile",
+    header: null,
+    headerMode: "none"
+  }
+);
+
+const bottomTabNavigator = createBottomTabNavigator(
+  {
+    Search: {
+      screen: SearchStack,
+      navigationOptions: {
+        tabBarIcon: ({ tintColor }) => (
+          <Icon name="search" size={32} color={tintColor} />
+        )
+      }
+    },
+    AddReview: {
+      screen: ReviewStack,
+      navigationOptions: {
+        tabBarIcon: ({ tintColor }) => (
+          <Icon name="add-circle-outline" size={32} color={tintColor} />
+        )
+      }
+    },
+    Profile: {
+      screen: ProfileStack,
+      navigationOptions: {
+        tabBarIcon: ({ tintColor }) => (
+          <Icon name="person" size={32} color={tintColor} />
+        )
+      }
+    }
+  },
+  {
+    initialRouteName: "Search",
+    tabBarOptions: {
+      activeTintColor: "#F3A3A3",
+      height: 85
+    }
+  }
+);
+
+const AppContainer = createAppContainer(bottomTabNavigator);
 
 export default class App extends Component {
   state = {
@@ -42,15 +109,20 @@ export default class App extends Component {
 
   async componentDidMount() {
     await Font.loadAsync({
-      roboto: require("./assets/fonts/roboto-regular.ttf")
+      roboto: require("./assets/fonts/roboto-regular.ttf"),
+      robotoBold: require("./assets/fonts/Roboto-Bold.ttf"),
+      robotoMedium: require("./assets/fonts/Roboto-Medium.ttf")
     });
-
     this.setState({ fontLoaded: true });
   }
   render() {
     if (this.state.fontLoaded) {
       console.log("font loaded");
-      return <AppContainer />;
+      return (
+        <ActionSheetProvider>
+          <AppContainer />
+        </ActionSheetProvider>
+      );
     } else {
       return <Loading />;
     }

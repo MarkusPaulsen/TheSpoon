@@ -15,6 +15,9 @@ const auth = require('../middleware/authorizationMiddleware.js');
 const isOwner = require('../middleware/checkIfOwnerMiddleware.js');
 const findRestaurant = require('../middleware/findRestaurantOfOwnerMiddleware.js');
 
+
+//TODO: When POSTing, PUTing or DELETing a menuItem, update the menus average price.
+//TODO: When PUTing you can start with checking if the price has changed. If so, update the averagePrice.
 //Add a menuItem to a menu
 router.post('/:menuID/menuItem', auth, isOwner, findRestaurant, async (req, res) => {
     console.log('in POST /api/user/owner/restaurant/menu/{menuID}/menuItem');
@@ -29,7 +32,7 @@ router.post('/:menuID/menuItem', auth, isOwner, findRestaurant, async (req, res)
                 Name: tag
             }
         });
-        if (tagFound.length <= 0) return res.status(400).send('One or more tags are not valid');
+        if (tagFound.length <= 0) return res.status(400).send('One or more tags are not valid.');
     }
 
     //create the menuItem
@@ -87,8 +90,9 @@ router.post('/:menuID/menuItem', auth, isOwner, findRestaurant, async (req, res)
         menuItems: menuItems
     }
 
-
+    //TODO: remove this console log
     console.log('sending 200');
+    await updatePriceAverage(menuID);
     res.status(200).send(menuInfo);
 
 
@@ -176,6 +180,7 @@ router.put('/:menuID/menuItem/:menuItemID', auth, isOwner, findRestaurant, async
         menuItems: menuItems
     }
     console.log('sending 200');
+    await updatePriceAverage(menuID);
     res.status(200).send(menuInfo);
 
 });
@@ -198,6 +203,7 @@ router.delete('/:menuID/menuItem/:menuItemID', auth, isOwner, findRestaurant, as
     }
 
     await menuItemFound.destroy();
+    await updatePriceAverage(menuID);
     res.status(200).send('deleted');
 });
 
@@ -225,6 +231,40 @@ const formatTags = (arr) => {
     }
     return arr;
 };
+
+
+const updatePriceAverage = async (menuID) => {
+    try {
+        const menu = await Menu.findOne({
+            attributes: ['AveragePrice'],
+            where: {
+                Menu_ID: menuID
+            },
+            include: [{
+                model: MenuItem
+            }]
+        });
+        let nrMenuItems = parseFloat(menu.MenuItems.length);
+        let sum = 0;
+        for (let i = 0; i < nrMenuItems; i++) {
+            let price = parseFloat(menu.MenuItems[i].Price);
+            sum += price;
+        }
+        let avgPrice = (sum / nrMenuItems).toFixed(0);
+        Menu.update({
+                AveragePrice: avgPrice
+            },
+            {
+                where: {
+                    Menu_ID: menuID
+                }
+            }
+        )
+    } catch (error) {
+        console.log(error);
+    }
+};
+
 
 
 module.exports = router;

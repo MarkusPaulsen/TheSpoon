@@ -1,7 +1,7 @@
 swagger: "2.0"
 info:
   description: "This is the API reference of The Spoon project.\n \n VERSIONING: The version number works in this way: it's composed of two numbers separated by a point. The first number identifies the Sprint, so for example the version 2.1 of the API reference is related to the Sprint number 2. The second number starts from 0 and has to be increased by one each time the file is modified. The person who modifies this document is responsible for increasing the number.\n \n GROUPING OF ENDPOINTS: The endpoints are grouped by dividing them into customers' operations and owners' operations. All the endpoints that are not strictly related to customers nor owners remain inside the default group.\n \n AUTHENTICATION/AUTHORIZATION: The json web token returned when the login is performed is supposed to be put into x-auth-token header in the endpoints that require authorization"
-  version: "6.3"
+  version: "7.0"
   title: "The Spoon API reference"
 tags:
   - name: "customer"
@@ -33,7 +33,15 @@ paths:
           schema:
             $ref: "#/definitions/UsernameAndToken"
         400:
-          description: "Username or email already taken"
+          description: "A string describing the error. Could be for example 'Username or email already taken.' or 'Invalid input.'"
+          schema:
+            type: "string"
+            example: "Username or email already taken."
+        500:
+          description: "Internal server error"
+          schema:
+            type: "string"
+            example: "Internal server error."
   /api/user/owner/register:
     post:
       tags:
@@ -58,7 +66,15 @@ paths:
           schema:
             $ref: "#/definitions/UsernameAndToken"
         400:
-          description: "Username or email already taken"
+          description: "A string describing the error. Could be for example 'Username or email already taken.' or 'Invalid input.'"
+          schema:
+            type: "string"
+            example: "Username or email already taken."
+        500:
+          description: "Internal server error"
+          schema:
+            type: "string"
+            example: "Internal server error."
   /api/user/login:
     post:
       tags:
@@ -83,7 +99,15 @@ paths:
           schema:
             $ref: "#/definitions/Token"
         400:
-          description: "Invalid username or password"
+          description: "A string describing the error. Could be for example 'Invalid username or password.' or 'Invalid input.'"
+          schema:
+            type: "string"
+            example: "Invalid username or password."
+        500:
+          description: "Internal server error"
+          schema:
+            type: "string"
+            example: "Internal server error."
   /api/user/owner/restaurant:
     post:
       tags:
@@ -108,8 +132,21 @@ paths:
           description: "Successful operation"
           schema:
             $ref: "#/definitions/RestaurantID"
+        400:
+          description: "A string describing the error. Could be for example 'Invalid input.'"
+          schema:
+            type: "string"
+            example: "Invalid input."
+        500:
+          description: "Internal server error"
+          schema:
+            type: "string"
+            example: "Internal server error."
         401:
           description: "Access denied"
+          schema:
+            type: "string"
+            example: "Access denied."
       security:
         - Bearer: []
       x-security-scopes:
@@ -128,8 +165,16 @@ paths:
           description: "Successful operation"
           schema:
             $ref: '#/definitions/RestaurantReceived'
+        500:
+          description: "Internal server error"
+          schema:
+            type: "string"
+            example: "Internal server error."
         401:
           description: "Access denied"
+          schema:
+            type: "string"
+            example: "Access denied."
       security:
         - Bearer: []
       x-security-scopes:
@@ -137,8 +182,9 @@ paths:
     put:
       tags:
         - "owner"
+        - "Emilio"
       summary: "Edit restaurant's information"
-      description: "Edit the information of the restaurant"
+      description: "Edit the information of the restaurant. It's needed that the restaurant already exists, otherwise a 404 error will be sent. The POST endpoint should be used to create it."
       operationId: "editRestaurant"
       consumes:
         - "application/json"
@@ -156,8 +202,26 @@ paths:
           description: "Successful operation"
           schema:
             $ref: "#/definitions/RestaurantID"
+        404:
+          description: "No restaurant associated to this account found"
+          schema:
+            type: "string"
+            example: "No restaurant associated to this account found."
+        400:
+          description: "A string describing the error. Could be for example 'Invalid input.'"
+          schema:
+            type: "string"
+            example: "Invalid input."
+        500:
+          description: "Internal server error"
+          schema:
+            type: "string"
+            example: "Internal server error."
         401:
           description: "Access denied"
+          schema:
+            type: "string"
+            example: "Access denied."
       security:
         - Bearer: []
       x-security-scopes:
@@ -168,7 +232,7 @@ paths:
         - "owner"
         - "Emilio"
       summary: "Add an empty menu to a restaurant"
-      description: "Add a menu to a restaurant of a restaurant owner, which needs to be logged in. The menuItems are not meant to be added to the menu through this endpoint."
+      description: "Add a menu to a restaurant of a restaurant owner, which needs to be logged in. The menuItems are not meant to be added to the menu through this endpoint. The tags of the menu must be valid, otherwise a 400 error will be sent. It's needed that the restaurant already exists, otherwise a 404 error will be sent."
       operationId: "addMenu"
       consumes:
         - "application/json"
@@ -182,12 +246,30 @@ paths:
           schema:
             $ref: "#/definitions/MenuWithoutItems"
       responses:
-        200:
+        201:
           description: "Successful operation"
           schema:
             $ref: "#/definitions/MenuID"
+        404:
+          description: "No restaurant associated to this account found"
+          schema:
+            type: "string"
+            example: "No restaurant associated to this account found."
+        400:
+          description: "A string describing the error. Could be for example 'One or more tags are not valid.' or 'Invalid input.'"
+          schema:
+            type: "string"
+            example: "One or more tags are not valid."
+        500:
+          description: "Internal server error"
+          schema:
+            type: "string"
+            example: "Internal server error."
         401:
           description: "Access denied"
+          schema:
+            type: "string"
+            example: "Access denied."
       security:
         - Bearer: []
       x-security-scopes:
@@ -197,7 +279,7 @@ paths:
         - "owner"
         - "Frikk"
       summary: "Return all the menus of the restaurant"
-      description: "Return all the menus of the restaurant. Since authentication is required, the backend is able to get which restaurant is involved from the authentication token."
+      description: "Return all the menus of the restaurant. Since authentication is required, the backend is able to get which restaurant is involved from the authentication token. It's needed that the restaurant already exists, otherwise a 404 error will be sent."
       operationId: "getOwnMenus"
       produces:
         - "application/json"
@@ -208,8 +290,21 @@ paths:
             type: "array"
             items:
               $ref: "#/definitions/MenuCompleteWithID"
+        404:
+          description: "No restaurant associated to this account found"
+          schema:
+            type: "string"
+            example: "No restaurant associated to this account found."
+        500:
+          description: "Internal server error"
+          schema:
+            type: "string"
+            example: "Internal server error."
         401:
           description: "Access denied"
+          schema:
+            type: "string"
+            example: "Access denied."
       security:
         - Bearer: []
       x-security-scopes:
@@ -220,7 +315,7 @@ paths:
         - "owner"
         - "Emilio"
       summary: "Edit a menu's information (not its items)"
-      description: "Edit a given menu (but not its menuItems). To identify the menu, the menuID needs to be given. Authentication is required."
+      description: "Edit a given menu (but not its menuItems). To identify the menu, the menuID needs to be given. Authentication is required. The tags of the menu must be valid, otherwise a 400 error will be sent. It's needed that the restaurant already exists, otherwise a 404 error will be sent."
       operationId: "editMenu"
       consumes:
         - "application/json"
@@ -244,9 +339,25 @@ paths:
           schema:
             $ref: "#/definitions/MenuID"
         404:
-          description: "Menu not found"
+          description: "Menu not found/No restaurant associated to this account found"
+          schema:
+            type: "string"
+            example: "Menu not found."
+        400:
+          description: "A string describing the error. Could be for example 'One or more tags are not valid.' or 'Invalid input.'"
+          schema:
+            type: "string"
+            example: "One or more tags are not valid."
+        500:
+          description: "Internal server error"
+          schema:
+            type: "string"
+            example: "Internal server error."
         401:
           description: "Access denied"
+          schema:
+            type: "string"
+            example: "Access denied."
       security:
         - Bearer: []
       x-security-scopes:
@@ -256,7 +367,7 @@ paths:
         - "owner"
         - "Emilio"
       summary: "Delete a menu"
-      description: "Delete a menu of the restaurant. Authentication is required"
+      description: "Delete a menu of the restaurant. Authentication is required. It's needed that the restaurant already exists, otherwise a 404 error will be sent."
       operationId: "deleteMenu"
       parameters:
         - name: "menuID"
@@ -267,8 +378,26 @@ paths:
       responses:
         200:
           description: "Successful operation"
+        404:
+          description: "Menu not found/No restaurant associated to this account found"
+          schema:
+            type: "string"
+            example: "Menu not found."
+        400:
+          description: "A string describing the error. Could be for example 'Invalid input.'"
+          schema:
+            type: "string"
+            example: "Invalid input."
+        500:
+          description: "Internal server error"
+          schema:
+            type: "string"
+            example: "Internal server error."
         401:
           description: "Access denied"
+          schema:
+            type: "string"
+            example: "Access denied."
       security:
         - Bearer: []
       x-security-scopes:
@@ -299,6 +428,19 @@ paths:
               $ref: "#/definitions/MenuAndRestaurant"
         404:
           description: "No menu item found"
+          schema:
+            type: "string"
+            example: "No matching Menus."
+        400:
+          description: "A string describing the error. Could be for example 'Invalid input.'"
+          schema:
+            type: "string"
+            example: "Invalid input."
+        500:
+          description: "Internal server error"
+          schema:
+            type: "string"
+            example: "Internal server error."
   /api/user/customer/menu/{menuID}:
     get:
       tags:
@@ -320,6 +462,21 @@ paths:
           description: "Successful operation"
           schema:
             $ref: "#/definitions/MenuRetrievedToCustomer"
+        404:
+          description: "Menu with given menuID not found"
+          schema:
+            type: "string"
+            example: "Menu with given menuID not found."
+        400:
+          description: "A string describing the error. Could be for example 'Invalid input.'"
+          schema:
+            type: "string"
+            example: "Invalid input."
+        500:
+          description: "Internal server error"
+          schema:
+            type: "string"
+            example: "Internal server error."
   /api/image:
     post:
       tags:
@@ -338,8 +495,16 @@ paths:
           description: "Successful operation"
           schema:
             $ref: "#/definitions/ImageID"
+        422:
+          description: "Image upload error"
+          schema:
+            type: "string"
+            example: "Image upload error."
         401:
           description: "Access denied"
+          schema:
+            type: "string"
+            example: "Access denied."
       security:
         - Bearer: []
       x-security-scopes:
@@ -350,7 +515,7 @@ paths:
         - "owner"
         - "Marin"
       summary: "Add a menuItem to a menu"
-      description: "Add a menuItem to the menu with given menuID. Authentication required."
+      description: "Add a menuItem to the menu with given menuID. Authentication required. The tags of the menu item must be valid, otherwise a 400 error will be sent. It's needed that the restaurant already exists, otherwise a 404 error will be sent."
       operationId: "addMenuItem"
       consumes:
         - "application/json"
@@ -373,8 +538,26 @@ paths:
           description: "Successful operation"
           schema:
             $ref: "#/definitions/Menu"
+        404:
+          description: "Menu not found/No restaurant associated to this account found"
+          schema:
+            type: "string"
+            example: "Menu not found."
+        400:
+          description: "A string describing the error. Could be for example 'One or more tags are not valid.' or 'Invalid input.'"
+          schema:
+            type: "string"
+            example: "One or more tags are not valid."
+        500:
+          description: "Internal server error"
+          schema:
+            type: "string"
+            example: "Internal server error."
         401:
           description: "Access denied"
+          schema:
+            type: "string"
+            example: "Access denied."
       security:
         - Bearer: []
       x-security-scopes:
@@ -385,7 +568,7 @@ paths:
         - "owner"
         - "Marin"
       summary: "Edit a menuItem"
-      description: "Edit the menuItem with given menuItemID of the menu with given menuID. Authentication required."
+      description: "Edit the menuItem with given menuItemID of the menu with given menuID. Authentication required. The tags of the menu item must be valid, otherwise a 400 error will be sent. It's needed that the restaurant already exists, otherwise a 404 error will be sent."
       operationId: "editMenuItem"
       consumes:
         - "application/json"
@@ -413,8 +596,26 @@ paths:
           description: "Successful operation"
           schema:
             $ref: "#/definitions/Menu"
+        404:
+          description: "Menu not found/Menu item not found/No restaurant associated to this account found"
+          schema:
+            type: "string"
+            example: "Menu item not found."
+        400:
+          description: "A string describing the error. Could be for example 'One or more tags are not valid.' or 'Invalid input.'"
+          schema:
+            type: "string"
+            example: "One or more tags are not valid."
+        500:
+          description: "Internal server error"
+          schema:
+            type: "string"
+            example: "Internal server error."
         401:
           description: "Access denied"
+          schema:
+            type: "string"
+            example: "Access denied."
       security:
         - Bearer: []
       x-security-scopes:
@@ -424,7 +625,7 @@ paths:
         - "owner"
         - "Marin"
       summary: "Delete a menuItem"
-      description: "Delete the menuItem with given menuItemID of the menu with given menuID. Authentication required."
+      description: "Delete the menuItem with given menuItemID of the menu with given menuID. Authentication required. It's needed that the restaurant already exists, otherwise a 404 error will be sent."
       operationId: "deleteMenuItem"
       parameters:
         - name: "menuID"
@@ -440,8 +641,26 @@ paths:
       responses:
         200:
           description: "Successful operation"
+        404:
+          description: "Menu not found/Menu item not found/No restaurant associated to this account found"
+          schema:
+            type: "string"
+            example: "Menu item not found."
+        400:
+          description: "A string describing the error. Could be for example 'Invalid input.'"
+          schema:
+            type: "string"
+            example: "Invalid input."
+        500:
+          description: "Internal server error"
+          schema:
+            type: "string"
+            example: "Internal server error."
         401:
           description: "Access denied"
+          schema:
+            type: "string"
+            example: "Access denied."
       security:
         - Bearer: []
       x-security-scopes:
@@ -452,7 +671,7 @@ paths:
         - "customer"
         - "Emilio"
       summary: "Return all the restaurants"
-      description: "Return all the names of the restaurants and their restaurantIDs."
+      description: "Return all the names of the restaurants and their restaurantIDs. Only the restaurants that actually contain menus are actually sent, because a menu has to be reviewed, so it wouldn't make sense to send restaurant with no menus. Moreover, at least one menu of the restaurant must have at least one menu item inside.\n In case no restaurant is found, an empty array is sent (with code 200, not 404)."
       operationId: "getRestaurants"
       produces:
         - "application/json"
@@ -463,8 +682,16 @@ paths:
             type: "array"
             items:
               $ref: "#/definitions/RestaurantIDAndName"
+        500:
+          description: "Internal server error"
+          schema:
+            type: "string"
+            example: "Internal server error."
         401:
           description: "Access denied"
+          schema:
+            type: "string"
+            example: "Access denied."
       security:
         - Bearer: []
       x-security-scopes:
@@ -475,7 +702,7 @@ paths:
         - "customer"
         - "Emilio"
       summary: "Return all the menus of given restaurant"
-      description: "Return all the names of the menus of the restaurant and their menuIDs."
+      description: "Return all the names of the menus of the restaurant and their menuIDs. Only menus that contain at least one menu item are actually sent.\n In case no menu is found, an empty array is sent (with code 200, not 404). "
       operationId: "getMenusOfRestaurant"
       produces:
         - "application/json"
@@ -493,9 +720,25 @@ paths:
             items:
               $ref: "#/definitions/MenuIDAndName"
         404:
-          description: "Restaurant with given restaurantID doesn't exist"
+          description: "Restaurant with given restaurantID not found"
+          schema:
+            type: "string"
+            example: "Restaurant with given restaurantID not found."
+        400:
+          description: "A string describing the error. Could be for example 'Invalid input.'"
+          schema:
+            type: "string"
+            example: "Invalid input."
+        500:
+          description: "Internal server error"
+          schema:
+            type: "string"
+            example: "Internal server error."
         401:
           description: "Access denied"
+          schema:
+            type: "string"
+            example: "Access denied."
       security:
         - Bearer: []
       x-security-scopes:
@@ -506,7 +749,7 @@ paths:
         - "customer"
         - "Emilio"
       summary: "Return all the menu items of given menu"
-      description: "Return all the names of the restaurants and their restaurantIDs."
+      description: "Return all the menu items of given menu.\n In case no menu item is found, an empty array is sent (with code 200, not 404)."
       operationId: "getItemsOfMenu"
       produces:
         - "application/json"
@@ -524,9 +767,25 @@ paths:
             items:
               $ref: "#/definitions/MenuItemIDAndName"
         404:
-          description: "Menu with given menuID doesn't exist"
+          description: "Menu with given menuID not found"
+          schema:
+            type: "string"
+            example: "Menu with given menuID not found."
+        400:
+          description: "A string describing the error. Could be for example 'Invalid input.'"
+          schema:
+            type: "string"
+            example: "Invalid input."
+        500:
+          description: "Internal server error"
+          schema:
+            type: "string"
+            example: "Internal server error."
         401:
           description: "Access denied"
+          schema:
+            type: "string"
+            example: "Access denied."
       security:
         - Bearer: []
       x-security-scopes:
@@ -557,9 +816,25 @@ paths:
         201:
           description: "Successful operation"
         404:
-          description: "Menu with given menuID doesn't exist"
+          description: "Menu with given menuID not found"
+          schema:
+            type: "string"
+            example: "Menu with given menuID not found."
+        400:
+          description: "A string describing the error. Could be for example 'Invalid input.'"
+          schema:
+            type: "string"
+            example: "Invalid input."
+        500:
+          description: "Internal server error"
+          schema:
+            type: "string"
+            example: "Internal server error."
         401:
           description: "Access denied"
+          schema:
+            type: "string"
+            example: "Access denied."
       security:
         - Bearer: []
       x-security-scopes:
@@ -570,8 +845,8 @@ paths:
         - "customer"
         - "Frikk"
       summary: "Return all the reviews of the customer"
-      description: "Return all the reviews of the customer, with their reviewIDs and their status (accepted/refused/pending). Returns an empty array if no review is found."
-      operationId: "GetOwnReviews"
+      description: "Return all the reviews of the customer, with their reviewIDs and their status (accepted/refused/pending). Returns an empty array if no review is found (with code 200, not 404)."
+      operationId: "getOwnReviews"
       produces:
         - "application/json"
       responses:
@@ -581,8 +856,16 @@ paths:
             type: "array"
             items:
               $ref: "#/definitions/MenuReviewWithIDAndStatus"
+        500:
+          description: "Internal server error"
+          schema:
+            type: "string"
+            example: "Internal server error."
         401:
           description: "Access denied"
+          schema:
+            type: "string"
+            example: "Access denied."
       security:
         - Bearer: []
       x-security-scopes:
@@ -593,7 +876,7 @@ paths:
         - "customer"
         - "Marin"
       summary: "Delete a review"
-      description: "Delete the review with the given reviewID. This will also delete the reviews of the menu items associated to the review with given reviewID."
+      description: "Delete the review with the given reviewID. This will also delete the reviews of the menu items associated to the review with given reviewID. The review must belong to the authenticated customer, otherwise a 403 error will be sent."
       parameters:
         - name: "reviewID"
           in: "path"
@@ -604,9 +887,30 @@ paths:
         200:
           description: "Successful operation"
         404:
-          description: "Review associated to the customer with given reviewID not found"
+          description: "Review with given reviewID not found"
+          schema:
+            type: "string"
+            example: "Review with given reviewID not found."
+        400:
+          description: "A string describing the error. Could be for example 'Invalid input.'"
+          schema:
+            type: "string"
+            example: "Invalid input."
+        500:
+          description: "Internal server error"
+          schema:
+            type: "string"
+            example: "Internal server error."
+        403:
+          description: "The review doesn't belong to the authenticated customer, so it can't be deleted"
+          schema:
+            type: "string"
+            example: "Forbidden request."
         401:
           description: "Access denied"
+          schema:
+            type: "string"
+            example: "Access denied."
       security:
         - Bearer: []
       x-security-scopes:
@@ -625,8 +929,16 @@ paths:
           description: "Successful operation"
           schema:
             $ref: "#/definitions/CustomerUsernameAndEmail"
+        500:
+          description: "Internal server error"
+          schema:
+            type: "string"
+            example: "Internal server error."
         401:
           description: "Access denied"
+          schema:
+            type: "string"
+            example: "Access denied."
       security:
         - Bearer: []
       x-security-scopes:
@@ -635,8 +947,9 @@ paths:
     get:
       tags:
         - "owner"
+        - "Marin"
       summary: "Return pending reviews"
-      description: "Return all the pending reviews of the owner's restaurant. Only the image of the receipt is sent (the link to download it from the cloud), together with the name of the reviewed menu and the list of the reviewed menu items.The pending reviews are sent in an array, which will be empty in case there are no pending reviews. With a POST the restaurant owner will approve or disapprove the review."
+      description: "Return all the pending reviews of the owner's restaurant. Only the image of the receipt is sent (the link to download it from the cloud), together with the name of the reviewed menu and the list of the reviewed menu items.The pending reviews are sent in an array, which will be empty in case there are no pending reviews. With a POST the restaurant owner will approve or disapprove the review.\n If there are no pending reviews, an empty array is sent (with code 200, not 404).\n It's needed that the restaurant already exists, otherwise a 404 error will be sent."
       produces:
         - "application/json"
       responses:
@@ -646,8 +959,21 @@ paths:
             type: "array"
             items:
               $ref: "#/definitions/PendingReview"
+        404:
+          description: "No restaurant associated to this account found"
+          schema:
+            type: "string"
+            example: "No restaurant associated to this account found."
+        500:
+          description: "Internal server error"
+          schema:
+            type: "string"
+            example: "Internal server error."
         401:
           description: "Access denied"
+          schema:
+            type: "string"
+            example: "Access denied."
       security:
         - Bearer: []
       x-security-scopes:
@@ -656,8 +982,9 @@ paths:
     post:
       tags:
         - "owner"
+        - "Marin"
       summary: "Approve or disapprove pending review"
-      description: "Submit the decision of the restaurant owner about the pending review with given reviewID (approved or disapproved). In case of a successful operation, an array containing all the pending reviews is sent, so that the frontend is able to refresh the list (the array sent is like the array sent with the GET endpoint)."
+      description: "Submit the decision of the restaurant owner about the pending review with given reviewID (approved or disapproved). In case of a successful operation, an array containing all the pending reviews is sent, so that the frontend is able to refresh the list (the array sent is like the array sent with the GET endpoint). It's needed that the restaurant already exists, otherwise a 404 error will be sent."
       consumes:
         - "application/json"
       parameters:
@@ -680,9 +1007,25 @@ paths:
             items:
               $ref: "#/definitions/PendingReview"
         404:
-          description: "Review with given reviewID not found"
+          description: "Review with given reviewID not found/No restaurant associated to this account found"
+          schema:
+            type: "string"
+            example: "Review with given reviewID not found."
+        400:
+          description: "A string describing the error. Could be for example 'Invalid input.'"
+          schema:
+            type: "string"
+            example: "Invalid input."
+        500:
+          description: "Internal server error"
+          schema:
+            type: "string"
+            example: "Internal server error."
         401:
           description: "Access denied"
+          schema:
+            type: "string"
+            example: "Access denied."
       security:
         - Bearer: []
       x-security-scopes:
@@ -691,8 +1034,9 @@ paths:
     get:
       tags:
         - "customer"
+        - "Frikk"
       summary: "Return all the reviews of the menu item"
-      description: "Return all the reviews of the menu item with given menuItemID contained in the menu with given menuID. It also returns the overall score of the menu item."
+      description: "Return all the reviews of the menu item with given menuItemID contained in the menu with given menuID. If there are no reviews, an empty array is sent (with code 200, not 404)."
       produces:
         - "application/json"
       parameters:
@@ -710,15 +1054,31 @@ paths:
         200:
           description: "Successful operation"
           schema:
-            $ref: "#/definitions/ReviewsOfMenuItem"
+            type: "array"
+            items:
+              $ref: "#/definitions/ReviewsOfMenuItemWithoutOverall"
         404:
-          description: "Menu or menu item not found"
+          description: "Menu not found/Menu item not found"
+          schema:
+            type: "string"
+            example: "Menu item not found."
+        400:
+          description: "A string describing the error. Could be for example 'Invalid input.'"
+          schema:
+            type: "string"
+            example: "Invalid input."
+        500:
+          description: "Internal server error"
+          schema:
+            type: "string"
+            example: "Internal server error."
   /api/user/owner/tag:
     get:
       tags:
         - "owner"
+        - "Emilio"
       summary: "Return all the available tags"
-      description: "When a restaurant owner is creating a menu or a menu item, he/she needs to know the list of the available tags."
+      description: "When a restaurant owner is creating a menu or a menu item, he/she needs to know the list of the available tags. If there are no tags, an empty array is sent (with code 200, not 404)."
       produces:
         - "application/json"
       responses:
@@ -729,8 +1089,16 @@ paths:
             items:
               type: "string"
             example: ["Italian", "Dinner"]
+        500:
+          description: "Internal server error"
+          schema:
+            type: "string"
+            example: "Internal server error."
         401:
           description: "Access denied"
+          schema:
+            type: "string"
+            example: "Access denied."
       security:
         - Bearer: []
       x-security-scopes:
@@ -957,6 +1325,8 @@ definitions:
         type: "string"
       description:
         type: "string"
+      averagePrice:
+        type: "number"
       tags:
         type: "array"
         items:
@@ -967,6 +1337,7 @@ definitions:
       menuID: 2
       name: "Emilio's menu of the day"
       description: "Our special menu of today"
+      averagePrice: 9.5
       tags: [{"name": "Italian", "color": "#FFBC8C"}, {"name": "Mediterranean", "color": "#FFBC8C"}]
       rating: 5
   MenuAndRestaurant:
@@ -979,11 +1350,13 @@ definitions:
             type: "string"
           restaurantImageLink:
             type: "string"
+          distance:
+            type: "number"
       menu:
         $ref: "#/definitions/MenuWithRatingAndID"
     example:
-      restaurantData: {"restaurantName": "Emilio's Pizza", "restaurantImageLink": "www.cloudStorage.com/Restaurant"}
-      menu: {"menuID": 2, "name": "Emilio's menu of the day", "description": "Our special menu of today", "tags": [{"name": "Italian", "color": "#FFBC8C"}, {"name": "Mediterranean", "color": "#FFBC8C"}], "rating": 5}
+      restaurantData: {"restaurantName": "Emilio's Pizza", "restaurantImageLink": "www.cloudStorage.com/Restaurant", "distance": 10}
+      menu: {"menuID": 2, "name": "Emilio's menu of the day", "description": "Our special menu of today", "averagePrice": 9.5,"tags": [{"name": "Italian", "color": "#FFBC8C"}, {"name": "Mediterranean", "color": "#FFBC8C"}], "rating": 5}
   ImageID:
     type: "object"
     properties:
@@ -1184,11 +1557,28 @@ definitions:
         type: "number"
       content:
         type: "string"
+  MenuItemReviewWithItemName:
+    type: "object"
+    properties:
+      menuItemID:
+        type: "integer"
+      menuItemName:
+        type: "string"
+      rating:
+        type: "number"
+      content:
+        type: "string"
   MenuReviewWithIDAndStatus:
     type: "object"
     properties:
+      menuReviewID:
+        type: "integer"
       menuID:
         type: "integer"
+      menuName:
+        type: "string"
+      restaurantName:
+        type: "string"
       serviceRating:
         type: "number"
       qualityOverPriceRating:
@@ -1202,15 +1592,18 @@ definitions:
       menuItemsReviews:
         type: "array"
         items:
-          $ref: "#/definitions/MenuItemReview"
+          $ref: "#/definitions/MenuItemReviewWithItemName"
     example:
+      menuReviewID: 34342
       menuID: 343
+      menuName: "Fish menu"
+      restaurantName: "Emilio's Restaurant"
       serviceRating: 4.6
       qualityOverPriceRating: 4.7
       date: "2019-12-01"
       receiptImageID: 67
       status: "accepted"
-      menuItemsReviews: [{"menuItemID": 34, "rating": 4.1, "content": "That was delicious!"},{"menuItemID": 58, "rating": 0.5, "content": "It was an insult, I will never eat that trash again in my whole life"}]
+      menuItemsReviews: [{"menuItemID": 34, "menuItemName": "Pizza margherita", "rating": 4.1, "content": "That was delicious!"},{"menuItemID": 58, "menuItemName": "Pasta alla carbonara with cream", "rating": 0.5, "content": "It was an insult, I will never eat that trash again in my whole life"}]
   CustomerUsernameAndEmail:
     type: "object"
     properties:
@@ -1267,6 +1660,22 @@ definitions:
     example:
       rating: 4.5
       reviews: [{"username": "Janine", "rating": 5, "content": "Best pizza I have tasted in ages!"},{"username": "Emilio", "rating": 4, "content": "Nice pizza!"}]
+  ReviewsOfMenuItemWithoutOverall:
+    type: "object"
+    properties:
+      username:
+        type: "string"
+      rating:
+        type: "number"
+      content:
+        type: "string"
+      date:
+        type: "string"
+    example:
+      username: "Janine"
+      rating: 5
+      content: "Best pizza I have tasted in ages!"
+      date: "2019-12-01"
   MenuItemWithIDAndReviews:
     type: "object"
     properties:
