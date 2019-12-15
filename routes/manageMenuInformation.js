@@ -48,7 +48,7 @@ router.post('/', auth, inputValidator(validationSchema.addMenuValidation), isOwn
     }
 
     //send the response
-    res.status(200).send({menuID: menuCreated.dataValues.Menu_ID});
+    res.status(201).send({menuID: menuCreated.dataValues.Menu_ID});
 });
 
 
@@ -137,7 +137,7 @@ router.put('/:menuID', auth, inputValidator(validationSchema.editMenuValidation)
             Menu_ID: req.params.menuID
         }
     });
-    if (menuFound.length <= 0) return res.status(404).send('Menu not found');
+    if (menuFound.length <= 0) return res.status(404).send('Menu not found.');
 
     //check if the tags of the menu exist in the database
     for (let tag of req.body.tags) {
@@ -146,7 +146,7 @@ router.put('/:menuID', auth, inputValidator(validationSchema.editMenuValidation)
                 Name: tag
             }
         });
-        if (tagFound.length <= 0) return res.status(400).send('One or more tags are not valid');
+        if (tagFound.length <= 0) return res.status(400).send('One or more tags are not valid.');
     }
 
     //edit the corresponding row in Menu table
@@ -189,7 +189,7 @@ router.delete('/:menuID', auth, isOwner, findRestaurant, async (req,res) => {
             Menu_ID: req.params.menuID
         }
     });
-    if (menuFound.length <= 0) return res.status(404).send('Menu not found');
+    if (menuFound.length <= 0) return res.status(404).send('Menu not found.');
 
     //there is no need to manually delete the associated tags in the database: deleting the menu will also delete them
     //(on delete cascade)

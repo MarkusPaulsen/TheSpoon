@@ -8,6 +8,6 @@ module.exports = async (req, res, next) => {
             Username: req.username
         }
     });
-    if (customer.length <= 0) return res.status(401).send('Access denied');
+    if (customer.length <= 0) return res.status(401).send('Access denied.');
     else next();
 };

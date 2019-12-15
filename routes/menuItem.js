@@ -32,7 +32,7 @@ router.post('/:menuID/menuItem', auth, isOwner, findRestaurant, async (req, res)
                 Name: tag
             }
         });
-        if (tagFound.length <= 0) return res.status(400).send('One or more tags are not valid');
+        if (tagFound.length <= 0) return res.status(400).send('One or more tags are not valid.');
     }
 
     //create the menuItem
@@ -90,7 +90,7 @@ router.post('/:menuID/menuItem', auth, isOwner, findRestaurant, async (req, res)
         menuItems: menuItems
     }
 
-
+    //TODO: remove this console log
     console.log('sending 200');
     await updatePriceAverage(menuID);
     res.status(200).send(menuInfo);
