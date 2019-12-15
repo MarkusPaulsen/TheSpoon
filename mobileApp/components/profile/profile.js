@@ -38,10 +38,12 @@ export default class Profile extends Component {
         this.setState({
           loggedIn: token !== null,
           isLoaded: true,
-          token: token
         });
-        this.getUserInfo(token);
-        this.getUserReviews(token);
+        if(this.state.loggedIn){
+          this.setState({ token });
+          this.getUserInfo(token);
+          this.getUserReviews(token);
+        }
       });
     });
   };
@@ -234,7 +236,6 @@ export default class Profile extends Component {
       if (review == null) {
         return null;
       }
-      console.log(review);
       return (
         <Modal animationType="slide" transparent={false} visible={visible}>
           <ScrollView>
@@ -294,8 +295,6 @@ export default class Profile extends Component {
                 What did you eat/drink?
               </Text>
               {review.menuItemsReviews.map(item => {
-                console.log(item, item.score);
-                //TODO: add menuItemName when it is in EP
                 return (
                   <View key={item.menuItemID}>
                     <View style={[styles.field, { marginVertical: 15 }]}>

@@ -90,6 +90,7 @@ export default class ReviewItems extends Component {
               <View style={styles.textBox}>
                 <TextInput
                   style={styles.textInput}
+                  maxLength={200}
                   multiline={true}
                   placeholder={"Review"}
                   textAlignVertical={"top"}

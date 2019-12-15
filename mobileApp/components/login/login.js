@@ -32,7 +32,7 @@ export default class LoginScreen extends Component {
 
   componentDidMount = async () => {
     this.focusListener = this.props.navigation.addListener("didFocus", () => {
-      this.getToken();
+      //this.getToken();
       const parent = this.props.navigation.getParam("parent", "Profile");
       this.setState({ parent });
     });
@@ -105,8 +105,8 @@ export default class LoginScreen extends Component {
 
   async getToken(user) {
     try {
-      const userData = await AsyncStorage.getItem("userToken");
-      const data = JSON.parse(userData);
+      const token = await AsyncStorage.getItem("userToken");
+      const data = JSON.parse(token);
     } catch (e) {
       console.log("Error getting token: ", e);
     }
@@ -121,6 +121,7 @@ export default class LoginScreen extends Component {
             <Icon name="email" size={32} color={Colors.PINK} />
             <TextInput
               placeholder={"Username"}
+              autoCapitalize={"none"}
               value={this.state.username}
               onChangeText={this.handleUsernameChange}
               onBlur={() => {
