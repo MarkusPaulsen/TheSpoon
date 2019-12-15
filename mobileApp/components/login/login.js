@@ -5,16 +5,15 @@ import {
   TextInput,
   Linking,
   TouchableOpacity,
-  Image,
   StyleSheet,
   AsyncStorage
 } from "react-native";
-import UsernameIcon from "../../assets/login-email.png";
-import PasswordIcon from "../../assets/login-password.png";
 import Validate from "./validation.js";
 import validate from "./validation";
 import Profile from "../profile/profile";
 import * as Api from "../../services/api";
+import * as Colors  from "../../styles/colors";
+import Icon from "react-native-vector-icons/MaterialIcons";
 
 export default class LoginScreen extends Component {
   constructor(props) {
@@ -119,7 +118,7 @@ export default class LoginScreen extends Component {
         <Text style={styles.text}>Log in</Text>
         <View style={{ flex: 2, justifyContent: "space-around" }}>
           <View style={{ flexDirection: "row" }}>
-            <Image source={UsernameIcon} style={{ alignSelf: "center" }} />
+            <Icon name="email" size={32} color={Colors.PINK} />
             <TextInput
               placeholder={"Username"}
               value={this.state.username}
@@ -132,12 +131,12 @@ export default class LoginScreen extends Component {
               error={this.state.usernameError}
               style={styles.textInput}
             />
-            <Text style={{ color: "#F3A3A3" }}>
+            <Text style={{color: Colors.PINK }}>
               {this.state.usernameError ? "*" : null}
             </Text>
           </View>
           <View style={{ flexDirection: "row", marginBottom: 90 }}>
-            <Image source={PasswordIcon} style={{ alignSelf: "center" }} />
+            <Icon name="lock" size={32} color={Colors.PINK} />
             <TextInput
               placeholder={"Password"}
               onChangeText={this.handlePasswordChange}
@@ -151,16 +150,16 @@ export default class LoginScreen extends Component {
               secureTextEntry={true}
               style={styles.textInput}
             />
-            <Text style={{ color: "#F3A3A3" }}>
+            <Text style={{color:Colors.PINK}}>
               {this.state.passwordError ? "*" : null}
             </Text>
           </View>
-          <Text style={{ color: "#F3A3A3", alignSelf: "center" }}>
+          <Text style={{ color: Colors.PINK, alignSelf: "center" }}>
             {this.state.usernameError || this.state.passwordError
               ? "All fields must be filled out"
               : null}
           </Text>
-          <Text style={{ color: "#F3A3A3", alignSelf: "center" }}>
+          <Text style={{ color: Colors.PINK, alignSelf: "center" }}>
             {this.state.invalidError ? "Invalid username or password" : null}
           </Text>
         </View>
@@ -189,7 +188,7 @@ export default class LoginScreen extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: Colors.WHITE,
     alignItems: "center"
   },
   text: {
@@ -197,16 +196,14 @@ const styles = StyleSheet.create({
     fontFamily: "roboto",
     marginTop: 150,
     flex: 1
-    //justifyContent: 'center'
   },
   textInput: {
     width: 224,
     height: 42,
-    color: "#000000",
+    color: Colors.BLACK,
     fontFamily: "roboto",
-    borderBottomColor: "#F3A3A3",
+    borderBottomColor: Colors.PINK,
     borderBottomWidth: 1.5,
-    //marginTop: 99,
     alignSelf: "center",
     marginLeft: 7,
     fontSize: 15
@@ -215,28 +212,22 @@ const styles = StyleSheet.create({
     width: 203,
     height: 38,
     borderRadius: 20,
-    backgroundColor: "#F3A3A3",
+    backgroundColor: Colors.PINK,
     marginTop: 6,
     alignSelf: "center"
-    //marginBottom: 50
   },
   registrationButton: {
-    //width: 100,
-    //height: 36,
-    color: "#A5DED0",
-    //marginTop: 45,
-    //alignSelf: "center"
+    color: Colors.TURQUOISE,
+    fontFamily:"robotoBold",
     marginLeft: 5
   },
   registration: {
-    //textAlign: 'center',
     justifyContent: "space-between",
     flexDirection: "row",
     flex: 1
-    //marginTop: 50
   },
   buttonText: {
-    color: "#000000",
+    color: Colors.BLACK,
     alignSelf: "center",
     marginTop: 9,
     fontFamily: "roboto",

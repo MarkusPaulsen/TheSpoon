@@ -279,7 +279,7 @@ export default class Search extends Component {
               <View style={{ flexDirection: "row" }}>
                 <Text style={Typography.FONT_H4_BLACK}>do you want to </Text>
                 <Text style={Typography.FONT_H4_PINK}>eat </Text>
-                <Text style={Typography.FONT_H4_BLACK}>today </Text>
+                <Text style={Typography.FONT_H4_BLACK}>today? </Text>
               </View>
             </View>
             {this.state.searchResults !== null && this.state.searched ? (
