@@ -103,15 +103,6 @@ const bottomTabNavigator = createBottomTabNavigator(
 
 const AppContainer = createAppContainer(bottomTabNavigator);
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center"
-  }
-});
-
 export default class App extends Component {
   state = {
     fontLoaded: false
@@ -119,7 +110,9 @@ export default class App extends Component {
 
   async componentDidMount() {
     await Font.loadAsync({
-      roboto: require("./assets/fonts/roboto-regular.ttf")
+      roboto: require("./assets/fonts/roboto-regular.ttf"),
+      robotoBold: require("./assets/fonts/Roboto-Bold.ttf"),
+      robotoMedium: require("./assets/fonts/Roboto-Medium.ttf")
     });
     this.setState({ fontLoaded: true });
   }
