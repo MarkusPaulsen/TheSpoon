@@ -12,13 +12,16 @@ import {
   SafeAreaView,
   ScrollView,
   Modal,
-  Dimensions
+  Dimensions,
+  TextInput
 } from "react-native";
 import * as Typography from "../../styles/typography";
 import * as Colors from "../../styles/colors";
 import * as Api from "../../services/api";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { AirbnbRating } from "react-native-ratings";
+import PickerSelect from "react-native-picker-select";
+import CountryPicker from "react-native-country-picker-modal";
 
 export default class Profile extends Component {
   constructor(props) {
@@ -28,7 +31,8 @@ export default class Profile extends Component {
       isLoaded: false,
       token: null,
       userInfo: "",
-      reviews: []
+      reviews: [],
+      saveButton: false
     };
   }
 
@@ -86,9 +90,15 @@ export default class Profile extends Component {
         }
       });
       const responseJson = await response.json();
+      console.log(responseJson);
       const userInfo = {
+        name: "Name",
+        surname: "Surname",
         username: responseJson.username,
-        email: responseJson.email
+        email: responseJson.email,
+        age: "",
+        nationality: "",
+        gender: ""
       };
       this.setState({ userInfo });
       if (response.ok) {
@@ -173,6 +183,31 @@ export default class Profile extends Component {
         selectedColor={Colors.PINK}
       />
     );
+  };
+
+  updateName = name => {
+    this.setState({ userInfo: { ...this.state.userInfo, name: name } });
+    if (!this.state.savedButton) {
+      this.setState({ savedButton: true });
+    }
+  };
+
+  updateSurname = surname => {
+    this.setState({ userInfo: { ...this.state.userInfo, surname: surname } });
+    if (!this.state.savedButton) {
+      this.setState({ savedButton: true });
+    }
+  };
+
+  updateEmail = email => {
+    this.setState({ userInfo: { ...this.state.userInfo, email: email } });
+    if (!this.state.savedButton) {
+      this.setState({ savedButton: true });
+    }
+  };
+
+  updateAge = age => {
+    this.setState({ userInfo: { ...this.state.userInfo, age: age } });
   };
 
   render() {
@@ -387,78 +422,152 @@ export default class Profile extends Component {
     if (this.state.isLoaded) {
       if (this.state.loggedIn) {
         return (
-          <View
-            style={[
-              styles.container,
-              {
-                width: screenWidth * 0.85,
-                marginLeft: (screenWidth * 0.15) / 2
-              }
-            ]}
-          >
+          <ScrollView>
             <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between"
-              }}
+              style={[
+                styles.container,
+                {
+                  width: screenWidth * 0.85,
+                  marginLeft: (screenWidth * 0.15) / 2
+                }
+              ]}
             >
-              <View style={{ flexDirection: "row", marginBottom: 20 }}>
-                <Text style={Typography.FONT_H2_BLACK}>Your </Text>
-                <Text style={Typography.FONT_H2_PINK}>Profile</Text>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between"
+                }}
+              >
+                <View style={{ flexDirection: "row", marginBottom: 20 }}>
+                  <Text style={Typography.FONT_H2_BLACK}>Your </Text>
+                  <Text style={Typography.FONT_H2_PINK}>Profile</Text>
+                </View>
+                <View style={{ flexDirection: "row" }}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      this.logout();
+                    }}
+                  >
+                    <Icon
+                      name="exit-to-app"
+                      size={32}
+                      color={Colors.GRAY_DARK}
+                    />
+                  </TouchableOpacity>
+                </View>
               </View>
-              <View style={{ flexDirection: "row" }}>
-                <TouchableOpacity
-                  onPress={() => {
-                    this.logout();
-                  }}
+              <View>
+                <Text style={Typography.FONT_H4_BLACK}>Name</Text>
+                <TextInput
+                  style={[Typography.FONT_REGULAR_THIN, styles.userInfoText]}
+                  value={this.state.userInfo.name}
+                  onChangeText={this.updateName}
+                />
+                <View style={styles.line} />
+                <Text style={Typography.FONT_H4_BLACK}>Surname</Text>
+                <TextInput
+                  style={[Typography.FONT_REGULAR_THIN, styles.userInfoText]}
+                  value={this.state.userInfo.surname}
+                  onChangeText={this.updateSurname}
+                />
+                <View style={styles.line} />
+                <Text style={Typography.FONT_H4_BLACK}>Username</Text>
+                <Text
+                  style={[Typography.FONT_REGULAR_THIN, styles.userInfoText]}
                 >
-                  <Icon
-                    name="power-settings-new"
-                    size={32}
-                    color={Colors.GRAY_DARK}
+                  {this.state.userInfo.username}
+                </Text>
+                <View style={styles.line} />
+                <Text style={Typography.FONT_H4_BLACK}>Email</Text>
+                <TextInput
+                  style={[Typography.FONT_REGULAR_THIN, styles.userInfoText]}
+                  value={this.state.userInfo.email}
+                  onChangeText={this.updateEmail}
+                />
+                <View style={styles.line} />
+                <Text style={Typography.FONT_H4_BLACK}>Age</Text>
+                <PickerSelect
+                  onValueChange={value => this.updateAge(value)}
+                  items={[
+                    { label: "< 18", value: "< 18" },
+                    { label: "18-24", value: "18-24" },
+                    { label: "25-34", value: "24-34" },
+                    { label: "35-49", value: "35-49" },
+                    { label: "50-64", value: "50-64" },
+                    { label: "65+", value: "65+" }
+                  ]}
+                />
+                <View style={styles.line} />
+                <Text style={Typography.FONT_H4_BLACK}>Nationality</Text>
+                {this.state.userInfo.nationality !== "" ? (
+                  <Text
+                    style={[Typography.FONT_REGULAR_THIN, styles.userInfoText]}
+                  >
+                    {this.state.userInfo.nationality}
+                  </Text>
+                ) : (
+                  <CountryPicker
+                    onSelect={value =>
+                      this.setState({
+                        userInfo: {
+                          ...this.state.userInfo,
+                          nationality: value.name
+                        }
+                      })
+                    }
                   />
+                )}
+                <View style={styles.line} />
+                <Text style={Typography.FONT_H4_BLACK}>Gender</Text>
+                <PickerSelect
+                  onValueChange={value =>
+                    this.setState({
+                      userInfo: { ...this.state.userInfo, gender: value }
+                    })
+                  }
+                  items={[
+                    { label: "Male", value: "Male" },
+                    { label: "Female", value: "Female" },
+                    { label: "Undefined", value: "Undefined" }
+                  ]}
+                />
+                <View style={styles.line} />
+                <TouchableOpacity style={styles.saveButton}>
+                  <Text
+                    style={[Typography.FONT_H4_WHITE, { textAlign: "center" }]}
+                  >
+                    SAVE
+                  </Text>
                 </TouchableOpacity>
               </View>
-            </View>
-            <View style={{ flex: 3 }}>
-              <Text style={Typography.FONT_H4_BLACK}>Username</Text>
-              <Text style={[Typography.FONT_REGULAR_THIN, styles.userInfoText]}>
-                {this.state.userInfo.username}
-              </Text>
-              <View style={styles.line} />
-              <Text style={Typography.FONT_H4_BLACK}>Email</Text>
-              <Text style={[Typography.FONT_REGULAR_THIN, styles.userInfoText]}>
-                {this.state.userInfo.email}
-              </Text>
-              <View style={styles.line} />
-            </View>
-            <View style={{ flexDirection: "row", marginBottom: 10 }}>
-              <Text style={Typography.FONT_H3_BLACK}>Your </Text>
-              <Text style={Typography.FONT_H3_PINK}>Reviews</Text>
-            </View>
-            <View style={{ flex: 6 }}>
-              <SafeAreaView style={styles.reviewsList}>
-                <FlatList
-                  data={this.state.reviews}
-                  extraData={this.state}
-                  contentContainerStyle={{ flex: 1 }}
-                  renderItem={({ item }) => (
-                    <YourReviews
-                      menu={item.menuName}
-                      restaurant={item.restaurantName}
-                      status={item.status}
-                      item={item}
-                    />
-                  )}
-                  keyExtractor={item => item.menuReviewID}
+              <View style={{ flexDirection: "row", marginBottom: 10 }}>
+                <Text style={Typography.FONT_H3_BLACK}>Your </Text>
+                <Text style={Typography.FONT_H3_PINK}>Reviews</Text>
+              </View>
+              <View style={{ flex: 6 }}>
+                <SafeAreaView style={styles.reviewsList}>
+                  <FlatList
+                    data={this.state.reviews}
+                    extraData={this.state}
+                    contentContainerStyle={{ flex: 1 }}
+                    renderItem={({ item }) => (
+                      <YourReviews
+                        menu={item.menuName}
+                        restaurant={item.restaurantName}
+                        status={item.status}
+                        item={item}
+                      />
+                    )}
+                    keyExtractor={item => item.menuReviewID}
+                  />
+                </SafeAreaView>
+                <FullReviewModal
+                  review={this.state.modalItem}
+                  visible={this.state.modalItem != null}
                 />
-              </SafeAreaView>
-              <FullReviewModal
-                review={this.state.modalItem}
-                visible={this.state.modalItem != null}
-              />
+              </View>
             </View>
-          </View>
+          </ScrollView>
         );
       }
       if (!this.state.loggedIn) {
@@ -470,7 +579,7 @@ export default class Profile extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     marginTop: 60
   },
   logout_icon: {
@@ -524,5 +633,16 @@ const styles = StyleSheet.create({
   field: {
     flexDirection: "row",
     justifyContent: "space-between"
+  },
+  saveButton: {
+    backgroundColor: Colors.PINK,
+    width: 170,
+    height: 35,
+    borderRadius: 50,
+    alignItems: "center",
+    justifyContent: "center",
+    alignSelf: "center",
+    marginTop: 20,
+    marginBottom: 25
   }
 });
