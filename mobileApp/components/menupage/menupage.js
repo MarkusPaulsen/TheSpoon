@@ -69,10 +69,14 @@ function MenuItem({
             ]}
           />
           <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Icon name={"star"} color={Colors.PINK} size={15} />
-            <Text style={Typography.FONT_SMALL_BLACK}>
-              {score === null ? "-" : score}{" "}
-            </Text>
+            {score === null ? (
+              <Text />
+            ) : (
+              <View style={{ flexDirection: "row" }}>
+                <Icon name={"star"} color={Colors.PINK} size={15} />
+                <Text style={Typography.FONT_SMALL_BLACK}>{score}</Text>
+              </View>
+            )}
           </View>
         </View>
         <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
@@ -93,7 +97,6 @@ function MenuItem({
           </View>
           <View style={{ width: 40 }}>
             <Text style={[Typography.FONT_BOLD, { alignSelf: "flex-end" }]}>
-              {" "}
               {priceEuros}
             </Text>
           </View>
@@ -129,7 +132,7 @@ export default class Menu extends Component {
       "default value"
     );
     const restaurantImage = navigation.getParam("restaurantImage");
-    this.setState({restaurantImage: restaurantImage});
+    this.setState({ restaurantImage: restaurantImage });
     await this.getMenuItem(menuId, restaurantName);
   };
 
@@ -140,7 +143,6 @@ export default class Menu extends Component {
         accept: "application/json"
       });
       const responseJson = await response.json();
-      //console.log(responseJson);
       const tags = this.getMenuTagsInfo(responseJson);
       this.setMenuInfoTags(tags);
       const menuInfo = {
@@ -158,7 +160,7 @@ export default class Menu extends Component {
         priceEuros: index["priceEuros"],
         menuItemImage: index["imageLink"],
         tags: this.getMenuItemTagsInfo(index),
-        score: index["itemRating"],
+        score: index["rating"],
         type: index["type"]
       }));
       const restaurantInfo = {
@@ -205,7 +207,6 @@ export default class Menu extends Component {
 
   getMenuItemTagsInfo(index) {
     const tagsObject = [];
-    console.log("INDEX", index);
     const numberOfTags = index.tags.length;
     for (let i = 0; i < numberOfTags; i++) {
       tagsObject.push({
@@ -249,7 +250,10 @@ export default class Menu extends Component {
         >
           <View>
             <View>
-              <Image source={{uri: this.state.restaurantImage}} style={{ width: 370, height: 180, justifyContent: "center" }}/>
+              <Image
+                source={{ uri: this.state.restaurantImage }}
+                style={{ width: 370, height: 180, justifyContent: "center" }}
+              />
               <View
                 style={{ marginTop: 40, marginLeft: 30, position: "absolute" }}
               >
@@ -474,7 +478,7 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: Colors.WHITE,
-    width: 50,
+    width: 40,
     height: 40,
     borderBottomRightRadius: 10,
     borderTopRightRadius: 10,

@@ -64,11 +64,11 @@ function ResultItem({
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
           <View style={{ flexDirection: "row" }}>{tags1Row}</View>
           <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
-            <Text style={{ marginRight: 5 }}>{getPriceCategory(avgPrice)}</Text>
+            <Text style={[Typography.FONT_SMALL_BLACK,{ marginRight: 5 }]}>{getPriceCategory(avgPrice)}</Text>
             {score === null ? (
               <Text />
             ) : (
-              <View>
+              <View style={{flexDirection: "row"}}>
                 <Icon name={"star"} color={Colors.PINK} size={15} />
                 <Text style={Typography.FONT_SMALL_BLACK}>{score}</Text>
               </View>
@@ -155,14 +155,14 @@ export default class Search extends Component {
       const long = this.state.longitude;
       console.log(Api.SERVER_SEARCH(searchString, lat, long));
       const response = await fetch(
-        `https://thespoon.herokuapp.com/api/user/customer/menu/searchByMenuItem?menuItemName=${searchString}&lat=${lat}&long=${long}`,
+          Api.SERVER_SEARCH(searchString, lat, long),
         {
           method: "GET",
           accept: "application/json"
         }
       );
       const responseJson = await response.json();
-      console.log("RESPONS", responseJson);
+      console.log(responseJson);
       if (response.ok) {
         const searchResults = responseJson.map(index => ({
           id: index.menu.menuID.toString(),

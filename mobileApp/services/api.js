@@ -9,9 +9,9 @@ export const STUB_SEARCH = (searchString, lat, long )=> {
   let url =
     "http://192.168.1.110:8080/api/user/customer/menu/searchByMenuItem?menuItemName=";
   url += searchString;
-  url +="&${";
+  url +="&{";
   url += lat;
-  url +="}&${";
+  url +="}&{";
   url += long;
   url += "}";
   return url;
@@ -20,11 +20,10 @@ export const SERVER_SEARCH = (searchString, lat, long )=> {
   let url =
     "https://thespoon.herokuapp.com/api/user/customer/menu/searchByMenuItem?menuItemName=";
   url += searchString;
-  url +="&${";
+  url +="&Latitude=";
   url +=lat;
-  url +="}&${";
+  url +="&Longitude=";
   url += long;
-  url += "}";
   return url;
 };
 
