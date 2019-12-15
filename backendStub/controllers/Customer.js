@@ -13,6 +13,18 @@ module.exports.apiUserCustomerGET = function apiUserCustomerGET (req, res, next)
     });
 };
 
+module.exports.apiUserCustomerMenuMenuIDMenuItemMenuItemIDReviewGET = function apiUserCustomerMenuMenuIDMenuItemMenuItemIDReviewGET (req, res, next) {
+  var menuID = req.swagger.params['menuID'].value;
+  var menuItemID = req.swagger.params['menuItemID'].value;
+  Customer.apiUserCustomerMenuMenuIDMenuItemMenuItemIDReviewGET(menuID,menuItemID)
+    .then(function (response) {
+      utils.writeJson(res, response);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
+};
+
 module.exports.apiUserCustomerReviewReviewIDDELETE = function apiUserCustomerReviewReviewIDDELETE (req, res, next) {
   var reviewID = req.swagger.params['reviewID'].value;
   Customer.apiUserCustomerReviewReviewIDDELETE(reviewID)

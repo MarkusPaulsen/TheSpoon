@@ -19,7 +19,7 @@ import FilterLink from "../../containers/FilterModalLink";
 import MainLayout from "../layout/MainLayout.js";
 //</editor-fold>
 //<editor-fold desc="Components">
-import Sidebar from "./Sidebar";
+import SidebarTODELETE from "./SidebarTODELETE";
 import Menu from "./Menu";
 import { exhaustMap } from "rxjs/operators";
 import {failLogIn, logIn, successLogIn} from "../../actionCreators/logInActionCreators";
@@ -82,7 +82,7 @@ class YourRestaurant extends Component {
                 <div className="container">
                   <div className="row">
                     <div className="col-sm-4">
-                      <Sidebar
+                      <SidebarTODELETE
                           name={this.state.restaurant.name}
                           address={this.state.restaurant.address}
                           city={this.state.restaurant.city}

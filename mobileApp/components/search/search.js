@@ -8,20 +8,35 @@ import {
   FlatList,
   SafeAreaView,
   TouchableOpacity,
-  Keyboard
+  Keyboard,
+  Dimensions,
+  Modal,
+  Alert
 } from "react-native";
 import Validate from "./searchvalidation.js";
 import { TouchableWithoutFeedback } from "react-native-web";
 import * as Typography from "../../styles/typography";
 import * as Colors from "../../styles/colors";
+import Icon from "react-native-vector-icons/MaterialIcons";
+import * as Api from "../../services/api";
 
-function ResultItem({ menuName, restaurantName, tags, score }) {
+function ResultItem({
+  menuName,
+  restaurantName,
+  tags,
+  score,
+  avgPrice,
+  image
+}) {
   const tags1Row = [];
   const tags2Row = [];
   for (let i = 0; i < tags.length; i++) {
     const color = tags[i]["color"];
     const tag = [
-      <View key={i.toString()} style={[styles.bgLabel, { backgroundColor: color }]}>
+      <View
+        key={i.toString()}
+        style={[styles.bgLabel, { backgroundColor: color }]}
+      >
         <Text style={[Typography.FONT_TAG, { marginHorizontal: 10 }]}>
           {tags[i]["name"]}
         </Text>
@@ -36,7 +51,7 @@ function ResultItem({ menuName, restaurantName, tags, score }) {
     <View style={styles.resultsItem}>
       <View style={styles.imageBox}>
         <Image
-          source={require("../../assets/no_image.png")}
+          source={{ uri: image }}
           style={{ width: 322, height: 137, justifyContent: "center" }}
         />
       </View>
@@ -49,8 +64,15 @@ function ResultItem({ menuName, restaurantName, tags, score }) {
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
           <View style={{ flexDirection: "row" }}>{tags1Row}</View>
           <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
-            <Image source={require("../../assets/icon-star.png")} />
-            <Text style={Typography.FONT_SMALL_BLACK}>{score}</Text>
+            <Text style={[Typography.FONT_SMALL_BLACK,{ marginRight: 5 }]}>{getPriceCategory(avgPrice)}</Text>
+            {score === null ? (
+              <Text />
+            ) : (
+              <View style={{flexDirection: "row"}}>
+                <Icon name={"star"} color={Colors.PINK} size={15} />
+                <Text style={Typography.FONT_SMALL_BLACK}>{score}</Text>
+              </View>
+            )}
           </View>
         </View>
         <View>
@@ -61,6 +83,21 @@ function ResultItem({ menuName, restaurantName, tags, score }) {
   );
 }
 
+function getPriceCategory(avgPrice) {
+  avgPrice = parseInt(avgPrice);
+  if (!avgPrice) {
+    return "";
+  } else if (avgPrice > 30) {
+    return "$$$$";
+  } else if (avgPrice > 20) {
+    return "$$$";
+  } else if (avgPrice > 10) {
+    return "$$";
+  } else {
+    return "$";
+  }
+}
+
 export default class Search extends Component {
   constructor(props) {
     super(props);
@@ -68,10 +105,32 @@ export default class Search extends Component {
       searchWord: "",
       searchError: "",
       searchResults: null,
-      searched: false
+      searched: false,
+      modalVisible: false,
+      filters: ["Price (high-low)", "Price (low-high)", "Review", "Distance"],
+      selectedFilter: "",
+      latitude: "",
+      longitude: ""
     };
     this.validateSearch = this.validateSearch.bind(this);
   }
+
+  componentDidMount = async () => {
+    await this.findCoordinates();
+  };
+
+  findCoordinates = () => {
+    navigator.geolocation.getCurrentPosition(
+      position => {
+        const latitude = JSON.stringify(position.coords.latitude);
+        const longitude = JSON.stringify(position.coords.longitude);
+        this.setState({ latitude: latitude });
+        this.setState({ longitude: longitude });
+      },
+      error => Alert.alert(error.message),
+      { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
+    );
+  };
 
   updateSearchText = searchWord => {
     this.setState({ searchWord, searched: false });
@@ -88,25 +147,32 @@ export default class Search extends Component {
     }
     this.setState({ searched: true });
   }
+
   async getResults() {
     try {
       const searchString = this.state.searchWord;
-      //change to port 80 if not using the stub
+      const lat = this.state.latitude;
+      const long = this.state.longitude;
+      console.log(Api.SERVER_SEARCH(searchString, lat, long));
       const response = await fetch(
-        "http://192.168.1.110:8080/api/user/customer/menu/searchByMenuItem?menuItemName={searchString}",
+          Api.SERVER_SEARCH(searchString, lat, long),
         {
           method: "GET",
           accept: "application/json"
         }
       );
       const responseJson = await response.json();
+      console.log(responseJson);
       if (response.ok) {
         const searchResults = responseJson.map(index => ({
           id: index.menu.menuID.toString(),
           menuName: index.menu.name,
           restaurantName: index.restaurantData.restaurantName,
           tags: this.getTagsInfo(index),
-          score: index.menu.rating
+          score: index.menu.rating,
+          price: index.menu.averagePrice,
+          image: index.restaurantData.restaurantImageLink,
+          distance: index.restaurantData.distance
         }));
         this.setState({ searchResults });
       }
@@ -130,27 +196,188 @@ export default class Search extends Component {
     }
     return tagsObject;
   }
+
+  setModalVisible() {
+    this.setState({ modalVisible: !this.state.modalVisible });
+  }
+
+  setFilter(item) {
+    if (this.state.selectedFilter === item) {
+      this.setState({ selectedFilter: "" });
+    } else {
+      this.setState({ selectedFilter: item });
+    }
+  }
+
+  applyFilter() {
+    this.setModalVisible();
+    console.log("FILTER: ", this.state.selectedFilter);
+    const sorted = this.state.searchResults;
+    console.log(sorted);
+    if (this.state.selectedFilter === "Price (low-high)") {
+      sorted.sort((a, b) =>
+        a.price > b.price
+          ? 1
+          : a.price === b.price
+          ? a.menuName > b.menuName
+            ? 1
+            : -1
+          : -1
+      );
+      this.setState({ searchResults: sorted });
+    } else if (this.state.selectedFilter === "Price (high-low)") {
+      sorted.sort((a, b) =>
+        a.price > b.price
+          ? -1
+          : a.price === b.price
+          ? a.menuName > b.menuName
+            ? 1
+            : -1
+          : 1
+      );
+      this.setState({ searchResults: sorted });
+    } else if (this.state.selectedFilter === "Review") {
+      sorted.sort((a, b) =>
+        a.score > b.score
+          ? -1
+          : a.score === b.score
+          ? a.menuName > b.menuName
+            ? 1
+            : -1
+          : 1
+      );
+      this.setState({ searchResults: sorted });
+    } else {
+      const sorted = this.state.searchResults;
+      sorted.sort((a, b) =>
+        a.distance > b.distance
+          ? 1
+          : a.distance === b.distance
+          ? a.menuName > b.menuName
+            ? 1
+            : -1
+          : -1
+      );
+      this.setState({ searchResults: sorted });
+    }
+  }
+
   render() {
+    const screenWidth = Math.round(Dimensions.get("window").width);
+
     return (
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={styles.container}>
-          <View style={styles.text}>
-            <Text style={Typography.FONT_H2_PINK}>What</Text>
-            <View style={{ flexDirection: "row" }}>
-              <Text style={Typography.FONT_H4_BLACK}>do you want to </Text>
-              <Text style={Typography.FONT_H4_PINK}>eat </Text>
-              <Text style={Typography.FONT_H4_BLACK}>today </Text>
+        <View
+          style={[
+            styles.container,
+            { width: screenWidth * 0.9, marginLeft: (screenWidth * 0.1) / 2 }
+          ]}
+        >
+          <View style={{ flexDirection: "row", alignItems: "space-between" }}>
+            <View style={styles.text}>
+              <Text style={Typography.FONT_H2_PINK}>What</Text>
+              <View style={{ flexDirection: "row" }}>
+                <Text style={Typography.FONT_H4_BLACK}>do you want to </Text>
+                <Text style={Typography.FONT_H4_PINK}>eat </Text>
+                <Text style={Typography.FONT_H4_BLACK}>today </Text>
+              </View>
             </View>
+            {this.state.searchResults !== null && this.state.searched ? (
+              <TouchableOpacity
+                style={styles.filterButton}
+                onPress={() => this.setModalVisible()}
+              >
+                <Icon name={"filter-list"} size={30} color={Colors.WHITE} />
+              </TouchableOpacity>
+            ) : null}
+            <Modal
+              visible={this.state.modalVisible}
+              animationType="slide"
+              transparent={false}
+            >
+              <View style={styles.modalContainer}>
+                <TouchableOpacity
+                  onPress={() => this.setModalVisible()}
+                  style={{ marginLeft: (screenWidth * 0.1) / 2 }}
+                >
+                  <Icon name={"chevron-left"} size={40} />
+                </TouchableOpacity>
+                <Text
+                  style={[Typography.FONT_H3_BLACK, { alignSelf: "center" }]}
+                >
+                  Sort By
+                </Text>
+                <FlatList
+                  data={this.state.filters}
+                  extraData={this.state}
+                  renderItem={({ item }) => (
+                    <TouchableOpacity
+                      onPress={() => this.setFilter(item)}
+                      style={{
+                        justifyContent: "center",
+                        height: 40,
+                        backgroundColor:
+                          this.state.selectedFilter === item
+                            ? Colors.TURQUOISE
+                            : Colors.WHITE
+                      }}
+                    >
+                      <Text
+                        style={[
+                          Typography.FONT_H4_BLACK,
+                          {
+                            width: screenWidth * 0.85,
+                            marginLeft: (screenWidth * 0.15) / 2
+                          }
+                        ]}
+                      >
+                        {item}
+                      </Text>
+                    </TouchableOpacity>
+                  )}
+                  keyExtractor={item => item}
+                  style={{ marginVertical: 30 }}
+                />
+                {this.state.selectedFilter ? (
+                  <TouchableOpacity
+                    style={styles.applyButton}
+                    onPress={() => this.applyFilter()}
+                  >
+                    <Text
+                      style={[
+                        Typography.FONT_H4_WHITE,
+                        { textAlign: "center" }
+                      ]}
+                    >
+                      Apply
+                    </Text>
+                  </TouchableOpacity>
+                ) : (
+                  <View
+                    style={[
+                      styles.applyButton,
+                      { backgroundColor: Colors.GRAY_MEDIUM }
+                    ]}
+                  >
+                    <Text
+                      style={[
+                        Typography.FONT_H4_WHITE,
+                        { textAlign: "center" }
+                      ]}
+                    >
+                      Apply
+                    </Text>
+                  </View>
+                )}
+              </View>
+            </Modal>
           </View>
           <View style={[styles.searchBar, { marginTop: 20 }]}>
             <TouchableOpacity
               value={this.state.searchWord}
               onPress={this.validateSearch}
             >
-              <Image
-                source={require("../../assets/search.png")}
-                style={{ alignSelf: "center", marginTop: 10 }}
-              />
+              <Icon name={"search"} size={28} color={Colors.PINK} />
             </TouchableOpacity>
             <TextInput
               style={[Typography.FONT_INPUT, styles.textInput]}
@@ -174,12 +401,14 @@ export default class Search extends Component {
               <SafeAreaView style={styles.containerResults}>
                 <FlatList
                   data={this.state.searchResults}
+                  extraData={this.state}
                   renderItem={({ item }) => (
                     <TouchableOpacity
                       onPress={() => {
                         this.props.navigation.navigate("Menu", {
                           menuId: item.id,
-                          restaurantName: item.restaurantName
+                          restaurantName: item.restaurantName,
+                          restaurantImage: item.image
                         });
                       }}
                     >
@@ -189,10 +418,14 @@ export default class Search extends Component {
                         restaurantName={item.restaurantName}
                         tags={item.tags}
                         score={item.score}
+                        avgPrice={item.price}
+                        image={item.image}
                       />
                     </TouchableOpacity>
                   )}
-                  keyExtractor={(item, index) => {return item.id}}
+                  keyExtractor={(item, index) => {
+                    return item.id;
+                  }}
                 />
               </SafeAreaView>
             ) : null}
@@ -233,7 +466,7 @@ const styles = StyleSheet.create({
   text: {
     flex: 1,
     marginTop: 60,
-    marginLeft: 40
+    marginLeft: 25
   },
   textInput: {
     height: 42,
@@ -246,7 +479,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
     alignItems: "center",
-    marginLeft: 40
+    alignSelf: "center"
   },
   noResult: {
     marginTop: 120,
@@ -278,5 +511,25 @@ const styles = StyleSheet.create({
   imageBox: {
     width: 322,
     height: 137
+  },
+  filterButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: Colors.PINK,
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  modalContainer: {
+    backgroundColor: Colors.WHITE,
+    marginTop: 30
+  },
+  applyButton: {
+    backgroundColor: Colors.PINK,
+    width: 120,
+    borderRadius: 50,
+    alignSelf: "center",
+    height: 35,
+    justifyContent: "center"
   }
 });

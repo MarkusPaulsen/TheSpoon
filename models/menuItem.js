@@ -54,11 +54,11 @@ TaggedItem.belongsTo(Tag, {
 MenuItem.hasMany(ItemReview, {
     foreignKey: 'MI_ID'
 });
- /*
+
 ItemReview.belongsTo(MenuItem, {
     foreignKey: 'MI_ID'
 });
 
-*/
+
 
 module.exports = MenuItem;

@@ -12,7 +12,7 @@ import FilterLink from "../../containers/FilterModalLink";
 import {IconLocationTurqoise, IconHoursTurqoise, IconEditPink} from "../Icons.js";
 //</editor-fold>
 
-class Sidebar extends Component {
+class SidebarTODELETE extends Component {
     constructor(props) {
         super(props)
     }
@@ -67,4 +67,4 @@ class Sidebar extends Component {
     //</editor-fold>
 }
 
-export default Sidebar;
+export default SidebarTODELETE;

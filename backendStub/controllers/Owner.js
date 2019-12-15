@@ -26,6 +26,38 @@ module.exports.addMenuItem = function addMenuItem (req, res, next) {
     });
 };
 
+module.exports.apiUserOwnerRestaurantReviewGET = function apiUserOwnerRestaurantReviewGET (req, res, next) {
+  Owner.apiUserOwnerRestaurantReviewGET()
+    .then(function (response) {
+      utils.writeJson(res, response);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
+};
+
+module.exports.apiUserOwnerRestaurantReviewReviewIDPOST = function apiUserOwnerRestaurantReviewReviewIDPOST (req, res, next) {
+  var reviewID = req.swagger.params['reviewID'].value;
+  var body = req.swagger.params['body'].value;
+  Owner.apiUserOwnerRestaurantReviewReviewIDPOST(reviewID,body)
+    .then(function (response) {
+      utils.writeJson(res, response);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
+};
+
+module.exports.apiUserOwnerTagGET = function apiUserOwnerTagGET (req, res, next) {
+  Owner.apiUserOwnerTagGET()
+    .then(function (response) {
+      utils.writeJson(res, response);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
+};
+
 module.exports.configureRestaurant = function configureRestaurant (req, res, next) {
   var body = req.swagger.params['body'].value;
   Owner.configureRestaurant(body)
@@ -88,6 +120,17 @@ module.exports.editMenuItem = function editMenuItem (req, res, next) {
   var menuItemID = req.swagger.params['menuItemID'].value;
   var body = req.swagger.params['body'].value;
   Owner.editMenuItem(menuID,menuItemID,body)
+    .then(function (response) {
+      utils.writeJson(res, response);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
+};
+
+module.exports.editRestaurant = function editRestaurant (req, res, next) {
+  var body = req.swagger.params['body'].value;
+  Owner.editRestaurant(body)
     .then(function (response) {
       utils.writeJson(res, response);
     })

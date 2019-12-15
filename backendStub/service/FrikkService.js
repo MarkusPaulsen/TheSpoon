@@ -2,6 +2,37 @@
 
 
 /**
+ * Return all the reviews of the menu item
+ * Return all the reviews of the menu item with given menuItemID contained in the menu with given menuID.
+ *
+ * menuID Integer ID of the menu
+ * menuItemID Integer ID of the menu item
+ * returns List
+ **/
+exports.apiUserCustomerMenuMenuIDMenuItemMenuItemIDReviewGET = function(menuID,menuItemID) {
+  return new Promise(function(resolve, reject) {
+    var examples = {};
+    examples['application/json'] = [ {
+  "username" : "Janine",
+  "rating" : 5,
+  "content" : "Best pizza I have tasted in ages!",
+  "date" : "2019-12-01"
+}, {
+  "username" : "Janine",
+  "rating" : 5,
+  "content" : "Best pizza I have tasted in ages!",
+  "date" : "2019-12-01"
+} ];
+    if (Object.keys(examples).length > 0) {
+      resolve(examples[Object.keys(examples)[0]]);
+    } else {
+      resolve();
+    }
+  });
+}
+
+
+/**
  * Return data of a specific menu
  * Returns all the data about the menu with given menuID, even the menu items inside it. The photos of the menu items are saved in the Amazon s3 storage, so the links to the cloud storage are also returned. The frontend will directly download them from the cloud storage, they won't be sent by the backend with this endpoint.
  *
@@ -100,7 +131,11 @@ exports.getOwnMenus = function() {
     "name" : "Mediterranean",
     "color" : "#FFBC8C"
   } ],
+  "totalScore" : 4,
+  "serviceScore" : 3.5,
+  "qualityOverPriceScore" : 5,
   "menuItems" : [ {
+    "menuItemID" : 20,
     "name" : "Spaghetti alla carbonara",
     "description" : "Fantastic italian dish made of spaghetti, pig cheek, eggs, black pepper, pecorino romano",
     "type" : "dish",
@@ -115,8 +150,22 @@ exports.getOwnMenus = function() {
       "name" : "Italian",
       "color" : "#FFBC8C"
     } ],
-    "imageLink" : "www.cloudStorage.com/Carbonara"
+    "imageLink" : "www.cloudStorage.com/Carbonara",
+    "rating" : 4.5,
+    "menuItemReviews" : {
+      "rating" : 4.5,
+      "reviews" : [ {
+        "username" : "Janine",
+        "rating" : 5,
+        "content" : "Best pizza I have tasted in ages!"
+      }, {
+        "username" : "Emilio",
+        "rating" : 4,
+        "content" : "Nice pizza!"
+      } ]
+    }
   }, {
+    "menuItemID" : 21,
     "name" : "Polpette al sugo",
     "description" : "Meatballs with tomato sauce",
     "type" : "dish",
@@ -131,7 +180,20 @@ exports.getOwnMenus = function() {
       "name" : "Italian",
       "color" : "#FFBC8C"
     } ],
-    "imageLink" : "www.cloudStorage.com/Meatballs"
+    "imageLink" : "www.cloudStorage.com/Meatballs",
+    "rating" : 4,
+    "menuItemReviews" : {
+      "rating" : 4.5,
+      "reviews" : [ {
+        "username" : "Janine",
+        "rating" : 5,
+        "content" : "Best pizza I have tasted in ages!"
+      }, {
+        "username" : "Emilio",
+        "rating" : 4,
+        "content" : "Nice pizza!"
+      } ]
+    }
   } ]
 }, {
   "menuID" : 3,
@@ -144,7 +206,11 @@ exports.getOwnMenus = function() {
     "name" : "Mediterranean",
     "color" : "#FFBC8C"
   } ],
+  "totalScore" : 4,
+  "serviceScore" : 3.5,
+  "qualityOverPriceScore" : 5,
   "menuItems" : [ {
+    "menuItemID" : 30,
     "name" : "Spaghetti alla carbonara",
     "description" : "Fantastic italian dish made of spaghetti, pig cheek, eggs, black pepper, pecorino romano",
     "type" : "dish",
@@ -159,8 +225,22 @@ exports.getOwnMenus = function() {
       "name" : "Italian",
       "color" : "#FFBC8C"
     } ],
-    "imageLink" : "www.cloudStorage.com/Carbonara"
+    "imageLink" : "www.cloudStorage.com/Carbonara",
+    "rating" : 4.5,
+    "menuItemReviews" : {
+      "rating" : 4.5,
+      "reviews" : [ {
+        "username" : "Janine",
+        "rating" : 5,
+        "content" : "Best pizza I have tasted in ages!"
+      }, {
+        "username" : "Emilio",
+        "rating" : 4,
+        "content" : "Nice pizza!"
+      } ]
+    }
   }, {
+    "menuItemID" : 31,
     "name" : "Polpette al sugo",
     "description" : "Meatballs with tomato sauce",
     "type" : "dish",
@@ -175,7 +255,77 @@ exports.getOwnMenus = function() {
       "name" : "Italian",
       "color" : "#FFBC8C"
     } ],
-    "imageLink" : "www.cloudStorage.com/Meatballs"
+    "imageLink" : "www.cloudStorage.com/Meatballs",
+    "rating" : 4,
+    "menuItemReviews" : {
+      "rating" : 4.5,
+      "reviews" : [ {
+        "username" : "Janine",
+        "rating" : 5,
+        "content" : "Best pizza I have tasted in ages!"
+      }, {
+        "username" : "Emilio",
+        "rating" : 4,
+        "content" : "Nice pizza!"
+      } ]
+    }
+  } ]
+} ];
+    if (Object.keys(examples).length > 0) {
+      resolve(examples[Object.keys(examples)[0]]);
+    } else {
+      resolve();
+    }
+  });
+}
+
+
+/**
+ * Return all the reviews of the customer
+ * Return all the reviews of the customer, with their reviewIDs and their status (accepted/refused/pending). Returns an empty array if no review is found.
+ *
+ * returns List
+ **/
+exports.getOwnReviews = function() {
+  return new Promise(function(resolve, reject) {
+    var examples = {};
+    examples['application/json'] = [ {
+  "menuReviewID" : 34342,
+  "menuID" : 343,
+  "menuName" : "Fish menu",
+  "restaurantName" : "Emilio's Restaurant",
+  "serviceRating" : 4.6,
+  "qualityOverPriceRating" : 4.7,
+  "date" : "2019-12-01",
+  "receiptImageID" : 67,
+  "status" : "accepted",
+  "menuItemsReviews" : [ {
+    "menuItemID" : 34,
+    "rating" : 4.1,
+    "content" : "That was delicious!"
+  }, {
+    "menuItemID" : 58,
+    "rating" : 0.5,
+    "content" : "It was an insult, I will never eat that trash again in my whole life"
+  } ]
+}, {
+  "menuReviewID" : 34342,
+  "menuID" : 343,
+  "menuName" : "Fish menu",
+  "restaurantName" : "Emilio's Restaurant",
+  "serviceRating" : 4.6,
+  "qualityOverPriceRating" : 4.7,
+  "date" : "2019-12-01",
+  "receiptImageID" : 67,
+  "status" : "accepted",
+  "menuItemsReviews" : [ {
+    "menuItemID" : 34,
+    "rating" : 4.1,
+    "content" : "That was delicious!"
+  }, {
+    "menuItemID" : 58,
+    "rating" : 0.5,
+    "content" : "It was an insult, I will never eat that trash again in my whole life"
   } ]
 } ];
     if (Object.keys(examples).length > 0) {
@@ -234,12 +384,14 @@ exports.searchByMenuItem = function(menuItemName) {
     examples['application/json'] = [ {
   "restaurantData" : {
     "restaurantName" : "Emilio's Pizza",
-    "restaurantImageLink" : "www.cloudStorage.com/Restaurant"
+    "restaurantImageLink" : "www.cloudStorage.com/Restaurant",
+    "distance" : 10
   },
   "menu" : {
     "menuID" : 2,
     "name" : "Emilio's menu of the day",
     "description" : "Our special menu of today",
+    "averagePrice" : 9.5,
     "tags" : [ {
       "name" : "Italian",
       "color" : "#FFBC8C"
@@ -252,12 +404,14 @@ exports.searchByMenuItem = function(menuItemName) {
 }, {
   "restaurantData" : {
     "restaurantName" : "Emilio's Pizza",
-    "restaurantImageLink" : "www.cloudStorage.com/Restaurant"
+    "restaurantImageLink" : "www.cloudStorage.com/Restaurant",
+    "distance" : 7.5
   },
   "menu" : {
     "menuID" : 3,
     "name" : "Emilio's menu of the day",
     "description" : "Our special menu of today",
+    "averagePrice" : 9.5,
     "tags" : [ {
       "name" : "Italian",
       "color" : "#FFBC8C"
@@ -273,6 +427,21 @@ exports.searchByMenuItem = function(menuItemName) {
     } else {
       resolve();
     }
+  });
+}
+
+
+/**
+ * Submit a review of the menu
+ * Submit a review of the menu with given menuID. The receiptImageID is obtained by the frontend when the photo of the receipt is uploaded through the dedicated endpoint.
+ *
+ * menuID Integer ID of the menu
+ * body MenuReview Review
+ * no response value expected for this operation
+ **/
+exports.submitReview = function(menuID,body) {
+  return new Promise(function(resolve, reject) {
+    resolve();
   });
 }
 

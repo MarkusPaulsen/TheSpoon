@@ -1,6 +1,6 @@
 //<editor-fold desc="React Import">
 import React, {Component} from "react";
-import {Link, Redirect} from "react-router-dom"
+import {Redirect} from "react-router-dom"
 //</editor-fold>
 //<editor-fold desc="Redux import">
 import {connect} from "react-redux";
@@ -10,34 +10,31 @@ import {connect} from "react-redux";
 import MainLayout from "../layout/MainLayout.js"
 //</editor-fold>
 
-class Dashboard extends Component {
+class MainPage extends Component {
     //<editor-fold desc="Render">
     render() {
         if(typeof this.props.loginStatus != "undefined" && this.props.loginStatus === "logged in"){
             return (
-                <MainLayout >
-                    <div className="mainpage-banner">
-                        <div className="mainpage-text">
-                            <div className="container">
-                                <div className="row">
-                                    <div className="col-sm-8">
-                                        <h1 className="title">This is your dashboard  {this.props.username}</h1>
-                                        <Link to="/" className="logo">
-                                            <text>Back to Homepage</text>
-                                        </Link>
-                                    </div>
+                <div className="mainpage-banner">
+                    <div className="mainpage-text">
+                        <div className="container">
+                            <div className="row">
+                                <div className="col-sm-8">
+                                    <h1 className="title">Hello {this.props.username}</h1>
+                                    <label>You can now log in on you mobile app.</label>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </MainLayout>
+                </div>
             );
         }
-        else {
+        else{
             return(
                 <Redirect to={{pathname: "/"}}/>
             );
         }
+
     }
     //</editor-fold>
 }
@@ -45,10 +42,11 @@ class Dashboard extends Component {
 //<editor-fold desc="Redux">
 const mapStateToProps = (state) => {
     return {
+        role: state.logInReducer.role,
         username: state.logInReducer.username,
         loginStatus: state.logInReducer.loginStatus
     };
 };
 
-export default connect(mapStateToProps, null)(Dashboard);
+export default connect(mapStateToProps, null)(MainPage);
 //</editor-fold>

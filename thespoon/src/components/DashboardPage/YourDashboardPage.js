@@ -1,15 +1,16 @@
 //<editor-fold desc="React Import">
 import React, {Component} from "react";
-import {Link, Redirect} from "react-router-dom";
+import {Link, Redirect} from "react-router-dom"
 //</editor-fold>
 //<editor-fold desc="Redux import">
 import {connect} from "react-redux";
 //</editor-fold>
+
 //<editor-fold desc="Layout">
 import MainLayout from "../layout/MainLayout.js"
 //</editor-fold>
 
-class Profile extends Component {
+class YourDashboardPage extends Component {
     //<editor-fold desc="Render">
     render() {
         if(typeof this.props.loginStatus != "undefined" && this.props.loginStatus === "logged in"){
@@ -20,10 +21,7 @@ class Profile extends Component {
                             <div className="container">
                                 <div className="row">
                                     <div className="col-sm-8">
-                                        <h1 className="title">This is your profile page {this.props.username}</h1>
-                                        <Link to="/" className="logo">
-                                            <text>Back to Homepage</text>
-                                        </Link>
+                                        <h1 className="title">This is your dashboard  {this.props.username}</h1>
                                     </div>
                                 </div>
                             </div>
@@ -49,5 +47,5 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps, null)(Profile);
+export default connect(mapStateToProps, null)(YourDashboardPage);
 //</editor-fold>
