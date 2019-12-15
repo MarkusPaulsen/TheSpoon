@@ -104,7 +104,7 @@ router.get('/:restaurantID/menu', auth, isCustomer, async(req, res) => {
             Restaurant_ID: req.params.restaurantID
         }
     });
-    if (restaurantFound.length <= 0) return res.status(404).send("Restaurant with given restaurantID doesn't exist");
+    if (restaurantFound.length <= 0) return res.status(404).send("Restaurant with given restaurantID not found.");
 
     //find all the menus of the restaurant with given restaurantID
     const menusFound = await Menu.findAll({
@@ -134,7 +134,7 @@ router.get('/menu/:menuID/menuItem', auth, isCustomer, async (req, res) =>{
             Menu_ID: req.params.menuID
         }
     });
-    if (menuFound.length <= 0) return res.status(404).send("Menu with given menuID doesn't exist");
+    if (menuFound.length <= 0) return res.status(404).send("Menu with given menuID not found.");
 
     //find all the menu items of the menu with given menuID
     const menuItemsFound = await MenuItem.findAll({
