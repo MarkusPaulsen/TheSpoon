@@ -118,7 +118,7 @@ export default class ItemReview extends Component {
                     </Text>
                   </View>
                 )}
-                keyExtractor={index => index.toString()}
+                keyExtractor={(item, index) => "key"+index}
               />
             </View>
           ) : (

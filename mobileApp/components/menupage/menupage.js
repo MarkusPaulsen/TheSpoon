@@ -27,20 +27,22 @@ function MenuItem({
   const tags1Row = [];
   const tags2Row = [];
 
-  for (let i = 0; i < tags.length; i++) {
-    const color = tags[i]["color"];
-    const tag = [
-      <View
-        key={i.toString()}
-        style={[styles.bgLabel, { backgroundColor: color }]}
-      >
-        <Text style={[Typography.FONT_TAG, { marginHorizontal: 10 }]}>
-          {tags[i]["name"]}
-        </Text>
-      </View>
-    ];
-    {
-      i < 2 ? tags1Row.push(tag) : tags2Row.push(tag);
+  if (tags !== null) {
+    for (let i = 0; i < tags.length; i++) {
+      const color = tags[i]["color"];
+      const tag = [
+        <View
+          key={i.toString()}
+          style={[styles.bgLabel, { backgroundColor: color }]}
+        >
+          <Text style={[Typography.FONT_TAG, { marginHorizontal: 10 }]}>
+            {tags[i]["name"]}
+          </Text>
+        </View>
+      ];
+      {
+        i < 2 ? tags1Row.push(tag) : tags2Row.push(tag);
+      }
     }
   }
 
@@ -92,8 +94,14 @@ function MenuItem({
             <Text style={[Typography.FONT_SMALL_THIN, { textAlign: "left" }]}>
               {menuItemDescription}
             </Text>
-            <View style={{ flexDirection: "row" }}>{tags1Row}</View>
-            <View style={{ flexDirection: "row" }}>{tags2Row}</View>
+            {tags !== null ? (
+              <View>
+                <View style={{ flexDirection: "row" }}>{tags1Row}</View>
+                <View style={{ flexDirection: "row" }}>{tags2Row}</View>
+              </View>
+            ) : (
+              <View />
+            )}
           </View>
           <View style={{ width: 40 }}>
             <Text style={[Typography.FONT_BOLD, { alignSelf: "flex-end" }]}>
@@ -207,12 +215,14 @@ export default class Menu extends Component {
 
   getMenuItemTagsInfo(index) {
     const tagsObject = [];
-    const numberOfTags = index.tags.length;
-    for (let i = 0; i < numberOfTags; i++) {
-      tagsObject.push({
-        name: index.tags[i]["name"],
-        color: index.tags[i]["color"]
-      });
+    if (index.tags !== null) {
+      const numberOfTags = index.tags.length;
+      for (let i = 0; i < numberOfTags; i++) {
+        tagsObject.push({
+          name: index.tags[i]["name"],
+          color: index.tags[i]["color"]
+        });
+      }
     }
     return tagsObject;
   }
@@ -254,16 +264,14 @@ export default class Menu extends Component {
                 source={{ uri: this.state.restaurantImage }}
                 style={{ width: 370, height: 180, justifyContent: "center" }}
               />
-              <View
-                style={{ marginTop: 40, marginLeft: 30, position: "absolute" }}
-              >
+              <View style={{ marginTop: 40, position: "absolute" }}>
                 <TouchableOpacity
                   onPress={() => {
                     this.props.navigation.goBack();
                   }}
                   style={styles.button}
                 >
-                  <Image source={require("../../assets/go-back.png")} />
+                  <Icon name={"chevron-left"} size={40} />
                 </TouchableOpacity>
               </View>
             </View>
@@ -478,11 +486,11 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: Colors.WHITE,
-    width: 40,
+    width: 60,
     height: 40,
     borderBottomRightRadius: 10,
     borderTopRightRadius: 10,
-    alignContent: "center",
+    alignItems: "center",
     justifyContent: "center"
   }
 });
