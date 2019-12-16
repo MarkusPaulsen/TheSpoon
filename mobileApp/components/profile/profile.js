@@ -34,15 +34,16 @@ export default class Profile extends Component {
 
   componentDidMount = async () => {
     this.focusListener = this.props.navigation.addListener("didFocus", () => {
-      AsyncStorage.getItem("userToken").then(token => {
-        this.setState({
-          loggedIn: token !== null,
-          isLoaded: true,
-        });
-        if(this.state.loggedIn){
-          this.setState({ token });
-          this.getUserInfo(token);
-          this.getUserReviews(token);
+      AsyncStorage.getItem("userToken").then(async token => {
+        const loggedIn = token !== null;
+        console.log(loggedIn);
+        if (loggedIn) {
+          await this.setState({loggedIn});
+          await this.getUserInfo(token);
+          await this.getUserReviews(token);
+          await this.setState({ token, isLoaded: true });
+        } else {
+         await this.setState({ isLoaded: true });
         }
       });
     });
@@ -92,9 +93,9 @@ export default class Profile extends Component {
         username: responseJson.username,
         email: responseJson.email
       };
-      this.setState({ userInfo });
       if (response.ok) {
         console.log("Success fetching profileData");
+        this.setState({ userInfo });
       }
       if (!response.ok) {
         console.log("Fetching profileData failed");
@@ -126,9 +127,9 @@ export default class Profile extends Component {
         status: index.status,
         menuItemsReviews: index.menuItemsReviews
       }));
-      this.setState({ reviews });
       if (response.ok) {
         console.log("Success fetching reviews");
+        this.setState({ reviews });
       }
       if (!response.ok) {
         console.log("Fetching reviews failed");
@@ -139,8 +140,6 @@ export default class Profile extends Component {
   }
 
   async deleteReview(reviewID, token) {
-    console.log(reviewID);
-    console.log(token);
     try {
       const response = await fetch(Api.SERVER_DELETE_REVIEW(reviewID), {
         method: "DELETE",
@@ -149,15 +148,13 @@ export default class Profile extends Component {
           "x-auth-token": JSON.parse(token)
         }
       });
-      console.log(response);
       const responseJson = await response.json();
-      console.log(responseJson);
       if (response.ok) {
-        console.log("Deletion success");
+        console.log("Deletion success, ", responseJson);
         alert("Review deleted");
       }
       if (!response.ok) {
-        console.log("Deletion failed");
+        console.log("Deletion failed, ", responseJson);
         alert("Deletion failed");
       }
     } catch (error) {
@@ -179,7 +176,6 @@ export default class Profile extends Component {
 
   render() {
     const screenWidth = Math.round(Dimensions.get("window").width);
-
     const YourReviews = ({ menu, restaurant, status, item }) => {
       return (
         <View style={styles.reviewItem}>
