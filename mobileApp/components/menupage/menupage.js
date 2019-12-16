@@ -190,8 +190,6 @@ export default class Menu extends Component {
         restaurantInfo,
         isLoading: false
       });
-      console.log(this.state.menuInfo.tags);
-      console.log(this.state.menuInfo);
     } catch (e) {
       console.error(e);
     }
@@ -440,7 +438,6 @@ const styles = StyleSheet.create({
   underline: {
     borderBottomColor: Colors.GRAY_LIGHT,
     borderBottomWidth: 1,
-    //textAlign: "center",
     width: 320,
     margin: 10
   },
@@ -450,7 +447,6 @@ const styles = StyleSheet.create({
     borderRadius: 67 / 2
   },
   menuItem: {
-    //top: 10,
     justifyContent: "center",
     flexDirection: "row"
   },
