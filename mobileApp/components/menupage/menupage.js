@@ -24,26 +24,6 @@ function MenuItem({
   tags,
   score
 }) {
-  const tags1Row = [];
-  const tags2Row = [];
-
-  for (let i = 0; i < tags.length; i++) {
-    const color = tags[i]["color"];
-    const tag = [
-      <View
-        key={i.toString()}
-        style={[styles.bgLabel, { backgroundColor: color }]}
-      >
-        <Text style={[Typography.FONT_TAG, { marginHorizontal: 10 }]}>
-          {tags[i]["name"]}
-        </Text>
-      </View>
-    ];
-    {
-      i < 2 ? tags1Row.push(tag) : tags2Row.push(tag);
-    }
-  }
-
   return (
     <View>
       <View
@@ -92,8 +72,30 @@ function MenuItem({
             <Text style={[Typography.FONT_SMALL_THIN, { textAlign: "left" }]}>
               {menuItemDescription}
             </Text>
-            <View style={{ flexDirection: "row" }}>{tags1Row}</View>
-            <View style={{ flexDirection: "row" }}>{tags2Row}</View>
+            {tags !== null ? (
+              <View
+                style={{
+                  flexDirection: "row",
+                  flexWrap: "wrap",
+                  alignItems: "flex-start"
+                }}
+              >
+                {tags.map((item, index) => (
+                  <View
+                    style={[styles.bgLabel, { backgroundColor: item.color }]}
+                    key={"key" + index}
+                  >
+                    <Text
+                      style={[Typography.FONT_TAG, { marginHorizontal: 10 }]}
+                    >
+                      {item.name}
+                    </Text>
+                  </View>
+                ))}
+              </View>
+            ) : (
+              <View />
+            )}
           </View>
           <View style={{ width: 40 }}>
             <Text style={[Typography.FONT_BOLD, { alignSelf: "flex-end" }]}>
@@ -143,14 +145,12 @@ export default class Menu extends Component {
         accept: "application/json"
       });
       const responseJson = await response.json();
-      const tags = this.getMenuTagsInfo(responseJson);
-      this.setMenuInfoTags(tags);
       const menuInfo = {
         id: menuId,
         restaurantName,
         menuName: responseJson["menuName"],
         menuDescription: responseJson["description"],
-        tags: tags,
+        tags: responseJson["tags"],
         score: responseJson["menuRating"]
       };
       const menuItems = responseJson["menuItems"].map(index => ({
@@ -159,7 +159,7 @@ export default class Menu extends Component {
         menuItemDescription: index["description"],
         priceEuros: index["priceEuros"],
         menuItemImage: index["imageLink"],
-        tags: this.getMenuItemTagsInfo(index),
+        tags: index["tags"],
         score: index["rating"],
         type: index["type"]
       }));
@@ -194,50 +194,6 @@ export default class Menu extends Component {
       console.error(e);
     }
   }
-  getMenuTagsInfo(responseJson) {
-    const tagsObject = [];
-    for (let i = 0; i < responseJson.tags.length; i++) {
-      tagsObject.push({
-        name: responseJson.tags[i]["name"],
-        color: responseJson.tags[i]["color"]
-      });
-    }
-    return tagsObject;
-  }
-
-  getMenuItemTagsInfo(index) {
-    const tagsObject = [];
-    const numberOfTags = index.tags.length;
-    for (let i = 0; i < numberOfTags; i++) {
-      tagsObject.push({
-        name: index.tags[i]["name"],
-        color: index.tags[i]["color"]
-      });
-    }
-    return tagsObject;
-  }
-
-  tags1Row = [];
-  tags2Row = [];
-
-  setMenuInfoTags(tags) {
-    for (let i = 0; i < tags.length; i++) {
-      const color = tags[i]["color"];
-      const tag = [
-        <View
-          key={i.toString()}
-          style={[styles.bgLabel, { backgroundColor: color }]}
-        >
-          <Text style={[Typography.FONT_TAG, { marginHorizontal: 10 }]}>
-            {tags[i]["name"]}
-          </Text>
-        </View>
-      ];
-      {
-        i < 2 ? this.tags1Row.push(tag) : this.tags2Row.push(tag);
-      }
-    }
-  }
 
   render() {
     return (
@@ -254,16 +210,14 @@ export default class Menu extends Component {
                 source={{ uri: this.state.restaurantImage }}
                 style={{ width: 370, height: 180, justifyContent: "center" }}
               />
-              <View
-                style={{ marginTop: 40, marginLeft: 30, position: "absolute" }}
-              >
+              <View style={{ marginTop: 40, position: "absolute" }}>
                 <TouchableOpacity
                   onPress={() => {
                     this.props.navigation.goBack();
                   }}
                   style={styles.button}
                 >
-                  <Image source={require("../../assets/go-back.png")} />
+                  <Icon name={"chevron-left"} size={40} />
                 </TouchableOpacity>
               </View>
             </View>
@@ -296,10 +250,42 @@ export default class Menu extends Component {
               </Text>
               <View style={{ flexDirection: "column" }}>
                 <View style={{ flexDirection: "row", marginBottom: 3 }}>
-                  {this.tags1Row}
-                </View>
-                <View style={{ flexDirection: "row", marginBottom: 3 }}>
-                  {this.tags2Row}
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      flexWrap: "wrap",
+                      alignItems: "flex-start"
+                    }}
+                  >
+                    {this.state.menuInfo.tags ? (
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          flexWrap: "wrap",
+                          alignItems: "flex-start"
+                        }}
+                      >
+                        {this.state.menuInfo.tags.map((item, index) => (
+                          <View
+                            style={[
+                              styles.bgLabel,
+                              { backgroundColor: item.color }
+                            ]}
+                            key={"key" + index}
+                          >
+                            <Text
+                              style={[
+                                Typography.FONT_TAG,
+                                { marginHorizontal: 10 }
+                              ]}
+                            >
+                              {item.name}
+                            </Text>
+                          </View>
+                        ))}
+                      </View>
+                    ) : null}
+                  </View>
                 </View>
               </View>
             </SafeAreaView>
@@ -452,7 +438,6 @@ const styles = StyleSheet.create({
   underline: {
     borderBottomColor: Colors.GRAY_LIGHT,
     borderBottomWidth: 1,
-    //textAlign: "center",
     width: 320,
     margin: 10
   },
@@ -462,7 +447,6 @@ const styles = StyleSheet.create({
     borderRadius: 67 / 2
   },
   menuItem: {
-    //top: 10,
     justifyContent: "center",
     flexDirection: "row"
   },
@@ -478,11 +462,11 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: Colors.WHITE,
-    width: 40,
+    width: 60,
     height: 40,
     borderBottomRightRadius: 10,
     borderTopRightRadius: 10,
-    alignContent: "center",
+    alignItems: "center",
     justifyContent: "center"
   }
 });
