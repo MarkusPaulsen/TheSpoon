@@ -36,15 +36,14 @@ export default class Profile extends Component {
     this.focusListener = this.props.navigation.addListener("didFocus", () => {
       AsyncStorage.getItem("userToken").then(async token => {
         const loggedIn = token !== null;
-        console.log(loggedIn);
+
+        this.setState({ loggedIn });
         if (loggedIn) {
-          await this.setState({loggedIn});
           await this.getUserInfo(token);
           await this.getUserReviews(token);
-          await this.setState({ token, isLoaded: true });
-        } else {
-         await this.setState({ isLoaded: true });
+          this.setState({ token });
         }
+        this.setState({ isLoaded: true });
       });
     });
   };

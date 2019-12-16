@@ -117,8 +117,8 @@ export default class LoginScreen extends Component {
       <View style={styles.container}>
         <Text style={styles.text}>Log in</Text>
         <View style={{ flex: 2, justifyContent: "space-around" }}>
-          <View style={{ flexDirection: "row" }}>
-            <Icon name="email" size={32} color={Colors.PINK} />
+          <View style={{ flexDirection: "row", alignItems:"baseline"}}>
+            <Icon name="email" size={30} color={Colors.PINK} />
             <TextInput
               placeholder={"Username"}
               autoCapitalize={"none"}
@@ -137,7 +137,7 @@ export default class LoginScreen extends Component {
             </Text>
           </View>
           <View style={{ flexDirection: "row", marginBottom: 90 }}>
-            <Icon name="lock" size={32} color={Colors.PINK} />
+            <Icon name="lock" size={30} color={Colors.PINK} />
             <TextInput
               placeholder={"Password"}
               onChangeText={this.handlePasswordChange}
