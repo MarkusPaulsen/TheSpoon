@@ -139,8 +139,6 @@ export default class Profile extends Component {
   }
 
   async deleteReview(reviewID, token) {
-    console.log(reviewID);
-    console.log(token);
     try {
       const response = await fetch(Api.SERVER_DELETE_REVIEW(reviewID), {
         method: "DELETE",
@@ -149,15 +147,13 @@ export default class Profile extends Component {
           "x-auth-token": token
         }
       });
-      console.log(response);
       const responseJson = await response.json();
-      console.log(responseJson);
       if (response.ok) {
-        console.log("Deletion success");
+        console.log("Deletion success, ", responseJson);
         Alert.alert("Review deleted");
       }
       if (!response.ok) {
-        console.log("Deletion failed");
+        console.log("Deletion failed, ", responseJson);
         Alert.alert("Deletion failed");
       }
     } catch (error) {
@@ -179,7 +175,6 @@ export default class Profile extends Component {
 
   render() {
     const screenWidth = Math.round(Dimensions.get("window").width);
-
     const YourReviews = ({ menu, restaurant, status, item }) => {
       return (
         <View style={styles.reviewItem}>
@@ -236,7 +231,6 @@ export default class Profile extends Component {
       if (review == null) {
         return null;
       }
-      console.log(review);
       return (
         <Modal animationType="slide" transparent={false} visible={visible}>
           <ScrollView>
@@ -296,8 +290,6 @@ export default class Profile extends Component {
                 What did you eat/drink?
               </Text>
               {review.menuItemsReviews.map(item => {
-                console.log(item, item.score);
-                //TODO: add menuItemName when it is in EP
                 return (
                   <View key={item.menuItemID}>
                     <View style={[styles.field, { marginVertical: 15 }]}>

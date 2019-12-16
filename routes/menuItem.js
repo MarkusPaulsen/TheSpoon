@@ -21,79 +21,86 @@ const findRestaurant = require('../middleware/findRestaurantOfOwnerMiddleware.js
 //Add a menuItem to a menu
 router.post('/:menuID/menuItem', auth, isOwner, findRestaurant, async (req, res) => {
     console.log('in POST /api/user/owner/restaurant/menu/{menuID}/menuItem');
-    const menuID = req.params.menuID;
-    const menuItem = req.body;
-    const imageLink = AWS_IMAGE_STORAGE + menuItem.imageID;
 
-    //check if the tags of the menu exist in the database
-    for (let tag of menuItem.tags) {
-        const tagFound = await Tag.findAll({
+    try {
+
+        const menuID = req.params.menuID;
+        const menuItem = req.body;
+        const imageLink = AWS_IMAGE_STORAGE + menuItem.imageID;
+
+        //check if the tags of the menu exist in the database
+        for (let tag of menuItem.tags) {
+            const tagFound = await Tag.findAll({
+                where: {
+                    Name: tag
+                }
+            });
+            if (tagFound.length <= 0) return res.status(400).send('One or more tags are not valid.');
+        }
+
+        //create the menuItem
+        const menuItemCreated = await MenuItem.create({
+            Menu_ID: menuID,
+            Name: menuItem.name,
+            Description: menuItem.description,
+            Type: menuItem.type,
+            Price: menuItem.priceEuros,
+            ImageLink: imageLink
+        });
+
+        //for each menuItem created, associate it to the tags it has
+        for (let tag of menuItem.tags) {
+            await TaggedItem.create({
+                MI_ID: menuItemCreated.dataValues.MI_ID,
+                Tag: tag
+            });
+        }
+
+        const menu = await Menu.findOne({
+            attributes: ['Name', 'Description'],
             where: {
-                Name: tag
+                Menu_ID: menuID
             }
-        });
-        if (tagFound.length <= 0) return res.status(400).send('One or more tags are not valid.');
-    }
-
-    //create the menuItem
-    const menuItemCreated = await MenuItem.create({
-        Menu_ID: menuID,
-        Name: menuItem.name,
-        Description: menuItem.description,
-        Type: menuItem.type,
-        Price: menuItem.priceEuros,
-        ImageLink: imageLink
-    });
-
-    //for each menuItem created, associate it to the tags it has
-    for (let tag of menuItem.tags) {
-        await TaggedItem.create({
-            MI_ID: menuItemCreated.dataValues.MI_ID,
-            Tag: tag
-        });
-    }
-
-    const menu = await Menu.findOne({
-        attributes: ['Name', 'Description'],
-        where: {
-            Menu_ID: menuID
-        }
-        ,
-        include: [{
-            model: TaggedMenu,
-            attributes: ['Tag'],
+            ,
             include: [{
-                model: Tag,
-                as: 'Tags'
-            }]
-        }
-            , {
-                model: MenuItem,
-                attributes: ['Name', 'Description', 'Type', 'Price', 'ImageLink'],
+                model: TaggedMenu,
+                attributes: ['Tag'],
                 include: [{
-                    model: TaggedItem,
-                    attributes: ['Tag'],
-                    include: [{model: Tag, as: 'Tags'}]
+                    model: Tag,
+                    as: 'Tags'
                 }]
             }
-        ]
+                , {
+                    model: MenuItem,
+                    attributes: ['Name', 'Description', 'Type', 'Price', 'ImageLink'],
+                    include: [{
+                        model: TaggedItem,
+                        attributes: ['Tag'],
+                        include: [{model: Tag, as: 'Tags'}]
+                    }]
+                }
+            ]
 
-    });
+        });
 
-    const menuTags = await formatTags(menu.TaggedMenus);
-    const menuItems = await formatMenuItems(menu.MenuItems);
+        const menuTags = await formatTags(menu.TaggedMenus);
+        const menuItems = await formatMenuItems(menu.MenuItems);
 
-    const menuInfo = {
-        name: menu.Name,
-        description: menu.Description,
-        tags: menuTags,
-        menuItems: menuItems
+        const menuInfo = {
+            name: menu.Name,
+            description: menu.Description,
+            tags: menuTags,
+            menuItems: menuItems
+        }
+
+        //TODO: remove this console log
+        console.log('sending 200');
+        await updatePriceAverage(menuID);
+        res.status(200).send(menuInfo);
+
+    }catch (error) {
+        res.status(500).send('Internal server error');
     }
-
-    //TODO: remove this console log
-    console.log('sending 200');
-    await updatePriceAverage(menuID);
-    res.status(200).send(menuInfo);
 
 
 });
@@ -101,110 +108,124 @@ router.post('/:menuID/menuItem', auth, isOwner, findRestaurant, async (req, res)
 //Edit a menuItem
 router.put('/:menuID/menuItem/:menuItemID', auth, isOwner, findRestaurant, async (req, res) => {
     console.log('In PUT /api/user/owner/restaurant/menu/{menuID}/menuItem/{menuItemID}');
-    const menuID = req.params.menuID;
-    const menuItemID = req.params.menuItemID;
-    const menuItem = req.body;
-    const imageLink = AWS_IMAGE_STORAGE + menuItem.imageID;
+    try {
+        const menuID = req.params.menuID;
+        const menuItemID = req.params.menuItemID;
+        const menuItem = req.body;
+        const imageLink = AWS_IMAGE_STORAGE + menuItem.imageID;
 
-    const menuItemFound = await MenuItem.findOne({
-        where: {
-            MI_ID: menuItemID,
-            Menu_ID: menuID
-        }
-    });
-
-    if (menuItem == null) {
-        res.status('400').send('No such element');
-    }
-
-    //update menuItem
-    await menuItemFound.update({
-        Name: menuItem.name,
-        Description: menuItem.description,
-        Type: menuItem.type,
-        Price: menuItem.priceEuros,
-        ImageLink: imageLink
-    });
-
-    //update tags - delete previous and set new
-    await TaggedItem.destroy({
-        where: {
-            MI_ID: menuItemID
-        }
-    });
-    for (let tag of menuItem.tags) {
-        await TaggedItem.create({
-            MI_ID: menuItemID,
-            Tag: tag
+        const menuItemFound = await MenuItem.findOne({
+            where: {
+                MI_ID: menuItemID,
+                Menu_ID: menuID
+            }
         });
-    }
 
-
-    const menu = await Menu.findOne({
-        attributes: ['Name', 'Description'],
-        where: {
-            Menu_ID: menuID
+        if(!menuItemFound){
+            res.status(404).send('Menu or menu item not found');
         }
-        ,
-        include: [{
-            model: TaggedMenu,
-            attributes: ['Tag'],
+
+        if (!menuItem) {
+            res.status(400).send('No such element');
+        }
+
+        //update menuItem
+        await menuItemFound.update({
+            Name: menuItem.name,
+            Description: menuItem.description,
+            Type: menuItem.type,
+            Price: menuItem.priceEuros,
+            ImageLink: imageLink
+        });
+
+        //update tags - delete previous and set new
+        await TaggedItem.destroy({
+            where: {
+                MI_ID: menuItemID
+            }
+        });
+        for (let tag of menuItem.tags) {
+            await TaggedItem.create({
+                MI_ID: menuItemID,
+                Tag: tag
+            });
+        }
+
+
+        const menu = await Menu.findOne({
+            attributes: ['Name', 'Description'],
+            where: {
+                Menu_ID: menuID
+            }
+            ,
             include: [{
-                model: Tag,
-                as: 'Tags'
-            }]
-        }
-            , {
-                model: MenuItem,
-                attributes: ['Name', 'Description', 'Type', 'Price', 'ImageLink'],
+                model: TaggedMenu,
+                attributes: ['Tag'],
                 include: [{
-                    model: TaggedItem,
-                    attributes: ['Tag'],
-                    include: [{
-                        model: Tag,
-                        as: 'Tags'
-                    }]
+                    model: Tag,
+                    as: 'Tags'
                 }]
             }
-        ]
+                , {
+                    model: MenuItem,
+                    attributes: ['Name', 'Description', 'Type', 'Price', 'ImageLink'],
+                    include: [{
+                        model: TaggedItem,
+                        attributes: ['Tag'],
+                        include: [{
+                            model: Tag,
+                            as: 'Tags'
+                        }]
+                    }]
+                }
+            ]
 
-    });
+        });
 
-    const menuTags = await formatTags(menu.TaggedMenus);
-    const menuItems = await formatMenuItems(menu.MenuItems);
+        const menuTags = await formatTags(menu.TaggedMenus);
+        const menuItems = await formatMenuItems(menu.MenuItems);
 
-    const menuInfo = {
-        name: menu.Name,
-        description: menu.Description,
-        tags: menuTags,
-        menuItems: menuItems
+        const menuInfo = {
+            name: menu.Name,
+            description: menu.Description,
+            tags: menuTags,
+            menuItems: menuItems
+        }
+        await updatePriceAverage(menuID);
+        res.status(200).send(menuInfo);
+    } catch (error) {
+        res.status(500).send('Internal server error');
     }
-    console.log('sending 200');
-    await updatePriceAverage(menuID);
-    res.status(200).send(menuInfo);
+
 
 });
 
 //Delete a menuItem
 router.delete('/:menuID/menuItem/:menuItemID', auth, isOwner, findRestaurant, async (req, res) => {
     console.log('In DELETE /api/user/owner/restaurant/menu/{menuID}/menuItem/{menuItemID} ');
-    const menuID = req.params.menuID;
-    const menuItemID = req.params.menuItemID;
+    try {
+        const menuID = req.params.menuID;
+        const menuItemID = req.params.menuItemID;
 
-    const menuItemFound = await MenuItem.findOne({
-        where: {
-            MI_ID: menuItemID,
-            Menu_ID: menuID
+        const menuItemFound = await MenuItem.findOne({
+            where: {
+                MI_ID: menuItemID,
+                Menu_ID: menuID
+            }
+        });
+
+        if (!menuItemFound) {
+            res.status(404).send('Menu or menu item not found');
         }
-    });
 
-    if (menuItemFound == null) {
-        res.status(400).send('No such element');
+        await menuItemFound.destroy();
+        await updatePriceAverage(menuID);
+        res.status(200).send('deleted');
+
+    }catch (error) {
+        res.status(500).send('Internal server error');
     }
 
-    await menuItemFound.destroy();
-    await updatePriceAverage(menuID);
-    res.status(200).send('deleted');
 });
 
 const formatMenuItems = (menuItems) => {

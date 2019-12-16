@@ -35,9 +35,11 @@ class ReviewAddImage extends Component {
       AsyncStorage.getItem("userToken").then(token => {
         this.setState({
           loggedIn: token !== null,
-          isLoaded: true,
-          token: token
+          isLoaded: true
         });
+        if (this.state.loggedIn) {
+          this.setState({ token });
+        }
       });
     });
   };
@@ -97,21 +99,21 @@ class ReviewAddImage extends Component {
                 </View>
               )}
             </View>
-              <ContinueButton
-                disableButton={this.state.disableButton}
-                navigation={this.props}
-                imageID={this.state.imageID}
-                view={"ReviewAddRestaurant"}
-                token={this.state.token}
-                text={"CONTINUE"}
-                colorIndex={this.state.colorIndex}
-              />
+            <ContinueButton
+              disableButton={this.state.disableButton}
+              navigation={this.props}
+              imageID={this.state.imageID}
+              view={"ReviewAddRestaurant"}
+              token={this.state.token}
+              text={"CONTINUE"}
+              colorIndex={this.state.colorIndex}
+            />
           </View>
         );
       }
       if (!this.state.loggedIn) {
         return (
-          <View style={styles.container}>
+          <View style={styles.containerNotLoggedIn}>
             <Text style={Typography.FONT_H4_BLACK}>
               You need to log in to write a review
             </Text>
@@ -181,7 +183,7 @@ class ReviewAddImage extends Component {
 
   async postImage() {
     try {
-      const token=JSON.parse(this.state.token);
+      const token = JSON.parse(this.state.token);
       const data = this.createFormData(this.state.imageUrl);
       const response = await fetch(Api.SERVER_POST_IMAGE, {
         method: "POST",
@@ -227,6 +229,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
+    marginTop: 60
+  },
+
+  containerNotLoggedIn: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
     marginTop: 60
   },
   imageBox: {

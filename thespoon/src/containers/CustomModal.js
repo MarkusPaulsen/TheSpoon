@@ -25,6 +25,7 @@ import AddMenuItemModal from "../components/restaurantPage/Modals/AddMenuItemMod
 import EditMenuItemModal from "../components/restaurantPage/Modals/EditMenuItemModal";
 import ChooseRoleModal from "../components/homepage/Modals/ChooseRoleModal";
 import RegisterCustomer from "../components/homepage/Modals/RegisterCustomerModal";
+import PendingReviewModal from "../components/restaurantPage/Modals/PendingReviewModal";
 //</editor-fold>
 
 class CustomModal extends Component {
@@ -72,6 +73,12 @@ class CustomModal extends Component {
             case modalVisibilityFilters.SHOW_EDIT_MENU:
                 return (
                     <EditMenuModal onHide={() => this.props.handleClose()} menu={ item }/>
+                );
+
+            case modalVisibilityFilters.SHOW_PENDING_REVIEW:
+                return (
+                    <PendingReviewModal
+                        onHide={() => this.props.handleClose()}/>
                 );
 
             case modalVisibilityFilters.SHOW_ADD_DISH:

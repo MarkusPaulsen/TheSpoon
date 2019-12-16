@@ -10,18 +10,24 @@ const Customer=require('../models/customer.js');
 router.get('/', auth, isCustomer, async (req, res) => {
     console.log('In GET /api/user/customer');
 
-    const customer = await Customer.findOne({
-        where: {
-            Username: req.username
-        }
-    });
+    try {
+        const customer = await Customer.findOne({
+            where: {
+                Username: req.username
+            }
+        });
 
-    const customerInfo = {
-        username: customer.Username,
-        email: customer.Email
-    };
+        const customerInfo = {
+            username: customer.Username,
+            email: customer.Email
+        };
 
-    res.status(200).send(customerInfo);
+        res.status(200).send(customerInfo);
+
+    }catch (error) {
+        res.status(500).send('Internal server error');
+    }
+
 
 });
 

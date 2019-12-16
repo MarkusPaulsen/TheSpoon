@@ -26,27 +26,10 @@ function ResultItem({
   tags,
   score,
   avgPrice,
-  image
+  image,
+  distance,
+  permission
 }) {
-  const tags1Row = [];
-  const tags2Row = [];
-  for (let i = 0; i < tags.length; i++) {
-    const color = tags[i]["color"];
-    const tag = [
-      <View
-        key={i.toString()}
-        style={[styles.bgLabel, { backgroundColor: color }]}
-      >
-        <Text style={[Typography.FONT_TAG, { marginHorizontal: 10 }]}>
-          {tags[i]["name"]}
-        </Text>
-      </View>
-    ];
-    {
-      i < 2 ? tags1Row.push(tag) : tags2Row.push(tag);
-    }
-  }
-
   return (
     <View style={styles.resultsItem}>
       <View style={styles.imageBox}>
@@ -56,18 +39,44 @@ function ResultItem({
         />
       </View>
       <View style={styles.menuInfo}>
-        <View style={{ flexDirection: "row", marginBottom: 10, marginTop: 10 }}>
+        <View style={{ flexDirection: "row", marginTop: 10 }}>
           <Text style={Typography.FONT_H4_BLACK}>{menuName}</Text>
+        </View>
+        <View style={{ flexDirection: "row", marginBottom: 10 }}>
           <Text style={Typography.FONT_SMALL_BLACK}>{" by "}</Text>
           <Text style={Typography.FONT_SMALL_PINK}>{restaurantName}</Text>
         </View>
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-          <View style={{ flexDirection: "row" }}>{tags1Row}</View>
+          <View
+            style={{
+              flexDirection: "row",
+              flexWrap: "wrap",
+              alignItems: "flex-start"
+            }}
+          >
+            {tags.map((item, index) => (
+              <View
+                style={[styles.bgLabel, { backgroundColor: item.color }]}
+                key={"key" + index}
+              >
+                <Text style={[Typography.FONT_TAG, { marginHorizontal: 10 }]}>
+                  {item.name}
+                </Text>
+              </View>
+            ))}
+          </View>
           <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
+            {permission === true && distance !== null ? (
+              <Text style={[Typography.FONT_SMALL_BLACK, { marginRight: 5 }]}>
+                {distance.toFixed(2) + "km"}
+              </Text>
+            ) : (
+              <View />
+            )}
             <Text style={[Typography.FONT_SMALL_BLACK, { marginRight: 5 }]}>
               {getPriceCategory(avgPrice)}
             </Text>
-            {score === null ? (
+            {score === null || score === "NaN" ? (
               <Text />
             ) : (
               <View style={{ flexDirection: "row" }}>
@@ -76,9 +85,6 @@ function ResultItem({
               </View>
             )}
           </View>
-        </View>
-        <View>
-          <View style={{ flexDirection: "row" }}>{tags2Row}</View>
         </View>
       </View>
     </View>
@@ -112,7 +118,8 @@ export default class Search extends Component {
       filters: ["Price (high-low)", "Price (low-high)", "Review", "Distance"],
       selectedFilter: "",
       latitude: "",
-      longitude: ""
+      longitude: "",
+      locationPermission: false
     };
     this.validateSearch = this.validateSearch.bind(this);
   }
@@ -124,12 +131,16 @@ export default class Search extends Component {
   findCoordinates = () => {
     navigator.geolocation.getCurrentPosition(
       position => {
+        this.setState({ locationPermission: true });
         const latitude = JSON.stringify(position.coords.latitude);
         const longitude = JSON.stringify(position.coords.longitude);
         this.setState({ latitude: latitude });
         this.setState({ longitude: longitude });
       },
-      error => Alert.alert(error.message),
+      error => {
+        Alert.alert(error.message);
+        this.setState({ locationPermission: false });
+      },
       { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
     );
   };
@@ -155,19 +166,17 @@ export default class Search extends Component {
       const searchString = this.state.searchWord;
       const lat = this.state.latitude;
       const long = this.state.longitude;
-      console.log(Api.SERVER_SEARCH(searchString, lat, long));
       const response = await fetch(Api.SERVER_SEARCH(searchString, lat, long), {
         method: "GET",
         accept: "application/json"
       });
       const responseJson = await response.json();
-      console.log(responseJson);
       if (response.ok) {
         const searchResults = responseJson.map(index => ({
           id: index.menu.menuID.toString(),
           menuName: index.menu.name,
           restaurantName: index.restaurantData.restaurantName,
-          tags: this.getTagsInfo(index),
+          tags: index.menu.tags,
           score: index.menu.rating,
           price: index.menu.averagePrice,
           image: index.restaurantData.restaurantImageLink,
@@ -184,18 +193,6 @@ export default class Search extends Component {
     }
   }
 
-  getTagsInfo(index) {
-    const tagsObject = [];
-    const numberOfTags = index.menu.tags.length;
-    for (let i = 0; i < numberOfTags; i++) {
-      tagsObject.push({
-        name: index.menu.tags[i]["name"],
-        color: index.menu.tags[i]["color"]
-      });
-    }
-    return tagsObject;
-  }
-
   setModalVisible() {
     this.setState({ modalVisible: !this.state.modalVisible });
   }
@@ -204,15 +201,32 @@ export default class Search extends Component {
     if (this.state.selectedFilter === item) {
       this.setState({ selectedFilter: "" });
     } else {
-      this.setState({ selectedFilter: item });
+      if (item === "Distance" && this.state.locationPermission === false) {
+        navigator.geolocation.getCurrentPosition(
+          position => {
+            this.setState({ locationPermission: true });
+            const latitude = JSON.stringify(position.coords.latitude);
+            const longitude = JSON.stringify(position.coords.longitude);
+            this.setState({ latitude: latitude });
+            this.setState({ longitude: longitude });
+            this.setState({ selectedFilter: "Distance" });
+            this.getResults();
+          },
+          error => {
+            Alert.alert(error.message);
+            this.setState({ locationPermission: false });
+          },
+          { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
+        );
+      } else {
+        this.setState({ selectedFilter: item });
+      }
     }
   }
 
   applyFilter() {
     this.setModalVisible();
-    console.log("FILTER: ", this.state.selectedFilter);
     const sorted = this.state.searchResults;
-    console.log(sorted);
     if (this.state.selectedFilter === "Price (low-high)") {
       sorted.sort((a, b) =>
         a.price > b.price
@@ -247,17 +261,22 @@ export default class Search extends Component {
       );
       this.setState({ searchResults: sorted });
     } else {
-      const sorted = this.state.searchResults;
-      sorted.sort((a, b) =>
-        a.distance > b.distance
-          ? 1
-          : a.distance === b.distance
-          ? a.menuName > b.menuName
+      if (this.state.locationPermission === true) {
+        const sorted = this.state.searchResults;
+        sorted.sort((a, b) =>
+          a.distance > b.distance
             ? 1
+            : a.distance === b.distance
+            ? a.menuName > b.menuName
+              ? 1
+              : -1
             : -1
-          : -1
-      );
-      this.setState({ searchResults: sorted });
+        );
+        this.setState({ searchResults: sorted });
+      } else {
+        this.findCoordinates();
+        this.applyFilter();
+      }
     }
   }
 
@@ -428,6 +447,8 @@ export default class Search extends Component {
                         score={item.score}
                         avgPrice={item.price}
                         image={item.image}
+                        distance={item.distance}
+                        permission={this.state.locationPermission}
                       />
                     </TouchableOpacity>
                   )}
@@ -518,7 +539,10 @@ const styles = StyleSheet.create({
   },
   imageBox: {
     width: 322,
-    height: 137
+    height: 137,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    overflow: "hidden"
   },
   filterButton: {
     width: 40,

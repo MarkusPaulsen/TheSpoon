@@ -94,7 +94,7 @@ const bottomTabNavigator = createBottomTabNavigator(
   {
     initialRouteName: "Search",
     tabBarOptions: {
-      activeTintColor: "#F3A3A3",
+      activeTintColor: Colors.PINK,
       height: 85
     }
   }
