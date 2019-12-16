@@ -10,8 +10,8 @@ import ReviewAddImage from "./components/review/views/ReviewAddImage";
 import ReviewAddRestaurant from "./components/review/views/ReviewAddRestaurant";
 import ReviewAddMenu from "./components/review/views/ReviewAddMenu";
 import ReviewAddItems from "./components/review/views/ReviewAddItems";
-import ReviewItems from "./components/review/views/reviewItems";
-import ReviewOverall from "./components/review/views/reviewOverall";
+import ReviewItems from "./components/review/views/ReviewItems";
+import ReviewOverall from "./components/review/views/ReviewOverall";
 
 import ProfilePage from "./components/profile/profile";
 import { createAppContainer } from "react-navigation";

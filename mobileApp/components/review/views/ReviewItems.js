@@ -35,10 +35,11 @@ export default class ReviewItems extends Component {
   setRatingCount(rating, item, itemID) {
     item.rating = rating;
 
-    this.setState(state => {
-      const menuItems = state.menuItems.filter(e => e.menuItemID !== itemID);
-      return menuItems.concat(item);
-    });
+    const menuItems = this.state.menuItems.filter(e => e.menuItemID !== itemID);
+    const updatedMenuItems = menuItems.concat(item);
+
+    this.setState({menuItems: updatedMenuItems}
+    );
     this.state.reviewedScores.push(item);
     if (this.state.reviewedScores.length === this.state.menuItems.length) {
       this.setState({ disableButton: false });
@@ -47,10 +48,9 @@ export default class ReviewItems extends Component {
 
   onChangeText(text, item, itemID) {
     item.content = text;
-    this.setState(state => {
-      const menuItems = state.menuItems.filter(e => e.menuItemID !== itemID);
-      return menuItems.concat(item);
-    });
+    const menuItems = this.state.menuItems.filter(e => e.menuItemID !== itemID);
+    const updatedMenuItems = menuItems.concat(item);
+    this.setState({menuItems: updatedMenuItems});
   }
 
   render() {

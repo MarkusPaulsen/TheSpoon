@@ -1,5 +1,6 @@
 import { configure } from "enzyme";
 import Adapter from "enzyme-adapter-react-16";
+import MockAsyncStorage from "mock-async-storage";
 
 /**
  * Set up DOM in node.js environment for Enzyme to mount to
@@ -38,5 +39,19 @@ console.error = message => {
   originalConsoleError(message);
 };
 
-// Setup mock
+// SETUP MOCKS
+// fetch
 global.fetch = require('jest-fetch-mock');
+
+// AsyncStorage
+const mockImpl = new MockAsyncStorage();
+jest.mock('AsyncStorage', () => mockImpl);
+
+// Console
+/*
+global.console = {
+  log: jest.fn(),
+  info: jest.fn(),
+  error: jest.fn(),
+  warn: jest.fn()
+};*/
