@@ -157,6 +157,7 @@ button {
     width: 8.333333333333334rem;
   }
 
+
   &.delete-button {
     width: 8.333333333333334rem;
     background: var(--white);
@@ -825,82 +826,93 @@ header {
 
 
 /* SIDEBAR > */
-.sidebar {
-  margin-top: 3.66666rem;
-  padding: 6rem 2.5rem 2.5rem;
-  background-color: var(--white);
-  font-size: 0.625rem;
-  position: relative;
-  border-radius: 0.8333333333333334rem;
-
-  .image-setup {
-    position: absolute;
-    top: -5.333333333rem;
-    left: 2.5rem;
-    right: 2.5rem;
-    height: 100%;
-  }
-  .image-wrapper {
-    height: 0;
-    padding-bottom: 100%;
+.sidebar-hover {
+  .sidebar {
+    margin-top: 3.66666rem;
+    padding: 6rem 2.5rem 2.5rem;
+    background-color: var(--white);
+    font-size: 0.625rem;
     position: relative;
+    border-radius: 0.8333333333333334rem;
 
-    .image {
+    .image-setup {
       position: absolute;
-      left: 0;
-      right: 0;
-      top: 0 ;
-      bottom: 0;
-      background-size: cover;
-      background-position: center center;
-      background-repeat: no-repeat;
-      border-radius: 100%;
+      top: -5.333333333rem;
+      left: 2.5rem;
+      right: 2.5rem;
+      height: 100%;
     }
-  }
 
-  .title {
-    margin-bottom: 1.5rem;
-    text-align: center;
-  }
-  .part {
-    position: relative;
-    margin-bottom: 0.5rem;
-    > i {
-      position: absolute;
-      left: 0;
-      top: 0;
-    }
-  }
+    .image-wrapper {
+      height: 0;
+      padding-bottom: 100%;
+      position: relative;
 
-  ul {
-    display: inline-block;
-    list-style-type: none;
-    padding-left: 1.5rem;
-    margin: 0;
-    li {
-      margin-bottom: 0.5rem;
-      span {
-        font-weight: 500;
+      .image {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        background-size: cover;
+        background-position: center center;
+        background-repeat: no-repeat;
+        border-radius: 100%;
       }
     }
-  }
 
-  .modal-button {
-    color: var(--pink);
-    text-align: center;
-    &:hover {
-      cursor: pointer;
+    .title {
+      margin-bottom: 1.5rem;
+      text-align: center;
     }
-    span {
+
+    .part {
       position: relative;
-      padding-left: 1.25rem;
+      margin-bottom: 0.5rem;
+
+      > i {
+        position: absolute;
+        left: 0;
+        top: 0;
+      }
     }
-    i {
-      position: absolute;
-      left: 0;
-      top: 50%;
-      transform: translateY(-50%);
+
+    ul {
+      display: inline-block;
+      list-style-type: none;
+      padding-left: 1.5rem;
+      margin: 0;
+
+      li {
+        margin-bottom: 0.5rem;
+
+        span {
+          font-weight: 500;
+        }
+      }
     }
+
+    .modal-button {
+      color: var(--pink);
+      text-align: center;
+
+      &:hover {
+        cursor: pointer;
+      }
+
+      span {
+        position: relative;
+        padding-left: 1.25rem;
+      }
+
+      i {
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+      }
+    }
+
   }
 
   @include media-breakpoint-down(md) {
@@ -925,6 +937,12 @@ header {
       }
     }
   }
+  .sidebar-bottom {
+    margin-top: 1rem;
+    padding-right: 1rem;
+    padding-left: 1rem;
+    position: relative;
+  }
 }
 /* < SIDEBAR*/
 
@@ -941,6 +959,9 @@ header {
   padding: 1.75rem;
   text-align: center;
   margin-bottom: 1.25rem;
+  h4 {
+    margin-bottom: 1rem;
+  }
   label {
     font-weight: 500;
     margin-bottom: 1.25rem;
@@ -1101,3 +1122,54 @@ header {
 
 }
 /* < FOOD ITEMS */
+
+/* REVIEW ITEMS > */
+.reviewItem {
+  background: var(--light-grey);
+  margin: 1rem 0 1rem 0;
+  flex-direction: row;
+  border-radius: 0.8333333333333334rem;
+  display: flex;
+  height: 150px;
+
+  .receipt-photo {
+    background: lightgrey;
+    border-radius: 0.8333333333333334rem;
+    height: 130px;
+    width: 130px;
+    margin: 10px;
+
+  }
+  .mainContent {
+    margin-left: 10px;
+    text-align: left;
+    flex-direction: column;
+    font-size: 0.625rem;
+
+    .menuName {
+      margin: 0.5rem 0 0.5rem 0;
+    }
+
+    .review-validation {
+      flex-direction: row;
+      align-items: center;
+
+      .review-button {
+        height: 0.85rem;
+        margin: 1.5rem 0.10rem 0 0.10rem;
+        width: 4rem;
+        font-size: 0.6rem;
+        padding: 0.1rem;
+        -webkit-box-shadow: none;
+        -moz-box-shadow: none;
+        box-shadow: none;
+
+        &.decline {
+          background-color: var(--grey);
+        }
+      }
+    }
+  }
+}
+
+/* < REVIEW ITEMS */
