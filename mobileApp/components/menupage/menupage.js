@@ -24,28 +24,6 @@ function MenuItem({
   tags,
   score
 }) {
-  const tags1Row = [];
-  const tags2Row = [];
-
-  if (tags !== null) {
-    for (let i = 0; i < tags.length; i++) {
-      const color = tags[i]["color"];
-      const tag = [
-        <View
-          key={i.toString()}
-          style={[styles.bgLabel, { backgroundColor: color }]}
-        >
-          <Text style={[Typography.FONT_TAG, { marginHorizontal: 10 }]}>
-            {tags[i]["name"]}
-          </Text>
-        </View>
-      ];
-      {
-        i < 2 ? tags1Row.push(tag) : tags2Row.push(tag);
-      }
-    }
-  }
-
   return (
     <View>
       <View
@@ -95,9 +73,25 @@ function MenuItem({
               {menuItemDescription}
             </Text>
             {tags !== null ? (
-              <View>
-                <View style={{ flexDirection: "row" }}>{tags1Row}</View>
-                <View style={{ flexDirection: "row" }}>{tags2Row}</View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  flexWrap: "wrap",
+                  alignItems: "flex-start"
+                }}
+              >
+                {tags.map((item, index) => (
+                  <View
+                    style={[styles.bgLabel, { backgroundColor: item.color }]}
+                    key={"key" + index}
+                  >
+                    <Text
+                      style={[Typography.FONT_TAG, { marginHorizontal: 10 }]}
+                    >
+                      {item.name}
+                    </Text>
+                  </View>
+                ))}
               </View>
             ) : (
               <View />
@@ -151,14 +145,12 @@ export default class Menu extends Component {
         accept: "application/json"
       });
       const responseJson = await response.json();
-      const tags = this.getMenuTagsInfo(responseJson);
-      this.setMenuInfoTags(tags);
       const menuInfo = {
         id: menuId,
         restaurantName,
         menuName: responseJson["menuName"],
         menuDescription: responseJson["description"],
-        tags: tags,
+        tags: responseJson["tags"],
         score: responseJson["menuRating"]
       };
       const menuItems = responseJson["menuItems"].map(index => ({
@@ -167,7 +159,7 @@ export default class Menu extends Component {
         menuItemDescription: index["description"],
         priceEuros: index["priceEuros"],
         menuItemImage: index["imageLink"],
-        tags: this.getMenuItemTagsInfo(index),
+        tags: index["tags"],
         score: index["rating"],
         type: index["type"]
       }));
@@ -211,42 +203,6 @@ export default class Menu extends Component {
       });
     }
     return tagsObject;
-  }
-
-  getMenuItemTagsInfo(index) {
-    const tagsObject = [];
-    if (index.tags !== null) {
-      const numberOfTags = index.tags.length;
-      for (let i = 0; i < numberOfTags; i++) {
-        tagsObject.push({
-          name: index.tags[i]["name"],
-          color: index.tags[i]["color"]
-        });
-      }
-    }
-    return tagsObject;
-  }
-
-  tags1Row = [];
-  tags2Row = [];
-
-  setMenuInfoTags(tags) {
-    for (let i = 0; i < tags.length; i++) {
-      const color = tags[i]["color"];
-      const tag = [
-        <View
-          key={i.toString()}
-          style={[styles.bgLabel, { backgroundColor: color }]}
-        >
-          <Text style={[Typography.FONT_TAG, { marginHorizontal: 10 }]}>
-            {tags[i]["name"]}
-          </Text>
-        </View>
-      ];
-      {
-        i < 2 ? this.tags1Row.push(tag) : this.tags2Row.push(tag);
-      }
-    }
   }
 
   render() {
