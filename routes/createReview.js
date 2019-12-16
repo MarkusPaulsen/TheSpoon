@@ -17,61 +17,64 @@ const PENDING='Pending';
 
 router.post('/menu/:menuID', auth, isCustomer, async (req, res) => {
     console.log('In POST /api/user/customer/review/restaurant/menu/' + req.params.menuID);
-    const menuID = req.params.menuID;
+    try {
+        const menuID = req.params.menuID;
 
-    //check if menu with menuID exists
-    const menu = await Menu.findOne({
-        where: {
-            Menu_ID: menuID
-        }
-    });
-
-    if (!menu) return res.status(404).send('Menu with menuID' + menuID + ' doesn\'t exist');
-
-    //check if menu item with menuItemID exists
-    const itemReviews = req.body.menuItemsReviews;
-    for (let i = 0; i < itemReviews.length; i++) {
-        const menuItemID = itemReviews[i].menuItemID;
-        const menuItem = await MenuItem.findOne({
+        //check if menu with menuID exists
+        const menu = await Menu.findOne({
             where: {
-                MI_ID: menuItemID
+                Menu_ID: menuID
             }
         });
-        if (!menuItem) return res.status(404).send('Menu item with MI_ID ' + menuItemID + ' doesn\'t exist')
-    }
 
-    //create menu review
-    const menuReview = await MenuReview.create({
-        Username: req.username,
-        Menu_ID: menuID,
-        Date: req.body.date,
-        ServiceRating: req.body.serviceRating,
-        QualityRating: req.body.qualityOverPriceRating,
-        Status: PENDING,
-        Image_ID: req.body.receiptImageID
-    });
+        if (!menu) return res.status(404).send('Menu with menuID ' + menuID + ' doesn\'t exist');
 
-    const menuReviewID = menuReview.dataValues.Review_ID;
+        //check if menu item with menuItemID exists
+        const itemReviews = req.body.menuItemsReviews;
+        for (let i = 0; i < itemReviews.length; i++) {
+            const menuItemID = itemReviews[i].menuItemID;
+            const menuItem = await MenuItem.findOne({
+                where: {
+                    MI_ID: menuItemID
+                }
+            });
+            if (!menuItem) return res.status(404).send('Menu item with MI_ID ' + menuItemID + ' doesn\'t exist')
+        }
 
-    //creating item reviews
-
-    for (let i = 0; i < itemReviews.length; i++) {
-        const itemReview = itemReviews[i];
-        await ItemReview.create({
+        //create menu review
+        const menuReview = await MenuReview.create({
             Username: req.username,
-            MI_ID: itemReview.menuItemID,
-            Content: itemReview.content,
-            ItemRating: itemReview.rating,
+            Menu_ID: menuID,
             Date: req.body.date,
-            MenuReview_ID: menuReviewID
-        })
+            ServiceRating: req.body.serviceRating,
+            QualityRating: req.body.qualityOverPriceRating,
+            Status: PENDING,
+            Image_ID: req.body.receiptImageID
+        });
+
+        const menuReviewID = menuReview.dataValues.Review_ID;
+
+        //creating item reviews
+
+        for (let i = 0; i < itemReviews.length; i++) {
+            const itemReview = itemReviews[i];
+            await ItemReview.create({
+                Username: req.username,
+                MI_ID: itemReview.menuItemID,
+                Content: itemReview.content,
+                ItemRating: itemReview.rating,
+                Date: req.body.date,
+                MenuReview_ID: menuReviewID
+            })
+        }
+        // Update ratings for Menu and MenuItems that are affected of this adding.
+        const addedToMenu = {Menu_ID: menuID};
+        await updateRating(itemReviews, addedToMenu);
+
+        res.status(201).send('Successful operation');
+    }catch (error) {
+        res.status(500).send('Internal server error');
     }
-    // Update ratings for Menu and MenuItems that are affected of this adding.
-    const addedToMenu = {Menu_ID: menuID};
-    await updateRating(itemReviews, addedToMenu);
-
-    res.status(201).send('Successful operation');
-
 });
 
 //Return all the restaurants
