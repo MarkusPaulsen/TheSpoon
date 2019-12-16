@@ -211,9 +211,17 @@ describe("Search Component", () => {
     expect(component.state().searchResults).toEqual([obj2, obj1, obj3])
   });
 
-  it("Should sort results by review", () => {
+  it("Should sort results by distance", () => {
     const sortBy = "Distance";
     component.setState({ searchResults, selectedFilter: sortBy });
+
+    const locationPermission = true;
+    const latitude = "24,539045";
+    const longitude = "23,932052";
+
+    component.instance().findCoordinates = jest.fn().mockImplementationOnce(() => {
+      component.setState({locationPermission, latitude, longitude})
+    });
 
     component.instance().applyFilter();
     component.update();
