@@ -473,7 +473,7 @@ header {
     text-align: center;
 
     .title {
-      margin-bottom: 3rem;
+      margin-bottom: 2rem;
     }
 
     textarea {
@@ -496,7 +496,7 @@ header {
     }
 
     .account-type {
-      margin: .25rem 0 3rem;
+      margin: .25rem 0 2rem;
       .role {
         color: var(--turquoise);
       }
@@ -511,7 +511,7 @@ header {
     }
 
     .input-field {
-      margin-bottom: 1.5rem;
+      margin: 1rem 0 0.5rem;
 
       i {
         margin-right: 1rem;
@@ -719,7 +719,6 @@ header {
 
     &.add-menu {
       .input-field {
-        margin-bottom: 1.25rem;
         > div {
           width: 100%;
         }

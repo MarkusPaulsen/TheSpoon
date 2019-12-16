@@ -221,7 +221,7 @@ class RegisterCustomerModal extends Component {
                     }} onSubmit={(e) => this.handleSubmit(e)}>
                         <h2>Sign up</h2>
                         <div className="account-type">
-                            <h4>as a <span className="role">{this.props.role}</span></h4>
+                            <h4>as a <span className="role">Customer</span></h4>
                         </div>
 
                         <div className="input-field">

@@ -258,7 +258,7 @@ class EditMenuModal extends Component {
 
                         <div className="input-field">
                             <label>Tags</label>
-                            <Input type="tags" name="tags" value={tagsString}/>
+                            <Input type="text" name="tags" value={tagsString}/>
                         </div>
                         <div className="error-block">
                             <small>{validation.tags.message}</small>

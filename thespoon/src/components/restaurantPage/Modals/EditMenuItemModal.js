@@ -400,7 +400,7 @@ class EditMenuItemModal extends Component {
 
                         <div className="input-field">
                             <label>Tags</label>
-                            <Input type="tags" name="tags" value={this.props.currentMenuItem.tags.map(tag => tag.name).reduce((total, tagName) => {return total + tagName}, "")}/>
+                            <Input type="text" name="tags" value={this.props.currentMenuItem.tags.map(tag => tag.name).reduce((total, tagName) => {return total + tagName}, "")}/>
                         </div>
                         <div className="error-block">
                             <small>{validation.tags.message}</small>
