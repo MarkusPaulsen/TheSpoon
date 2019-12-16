@@ -76,7 +76,7 @@ function ResultItem({
             <Text style={[Typography.FONT_SMALL_BLACK, { marginRight: 5 }]}>
               {getPriceCategory(avgPrice)}
             </Text>
-            {score === null ? (
+            {score === null || score === "NaN" ? (
               <Text />
             ) : (
               <View style={{ flexDirection: "row" }}>
