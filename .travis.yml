@@ -15,6 +15,6 @@ notifications:
   slack: dsd2019thespoon:7SFtEzMgqGVWfBxAIPayUXa7
   on_success: never
   on_failure: always
-before_script: cd mobileApp
 script:
   - npm test
+  - cd mobileApp && npm install && npm test
