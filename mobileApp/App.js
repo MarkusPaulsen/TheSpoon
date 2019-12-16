@@ -13,7 +13,7 @@ import ReviewAddItems from "./components/review/views/ReviewAddItems";
 import ReviewItems from "./components/review/views/ReviewItems";
 import ReviewOverall from "./components/review/views/ReviewOverall";
 
-import ProfilePage from "./components/profile/profile";
+import ProfilePage from "./components/profile/Profile";
 import { createAppContainer } from "react-navigation";
 import { createStackNavigator } from "react-navigation-stack";
 import { createBottomTabNavigator } from "react-navigation-tabs";

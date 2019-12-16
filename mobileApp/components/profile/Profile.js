@@ -34,14 +34,16 @@ export default class Profile extends Component {
 
   componentDidMount = async () => {
     this.focusListener = this.props.navigation.addListener("didFocus", () => {
-      AsyncStorage.getItem("userToken").then(token => {
-        this.setState({
-          loggedIn: token !== null,
-          isLoaded: true,
-          token: token
-        });
-        this.getUserInfo(token);
-        this.getUserReviews(token);
+      AsyncStorage.getItem("userToken").then(async token => {
+        const parsedToken = JSON.parse(token);
+        const loggedIn = parsedToken !== null;
+        this.setState({ loggedIn });
+        if (loggedIn) {
+          await this.getUserInfo(parsedToken);
+          await this.getUserReviews(parsedToken);
+          this.setState({ token: parsedToken });
+        }
+        this.setState({ isLoaded: true });
       });
     });
   };
@@ -82,16 +84,16 @@ export default class Profile extends Component {
         method: "GET",
         accept: "application/json",
         headers: {
-          "X-Auth-Token": JSON.parse(token)
+          "X-Auth-Token": token
         }
       });
-      const responseJson = await response.json();
-      const userInfo = {
-        username: responseJson.username,
-        email: responseJson.email
-      };
-      this.setState({ userInfo });
       if (response.ok) {
+        const responseJson = await response.json();
+        const userInfo = {
+          username: responseJson.username,
+          email: responseJson.email
+        };
+        this.setState({ userInfo });
         console.log("Success fetching profileData");
       }
       if (!response.ok) {
@@ -108,7 +110,7 @@ export default class Profile extends Component {
         method: "GET",
         accept: "application/json",
         headers: {
-          "x-auth-token": JSON.parse(token)
+          "x-auth-token": token
         }
       });
       const responseJson = await response.json();
@@ -124,8 +126,8 @@ export default class Profile extends Component {
         status: index.status,
         menuItemsReviews: index.menuItemsReviews
       }));
-      this.setState({ reviews });
       if (response.ok) {
+        this.setState({ reviews });
         console.log("Success fetching reviews");
       }
       if (!response.ok) {
@@ -144,7 +146,7 @@ export default class Profile extends Component {
         method: "DELETE",
         headers: {
           accept: "application/json",
-          "x-auth-token": JSON.parse(token)
+          "x-auth-token": token
         }
       });
       console.log(response);
@@ -152,11 +154,11 @@ export default class Profile extends Component {
       console.log(responseJson);
       if (response.ok) {
         console.log("Deletion success");
-        alert("Review deleted");
+        Alert.alert("Review deleted");
       }
       if (!response.ok) {
         console.log("Deletion failed");
-        alert("Deletion failed");
+        Alert.alert("Deletion failed");
       }
     } catch (error) {
       console.log("Error deleting review: ", error);

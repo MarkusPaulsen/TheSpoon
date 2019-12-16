@@ -13,7 +13,7 @@ import UsernameIcon from "../../assets/login-email.png";
 import PasswordIcon from "../../assets/login-password.png";
 import Validate from "./validation.js";
 import validate from "./validation";
-import Profile from "../profile/profile";
+import Profile from "../profile/Profile";
 import * as Api from "../../services/api";
 
 export default class LoginScreen extends Component {
