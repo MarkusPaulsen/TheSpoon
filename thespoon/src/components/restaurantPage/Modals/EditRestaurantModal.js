@@ -4,7 +4,7 @@ import Select from "react-select";
 //</editor-fold>
 //<editor-fold desc="Redux">
 import {connect} from "react-redux";
-import {setRestaurantID, setRestaurantName} from "../../../actionCreators/restaurantActionCreators";
+import {setRestaurantID} from "../../../actionCreators/restaurantActionCreators";
 //</editor-fold>
 //<editor-fold desc="RxJs">
 import {bindCallback, of, throwError} from "rxjs";
@@ -69,7 +69,7 @@ class EditRestaurantModal extends Component {
             method: "isEmpty",
             validWhen: false,
             message: "Country name required"
-        } /*{
+        }, /*{
             field: "country",
             method: "isAlpha",
             validWhen: true,
@@ -159,7 +159,7 @@ class EditRestaurantModal extends Component {
             reader.onload = () => {
                 ajax({
                     url: paths["restApi"]["image"],
-                    method: "PUT",
+                    method: "POST",
                     headers: {"X-Auth-Token": thisTemp.props.token},
                     body: formData,
                     timeout: timeout,
@@ -302,8 +302,11 @@ class EditRestaurantModal extends Component {
                         responseType: "text"
                     })
                 } else {
-                    thisTemp.setState({serverMessage: "Location data cannot be calculated"});
-                    return throwError({status: 0});
+                    return throwError({
+                        name: "InternalError",
+                        status: 0,
+                        response: "Location data cannot be calculated. Probably the location does not exist."
+                    });
                 }
             }), catchError(error => {
                 return throwError({status: error.status});
@@ -312,8 +315,8 @@ class EditRestaurantModal extends Component {
                     (next) => {
                         let response = JSON.parse(next.response);
                         thisTemp.props.setRestaurantID(response.restaurantID);
-                        thisTemp.props.currentMenu.currentRestaurantPage.setState({toUpdate: true});
-                        thisTemp.props.currentMenu.currentRestaurantPage.forceUpdate();
+                        thisTemp.props.currentRestaurantPage.setState({toUpdate: true});
+                        thisTemp.props.currentRestaurantPage.forceUpdate();
                         thisTemp.props.onHide();
                     }, (error) => {
                         switch (error.name) {
@@ -341,9 +344,9 @@ class EditRestaurantModal extends Component {
 
     //<editor-fold desc="Render">
     render() {
-        console.log("here restaurant info")
+        console.log("Props")
         console.log(this.props)
-        console.log("here state")
+        console.log("State")
         console.log(this.state)
         let validation = this.submitted ?                         // if the form has been submitted at least once
             this.validator.validate(this.state) :               // then check validity every time we render
@@ -471,8 +474,8 @@ class EditRestaurantModal extends Component {
 const mapStateToProps = (state) => {
     return {
         token: state.logInReducer.token,
-        modalVisibilityFilter: state.modalVisibiltyFilterReducer.modalVisibilityFilter,
         currentRestaurantInformation: state.restaurantReducer.currentRestaurantInformation,
+        currentRestaurantPage: state.currentMenuReducer.currentRestaurantPage
     };
 };
 

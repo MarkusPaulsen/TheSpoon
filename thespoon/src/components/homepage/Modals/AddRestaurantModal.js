@@ -84,9 +84,6 @@ class AddRestaurantInfo extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.state = {
             name: "",
-            selectedFile: null,
-            imageID: 0,
-            imageMessage: "",
             address: "",
             city: "",
             country: "",
@@ -95,6 +92,9 @@ class AddRestaurantInfo extends Component {
             selectedDay: null,
             selectedOpenTime: null,
             selectedCloseTime: null,
+            selectedFile: null,
+            imageID: 0,
+            imageMessage: "",
             validation: this.validator.valid(),
             serverMessage: "",
             submitted: false
@@ -291,7 +291,6 @@ class AddRestaurantInfo extends Component {
                         status: 0,
                         response: "Location data cannot be calculated. Probably the location does not exist."
                     });
-                    return throwError({status: 0});
                 }
             }), catchError(error => {
                 return throwError({status: error.status});
@@ -300,6 +299,8 @@ class AddRestaurantInfo extends Component {
                     (next) => {
                         let response = JSON.parse(next.response);
                         thisTemp.props.setRestaurantID(response.restaurantID);
+                        thisTemp.props.currentRestaurantPage.setState({toUpdate: true});
+                        thisTemp.props.currentRestaurantPage.forceUpdate();
                         thisTemp.props.onHide();
                     }, (error) => {
                         switch (error.name) {
@@ -327,6 +328,10 @@ class AddRestaurantInfo extends Component {
 
     //<editor-fold desc="Render">
     render() {
+        console.log("Props")
+        console.log(this.props)
+        console.log("State")
+        console.log(this.state)
         let validation = this.submitted ?                         // if the form has been submitted at least once
             this.validator.validate(this.state) :               // then check validity every time we render
             this.state.validation;
@@ -391,7 +396,6 @@ class AddRestaurantInfo extends Component {
                             <small>{validation.country.message}</small>
                         </div>
 
-
                         <div className="input-field opening-hours">
                             <label>Opening hours</label>
                             <div className="hours-selector">
@@ -451,7 +455,9 @@ class AddRestaurantInfo extends Component {
 //<editor-fold desc="Redux">
 const mapStateToProps = (state) => {
     return {
-        token: state.logInReducer.token
+        token: state.logInReducer.token,
+        currentRestaurantInformation: state.restaurantReducer.currentRestaurantInformation,
+        currentRestaurantPage: state.currentMenuReducer.currentRestaurantPage
     };
 };
 

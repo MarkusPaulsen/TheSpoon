@@ -22,12 +22,11 @@ import FormValidator from "../../../validation/FormValidator";
 
 //<editor-fold desc="Constants">
 import {paths} from "../../../constants/paths";
+import {modalVisibilityFilters} from "../../../constants/modalVisibiltyFilters";
+import {timeout} from "../../../constants/timeout";
 //</editor-fold>
 //<editor-fold desc="Icons">
 import {IconExit} from "../../Icons";
-import {modalVisibilityFilters} from "../../../constants/modalVisibiltyFilters";
-import {timeout} from "../../../constants/timeout";
-
 //</editor-fold>
 
 
@@ -89,7 +88,7 @@ class EditMenuItemModal extends Component {
             },
             validWhen: true,
             message: "PriceEuros needs to be positive."
-        },{
+        }, {
             field: "tags",
             method: "isEmpty",
             validWhen: false,
@@ -125,7 +124,7 @@ class EditMenuItemModal extends Component {
             name: this.props.currentMenuItem.name,
             description: this.props.currentMenuItem.description,
             priceEuros: this.props.currentMenuItem.priceEuros,
-            type: "",
+            type: this.props.currentMenuItem.type,
             imageID: this.props.currentMenuItem.imageID,
             imageMessage: "",
             tags: this.props.currentMenuItem.tags.map(tag => {
@@ -144,9 +143,9 @@ class EditMenuItemModal extends Component {
     //<editor-fold desc="Bussiness Logic">
     fileSelectedHandler = (event) => {
         const thisTemp = this;
-        thisTemp.setState({ imageMessage: "", selectedFile: null });
+        thisTemp.setState({imageMessage: "", selectedFile: null});
         let file = event.target.files[0];
-        if(["image/png","image/jpeg"].includes(file.type)) {
+        if(["image/png", "image/jpeg"].includes(file.type)) {
             let formData = new FormData();
             formData.append("image", file);
             let reader = new FileReader();
@@ -183,7 +182,7 @@ class EditMenuItemModal extends Component {
                                         });
                                     } else {
                                         thisTemp.setState({
-                                            imageMessage: file.name + " could not be uploaded, as " + error.response ,
+                                            imageMessage: file.name + " could not be uploaded, as " + error.response,
                                             serverMessage: ""
                                         });
                                     }
@@ -228,8 +227,6 @@ class EditMenuItemModal extends Component {
                     name: values.name,
                     description: values.description,
                     priceEuros: parseInt(values.priceEuros),
-                    type: thisTemp.props.currentMenuItem.type,
-                    imageID: thisTemp.state.imageID,
                     tags: values.tags.split(",").map(tag => tag.trim())
                 });
             }))
@@ -243,8 +240,6 @@ class EditMenuItemModal extends Component {
             .pipe(exhaustMap(() => {
                 if (thisTemp.state.validation.isValid) {
                     thisTemp.setState({serverMessage: "New dish is edited"});
-                    console.log(this.props)
-                    console.log(this.state)
                     return ajax({
                         url: paths["restApi"]["menu"] + "/"
                             + thisTemp.props.currentMenu.menuID + "/"
@@ -344,8 +339,6 @@ class EditMenuItemModal extends Component {
     //</editor-fold>
     //<editor-fold desc="Render">
     render() {
-        console.log("here menu item")
-        console.log(this.props)
         let validation = !this.submitted ? this.state.validation : this.validator.validate(this.state);
         return (
             <Modal.Body>

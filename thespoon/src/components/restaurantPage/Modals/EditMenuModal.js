@@ -26,6 +26,7 @@ import {paths} from "../../../constants/paths";
 //<editor-fold desc="Icons">
 import {IconExit} from "../../Icons";
 import {timeout} from "../../../constants/timeout";
+
 //</editor-fold>
 
 
@@ -46,7 +47,9 @@ class EditMenuModal extends Component {
             message: "Name is required to be alphanumeric."
         },*/ {
             field: "name",
-            method: (name) => {return name.length >= 1},
+            method: (name) => {
+                return name.length >= 1;
+            },
             validWhen: true,
             message: "Name is required to be longer or equal 1 characters."
         }, {
@@ -61,7 +64,9 @@ class EditMenuModal extends Component {
             message: "Description is required to be alphanumeric."
         },*/ {
             field: "description",
-            method: (description) => {return description.length >= 1},
+            method: (description) => {
+                return description.length >= 1;
+            },
             validWhen: true,
             message: "Description is required to be longer or equal 1 characters."
         }, {
@@ -124,7 +129,7 @@ class EditMenuModal extends Component {
                 return bindCallback(thisTemp.setState).call(thisTemp, {
                     name: values.name,
                     description: values.description,
-                    tags: values.tags.split(","),
+                    tags: values.tags.split(",").map(tag => tag.trim()),
                 });
             }))
             .pipe(exhaustMap(() => {
@@ -138,7 +143,8 @@ class EditMenuModal extends Component {
                 if (thisTemp.state.validation.isValid) {
                     thisTemp.setState({serverMessage: "Menu is edited"});
                     return ajax({
-                        url: paths["restApi"]["menu"] + "/" + this.props.menu.menuID,
+                        url: paths["restApi"]["menu"] + "/"
+                            + this.props.menu.menuID,
                         method: "PUT",
                         headers: {"Content-Type": "application/json", "X-Auth-Token": this.props.token},
                         body: {
@@ -235,9 +241,11 @@ class EditMenuModal extends Component {
             this.state.validation;
         return (
             <Modal.Body>
-                <button className="exit" onClick={this.props.onHide}><IconExit /></button>
+                <button className="exit" onClick={this.props.onHide}><IconExit/></button>
                 <div className="modal-wrapper add-menu">
-                    <Form ref={(c) => {this.form = c; }} onSubmit={(e) => this.handleSubmit(e)}>
+                    <Form ref={(c) => {
+                        this.form = c;
+                    }} onSubmit={(e) => this.handleSubmit(e)}>
                         <h2 className="title">Edit menu</h2>
 
                         <div className="input-field">
@@ -274,6 +282,7 @@ class EditMenuModal extends Component {
             </Modal.Body>
         )
     }
+
     //</editor-fold>
 }
 

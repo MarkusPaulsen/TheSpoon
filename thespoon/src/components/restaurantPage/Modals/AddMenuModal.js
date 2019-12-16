@@ -47,7 +47,9 @@ class AddMenuModal extends Component {
             message: "Name is required to be alphanumeric."
         },*/ {
             field: "name",
-            method: (name) => {return name.length >= 1},
+            method: (name) => {
+                return name.length >= 1
+            },
             validWhen: true,
             message: "Name is required to be longer or equal 1 characters."
         }, {
@@ -62,7 +64,9 @@ class AddMenuModal extends Component {
             message: "Description is required to be alphanumeric."
         },*/ {
             field: "description",
-            method: (description) => {return description.length >= 1},
+            method: (description) => {
+                return description.length >= 1
+            },
             validWhen: true,
             message: "Description is required to be longer or equal 1 characters."
         }, {

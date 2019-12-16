@@ -107,7 +107,6 @@ class RegisterCustomerModal extends Component {
             message: "Password confirmation has to be identical to the password."
         }]);
 
-        this.passwordMatch = this.passwordMatch.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
 
         this.state = {
@@ -124,8 +123,6 @@ class RegisterCustomerModal extends Component {
     //</editor-fold>
 
     //<editor-fold desc="Business Logic">
-    passwordMatch = (confirmation, state) => (state.password === confirmation);
-
     handleSubmit = event => {
         event.preventDefault();
 
@@ -189,7 +186,7 @@ class RegisterCustomerModal extends Component {
                         case "InternalError":
                         case "AjaxError":
                             if (error.status === 0 && error.response === "") {
-                                thisTemp.setState({serverMessage: "No connection to the server."});
+                                thisTemp.setState({serverMessage: "There is no connection to the server."});
                             } else {
                                 thisTemp.setState({serverMessage: error.response});
                             }
@@ -218,10 +215,10 @@ class RegisterCustomerModal extends Component {
                 <div className="modal-wrapper ">
                     <Form ref={(c) => {
                         this.form = c;
-                    }} onSubmit={(e) => this.handleSubmit(e)}>
+                    }} onSubmit={this.handleSubmit}>
                         <h2>Sign up</h2>
                         <div className="account-type">
-                            <h4>as a <span className="role">{this.props.role}</span></h4>
+                            <h4>as a <span className="role">Customer</span></h4>
                         </div>
 
                         <div className="input-field">

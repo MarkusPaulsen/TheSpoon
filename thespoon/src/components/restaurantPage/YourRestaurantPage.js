@@ -10,6 +10,7 @@ import {exhaustMap, catchError} from "rxjs/operators";
 //<editor-fold desc="Redux">
 import {connect} from "react-redux";
 import {setModalVisibilityFilterAction} from "../../actionCreators/modalVisibilityFilterActionCreators";
+import {setRestaurantInformation} from "../../actionCreators/restaurantActionCreators";
 //</editor-fold>
 
 //<editor-fold desc="Constants">
@@ -26,7 +27,6 @@ import MainLayout from "../layout/MainLayout.js";
 //<editor-fold desc="Components">
 import Sidebar from "./Items/Sidebar";
 import Menu from "./Items/Menu";
-
 //</editor-fold>
 
 class YourRestaurantPage extends Component {
@@ -331,9 +331,10 @@ const mapStateToProps = (state) => {
     };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch, ownProps) => {
     return {
         openRestaurantConfiguration: () => {
+            dispatch(setRestaurantInformation(ownProps));
             dispatch(setModalVisibilityFilterAction(modalVisibilityFilters.SHOW_ADD_RESTAURANT));
         }
     };
