@@ -190,19 +190,11 @@ export default class Menu extends Component {
         restaurantInfo,
         isLoading: false
       });
+      console.log(this.state.menuInfo.tags);
+      console.log(this.state.menuInfo);
     } catch (e) {
       console.error(e);
     }
-  }
-  getMenuTagsInfo(responseJson) {
-    const tagsObject = [];
-    for (let i = 0; i < responseJson.tags.length; i++) {
-      tagsObject.push({
-        name: responseJson.tags[i]["name"],
-        color: responseJson.tags[i]["color"]
-      });
-    }
-    return tagsObject;
   }
 
   render() {
@@ -260,10 +252,42 @@ export default class Menu extends Component {
               </Text>
               <View style={{ flexDirection: "column" }}>
                 <View style={{ flexDirection: "row", marginBottom: 3 }}>
-                  {this.tags1Row}
-                </View>
-                <View style={{ flexDirection: "row", marginBottom: 3 }}>
-                  {this.tags2Row}
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      flexWrap: "wrap",
+                      alignItems: "flex-start"
+                    }}
+                  >
+                    {this.state.menuInfo.tags ? (
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          flexWrap: "wrap",
+                          alignItems: "flex-start"
+                        }}
+                      >
+                        {this.state.menuInfo.tags.map((item, index) => (
+                          <View
+                            style={[
+                              styles.bgLabel,
+                              { backgroundColor: item.color }
+                            ]}
+                            key={"key" + index}
+                          >
+                            <Text
+                              style={[
+                                Typography.FONT_TAG,
+                                { marginHorizontal: 10 }
+                              ]}
+                            >
+                              {item.name}
+                            </Text>
+                          </View>
+                        ))}
+                      </View>
+                    ) : null}
+                  </View>
                 </View>
               </View>
             </SafeAreaView>
