@@ -124,7 +124,7 @@ router.get('/', auth, isOwner, findRestaurant, async (req, res) => {
         menus = await Promise.all(menus);
         res.status(200).send(menus);
     } catch (error) {
-        res.status(404).send(error+ ' :(');
+        res.status(500).send('Internal server error.');
     }
 });
 

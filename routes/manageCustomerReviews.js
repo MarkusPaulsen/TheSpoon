@@ -67,47 +67,51 @@ router.get('/', auth, isCustomer , async (req, res) => {
         formattedReview = await Promise.all(formattedReview);
         res.status(200).send(formattedReview);
     } catch (error){
-        res.status(400).send(error + ' :(');
+        res.status(500).send('Internal server error.');
     }
 });
 
 
 // Delete a specific menuReview of a customer, with all its associated itemReviews
 router.delete('/:reviewID', auth, isCustomer, async (req, res) => {
-
-    //check if the review with given reviewID exist
-    const reviewFound = await MenuReview.findOne({
-        where: {
-            Review_ID: req.params.reviewID
-        },
-        include: [{
-            model: ItemReview,
-            attributes: ['MI_ID']
-        }]
-    });
-    // If no review is found, return 404 Not found.
-    if (reviewFound === null) {
-        return res.status(404).send('Review not found.');
-    }
-    
-    // Delete review from system.
-    if (reviewFound.Username === req.username) {
-        await MenuReview.destroy({
+    try {
+        //TODO: Validate input
+        //check if the review with given reviewID exist
+        const reviewFound = await MenuReview.findOne({
             where: {
                 Review_ID: req.params.reviewID
-            }
+            },
+            include: [{
+                model: ItemReview,
+                attributes: ['MI_ID']
+            }]
         });
-        const itemReviews = await reviewFound.ItemReviews.map( async r => {
-            console.log(r.MI_ID);
-            return {menuItemID: r.MI_ID}
-        });
+        // If no review is found, return 404 Not found.
+        if (reviewFound === null) {
+            return res.status(404).send('Review not found.');
+        }
 
-        //Update rating of Menu and MenuItems that are affected of this deletion.
-        await updateRating(itemReviews, reviewFound);
+        // Delete review from system.
+        if (reviewFound.Username === req.username) {
+            await MenuReview.destroy({
+                where: {
+                    Review_ID: req.params.reviewID
+                }
+            });
+            const itemReviews = await reviewFound.ItemReviews.map(async r => {
+                console.log(r.MI_ID);
+                return {menuItemID: r.MI_ID}
+            });
 
-        res.status(200).send({reviewID: req.params.reviewID});
-    } else {
-        res.status(403).send('Forbidden request.');
+            //Update rating of Menu and MenuItems that are affected of this deletion.
+            await updateRating(itemReviews, reviewFound);
+
+            res.status(200).send({reviewID: req.params.reviewID});
+        } else {
+            res.status(403).send('Forbidden request.');
+        }
+    } catch (error){
+        res.status(500).send('Internal server error.');
     }
 
 });

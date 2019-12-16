@@ -46,8 +46,8 @@ describe('/api/user/login', () => {
             });
 
             //then check if the login works by checking if the response has code 201
-            const exec = () => {
-                return request(app)
+            const exec = async () => {
+                return await request(app)
                     .post('/api/user/login')
                     .send({username: "xXEmilioXx", password: "123456", isRestaurantOwner: true})
             };
