@@ -18,7 +18,9 @@ class ReviewItem extends Component {
         return (
             <div className="reviewItem">
                 <div className="receipt-photo">
-                    <div>Image here</div>
+                    <div className="image-wrapper">
+                        <div className="image" style={{backgroundImage: `url(${this.props.imageLink})`}}/>
+                    </div>
                 </div>
                 <div className="mainContent">
                     <h4 className="menuName">Lunch Menu</h4>

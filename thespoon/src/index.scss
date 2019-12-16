@@ -1002,7 +1002,7 @@ header {
       padding: 0.1rem 1rem;
       border-radius: 5px;
       font-weight: bold;
-      margin: 0 0.5rem;
+      margin: 0 0.5rem 0.25rem;
     }
     @include media-breakpoint-down(sm) {
       .tag {
@@ -1046,21 +1046,17 @@ header {
   background: var(--light-grey);
   border-radius: 0.8333333333333334rem;
   display: flex;
+  position: relative;
   //padding: 0.5rem;
   .image-setup {
-    background: lightgrey;
-    flex-direction: row;
-    display: flex;
-    border-radius: 100%;
     margin: 0.5rem;
     margin-left: 1rem;
+    width: 25%;
   }
   .image-wrapper {
     height: 0;
     width: 100%;
     padding-bottom: 100%;
-    background: #007bff;
-    border-radius: 100%;
     position: relative;
 
 
@@ -1071,7 +1067,10 @@ header {
       top: 0 ;
       bottom: 0;
       background-repeat: no-repeat;
-      border-radius: 50%;
+      position: absolute;
+      background-position: center center;
+      background-size: cover;
+      border-radius: 100%;
     }
 
     @include media-breakpoint-down(xs) {
@@ -1090,18 +1089,12 @@ header {
     text-align: left;
     display: flex;
     margin: 0.5rem;
+    width: 75%;
     .foodItemName {
       margin-bottom: 0.5rem;
     }
     .description {
       margin-bottom: 0.5rem;
-    }
-    .tags {
-      background: var(--turquoise);
-      color: var(--white);
-      padding: 0.1rem 1rem;
-      border-radius: 5px;
-      font-weight: bold;
     }
   }
   .price {
@@ -1110,9 +1103,10 @@ header {
     margin-right: 0.75rem;
     margin-top: 1rem;
     font-weight: 500;
+    width: 5%;
   }
   .edit-button {
-    position: relative;
+    position: absolute;
     top: -0.25rem;
     right: -0.25rem;
     &:hover {
@@ -1134,10 +1128,27 @@ header {
 
   .receipt-photo {
     background: lightgrey;
-    border-radius: 0.8333333333333334rem;
+    border-radius: 100%;
     height: 130px;
     width: 130px;
     margin: 10px;
+    .image-wrapper {
+      height: 0;
+      padding-bottom: 100%;
+      position: relative;
+
+      .image {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        background-size: cover;
+        background-position: center center;
+        background-repeat: no-repeat;
+        border-radius: 100%;
+      }
+    }
 
   }
   .mainContent {
