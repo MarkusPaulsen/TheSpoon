@@ -16,8 +16,15 @@ describe("Logged in - ReviewAddItems component", () => {
         return defaultValue;
       }
     };
+
+    // Mock the functions called in componentDidMount
+    jest
+      .spyOn(ReviewAddItems.prototype, "getMenuItems")
+      .mockImplementationOnce(() => Promise.resolve());
+
     component = setUp({ navigation });
     fetch.resetMocks();
+    jest.useFakeTimers();
   });
 
   it("ComponentDidMount", async () => {
@@ -35,7 +42,8 @@ describe("Logged in - ReviewAddItems component", () => {
           menuItemID: 3,
           name: "name3"
         }
-      ])
+      ]),
+      { status: 200, ok: true }
     );
     const instance = component.instance();
     await instance.componentDidMount();

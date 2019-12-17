@@ -9,15 +9,23 @@ const setUp = (props = {}) => {
 describe("Review Add Menu Component", () => {
   let component;
 
-  beforeEach(() => {
+  beforeEach(done => {
     const navigation = {
       navigate: jest.fn(),
       getParam: (param, defaultValue) => {
         return defaultValue;
       }
     };
+
+    // Mock the functions called in componentDidMount
+    jest
+      .spyOn(ReviewAddMenu.prototype, "getMenus")
+      .mockImplementationOnce(() => Promise.resolve());
+
     component = setUp({ navigation });
     fetch.resetMocks();
+    jest.useFakeTimers();
+    done();
   });
 
   it("ComponentDidMount fetch successful", async () => {
@@ -77,5 +85,5 @@ describe("Review Add Menu Component", () => {
     expect(component.state().selected).toBe(id);
     expect(component.state().menuName).toBe(menuName);
     expect(component.state().disableButton).toBeFalsy();
-  })
+  });
 });

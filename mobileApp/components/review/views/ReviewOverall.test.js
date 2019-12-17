@@ -2,12 +2,20 @@ import React from "react";
 import { mount } from "enzyme";
 import ReviewOverall from "./ReviewOverall";
 import { AsyncStorage as storage } from "react-native";
+import Alert from "Alert";
 
 const setUp = (props = {}) => {
   return mount(<ReviewOverall {...props} />);
 };
 
-const userToken = "igobeoh488039h09ancklansc";
+jest.mock("Alert", () => {
+  return {
+    alert: jest.fn()
+  };
+});
+
+const userToken =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOjI5LCJpYXQiOjE1NjE5OTg2NjB9.SWYMJXTTM8pe6NQw1QwS-d8Btt6Isuzzk5JtH775uV0";
 
 const menuItems = [
   {
@@ -31,6 +39,7 @@ describe("Review Overall Component", () => {
     component = setUp({ navigation });
     await storage.setItem("userToken", userToken);
     fetch.resetMocks();
+    jest.useFakeTimers();
   });
 
   it("ComponentDidMount", async () => {
@@ -65,7 +74,7 @@ describe("Review Overall Component", () => {
 
     expect(component.state().disableButton).toBeFalsy();
   });
- /*
+
   it("Should post review succesfully", async () => {
     component.setState({
       serviceRating: 4,
@@ -79,25 +88,18 @@ describe("Review Overall Component", () => {
       content: index.content
     }));
 
-    const data = JSON.stringify({
+    JSON.stringify = jest.fn().mockImplementationOnce(() => ({
       serviceRating: 4,
       qualityOverPriceRating: 3,
       date: new Date().toISOString().slice(0, 10),
       receiptImageID: parseInt("1234"),
       menuItemsReviews: menuItemsReview
-    });
+    }));
 
-    fetch.mockResponseOnce(data, { status: 201, ok: true });
-    console.log(component.state().uploadSuccess);
+    fetch.mockResponseOnce(JSON.stringify({}), { status: 201, ok: true });
 
     await component.instance().postReview();
 
-    console.log(component.state().uploadSuccess);
-
-    //expect(component.state().uploadSuccess).toBeTruthy();
-
-    expect(global.console.log).toHaveBeenCalledWith(
-      "Review was posted successfully!"
-    );
-  });*/
+    expect(Alert.alert).toHaveBeenCalledWith("Review success!");
+  });
 });

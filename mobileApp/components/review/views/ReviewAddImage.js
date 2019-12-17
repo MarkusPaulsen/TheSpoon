@@ -6,7 +6,8 @@ import {
   StyleSheet,
   Image,
   AsyncStorage,
-  ActivityIndicator
+  ActivityIndicator,
+  Alert
 } from "react-native";
 import * as Typography from "../../../styles/typography";
 import * as Colors from "../../../styles/colors";
@@ -183,7 +184,7 @@ class ReviewAddImage extends Component {
 
   async postImage() {
     try {
-      const token = JSON.parse(this.state.token);
+      const token = this.state.token;
       const data = this.createFormData(this.state.imageUrl);
       const response = await fetch(Api.SERVER_POST_IMAGE, {
         method: "POST",
@@ -195,11 +196,11 @@ class ReviewAddImage extends Component {
       });
       const responseText = await response.json();
       if (response.ok) {
-        alert("Upload success!");
+        Alert.alert("Upload success!");
         this.setState({ imageID: responseText.imageID, disableButton: false });
       }
       if (!response.ok) {
-        alert("Upload failed");
+        Alert.alert("Upload failed");
       }
     } catch (error) {
       console.log("Error posting image: ", error);
@@ -209,7 +210,7 @@ class ReviewAddImage extends Component {
   onChooseLibraryPress = async () => {
     const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
     if (status !== "granted") {
-      alert("Sorry, we need camera roll permission to make this work!");
+      Alert.alert("Sorry, we need camera roll permission to make this work!");
     }
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,

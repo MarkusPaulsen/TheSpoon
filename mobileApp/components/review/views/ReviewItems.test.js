@@ -18,6 +18,7 @@ describe("Review Items Component", () => {
     };
     component = setUp({ navigation });
     fetch.resetMocks();
+    jest.useFakeTimers();
   });
 
   it("ComponentDidMount", async () => {
@@ -147,7 +148,6 @@ describe("Review Items Component", () => {
 
     component.instance().setRatingCount(rating, item, itemID);
     component.update();
-    console.log(component.state().reviewedScores);
     expect(component.state().disableButton).toBeFalsy();
   });
 });

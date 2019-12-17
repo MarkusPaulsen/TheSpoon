@@ -51,34 +51,34 @@ const restaurantInfo = {
 };
 
 // Mock Maps
-jest.mock('react-native-maps', () => {
-    const React = require.requireActual('react');
-    const MapView = require.requireActual('react-native-maps');
+jest.mock("react-native-maps", () => {
+  const React = require.requireActual("react");
+  const MapView = require.requireActual("react-native-maps");
 
-    class MockCallout extends React.Component {
-        render() {
-            return React.createElement('Callout', this.props, this.props.children);
-        }
+  class MockCallout extends React.Component {
+    render() {
+      return React.createElement("Callout", this.props, this.props.children);
     }
+  }
 
-    class MockMarker extends React.Component {
-        render() {
-            return React.createElement('Marker', this.props, this.props.children);
-        }
+  class MockMarker extends React.Component {
+    render() {
+      return React.createElement("Marker", this.props, this.props.children);
     }
+  }
 
-    class MockMapView extends React.Component {
-        render() {
-            return React.createElement('MapView', this.props, this.props.children);
-        }
+  class MockMapView extends React.Component {
+    render() {
+      return React.createElement("MapView", this.props, this.props.children);
     }
+  }
 
-    MockCallout.propTypes = MapView.Callout.propTypes;
-    MockMarker.propTypes = MapView.Marker.propTypes;
-    MockMapView.propTypes = MapView.propTypes;
-    MockMapView.Marker = MockMarker;
-    MockMapView.Callout = MockCallout;
-    return MockMapView;
+  MockCallout.propTypes = MapView.Callout.propTypes;
+  MockMarker.propTypes = MapView.Marker.propTypes;
+  MockMapView.propTypes = MapView.propTypes;
+  MockMapView.Marker = MockMarker;
+  MockMapView.Callout = MockCallout;
+  return MockMapView;
 });
 
 describe("Menu Component", () => {
@@ -92,6 +92,7 @@ describe("Menu Component", () => {
       }
     };
     component = setUp(navigation);
+    jest.useFakeTimers();
   });
 
   it("Should render without errors", () => {
@@ -139,32 +140,38 @@ describe("Menu Component", () => {
   });
 
   it("Should render map when not loading", () => {
-      component.setState({
-          restaurantInfo,
-          isLoading: false
-      });
+    component.setState({
+      restaurantInfo,
+      isLoading: false
+    });
 
-      const map = component.find("MapView");
+    const map = component.find("MapView");
 
-      expect(map.length).toBe(1);
+    expect(map.length).toBe(1);
   });
 
   it("Should render correct info about menu", () => {
-      component.setState({
-          menuInfo
-      });
+    component.setState({
+      menuInfo
+    });
 
-      const menuName = component.findWhere(node => node.prop("testID") === "menuName" && node.type() === "Text");
+    const menuName = component.findWhere(
+      node => node.prop("testID") === "menuName" && node.type() === "Text"
+    );
 
-      expect(menuName.text()).toBe(menuInfo.menuName);
+    expect(menuName.text()).toBe(menuInfo.menuName);
 
-      const restaurantName = component.findWhere(node => node.prop("testID") === "restaurantName" && node.type() === "Text");
+    const restaurantName = component.findWhere(
+      node => node.prop("testID") === "restaurantName" && node.type() === "Text"
+    );
 
-      expect(restaurantName.text()).toBe(menuInfo.restaurantName);
+    expect(restaurantName.text()).toBe(menuInfo.restaurantName);
 
-      const description = component.findWhere(node => node.prop("testID") === "menuDescription" && node.type() === "Text");
+    const description = component.findWhere(
+      node =>
+        node.prop("testID") === "menuDescription" && node.type() === "Text"
+    );
 
-      expect(description.text()).toBe(menuInfo.menuDescription);
+    expect(description.text()).toBe(menuInfo.menuDescription);
   });
-
 });

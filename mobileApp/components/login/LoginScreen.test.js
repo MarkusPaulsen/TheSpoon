@@ -11,10 +11,12 @@ describe("LoginScreen Component", () => {
 
   beforeEach(() => {
     component = setUp();
+
+    jest.useFakeTimers();
   });
 
   it("Should render without errors", () => {
-      const wrapper = component.find("View");
-      expect(wrapper.first().length).toBe(1);
+    const wrapper = component.find("View");
+    expect(wrapper.first().length).toBe(1);
   });
 });

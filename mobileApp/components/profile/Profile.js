@@ -35,13 +35,12 @@ export default class Profile extends Component {
   componentDidMount = async () => {
     this.focusListener = this.props.navigation.addListener("didFocus", () => {
       AsyncStorage.getItem("userToken").then(async token => {
-        const parsedToken = JSON.parse(token);
-        const loggedIn = parsedToken !== null;
+        const loggedIn = token !== null;
         this.setState({ loggedIn });
         if (loggedIn) {
-          await this.getUserInfo(parsedToken);
-          await this.getUserReviews(parsedToken);
-          this.setState({ token: parsedToken });
+          await this.getUserInfo(token);
+          await this.getUserReviews(token);
+          this.setState({ token: token });
         }
         this.setState({ isLoaded: true });
       });

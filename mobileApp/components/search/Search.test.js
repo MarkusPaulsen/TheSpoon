@@ -1,7 +1,7 @@
 import React from "react";
 import { mount } from "enzyme";
 import Search from "./Search";
-import * as SearchFile from './Search';
+import * as SearchFile from "./Search";
 
 const setUp = () => {
   const component = mount(<Search />);
@@ -47,6 +47,7 @@ describe("Search Component", () => {
 
   beforeEach(() => {
     component = setUp();
+    jest.useFakeTimers();
   });
 
   it("Should render without errors", () => {
@@ -188,7 +189,7 @@ describe("Search Component", () => {
     component.instance().applyFilter();
     component.update();
 
-    expect(component.state().searchResults).toEqual([obj2, obj1, obj3])
+    expect(component.state().searchResults).toEqual([obj2, obj1, obj3]);
   });
 
   it("Should sort results by price high-low", () => {
@@ -198,7 +199,7 @@ describe("Search Component", () => {
     component.instance().applyFilter();
     component.update();
 
-    expect(component.state().searchResults).toEqual([obj3, obj1, obj2])
+    expect(component.state().searchResults).toEqual([obj3, obj1, obj2]);
   });
 
   it("Should sort results by review", () => {
@@ -208,7 +209,7 @@ describe("Search Component", () => {
     component.instance().applyFilter();
     component.update();
 
-    expect(component.state().searchResults).toEqual([obj2, obj1, obj3])
+    expect(component.state().searchResults).toEqual([obj2, obj1, obj3]);
   });
 
   it("Should sort results by distance", () => {
@@ -219,14 +220,16 @@ describe("Search Component", () => {
     const latitude = "24,539045";
     const longitude = "23,932052";
 
-    component.instance().findCoordinates = jest.fn().mockImplementationOnce(() => {
-      component.setState({locationPermission, latitude, longitude})
-    });
+    component.instance().findCoordinates = jest
+      .fn()
+      .mockImplementationOnce(() => {
+        component.setState({ locationPermission, latitude, longitude });
+      });
 
     component.instance().applyFilter();
     component.update();
 
-    expect(component.state().searchResults).toEqual([obj1, obj3, obj2])
+    expect(component.state().searchResults).toEqual([obj1, obj3, obj2]);
   });
 
   it("Should return right price category", () => {

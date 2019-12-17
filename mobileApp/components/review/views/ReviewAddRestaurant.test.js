@@ -22,8 +22,15 @@ describe("Review Add Restaurant Component", () => {
         return defaultValue;
       }
     };
+
+    // Mock the functions called in componentDidMount
+    jest
+      .spyOn(ReviewAddRestaurant.prototype, "getAllMenus")
+      .mockImplementationOnce(() => Promise.resolve());
+
     component = setUp({ navigation });
     fetch.resetMocks();
+    jest.useFakeTimers();
   });
 
   it("ComponentDidMount fetch successful", async () => {
@@ -106,7 +113,7 @@ describe("Review Add Restaurant Component", () => {
 
   it("Should return all restaurants", () => {
     const searchWord = "";
-    component.setState({searchWord, restaurants});
+    component.setState({ searchWord, restaurants });
 
     component.instance().getSearchResult();
     component.update();
@@ -116,7 +123,7 @@ describe("Review Add Restaurant Component", () => {
 
   it("Should return empty search result", () => {
     const searchWord = "test";
-    component.setState({searchWord, restaurants});
+    component.setState({ searchWord, restaurants });
 
     component.instance().getSearchResult();
     component.update();
@@ -128,7 +135,7 @@ describe("Review Add Restaurant Component", () => {
     const searchWord = "test";
     const rest = "";
 
-    component.setState({searchWord, restaurants: rest});
+    component.setState({ searchWord, restaurants: rest });
 
     component.instance().getSearchResult();
     component.update();

@@ -17,19 +17,15 @@ function copyProps(src, target) {
   });
 }
 
+// fetch
+global.fetch = require('jest-fetch-mock');
+
 global.window = window;
 global.document = window.document;
 global.navigator = {
   userAgent: "node.js"
 };
 copyProps(window, global);
-
-/**
- * Set up Enzyme to mount to DOM, simulate events,
- * and inspect the DOM in tests.
- */
-
-configure({ adapter: new Adapter() });
 
 const originalConsoleError = console.error;
 console.error = message => {
@@ -40,12 +36,20 @@ console.error = message => {
 };
 
 // SETUP MOCKS
-// fetch
-global.fetch = require('jest-fetch-mock');
-
 // AsyncStorage
 const mockImpl = new MockAsyncStorage();
 jest.mock('AsyncStorage', () => mockImpl);
+
+jest.mock('NativeAnimatedHelper');
+
+/**
+ * Set up Enzyme to mount to DOM, simulate events,
+ * and inspect the DOM in tests.
+ */
+
+configure({ adapter: new Adapter() });
+
+
 
 // Console
 /*

@@ -23,9 +23,10 @@ describe("Review Add Image Component", () => {
           param === "menuItemReviews" ? menuItems : defaultValue,
         addListener: (param, func) => func()
       };
-      component = setUp({ navigation });
       await storage.setItem("userToken", userToken);
+      component = setUp({ navigation });
       fetch.resetMocks();
+      jest.useFakeTimers();
     });
 
     it("Should render activity indicator", () => {
@@ -102,31 +103,14 @@ describe("Review Add Image Component", () => {
       });
       blob.name = "image";
 
-      fetch.mockResponseOnce(JSON.stringify({ imageID: "t4iogsne" }), {
-        status: 201,
-        ok: true,
-        url: "https://thespoon.herokuapp.com/api/image/"
-      });
-
-      /*
-      fetch = jest.fn().mockImplementation(() => {
-        return new Promise((resolve, reject) => {
-          resolve({
-            ok: true,
-            json: () => {imageID: "gioebsov"}
-          })
-        })
-      });*/
-
-      JSON.parse = jest.fn().mockImplementationOnce(() => {
-        return JSON.parse(userToken);
-      });
+      fetch.mockResponseOnce(JSON.stringify({ imageID: "t4iogsne" }));
 
       await comp.instance().onChooseLibraryPress();
 
       comp.update();
 
       expect(comp.state().imageUrl).toEqual(imgResult.uri);
+      expect(comp.state().disableButton).toBeFalsy();
 
       // TODO: test postImage correctly, something is wrong with response in the test
     });
