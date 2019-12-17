@@ -52,6 +52,7 @@ class Sidebar extends Component {
                 <div className="modal-button">
                     <FilterLink filter={modalVisibilityFilters.SHOW_EDIT_RESTAURANT} currentRestaurantInformation={this.props} currentRestaurantPage={this.props.currentRestaurantPage}><IconEditPink/>Edit information</FilterLink>
                 </div>
+                </div>
                 <div className="sidebar-bottom">
                     <button className="wide">
                         <FilterLink filter={modalVisibilityFilters.SHOW_ADD_MENU}>
