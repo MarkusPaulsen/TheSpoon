@@ -70,7 +70,7 @@ export default class LoginScreen extends Component {
         this.setState({ invalidError: true });
       }
     } catch (e) {
-      console.error("Error logging in: ", e);
+      console.log("Error logging in: ", e);
     }
   }
 

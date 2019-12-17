@@ -133,7 +133,7 @@ export default class Menu extends Component {
       "restaurantName",
       "default value"
     );
-    const restaurantImage = navigation.getParam("restaurantImage");
+    const restaurantImage = navigation.getParam("restaurantImage", "default value");
     this.setState({ restaurantImage: restaurantImage });
     await this.getMenuItem(menuId, restaurantName);
   };
@@ -164,8 +164,8 @@ export default class Menu extends Component {
         type: index["type"]
       }));
       const restaurantInfo = {
-        latitude: parseInt(responseJson["restaurant"]["latitude"]),
-        longitude: parseInt(responseJson["restaurant"]["longitude"]),
+        latitude: parseFloat(responseJson["restaurant"]["latitude"]),
+        longitude: parseFloat(responseJson["restaurant"]["longitude"]),
         address: responseJson["restaurant"]["address"],
         city: responseJson["restaurant"]["city"],
         country: responseJson["restaurant"]["country"]
@@ -191,7 +191,7 @@ export default class Menu extends Component {
         isLoading: false
       });
     } catch (e) {
-      console.error(e);
+      console.log(e);
     }
   }
 
