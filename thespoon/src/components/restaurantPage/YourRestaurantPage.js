@@ -271,7 +271,6 @@ class YourRestaurantPage extends Component {
                                         />
                                     </div>
                                     <div className="col-sm-8">
-                                        <button type="button" onClick={this.update}>update</button>
                                         <div className="error-block">
                                             <small>{this.state.serverMessageFinishedLoadingRestaurantData}</small>
                                         </div>

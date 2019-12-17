@@ -299,8 +299,8 @@ class AddRestaurantInfo extends Component {
                     (next) => {
                         let response = JSON.parse(next.response);
                         thisTemp.props.setRestaurantID(response.restaurantID);
-                        thisTemp.props.currentRestaurantPage.setState({toUpdate: true});
-                        thisTemp.props.currentRestaurantPage.forceUpdate();
+                        /*thisTemp.props.currentRestaurantPage.setState({toUpdate: true});
+                        thisTemp.props.currentRestaurantPage.forceUpdate();*/
                         thisTemp.props.onHide();
                     }, (error) => {
                         switch (error.name) {
