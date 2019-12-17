@@ -375,7 +375,7 @@ export default class Profile extends Component {
       return props.navigation.navigate("Login", { parent: "Profile" });
     };
     if (!this.state.isLoaded) {
-      return <ActivityIndicator />;
+      return <ActivityIndicator style={{ alignSelf: "center", marginTop: 150 }} />;
     }
     if (this.state.isLoaded) {
       if (this.state.loggedIn) {

@@ -32,7 +32,6 @@ export default class LoginScreen extends Component {
 
   componentDidMount = async () => {
     this.focusListener = this.props.navigation.addListener("didFocus", () => {
-      //this.getToken();
       const parent = this.props.navigation.getParam("parent", "Profile");
       this.setState({ parent });
     });
@@ -58,9 +57,8 @@ export default class LoginScreen extends Component {
         },
         body: data
       });
-      const responseText = await res.text();
       if (res.ok) {
-        const jsonResponse = JSON.parse(responseText);
+        const jsonResponse = await res.json();
         this.setState({ token: jsonResponse.token });
         this.storeToken(jsonResponse.token);
         console.log("Token is set to: ", this.state.token);
@@ -100,15 +98,6 @@ export default class LoginScreen extends Component {
       await AsyncStorage.setItem("userToken", user);
     } catch (e) {
       console.log("Error storing token: ", e);
-    }
-  }
-
-  async getToken(user) {
-    try {
-      const token = await AsyncStorage.getItem("userToken");
-      const data = JSON.parse(token);
-    } catch (e) {
-      console.log("Error getting token: ", e);
     }
   }
 
