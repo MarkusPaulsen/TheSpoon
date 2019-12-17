@@ -22,12 +22,11 @@ import FormValidator from "../../../validation/FormValidator";
 
 //<editor-fold desc="Constants">
 import {paths} from "../../../constants/paths";
+import {modalVisibilityFilters} from "../../../constants/modalVisibiltyFilters";
+import {timeout} from "../../../constants/timeout";
 //</editor-fold>
 //<editor-fold desc="Icons">
 import {IconExit} from "../../Icons";
-import {modalVisibilityFilters} from "../../../constants/modalVisibiltyFilters";
-import {timeout} from "../../../constants/timeout";
-
 //</editor-fold>
 
 
@@ -89,7 +88,7 @@ class EditMenuItemModal extends Component {
             },
             validWhen: true,
             message: "PriceEuros needs to be positive."
-        },{
+        }, {
             field: "tags",
             method: "isEmpty",
             validWhen: false,
@@ -122,13 +121,17 @@ class EditMenuItemModal extends Component {
         this.handleDelete = this.handleDelete.bind(this);
 
         this.state = {
-            name: "",
-            description: "",
-            priceEuros: 0,
-            type: "",
-            imageID: 0,
+            name: this.props.currentMenuItem.name,
+            description: this.props.currentMenuItem.description,
+            priceEuros: this.props.currentMenuItem.priceEuros,
+            type: this.props.currentMenuItem.type,
+            imageID: this.props.currentMenuItem.imageID,
             imageMessage: "",
-            tags: "",
+            tags: this.props.currentMenuItem.tags.map(tag => {
+                return tag.name + ","
+            }).reduce((total, tagName) => {
+                return total + tagName
+            }, "").slice(0, -1),
             validation: this.validator.valid(),
             serverMessage: "",
             submitted: false
@@ -140,9 +143,9 @@ class EditMenuItemModal extends Component {
     //<editor-fold desc="Bussiness Logic">
     fileSelectedHandler = (event) => {
         const thisTemp = this;
-        thisTemp.setState({ imageMessage: "", selectedFile: null });
+        thisTemp.setState({imageMessage: "", selectedFile: null});
         let file = event.target.files[0];
-        if(["image/png","image/jpeg"].includes(file.type)) {
+        if(["image/png", "image/jpeg"].includes(file.type)) {
             let formData = new FormData();
             formData.append("image", file);
             let reader = new FileReader();
@@ -179,7 +182,7 @@ class EditMenuItemModal extends Component {
                                         });
                                     } else {
                                         thisTemp.setState({
-                                            imageMessage: file.name + " could not be uploaded, as " + error.response ,
+                                            imageMessage: file.name + " could not be uploaded, as " + error.response,
                                             serverMessage: ""
                                         });
                                     }
@@ -224,8 +227,6 @@ class EditMenuItemModal extends Component {
                     name: values.name,
                     description: values.description,
                     priceEuros: parseInt(values.priceEuros),
-                    type: thisTemp.props.currentMenuItem.type,
-                    imageID: thisTemp.state.imageID,
                     tags: values.tags.split(",").map(tag => tag.trim())
                 });
             }))
@@ -239,8 +240,6 @@ class EditMenuItemModal extends Component {
             .pipe(exhaustMap(() => {
                 if (thisTemp.state.validation.isValid) {
                     thisTemp.setState({serverMessage: "New dish is edited"});
-                    console.log(this.props)
-                    console.log(this.state)
                     return ajax({
                         url: paths["restApi"]["menu"] + "/"
                             + thisTemp.props.currentMenu.menuID + "/"
@@ -355,7 +354,7 @@ class EditMenuItemModal extends Component {
 
                         <div className="input-field">
                             <label>Dish name</label>
-                            <Input type="text" name="name" value={this.props.currentMenuItem.name}/>
+                            <Input type="text" name="name" value={this.state.name}/>
                         </div>
                         <div className="error-block">
                             <small>{validation.name.message}</small>
@@ -363,7 +362,7 @@ class EditMenuItemModal extends Component {
 
                         <div className="input-field">
                             <label>Description</label>
-                            <Textarea name="description" value={this.props.currentMenuItem.description}/>
+                            <Textarea name="description" value={this.state.description}/>
                         </div>
                         <div className="error-block">
                             <small>{validation.description.message}</small>
@@ -372,7 +371,7 @@ class EditMenuItemModal extends Component {
 
                         <div className="input-field">
                             <label>Price in Euro (€)</label>
-                            <Input name="priceEuros" placeholder="Price" value={this.props.currentMenuItem.priceEuros}/>
+                            <Input name="priceEuros" placeholder="Price" value={this.state.priceEuros}/>
                         </div>
                         <div className="error-block">
                             <small>{validation.priceEuros.message}</small>
@@ -400,7 +399,7 @@ class EditMenuItemModal extends Component {
 
                         <div className="input-field">
                             <label>Tags</label>
-                            <Input type="text" name="tags" value={this.props.currentMenuItem.tags.map(tag => tag.name).reduce((total, tagName) => {return total + tagName}, "")}/>
+                            <Input type="tags" name="tags" value={this.state.tags}/>
                         </div>
                         <div className="error-block">
                             <small>{validation.tags.message}</small>

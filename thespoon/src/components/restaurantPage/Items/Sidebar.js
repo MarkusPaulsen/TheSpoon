@@ -27,37 +27,35 @@ class Sidebar extends Component {
                             <div className="image" style={{backgroundImage: `url(${this.props.imageLink})`}}/>
                         </div>
                     </div>
-                    <h4 className="title">{this.props.name}</h4>
-                    <div className="part">
-                        <IconLocationTurqoise/>
-                        <ul>
-                            <li>{this.props.address}</li>
-                            <li>{this.props.city}, {this.props.country}</li>
-                        </ul>
-                    </div>
-                    <div className="part">
-                        <IconHoursTurqoise/>
-                        <ul>
-                            {
-                                (typeof(this.props.openingHours) !== "undefined" && this.props.openingHours.length >= 1) ?
-                                    this.props.openingHours.map((openingHour) => {
-                                        return (
-                                            <li><span>{openingHour.day}: </span>{openingHour.openTime} - {openingHour.closeTime}</li>
-                                        )})
-                                    :
-                                    <li><span>No opening hours defined</span></li>
-                            }
-                        </ul>
-                    </div>
-                    <div className="modal-button">
-                        <FilterLink filter={modalVisibilityFilters.SHOW_EDIT_RESTAURANT}><IconEditPink/>Edit information</FilterLink>
-                    </div>
+                <h4 className="title">{this.props.name}</h4>
+                <div className="part">
+                    <IconLocationTurqoise/>
+                    <ul>
+                        <li>{this.props.address}</li>
+                        <li>{this.props.city}, {this.props.country}</li>
+                    </ul>
+                </div>
+                <div className="part">
+                    <IconHoursTurqoise/>
+                    <ul>
+                        {
+                            (typeof(this.props.openingHours) !== "undefined" && this.props.openingHours.length >= 1) ?
+                                this.props.openingHours.map((openingHour) => {
+                                    return (
+                                        <li><span>{openingHour.day}: </span>{openingHour.openTime} - {openingHour.closeTime}</li>
+                                    )})
+                                :
+                                <li><span>No opening hours defined</span></li>
+                        }
+                    </ul>
+                </div>
+                <div className="modal-button">
+                    <FilterLink filter={modalVisibilityFilters.SHOW_EDIT_RESTAURANT} currentRestaurantInformation={this.props} currentRestaurantPage={this.props.currentRestaurantPage}><IconEditPink/>Edit information</FilterLink>
+                </div>
                 </div>
                 <div className="sidebar-bottom">
                     <button className="wide">
-                        <FilterLink filter={modalVisibilityFilters.SHOW_ADD_MENU}>
-                            Create new menu
-                        </FilterLink>
+                        <FilterLink filter={modalVisibilityFilters.SHOW_ADD_MENU} currentRestaurantInformation={this.props} currentRestaurantPage={this.props.currentRestaurantPage}>Create new menu</FilterLink>
                     </button>
                 </div>
             </div>

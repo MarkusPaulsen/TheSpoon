@@ -64,7 +64,7 @@ class CustomModal extends Component {
                 );
             case modalVisibilityFilters.SHOW_EDIT_RESTAURANT:
                 return (
-                    <EditRestaurantModal onHide={() => this.props.handleClose()}/>
+                    <EditRestaurantModal onHide={() => this.props.handleClose()} restaurant={ item }/>
                 );
             case modalVisibilityFilters.SHOW_ADD_MENU:
                 return (
@@ -118,7 +118,8 @@ class CustomModal extends Component {
 const mapStateToProps = (state) => {
     return {
         modalVisibilityFilter: state.modalVisibiltyFilterReducer.modalVisibilityFilter,
-        currentMenu: state.currentMenuReducer.currentMenu
+        currentMenu: state.currentMenuReducer.currentMenu,
+        currentRestaurantInformation: state.restaurantReducer.currentRestaurantInformation
     }
 };
 

@@ -26,6 +26,7 @@ import {paths} from "../../../constants/paths";
 //<editor-fold desc="Icons">
 import {IconExit} from "../../Icons";
 import {timeout} from "../../../constants/timeout";
+
 //</editor-fold>
 
 
@@ -46,7 +47,9 @@ class EditMenuModal extends Component {
             message: "Name is required to be alphanumeric."
         },*/ {
             field: "name",
-            method: (name) => {return name.length >= 1},
+            method: (name) => {
+                return name.length >= 1;
+            },
             validWhen: true,
             message: "Name is required to be longer or equal 1 characters."
         }, {
@@ -61,7 +64,9 @@ class EditMenuModal extends Component {
             message: "Description is required to be alphanumeric."
         },*/ {
             field: "description",
-            method: (description) => {return description.length >= 1},
+            method: (description) => {
+                return description.length >= 1;
+            },
             validWhen: true,
             message: "Description is required to be longer or equal 1 characters."
         }, {
@@ -96,9 +101,13 @@ class EditMenuModal extends Component {
         this.handleDelete = this.handleDelete.bind(this);
 
         this.state = {
-            name: "",
-            description: "",
-            tags: "",
+            name: this.props.menu.name,
+            description: this.props.menu.description,
+            tags: this.props.menu.tags.map((tag) => {
+                return tag.name + ", "
+            }).reduce((total, tagName) => {
+                return total + tagName
+            }).slice(0, -2),
             validation: this.validator.valid(),
             serverMessage: "",
             submitted: false
@@ -120,7 +129,7 @@ class EditMenuModal extends Component {
                 return bindCallback(thisTemp.setState).call(thisTemp, {
                     name: values.name,
                     description: values.description,
-                    tags: values.tags.split(","),
+                    tags: values.tags.split(",").map(tag => tag.trim()),
                 });
             }))
             .pipe(exhaustMap(() => {
@@ -134,7 +143,8 @@ class EditMenuModal extends Component {
                 if (thisTemp.state.validation.isValid) {
                     thisTemp.setState({serverMessage: "Menu is edited"});
                     return ajax({
-                        url: paths["restApi"]["menu"] + "/" + this.props.menu.menuID,
+                        url: paths["restApi"]["menu"] + "/"
+                            + this.props.menu.menuID,
                         method: "PUT",
                         headers: {"Content-Type": "application/json", "X-Auth-Token": this.props.token},
                         body: {
@@ -224,25 +234,23 @@ class EditMenuModal extends Component {
 
     //<editor-fold desc="Render">
     render() {
+        console.log("here menu")
+        console.log(this.props)
         let validation = this.state.submitted ?                         // if the form has been submitted at least once
             this.validator.validate(this.state) :               // then check validity every time we render
             this.state.validation;
-
-        let tagsString = "";
-        this.props.menu.tags.map(tag => {
-            tagsString += tag.name + ", ";
-        });
-        tagsString = tagsString.slice(0, -2);
         return (
             <Modal.Body>
-                <button className="exit" onClick={this.props.onHide}><IconExit /></button>
+                <button className="exit" onClick={this.props.onHide}><IconExit/></button>
                 <div className="modal-wrapper add-menu">
-                    <Form ref={(c) => {this.form = c; }} onSubmit={(e) => this.handleSubmit(e)}>
-                        <h2 className="title">Edit Menu</h2>
+                    <Form ref={(c) => {
+                        this.form = c;
+                    }} onSubmit={(e) => this.handleSubmit(e)}>
+                        <h2 className="title">Edit menu</h2>
 
                         <div className="input-field">
                             <label>Name</label>
-                            <Input type="text" name="name" value={this.props.menu.name}/>
+                            <Input type="text" name="name" value={this.state.name}/>
                         </div>
                         <div className="error-block">
                             <small>{validation.name.message}</small>
@@ -250,7 +258,7 @@ class EditMenuModal extends Component {
 
                         <div className="input-field">
                             <label>Description</label>
-                            <Textarea name="description" value={this.props.menu.description}/>
+                            <Textarea name="description" value={this.state.description}/>
                         </div>
                         <div className="error-block">
                             <small>{validation.description.message}</small>
@@ -258,7 +266,7 @@ class EditMenuModal extends Component {
 
                         <div className="input-field">
                             <label>Tags</label>
-                            <Input type="text" name="tags" value={tagsString}/>
+                            <Input type="tags" name="tags" value={this.state.tags}/>
                         </div>
                         <div className="error-block">
                             <small>{validation.tags.message}</small>
@@ -274,6 +282,7 @@ class EditMenuModal extends Component {
             </Modal.Body>
         )
     }
+
     //</editor-fold>
 }
 
