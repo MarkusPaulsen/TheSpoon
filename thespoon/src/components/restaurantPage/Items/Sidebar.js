@@ -55,9 +55,7 @@ class Sidebar extends Component {
                 </div>
                 <div className="sidebar-bottom">
                     <button className="wide">
-                        <FilterLink filter={modalVisibilityFilters.SHOW_ADD_MENU}>
-                            Create new menu
-                        </FilterLink>
+                        <FilterLink filter={modalVisibilityFilters.SHOW_ADD_MENU} currentRestaurantInformation={this.props} currentRestaurantPage={this.props.currentRestaurantPage}>Create new menu</FilterLink>
                     </button>
                 </div>
             </div>

@@ -27,6 +27,7 @@ import MainLayout from "../layout/MainLayout.js";
 //<editor-fold desc="Components">
 import Sidebar from "./Items/Sidebar";
 import Menu from "./Items/Menu";
+import {setCurrentRestaurantPage} from "../../actionCreators/CurrentMenuActionCreators";
 //</editor-fold>
 
 class YourRestaurantPage extends Component {
