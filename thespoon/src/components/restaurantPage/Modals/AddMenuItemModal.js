@@ -352,7 +352,7 @@ class AddMenuItemModal extends Component {
 
                         <div className="input-field">
                             <label>Tags</label>
-                            <Input type="tags" name="tags" placeholder="Tags"/>
+                            <Input type="text" name="tags" placeholder="Tags"/>
                         </div>
                         <div className="error-block">
                             <small>{validation.tags.message}</small>

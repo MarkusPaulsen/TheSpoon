@@ -12,10 +12,10 @@ const Tag = require('../models/tag.js');
 const ItemReview = require('../models/itemReview.js');
 const MenuReview = require('../models/menuReview.js');
 
-//TODO: Check that the right ratings are retrieved.
 
 router.get('/:menuID', async (req, res) => {
     try {
+        //TODO: Validate input.
         let menuInfo = await Menu.findOne({
             where: {
                 Menu_ID: req.params.menuID
@@ -35,7 +35,7 @@ router.get('/:menuID', async (req, res) => {
             }]
         });
         if (menuInfo === null) {
-            return res.status(404).send('Menu not found');
+            return res.status(404).send('Menu with given menuID not found.');
         }
         const menuTags = formatTags(menuInfo.TaggedMenus);
         let menuItems = await MenuItem.findAll({
@@ -86,7 +86,7 @@ router.get('/:menuID', async (req, res) => {
 
         res.status(200).send(result);
     } catch (error){
-        res.status(404).send(error + ' :(');
+        res.status(500).send('Internal server error.');
     }
 });
 
@@ -98,6 +98,9 @@ router.get('/:menuID/menuItem/:menuItemID/review', async (req, res) => {
                 MI_ID: req.params.menuItemID
             }
         });
+        if (itemReviews === null) {
+            res.status(404).send('Menu item not found.');
+        }
         itemReviews = await itemReviews.map( async ir => {
             return {
                 username: ir.Username,
@@ -109,7 +112,7 @@ router.get('/:menuID/menuItem/:menuItemID/review', async (req, res) => {
         itemReviews = await Promise.all(itemReviews);
         res.status(200).send(itemReviews)
     } catch (error){
-        res.status(404).send(error +' :(');
+        res.status(500).send('Internal server error.');
     }
 });
 
