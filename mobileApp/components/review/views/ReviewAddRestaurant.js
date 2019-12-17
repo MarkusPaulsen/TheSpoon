@@ -34,7 +34,6 @@ export default class ReviewAddRestaurant extends Component {
   componentDidMount = async () => {
     const imageID = this.props.navigation.getParam("imageID", "0");
     const token = this.props.navigation.getParam("token", "0");
-    console.log("COMP", token);
     this.setState({ imageID, token });
     await this.getAllMenus(token);
   };
@@ -45,18 +44,17 @@ export default class ReviewAddRestaurant extends Component {
         method: "GET",
         headers: {
           accept: "application/json",
-          "x-auth-token": JSON.parse(token),
+          "x-auth-token": token,
           "Content-Type": "application/json"
         }
       });
-      const responseJson = await response.json();
       if (response.ok) {
+        const responseJson = await response.json();
         const restaurants = responseJson.map(index => ({
           restaurantID: index.restaurantID.toString(),
           name: index.name
         }));
         this.setState({ restaurants });
-        console.log(this.state.restaurants);
       }
       if (!response.ok) {
         console.log("Fetching menus failed");

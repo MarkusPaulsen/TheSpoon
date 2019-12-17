@@ -4,6 +4,7 @@ import {
   Text,
   StyleSheet,
   AsyncStorage,
+  Alert,
   TouchableOpacity
 } from "react-native";
 import * as Typography from "../../../styles/typography";
@@ -31,7 +32,7 @@ export default class ReviewOverall extends Component {
   }
   componentDidMount = async () => {
     AsyncStorage.getItem("userToken").then(token => {
-      this.setState({ token: token });
+      this.setState({ token });
       const { navigation } = this.props;
       const menuID = navigation.getParam("menuID", "00");
       const imageID = navigation.getParam("imageID", "0");
@@ -64,7 +65,7 @@ export default class ReviewOverall extends Component {
         method: "POST",
         headers: {
           Accept: "application/json",
-          "x-auth-token": JSON.parse(this.state.token),
+          "x-auth-token": this.state.token,
           "Content-Type": "application/json"
         },
         body: data
@@ -72,11 +73,11 @@ export default class ReviewOverall extends Component {
       const responseText = await response.text();
       if (response.ok) {
         console.log("Review was posted successfully!");
-        alert("Review success!");
+        Alert.alert("Review success!");
       }
       if (!response.ok) {
         console.log("Review failed", responseText);
-        alert("Submitting review failed!");
+        Alert.alert("Submitting review failed!");
       }
     } catch (e) {
       console.log("ERROR posting review:", e);

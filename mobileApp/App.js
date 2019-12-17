@@ -1,20 +1,19 @@
 import React, { Component } from "react";
 import { AsyncStorage, StyleSheet, Text, View, Image } from "react-native";
-import LoginScreen from "./components/login/login";
-import SearchPage from "./components/search/search";
-import LandingPage from "./components/landingpage/landingpage";
-import LoadingPage from "./components/loading";
-import MenuPage from "./components/menupage/menupage";
+import LoginScreen from "./components/login/LoginScreen";
+import SearchPage from "./components/search/Search";
+import Loading from "./components/Loading";
+import Menu from "./components/menupage/Menu";
 import ItemReview from "./components/menupage/ItemReview";
 
-import ReviewAddImage from "./components/review/views/reviewAddImage";
-import ReviewAddRestaurant from "./components/review/views/reviewAddRestaurant";
-import ReviewAddMenu from "./components/review/views/reviewAddMenu";
-import ReviewAddItems from "./components/review/views/reviewAddItems";
-import ReviewItems from "./components/review/views/reviewItems";
-import ReviewOverall from "./components/review/views/reviewOverall";
+import ReviewAddImage from "./components/review/views/ReviewAddImage";
+import ReviewAddRestaurant from "./components/review/views/ReviewAddRestaurant";
+import ReviewAddMenu from "./components/review/views/ReviewAddMenu";
+import ReviewAddItems from "./components/review/views/ReviewAddItems";
+import ReviewItems from "./components/review/views/ReviewItems";
+import ReviewOverall from "./components/review/views/ReviewOverall";
 
-import ProfilePage from "./components/profile/profile";
+import ProfilePage from "./components/profile/Profile";
 import { createAppContainer } from "react-navigation";
 import { createStackNavigator } from "react-navigation-stack";
 import { createBottomTabNavigator } from "react-navigation-tabs";
@@ -26,8 +25,8 @@ import { ActionSheetProvider } from "@expo/react-native-action-sheet";
 const SearchStack = createStackNavigator(
   {
     Search: SearchPage,
-    Loading: LoadingPage,
-    Menu: MenuPage,
+    Loading: Loading,
+    Menu: Menu,
     ItemReview: ItemReview
   },
   {
@@ -118,14 +117,13 @@ export default class App extends Component {
   }
   render() {
     if (this.state.fontLoaded) {
-      console.log("font loaded");
       return (
         <ActionSheetProvider>
           <AppContainer />
         </ActionSheetProvider>
       );
     } else {
-      return <LoadingPage />;
+      return <Loading />;
     }
   }
 }

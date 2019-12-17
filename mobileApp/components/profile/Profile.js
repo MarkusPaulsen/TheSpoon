@@ -36,12 +36,11 @@ export default class Profile extends Component {
     this.focusListener = this.props.navigation.addListener("didFocus", () => {
       AsyncStorage.getItem("userToken").then(async token => {
         const loggedIn = token !== null;
-
         this.setState({ loggedIn });
         if (loggedIn) {
           await this.getUserInfo(token);
           await this.getUserReviews(token);
-          this.setState({ token });
+          this.setState({ token: token });
         }
         this.setState({ isLoaded: true });
       });
@@ -84,17 +83,17 @@ export default class Profile extends Component {
         method: "GET",
         accept: "application/json",
         headers: {
-          "X-Auth-Token": JSON.parse(token)
+          "X-Auth-Token": token
         }
       });
-      const responseJson = await response.json();
-      const userInfo = {
-        username: responseJson.username,
-        email: responseJson.email
-      };
       if (response.ok) {
-        console.log("Success fetching profileData");
+        const responseJson = await response.json();
+        const userInfo = {
+          username: responseJson.username,
+          email: responseJson.email
+        };
         this.setState({ userInfo });
+        console.log("Success fetching profileData");
       }
       if (!response.ok) {
         console.log("Fetching profileData failed");
@@ -110,7 +109,7 @@ export default class Profile extends Component {
         method: "GET",
         accept: "application/json",
         headers: {
-          "x-auth-token": JSON.parse(token)
+          "x-auth-token": token
         }
       });
       const responseJson = await response.json();
@@ -127,8 +126,8 @@ export default class Profile extends Component {
         menuItemsReviews: index.menuItemsReviews
       }));
       if (response.ok) {
-        console.log("Success fetching reviews");
         this.setState({ reviews });
+        console.log("Success fetching reviews");
       }
       if (!response.ok) {
         console.log("Fetching reviews failed");
@@ -144,17 +143,17 @@ export default class Profile extends Component {
         method: "DELETE",
         headers: {
           accept: "application/json",
-          "x-auth-token": JSON.parse(token)
+          "x-auth-token": token
         }
       });
       const responseJson = await response.json();
       if (response.ok) {
         console.log("Deletion success, ", responseJson);
-        alert("Review deleted");
+        Alert.alert("Review deleted");
       }
       if (!response.ok) {
         console.log("Deletion failed, ", responseJson);
-        alert("Deletion failed");
+        Alert.alert("Deletion failed");
       }
     } catch (error) {
       console.log("Error deleting review: ", error);
@@ -376,7 +375,7 @@ export default class Profile extends Component {
       return props.navigation.navigate("Login", { parent: "Profile" });
     };
     if (!this.state.isLoaded) {
-      return <ActivityIndicator />;
+      return <ActivityIndicator style={{ alignSelf: "center", marginTop: 150 }} />;
     }
     if (this.state.isLoaded) {
       if (this.state.loggedIn) {

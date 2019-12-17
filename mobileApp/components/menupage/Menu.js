@@ -133,7 +133,7 @@ export default class Menu extends Component {
       "restaurantName",
       "default value"
     );
-    const restaurantImage = navigation.getParam("restaurantImage");
+    const restaurantImage = navigation.getParam("restaurantImage", "default value");
     this.setState({ restaurantImage: restaurantImage });
     await this.getMenuItem(menuId, restaurantName);
   };
@@ -164,8 +164,8 @@ export default class Menu extends Component {
         type: index["type"]
       }));
       const restaurantInfo = {
-        latitude: parseInt(responseJson["restaurant"]["latitude"]),
-        longitude: parseInt(responseJson["restaurant"]["longitude"]),
+        latitude: parseFloat(responseJson["restaurant"]["latitude"]),
+        longitude: parseFloat(responseJson["restaurant"]["longitude"]),
         address: responseJson["restaurant"]["address"],
         city: responseJson["restaurant"]["city"],
         country: responseJson["restaurant"]["country"]
@@ -191,7 +191,7 @@ export default class Menu extends Component {
         isLoading: false
       });
     } catch (e) {
-      console.error(e);
+      console.log(e);
     }
   }
 
@@ -222,12 +222,18 @@ export default class Menu extends Component {
               </View>
             </View>
             <SafeAreaView style={styles.infoBox}>
-              <Text style={[Typography.FONT_H3_BLACK, { marginBottom: 5 }]}>
+              <Text
+                testID="menuName"
+                style={[Typography.FONT_H3_BLACK, { marginBottom: 5 }]}
+              >
                 {this.state.menuInfo.menuName}
               </Text>
               <View style={{ flexDirection: "row", marginBottom: 10 }}>
                 <Text style={Typography.FONT_SMALL_BLACK}> by </Text>
-                <Text style={Typography.FONT_SMALL_PINK}>
+                <Text
+                  testID="restaurantName"
+                  style={Typography.FONT_SMALL_PINK}
+                >
                   {this.state.menuInfo.restaurantName}
                 </Text>
               </View>
@@ -241,6 +247,7 @@ export default class Menu extends Component {
                 />
               </View>
               <Text
+                testID="menuDescription"
                 style={[
                   Typography.FONT_SMALL_THIN,
                   { marginBottom: 15, textAlign: "center" }
@@ -296,6 +303,7 @@ export default class Menu extends Component {
             {this.state.dishItems.length > 0 ? (
               <View style={{ flex: 1 }}>
                 <Text
+                  testID="dishesHeading"
                   style={[
                     Typography.FONT_REGULAR_THIN,
                     { marginTop: 10, textAlign: "center" }
@@ -333,6 +341,7 @@ export default class Menu extends Component {
             {this.state.drinkItems.length > 0 ? (
               <View style={{ flex: 1 }}>
                 <Text
+                  testID="drinksHeading"
                   style={[
                     Typography.FONT_REGULAR_THIN,
                     { marginTop: 15, textAlign: "center" }

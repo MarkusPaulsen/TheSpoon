@@ -91,7 +91,7 @@ function ResultItem({
   );
 }
 
-function getPriceCategory(avgPrice) {
+export function getPriceCategory(avgPrice) {
   avgPrice = parseInt(avgPrice);
   if (!avgPrice) {
     return "";
@@ -292,16 +292,17 @@ export default class Search extends Component {
           ]}
         >
           <View style={{ flexDirection: "row", alignItems: "space-between" }}>
-            <View style={styles.text}>
-              <Text style={Typography.FONT_H2_PINK}>What</Text>
+            <View style={styles.text} testID="heading">
+              <Text style={Typography.FONT_H2_PINK}>What </Text>
               <View style={{ flexDirection: "row" }}>
                 <Text style={Typography.FONT_H4_BLACK}>do you want to </Text>
                 <Text style={Typography.FONT_H4_PINK}>eat </Text>
-                <Text style={Typography.FONT_H4_BLACK}>today? </Text>
+                <Text style={Typography.FONT_H4_BLACK}>today?</Text>
               </View>
             </View>
             {this.state.searchResults !== null && this.state.searched ? (
               <TouchableOpacity
+                testID="sortButton"
                 style={styles.filterButton}
                 onPress={() => this.setModalVisible()}
               >
@@ -309,6 +310,7 @@ export default class Search extends Component {
               </TouchableOpacity>
             ) : null}
             <Modal
+              testID="sortModal"
               visible={this.state.modalVisible}
               animationType="slide"
               transparent={false}
@@ -392,12 +394,19 @@ export default class Search extends Component {
           </View>
           <View style={[styles.searchBar, { marginTop: 20 }]}>
             <TouchableOpacity
+              testID="searchIconButton"
               value={this.state.searchWord}
               onPress={this.validateSearch}
             >
-              <Icon name={"search"} size={28} color={Colors.PINK} />
+              <Icon
+                testID="searchIcon"
+                name={"search"}
+                size={28}
+                color={Colors.PINK}
+              />
             </TouchableOpacity>
             <TextInput
+              testID="searchField"
               style={[Typography.FONT_INPUT, styles.textInput]}
               placeholder="Search..."
               placeholderTextColor={Colors.GRAY_MEDIUM}
@@ -450,7 +459,7 @@ export default class Search extends Component {
               </SafeAreaView>
             ) : null}
             {this.state.searched && !this.state.searchResults ? (
-              <View style={styles.noResult}>
+              <View style={styles.noResult} testID="noResultsView">
                 <View>
                   <Image source={require("../../assets/noresults.png")} />
                 </View>
