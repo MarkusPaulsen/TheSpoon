@@ -230,7 +230,7 @@ export default class Search extends Component {
     if (this.state.selectedFilter === "Price (low-high)") {
       sorted.sort((a, b) =>
         a.price > b.price
-          ? 1
+          ? -1
           : a.price === b.price
           ? a.menuName > b.menuName
             ? 1
@@ -241,7 +241,7 @@ export default class Search extends Component {
     } else if (this.state.selectedFilter === "Price (high-low)") {
       sorted.sort((a, b) =>
         a.price > b.price
-          ? -1
+          ? 1
           : a.price === b.price
           ? a.menuName > b.menuName
             ? 1
@@ -277,6 +277,7 @@ export default class Search extends Component {
         this.findCoordinates();
         this.applyFilter();
       }
+      console.log(this.state.searchResults);
     }
   }
 
