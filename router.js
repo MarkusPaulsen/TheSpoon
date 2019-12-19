@@ -19,6 +19,7 @@ const manageCustomerInformation = require('./routes/manageCustomerInformation.js
 const createReview = require('./routes/createReview.js');
 const getTags = require('./routes/getTags.js');
 const pendingReviews = require('./routes/pendingReviews.js');
+const ownerProfile = require('./routes/ownerProfile.js');
 
 
 app.use('/api/image', image);
@@ -28,6 +29,7 @@ app.use('/api/user/owner/register', registrationOwner);
 app.use('/api/user/owner/restaurant/menu', manageMenuInformation);
 app.use('/api/user/owner/restaurant/review', pendingReviews);
 app.use('/api/user/owner/restaurant', manageRestaurantInformation);
+app.use('/api/user/owner', ownerProfile);
 app.use('/api/user/customer/register', registrationCustomer);
 app.use('/api/user/customer/menu/searchByMenuItem', searchByMenuItem);
 app.use('/api/user/customer/menu', searchMenu);
