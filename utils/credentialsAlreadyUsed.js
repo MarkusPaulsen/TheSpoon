@@ -19,7 +19,7 @@ module.exports = async (req, res) => {
         }
     });
     if (owner.length > 0 || customer.length > 0) {
-        res.status(400).send('Username already taken');
+        res.status(400).send('Username already taken.');
         return true;
     }
 
@@ -35,7 +35,7 @@ module.exports = async (req, res) => {
         }
     });
     if (owner.length > 0 || customer > 0) {
-        res.status(400).send('Email already taken');
+        res.status(400).send('Email already taken.');
         return true;
     }
     return false;

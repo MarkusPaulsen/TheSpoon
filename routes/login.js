@@ -14,8 +14,6 @@ const validationSchema = require('../validationSchemas.js');
 
 router.post('/', inputValidator(validationSchema.loginValidation), async (req, res) => {
 
-
-
     //first of all, check if there is a user with given username
     //if it's an owner the check has to be done on Owner table, Customer otherwise
     let user;
