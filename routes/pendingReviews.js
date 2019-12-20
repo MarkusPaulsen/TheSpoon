@@ -5,11 +5,14 @@ router.use(express.json());
 const auth = require('../middleware/authorizationMiddleware.js');
 const isOwner = require('../middleware/checkIfOwnerMiddleware');
 const findRestaurant = require('../middleware/findRestaurantOfOwnerMiddleware.js');
+const updateRating = require('../middleware/updateRatingMiddleware.js');
+
 
 const Restaurant = require('../models/restaurant.js');
 const Menu = require('../models/menu.js');
 const MenuReview = require('../models/menuReview.js');
 const MenuItem = require('../models/menuItem.js');
+
 
 const PENDING='Pending';
 const APPROVED='Approved';
@@ -82,6 +85,12 @@ router.post('/:reviewID', auth, isOwner, findRestaurant, async (req, res) => {
                     Review_ID: reviewID
                 }
             });
+        if (status === APPROVED) {
+            // const menuID = {Menu_ID: ownerReviewCheck.Menu_ID}
+             // Also find every itemReview associated to the current menuReview
+            // await updateRating(itemReviews, menuID)
+        }
+
 
         //get pending reviews
         const reviews = await MenuReview.findAll({

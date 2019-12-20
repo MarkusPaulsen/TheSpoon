@@ -67,7 +67,9 @@ router.post('/menu/:menuID', auth, isCustomer, async (req, res) => {
                 MenuReview_ID: menuReviewID
             })
         }
+        // TODO: Delete this!!! Move to ownerApproveReview
         // Update ratings for Menu and MenuItems that are affected of this adding.
+
         const addedToMenu = {Menu_ID: menuID};
         await updateRating(itemReviews, addedToMenu);
 
