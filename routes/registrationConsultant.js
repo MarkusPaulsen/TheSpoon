@@ -14,10 +14,8 @@ const credentialsAlreadyUsed = require('../utils/credentialsAlreadyUsed.js');
 
 router.post('/', inputValidator(validationSchema.registrationConsultantValidation), async (req, res) => {
     console.log('In POST /api/consultant/register');
-    console.log('consultant is ' + JSON.stringify(req.body))
 
     if(req.body.companySecret!=config.get('companySecret')){
-        console.log('Wrong company secret word');
         res.status(400).send('Wrong company secret word.');
         return;
     }

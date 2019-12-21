@@ -21,8 +21,6 @@ router.post('/', inputValidator(validationSchema.loginValidation), async (req, r
         }
     });
 
-    console.log('consultant is ' + JSON.stringify(consultant))
-
     //if there isn't a consultant with given name, send error message
     if (!consultant) res.status(400).send('Invalid username or password');
     else {
