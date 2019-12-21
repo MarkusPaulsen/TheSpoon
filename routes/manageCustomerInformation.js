@@ -14,17 +14,21 @@ nationalities = getNames();
 
 router.get('/', auth, isCustomer, async (req, res) => {
     console.log('In GET /api/user/customer');
+    const username=req.username;
 
     try {
         const customer = await Customer.findOne({
             where: {
-                Email: req.body.email
+                Username: username
             }
         });
 
         const customerInfo = {
             username: customer.Username,
-            email: customer.Email
+            email: customer.Email,
+            gender: customer.Gender,
+            ageRange: customer.AgeRange,
+            nationality: customer.Nationality
         };
 
         res.status(200).send(customerInfo);
@@ -32,8 +36,6 @@ router.get('/', auth, isCustomer, async (req, res) => {
     }catch (error) {
         res.status(500).send('Internal server error');
     }
-
-
 });
 
 router.put('/', auth, isCustomer, async (req,res) => {
