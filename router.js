@@ -20,6 +20,8 @@ const createReview = require('./routes/createReview.js');
 const getTags = require('./routes/getTags.js');
 const pendingReviews = require('./routes/pendingReviews.js');
 const ownerProfile = require('./routes/ownerProfile.js');
+const registrationConsultant= require('./routes/registrationConsultant.js');
+const consultantLogin= require('./routes/consultantLogin.js');
 
 
 app.use('/api/image', image);
@@ -36,6 +38,8 @@ app.use('/api/user/customer/menu', searchMenu);
 app.use('/api/user/customer/review/restaurant', createReview);
 app.use('/api/user/customer/review', manageCustomerReviews);
 app.use('/api/user/customer', manageCustomerInformation);
+app.use('/api/consultant/register', registrationConsultant);
+app.use('/api/consultant/login', consultantLogin);
 
 
 app.use(bodyParser.json());

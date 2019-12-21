@@ -17,6 +17,14 @@ const schemas = {
         email: Joi.string().trim().email({minDomainAtoms: 1}).required(),
         password: Joi.string().regex(/^[a-zA-Z0-9]/).min(5).required(),
     }),
+    registrationConsultantValidation: Joi.object().keys({
+        username: Joi.string().regex(/^[a-zA-Z0-9]/).min(5).required(),
+        password: Joi.string().regex(/^[a-zA-Z0-9]/).min(5).required(),
+        name: Joi.string().regex(/^[a-zA-Z0-9]/).min(1).required(),
+        surname: Joi.string().regex(/^[a-zA-Z0-9]/).min(1).required(),
+        email: Joi.string().trim().email({minDomainAtoms: 1}).required(),
+        companySecret: Joi.string().regex(/^[a-zA-Z0-9]/).min(5).required()
+    }),
     addMenuValidation: Joi.object().keys({
         name: Joi.string().regex(/^[a-zA-Z0-9]/).min(1).required(),
         description: Joi.string().regex(/^[a-zA-Z0-9]/).min(1).required(),
