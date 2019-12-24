@@ -2,10 +2,14 @@
 import React, {Component} from "react";
 //</editor-fold>
 
+//<editor-fold desc="Constants">
+import {modalVisibilityFilters} from "../../../constants/modalVisibiltyFilters";
+//</editor-fold>
+//<editor-fold desc="Containers">
+import FilterLink from "../../../containers/FilterModalLink";
+//</editor-fold>
 //<editor-fold desc="Icons">
 import {IconEditGrey} from "../../Icons";
-import FilterLink from "../../../containers/FilterModalLink";
-import {modalVisibilityFilters} from "../../../constants/modalVisibiltyFilters";
 //</editor-fold>
 
 
@@ -40,7 +44,7 @@ class MenuItem extends Component {
                 </div>
                 <div className="price">{this.props.priceEuros}€</div>
                 <div className="edit-button">
-                    <FilterLink filter={this.props.type === "dish" ? modalVisibilityFilters.SHOW_EDIT_DISH : modalVisibilityFilters.SHOW_EDIT_DRINK} currentMenu={this.props.currentMenu} currentMenuItem={this.props} currentRestaurantPage={this.props.currentRestaurantPage}><IconEditGrey/></FilterLink>
+                    <FilterLink filter={this.props.type === "dish" ? modalVisibilityFilters.SHOW_EDIT_DISH : modalVisibilityFilters.SHOW_EDIT_DRINK} currentMenu={this.props.currentMenu} currentMenuItem={this.props}><IconEditGrey/></FilterLink>
                 </div>
             </div>
         )

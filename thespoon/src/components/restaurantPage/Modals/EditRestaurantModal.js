@@ -344,10 +344,6 @@ class EditRestaurantModal extends Component {
 
     //<editor-fold desc="Render">
     render() {
-        console.log("Props")
-        console.log(this.props)
-        console.log("State")
-        console.log(this.state)
         let validation = this.submitted ?                         // if the form has been submitted at least once
             this.validator.validate(this.state) :               // then check validity every time we render
             this.state.validation;

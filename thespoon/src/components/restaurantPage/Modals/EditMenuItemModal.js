@@ -22,7 +22,6 @@ import FormValidator from "../../../validation/FormValidator";
 
 //<editor-fold desc="Constants">
 import {paths} from "../../../constants/paths";
-import {modalVisibilityFilters} from "../../../constants/modalVisibiltyFilters";
 import {timeout} from "../../../constants/timeout";
 //</editor-fold>
 //<editor-fold desc="Icons">

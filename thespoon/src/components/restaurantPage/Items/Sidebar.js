@@ -1,6 +1,10 @@
 //<editor-fold desc="React">
 import React, {Component} from "react";
 //</editor-fold>
+//<editor-fold desc="Redux">
+import {connect} from "react-redux";
+import {setCurrentRestaurantInformation} from "../../../actionCreators/restaurantActionCreators";
+//</editor-fold>
 
 //<editor-fold desc="Constants">
 import {modalVisibilityFilters} from "../../../constants/modalVisibiltyFilters";
@@ -13,12 +17,21 @@ import {IconLocationTurqoise, IconHoursTurqoise, IconEditPink} from "../../Icons
 //</editor-fold>
 
 class Sidebar extends Component {
+    //<editor-fold desc="Constructor">
     constructor(props) {
         super(props)
     }
+    //</editor-fold>
+
+    //<editor-fold desc="Component Lifecycle">
+    componentDidMount() {
+        this.props.setCurrentRestaurantInformationHere(this);
+    }
+    //</editor-fold>
 
     //<editor-fold desc="Render">
     render() {
+        console.log(this.props)
         return (
             <div className="sidebar-hover">
                 <div className="sidebar">
@@ -50,12 +63,12 @@ class Sidebar extends Component {
                     </ul>
                 </div>
                 <div className="modal-button">
-                    <FilterLink filter={modalVisibilityFilters.SHOW_EDIT_RESTAURANT} currentRestaurantInformation={this.props} currentRestaurantPage={this.props.currentRestaurantPage}><IconEditPink/>Edit information</FilterLink>
+                    <FilterLink filter={modalVisibilityFilters.SHOW_EDIT_RESTAURANT} currentRestaurantInformation={this.props}><IconEditPink/>Edit information</FilterLink>
                 </div>
                 </div>
                 <div className="sidebar-bottom">
                     <button className="wide">
-                        <FilterLink filter={modalVisibilityFilters.SHOW_ADD_MENU} currentRestaurantInformation={this.props} currentRestaurantPage={this.props.currentRestaurantPage}>Create new menu</FilterLink>
+                        <FilterLink filter={modalVisibilityFilters.SHOW_ADD_MENU} currentRestaurantInformation={this.props}>Create new menu</FilterLink>
                     </button>
                 </div>
             </div>
@@ -64,4 +77,15 @@ class Sidebar extends Component {
     //</editor-fold>
 }
 
-export default Sidebar;
+//<editor-fold desc="Redux">
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        setCurrentRestaurantInformationHere: (currentRestaurantInformation) => {
+            dispatch(setCurrentRestaurantInformation(currentRestaurantInformation));
+        }
+    };
+};
+
+export default connect(null, mapDispatchToProps)(Sidebar);
+//</editor-fold>

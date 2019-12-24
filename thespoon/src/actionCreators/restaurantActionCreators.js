@@ -8,7 +8,7 @@ export const setRestaurantID = (restaurantID) => {
     };
 };
 
-export const setRestaurantInformation = (currentRestaurantInformation) => {
+export const setCurrentRestaurantInformation = (currentRestaurantInformation) => {
     return {
         type: currentRestaurantInformationAction.SETTING_UP_RESTAURANT,
         currentRestaurantInformation: currentRestaurantInformation,

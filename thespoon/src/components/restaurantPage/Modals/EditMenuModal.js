@@ -22,10 +22,10 @@ import FormValidator from "../../../validation/FormValidator";
 
 //<editor-fold desc="Constants">
 import {paths} from "../../../constants/paths";
+import {timeout} from "../../../constants/timeout";
 //</editor-fold>
 //<editor-fold desc="Icons">
 import {IconExit} from "../../Icons";
-import {timeout} from "../../../constants/timeout";
 
 //</editor-fold>
 
@@ -234,8 +234,6 @@ class EditMenuModal extends Component {
 
     //<editor-fold desc="Render">
     render() {
-        console.log("here menu")
-        console.log(this.props)
         let validation = this.state.submitted ?                         // if the form has been submitted at least once
             this.validator.validate(this.state) :               // then check validity every time we render
             this.state.validation;
