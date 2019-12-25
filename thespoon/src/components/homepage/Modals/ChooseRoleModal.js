@@ -4,12 +4,30 @@ import {IconExit} from "../../Icons";
 import {Modal} from "react-bootstrap";
 import {modalVisibilityFilters} from "../../../constants/modalVisibiltyFilters";
 import FilterLink from "../../../containers/FilterModalLink";
+import {connect} from "react-redux";
+import FormValidator from "../../../validation/FormValidator";
 
 
 
 class ChooseRoleModal extends Component {
+    //<editor-fold desc="Constructor">
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            token: window.localStorage.getItem("token")
+        };
+    }
+
+    //</editor-fold>
+
+    //<editor-fold desc="Render">
     render() {
-        return(
+        if((this.state.token != null && this.state.token !== "null") || this.props.backgroundPage == null) {
+            return(<p>Something went wrong.</p>);
+        }
+        else {
+            return(
                 <Modal.Body>
                     <button className="exit" onClick={this.props.onHide}><IconExit /></button>
                     <div className="modal-wrapper choose-role">
@@ -26,8 +44,18 @@ class ChooseRoleModal extends Component {
                         </div>
                     </div>
                 </Modal.Body>
-        )
+            );
+        }
     }
+    //</editor-fold>
 }
 
-export default ChooseRoleModal;
+//<editor-fold desc="Redux">
+const mapStateToProps = (state) => {
+    return {
+        backgroundPage: state.backgroundPageReducer.backgroundPage
+    };
+};
+
+export default connect(mapStateToProps, null)(ChooseRoleModal);
+//</editor-fold>

@@ -8,7 +8,6 @@ import {exhaustMap, map, take} from "rxjs/operators";
 //</editor-fold>
 //<editor-fold desc="Redux">
 import {connect} from "react-redux";
-import {logIn, failLogIn, successLogIn} from "../../../actionCreators/logInActionCreators";
 //</editor-fold>
 //<editor-fold desc="Bootstrap">
 import {Modal} from "react-bootstrap";
@@ -40,6 +39,7 @@ class RegisterCustomerModal extends Component {
     constructor(props) {
         super(props);
 
+        //<editor-fold desc="Validator">
         this.validator = new FormValidator([{
             field: "email",
             method: "isEmpty",
@@ -97,7 +97,7 @@ class RegisterCustomerModal extends Component {
             message: "Password confirmation is required to be alphanumeric."
         },*/ {
             field: "confirmPassword",
-            method: (confirmPassword, state) => {return confirmPassword.length >= 5},
+            method: (confirmPassword) => {return confirmPassword.length >= 5},
             validWhen: true,
             message: "Password confirmation is required to be longer or equal 5 characters."
         }, {
@@ -106,17 +106,21 @@ class RegisterCustomerModal extends Component {
             validWhen: true,
             message: "Password confirmation has to be identical to the password."
         }]);
+        //</editor-fold>
 
+        //<editor-fold desc="Handler Function Registration">
         this.handleSubmit = this.handleSubmit.bind(this);
+        //</editor-fold>
 
         this.state = {
+            token: window.localStorage.getItem("token"),
+            validation: this.validator.valid(),
+            serverMessage: "",
+            submitted: false,
             email: "",
             username: "",
             password: "",
-            confirmPassword: "",
-            validation: this.validator.valid(),
-            serverMessage: "",
-            submitted: false
+            confirmPassword: ""
         };
     }
 
@@ -149,7 +153,6 @@ class RegisterCustomerModal extends Component {
             }))
             .pipe(exhaustMap(() => {
                 if (thisTemp.state.validation.isValid) {
-                    thisTemp.props.logIn(thisTemp.state.username);
                     thisTemp.setState({serverMessage: "Registration is processing"});
                     return ajax({
                         url: paths["restApi"]["registrationCustomer"],
@@ -175,10 +178,11 @@ class RegisterCustomerModal extends Component {
             .subscribe(
                 (next) => {
                     let response = JSON.parse(next.response);
-                    thisTemp.props.successLogIn(response.token);
+                    window.localStorage.setItem("token", response.token);
+                    window.localStorage.setItem("restaurantOwner", "false");
+                    thisTemp.props.backgroundPage.update();
                     thisTemp.props.onHide();
                 }, (error) => {
-                    thisTemp.props.failLogIn();
                     switch (error.name) {
                         case "AjaxTimeoutError":
                             thisTemp.setState({serverMessage: "The request timed out."});
@@ -204,69 +208,72 @@ class RegisterCustomerModal extends Component {
 
     //<editor-fold desc="Render">
     render() {
-        let validation = this.submitted ?                         // if the form has been submitted at least once
-            this.validator.validate(this.state) :               // then check validity every time we render
-            this.state.validation;
-        return (
-            <Modal.Body>
+        if((this.state.token != null && this.state.token !== "null") || this.props.backgroundPage == null) {
+            return(<p>Something went wrong.</p>);
+        }
+        else {
+            let validation = this.submitted ? this.validator.validate(this.state) : this.state.validation;
+            return (
+                <Modal.Body>
                 <span className="back"> <FilterLink
                     filter={modalVisibilityFilters.SHOW_CHOOSE_ROLE}><IconBack/></FilterLink></span>
-                <button className="exit" onClick={this.props.onHide}><IconExit/></button>
-                <div className="modal-wrapper ">
-                    <Form ref={(c) => {
-                        this.form = c;
-                    }} onSubmit={this.handleSubmit}>
-                        <h2>Sign up</h2>
-                        <div className="account-type">
-                            <h4>as a <span className="role">Customer</span></h4>
-                        </div>
+                    <button className="exit" onClick={this.props.onHide}><IconExit/></button>
+                    <div className="modal-wrapper ">
+                        <Form ref={(c) => {
+                            this.form = c;
+                        }} onSubmit={this.handleSubmit}>
+                            <h2>Sign up</h2>
+                            <div className="account-type">
+                                <h4>as a <span className="role">Customer</span></h4>
+                            </div>
 
-                        <div className="input-field">
-                            <IconEmail/>
-                            <Input type="email" name="email" placeholder="E-mail"/>
-                        </div>
-                        <div className="error-block">
-                            <small>{validation.email.message}</small>
-                        </div>
+                            <div className="input-field">
+                                <IconEmail/>
+                                <Input type="email" name="email" placeholder="E-mail"/>
+                            </div>
+                            <div className="error-block">
+                                <small>{validation.email.message}</small>
+                            </div>
 
-                        <div className="input-field">
-                            <IconName/>
-                            <Input type="text" name="username" placeholder="Username"/>
-                        </div>
-                        <div className="error-block">
-                            <small>{validation.username.message}</small>
-                        </div>
+                            <div className="input-field">
+                                <IconName/>
+                                <Input type="text" name="username" placeholder="Username"/>
+                            </div>
+                            <div className="error-block">
+                                <small>{validation.username.message}</small>
+                            </div>
 
-                        <div className="input-field">
-                            <IconPassword/>
-                            <Input type="password" name="password" placeholder="Password"/>
-                        </div>
-                        <div className="error-block">
-                            <small>{validation.password.message}</small>
-                        </div>
+                            <div className="input-field">
+                                <IconPassword/>
+                                <Input type="password" name="password" placeholder="Password"/>
+                            </div>
+                            <div className="error-block">
+                                <small>{validation.password.message}</small>
+                            </div>
 
-                        <div className="input-field">
-                            <IconPassword/>
-                            <Input type="password" id="confirm-password" name="confirmPassword"
-                                   placeholder="Confirm password"/>
-                        </div>
-                        <div className="error-block">
-                            <small>{validation.confirmPassword.message}</small>
-                        </div>
+                            <div className="input-field">
+                                <IconPassword/>
+                                <Input type="password" id="confirm-password" name="confirmPassword"
+                                       placeholder="Confirm password"/>
+                            </div>
+                            <div className="error-block">
+                                <small>{validation.confirmPassword.message}</small>
+                            </div>
 
-                        <Button type="submit" className="normal">Sign up</Button>
-                        <div className="error-block">
-                            <small>{this.state.serverMessage}</small>
-                        </div>
+                            <Button type="submit" className="normal">Sign up</Button>
+                            <div className="error-block">
+                                <small>{this.state.serverMessage}</small>
+                            </div>
 
-                    </Form>
-                    <div className="link-wrapper">
-                        <small>Already have an account? <FilterLink filter={modalVisibilityFilters.SHOW_LOGIN}>Log
-                            in</FilterLink></small>
+                        </Form>
+                        <div className="link-wrapper">
+                            <small>Already have an account? <FilterLink filter={modalVisibilityFilters.SHOW_LOGIN}>Log
+                                in</FilterLink></small>
+                        </div>
                     </div>
-                </div>
-            </Modal.Body>
-        );
+                </Modal.Body>
+            );
+        }
     }
 
     //</editor-fold>
@@ -274,11 +281,11 @@ class RegisterCustomerModal extends Component {
 }
 
 //<editor-fold desc="Redux">
-const mapDispatchToProps = (dispatch) => ({
-    logIn: (username) => dispatch(logIn(username)),
-    failLogIn: () => dispatch(failLogIn()),
-    successLogIn: (token) => dispatch(successLogIn(token, false))
-});
+const mapStateToProps = (state) => {
+    return {
+        backgroundPage: state.backgroundPageReducer.backgroundPage
+    };
+};
 
-export default connect(null, mapDispatchToProps)(RegisterCustomerModal);
+export default connect(mapStateToProps, null)(RegisterCustomerModal);
 //</editor-fold>

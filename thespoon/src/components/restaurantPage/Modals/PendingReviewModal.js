@@ -30,11 +30,14 @@ class PendingReviewModal extends Component {
     constructor(props) {
         super(props);
 
+        //<editor-fold desc="Handler Function Registration">
         this.update = this.update.bind(this);
+        //</editor-fold>
 
         this.state = {
+            token: window.localStorage.getItem("token"),
             reviews: null,
-            reviewsMessage: "",
+            reviewsMessage: null,
             toUpdate: false
         };
     }
@@ -122,6 +125,9 @@ class PendingReviewModal extends Component {
 
     //<editor-fold desc="Render">
     render() {
+        if((this.state.token == null || this.state.token === "null") || this.props.backgroundPage == null) {
+            return(<p>Something went wrong.</p>);
+        }
         return (
             <Modal.Body>
                 <button className="exit" onClick={this.props.onHide}><IconExit /></button>
@@ -158,7 +164,7 @@ class PendingReviewModal extends Component {
 //<editor-fold desc="Redux">
 const mapStateToProps = (state) => {
     return {
-        token: state.logInReducer.token
+        backgroundPage: state.backgroundPageReducer.backgroundPage
     };
 };
 

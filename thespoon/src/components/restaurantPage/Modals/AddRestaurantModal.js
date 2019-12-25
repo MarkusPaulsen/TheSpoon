@@ -28,9 +28,6 @@ import {days} from "../../../constants/days";
 import {hours} from "../../../constants/hours";
 import {timeout} from "../../../constants/timeout";
 //</editor-fold>
-//<editor-fold desc="Icons">
-import {IconExit} from "../../Icons";
-//</editor-fold>
 
 
 const selectStyles = {
@@ -42,7 +39,7 @@ const selectStyles = {
     })
 };
 
-class EditRestaurantModal extends Component {
+class AddRestaurantInfo extends Component {
 
     //<editor-fold desc="Constructor">
     constructor(props) {
@@ -98,32 +95,17 @@ class EditRestaurantModal extends Component {
             validation: this.validator.valid(),
             serverMessage: "",
             submitted: false,
-            name: this.props.currentRestaurantInformation.name,
-            address: this.props.currentRestaurantInformation.address,
-            city: this.props.currentRestaurantInformation.city,
-            country: this.props.currentRestaurantInformation.country,
-            selectedOpeningHours: this.props.currentRestaurantInformation.openingHours.map(openingHour => {
-                return {
-                    day: {
-                        value: openingHour.day,
-                        label: openingHour.day
-                    },
-                    openTime: {
-                        value: openingHour.openTime.split(".")[0],
-                        label: openingHour.openTime.split(".")[0]
-                    },
-                    closeTime: {
-                        value: openingHour.closeTime.split(".")[0],
-                        label: openingHour.closeTime.split(".")[0]
-                    }
-                }
-            }),
+            name: "",
+            address: "",
+            city: "",
+            country: "",
+            selectedOpeningHours: [],
             selectedOpeningHoursMessage: "",
             selectedDay: null,
             selectedOpenTime: null,
             selectedCloseTime: null,
             selectedFile: null,
-            imageID: this.props.currentRestaurantInformation.imageID,
+            imageID: 0,
             imageMessage: ""
         }
     }
@@ -434,7 +416,7 @@ class EditRestaurantModal extends Component {
                     thisTemp.setState({serverMessage: "Restaurant information publication is processed"});
                     return ajax({
                         url: paths["restApi"]["restaurant"],
-                        method: "PUT",
+                        method: "POST",
                         headers: {"Content-Type": "application/json", "X-Auth-Token": thisTemp.state.token},
                         body: {
                             name: thisTemp.state.name,
@@ -500,12 +482,10 @@ class EditRestaurantModal extends Component {
     render() {
         if ((this.state.token == null || this.state.token === "null") || this.props.backgroundPage == null) {
             return (<p>Something went wrong.</p>);
-        }
-        else {
+        } else {
             let validation = this.submitted ? this.validator.validate(this.state) : this.state.validation;
             return (
                 <Modal.Body>
-                    <button className="exit" onClick={this.props.onHide}><IconExit/></button>
                     <div className="modal-wrapper restaurant-info">
                         <Form ref={(c) => {
                             this.form = c;
@@ -513,7 +493,7 @@ class EditRestaurantModal extends Component {
                             <h2>Configure restaurant data</h2>
                             <div className="input-field">
                                 <label>Restaurant name</label>
-                                <Input type="text" name="name" value={this.state.name}/>
+                                <Input type="text" name="name" placeholder="Restaurant name"/>
                             </div>
                             <div className="error-block">
                                 <small>{validation.name.message}</small>
@@ -539,21 +519,21 @@ class EditRestaurantModal extends Component {
                             </div>
                             <div className="input-field">
                                 <label>Address</label>
-                                <Input type="text" name="address" value={this.state.address}/>
+                                <Input type="text" name="address" placeholder="Address"/>
                             </div>
                             <div className="error-block">
                                 <small>{validation.address.message}</small>
                             </div>
                             <div className="input-field">
                                 <label>City</label>
-                                <Input type="text" name="city" value={this.state.city}/>
+                                <Input type="text" name="city" placeholder="City"/>
                             </div>
                             <div className="error-block">
                                 <small>{validation.city.message}</small>
                             </div>
                             <div className="input-field">
                                 <label>Country</label>
-                                <Input type="text" name="country" value={this.state.country}/>
+                                <Input type="text" name="country" placeholder="Country"/>
                             </div>
                             <div className="error-block">
                                 <small>{validation.country.message}</small>
@@ -608,6 +588,7 @@ class EditRestaurantModal extends Component {
                 </Modal.Body>
             );
         }
+
     }
 
     //</editor-fold>
@@ -628,6 +609,5 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-
-export default connect(mapStateToProps, mapDispatchToProps)(EditRestaurantModal);
+export default connect(mapStateToProps, mapDispatchToProps)(AddRestaurantInfo);
 //</editor-fold>

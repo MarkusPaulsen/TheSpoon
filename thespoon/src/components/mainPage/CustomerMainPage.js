@@ -5,21 +5,10 @@ import {Redirect} from "react-router-dom";
 //<editor-fold desc="Redux">
 import {connect} from "react-redux";
 import {setBackgroundPage} from "../../actionCreators/BackgroundPageActionCreator";
-//</editor-fold>
-
-//<editor-fold desc="Constants">
-import {modalVisibilityFilters} from "../../constants/modalVisibiltyFilters";
-//</editor-fold>
-//<editor-fold desc="Containers">
-import FilterLink from "../../containers/FilterModalLink";
-//</editor-fold>
-//<editor-fold desc="Layout">
-import Layout from "./../layout/Layout.js"
 
 //</editor-fold>
 
-
-class Homepage extends Component {
+class CustomerMainPage extends Component {
     //<editor-fold desc="Constructor">
     constructor(props) {
         super(props);
@@ -74,37 +63,33 @@ class Homepage extends Component {
     }
 
     //</editor-fold>
-
     //<editor-fold desc="Render">
     render() {
         if (this.state.token == null || this.state.token === "null") {
             return (
-                <Layout>
-                    <div className="homepage-banner">
-                        <div className="homepage-text">
-                            <div className="container">
-                                <div className="row">
-                                    <div className="col-sm-8">
-                                        <h1 className="title">Share your menus</h1>
-                                        <button className="normal"><FilterLink
-                                            filter={modalVisibilityFilters.SHOW_CHOOSE_ROLE}>Get started</FilterLink>
-                                        </button>
-                                    </div>
+                <Redirect to={{pathname: "/"}}/>
+            );
+        } else if (this.state.restaurantOwner === "true") {
+            return (
+                <Redirect to={{pathname: "/YourRestaurant/"}}/>
+            );
+        } else {
+            return (
+                <div className="mainpage-banner">
+                    <div className="mainpage-text">
+                        <div className="container">
+                            <div className="row">
+                                <div className="col-sm-8">
+                                    <h1 className="title">Hello {this.props.username}</h1>
+                                    <label>You can now log in on you mobile app.</label>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </Layout>
-            );
-        } else if (this.state.restaurantOwner === "false") {
-            return (
-                <Redirect to={{pathname: "/CustomerMain/"}}/>
-            );
-        } else {
-            return (
-                <Redirect to={{pathname: "/YourRestaurant/"}}/>
+                </div>
             );
         }
+
     }
 
     //</editor-fold>
@@ -119,5 +104,5 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(null, mapDispatchToProps)(Homepage);
+export default connect(null, mapDispatchToProps)(CustomerMainPage);
 //</editor-fold>

@@ -18,47 +18,61 @@ class LogOutModal extends Component {
     //<editor-fold desc="Constructor">
     constructor(props) {
         super(props);
+
+        //<editor-fold desc="Handler Function Registration">
         this.handleLogOut = this.handleLogOut.bind(this);
+        //</editor-fold>
+
+        this.state = {
+            token: window.localStorage.getItem("token")
+        };
     }
     //</editor-fold>
 
     //<editor-fold desc="Business Logic">
     handleLogOut = (event) => {
         event.preventDefault();
-        this.props.logOut();
+        window.localStorage.setItem("token", null);
+        window.localStorage.setItem("restaurantOwner", null);
+        this.props.backgroundPage.update();
         this.props.onHide();
     };
     //</editor-fold>
 
     //<editor-fold desc="Render">
     render() {
-        return (
-            <Modal.Body>
-                <button className="exit" onClick={this.props.onHide}><IconExit /></button>
-                <div className="modal-wrapper logout">
-                    <form>
-                        <h2 className="title">Log out</h2>
-                        <label>Are you sure you want to logout?</label>
-                        <button className="wide" onClick={this.handleLogOut}>
-                          Yes
-                        </button>
-                        <button className="wide" onClick={this.props.onHide}>
-                           No
-                        </button>
-                    </form>
-                </div>
-            </Modal.Body>
-        )
+        if((this.state.token == null || this.state.token === "null") || this.props.backgroundPage == null) {
+            return(<p>Something went wrong.</p>);
+        }
+        else {
+            return (
+                <Modal.Body>
+                    <button className="exit" onClick={this.props.onHide}><IconExit /></button>
+                    <div className="modal-wrapper logout">
+                        <form>
+                            <h2 className="title">Log out</h2>
+                            <label>Are you sure you want to logout?</label>
+                            <button className="wide" onClick={this.handleLogOut}>
+                                Yes
+                            </button>
+                            <button className="wide" onClick={this.props.onHide}>
+                                No
+                            </button>
+                        </form>
+                    </div>
+                </Modal.Body>
+            )
+        }
     }
     //</editor-fold>
 }
 
 //<editor-fold desc="Redux">
-const mapDispatchToProps = (dispatch) => {
+const mapStateToProps = (state) => {
     return {
-        logOut: () => dispatch(logOut())
+        backgroundPage: state.backgroundPageReducer.backgroundPage
     };
 };
 
-export default connect(null, mapDispatchToProps)(LogOutModal)
+export default connect(mapStateToProps, null)(LogOutModal)
 //</editor-fold>

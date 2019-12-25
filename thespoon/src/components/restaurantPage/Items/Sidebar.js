@@ -31,7 +31,6 @@ class Sidebar extends Component {
 
     //<editor-fold desc="Render">
     render() {
-        console.log(this.props)
         return (
             <div className="sidebar-hover">
                 <div className="sidebar">

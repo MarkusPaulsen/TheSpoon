@@ -4,11 +4,10 @@ import React, {Component} from "react";
 //<editor-fold desc="RxJs">
 import {bindCallback, of, throwError} from "rxjs";
 import {ajax} from "rxjs/ajax";
-import {exhaustMap, map, take} from "rxjs/operators";
+import {catchError, exhaustMap, map, take} from "rxjs/operators";
 //</editor-fold>
 //<editor-fold desc="Redux">
 import {connect} from "react-redux";
-import {logIn, failLogIn, successLogIn} from "../../../actionCreators/logInActionCreators";
 //</editor-fold>
 //<editor-fold desc="Bootstrap">
 import {Modal} from "react-bootstrap";
@@ -40,6 +39,7 @@ class LogInModal extends Component {
     constructor(props) {
         super(props);
 
+        //<editor-fold desc="Validator">
         this.validator = new FormValidator([{
             field: "username",
             method: "isEmpty",
@@ -71,15 +71,19 @@ class LogInModal extends Component {
             validWhen: true,
             message: "Password is required to be longer or equal 5 characters."
         } ]);
+        //</editor-fold>
 
+        //<editor-fold desc="Handler Function Registration">
         this.handleSubmit = this.handleSubmit.bind(this);
+        //</editor-fold>
 
         this.state = {
-            username: "",
-            password: "",
+            token: window.localStorage.getItem("token"),
             validation: this.validator.valid(),
             serverMessage: "",
-            submitted: false
+            submitted: false,
+            username: "",
+            password: ""
         };
     }
     //</editor-fold>
@@ -92,12 +96,16 @@ class LogInModal extends Component {
         of(1)
             .pipe(map(() => {
                 return thisTemp.form.getValues();
+            }), catchError(error => {
+                return error;
             }))
             .pipe(exhaustMap((values) => {
                 return bindCallback(thisTemp.setState).call(thisTemp, {
                     username: values.username,
                     password: values.password
                 });
+            }), catchError(error => {
+                return error;
             }))
             .pipe(exhaustMap(() => {
                 return bindCallback(thisTemp.setState).call(thisTemp, {
@@ -105,10 +113,11 @@ class LogInModal extends Component {
                     submitted: true,
                     serverMessage: ""
                 });
+            }), catchError(error => {
+                return error;
             }))
             .pipe(exhaustMap(() => {
                 if (thisTemp.state.validation.isValid) {
-                    thisTemp.props.logIn(thisTemp.state.username);
                     thisTemp.setState({serverMessage: "Login is processing"});
                     return ajax({
                         url: paths["restApi"]["login"],
@@ -129,15 +138,18 @@ class LogInModal extends Component {
                         response: null
                     });
                 }
+            }), catchError(error => {
+                return error;
             }))
             .pipe(take(1))
             .subscribe(
                 (next) => {
                     let response = JSON.parse(next.response);
-                    thisTemp.props.successLogIn(response.token);
+                    window.localStorage.setItem("token", response.token);
+                    window.localStorage.setItem("restaurantOwner", "true");
+                    thisTemp.props.backgroundPage.update();
                     thisTemp.props.onHide();
                 }, (error) => {
-                    thisTemp.props.failLogIn();
                     switch (error.name) {
                         case "AjaxTimeoutError":
                             thisTemp.setState({serverMessage: "The request timed out."});
@@ -162,48 +174,51 @@ class LogInModal extends Component {
 
     //<editor-fold desc="Render">
     render() {
-        let validation = this.submitted ?                         // if the form has been submitted at least once
-            this.validator.validate(this.state) :               // then check validity every time we render
-            this.state.validation;
-        return (
-            <Modal.Body>
-                <button className="exit" onClick={this.props.onHide}><IconExit/></button>
-                <div className="modal-wrapper ">
-                    <Form ref={(c) => {
-                        this.form = c;
-                    }} onSubmit={this.handleSubmit}>
-                        <h2 className="title">Log in</h2>
+        if((this.state.token != null && this.state.token !== "null") || this.props.backgroundPage == null) {
+            return(<p>Something went wrong.</p>);
+        }
+        else {
+            let validation = this.submitted ? this.validator.validate(this.state) : this.state.validation;
+            return (
+                <Modal.Body>
+                    <button className="exit" onClick={this.props.onHide}><IconExit/></button>
+                    <div className="modal-wrapper ">
+                        <Form ref={(c) => {
+                            this.form = c;
+                        }} onSubmit={this.handleSubmit}>
+                            <h2 className="title">Log in</h2>
 
-                        <div className="input-field">
-                            <IconName/>
-                            <Input type="text" name="username" placeholder="Username" id="loginFormUsername"/>
-                        </div>
-                        <div className="error-block">
-                            <small>{validation.username.message}</small>
-                        </div>
+                            <div className="input-field">
+                                <IconName/>
+                                <Input type="text" name="username" placeholder="Username" id="loginFormUsername"/>
+                            </div>
+                            <div className="error-block">
+                                <small>{validation.username.message}</small>
+                            </div>
 
-                        <div className="input-field">
-                            <IconPassword/>
-                            <Input type="password" name="password" placeholder="Password" id="loginFormPassword"/>
-                        </div>
-                        <div className="error-block">
-                            <small>{validation.password.message}</small>
-                        </div>
+                            <div className="input-field">
+                                <IconPassword/>
+                                <Input type="password" name="password" placeholder="Password" id="loginFormPassword"/>
+                            </div>
+                            <div className="error-block">
+                                <small>{validation.password.message}</small>
+                            </div>
 
-                        <Button type="submit" className="normal">Log in</Button>
-                        <div className="error-block">
-                            <small>{this.state.serverMessage}</small>
-                        </div>
-                    </Form>
+                            <Button type="submit" className="normal">Log in</Button>
+                            <div className="error-block">
+                                <small>{this.state.serverMessage}</small>
+                            </div>
+                        </Form>
 
-                    <div className="link-wrapper">
-                        <small>Don't have an account? <FilterLink
-                            filter={modalVisibilityFilters.SHOW_REGISTER_RESTAURANT_OWNER}>Register
-                            now</FilterLink></small>
+                        <div className="link-wrapper">
+                            <small>Don't have an account? <FilterLink
+                                filter={modalVisibilityFilters.SHOW_REGISTER_RESTAURANT_OWNER}>Register
+                                now</FilterLink></small>
+                        </div>
                     </div>
-                </div>
-            </Modal.Body>
-        );
+                </Modal.Body>
+            );
+        }
     }
 
     //</editor-fold>
@@ -211,13 +226,11 @@ class LogInModal extends Component {
 }
 
 //<editor-fold desc="Redux">
-const mapDispatchToProps = (dispatch) => {
+const mapStateToProps = (state) => {
     return {
-        logIn: (username) => dispatch(logIn(username)),
-        failLogIn: () => dispatch(failLogIn()),
-        successLogIn: (token) => dispatch(successLogIn(token, true))
+        backgroundPage: state.backgroundPageReducer.backgroundPage
     };
 };
 
-export default connect(null, mapDispatchToProps)(LogInModal)
+export default connect(mapStateToProps, null)(LogInModal)
 //</editor-fold>

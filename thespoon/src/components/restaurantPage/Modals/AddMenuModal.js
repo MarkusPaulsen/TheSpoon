@@ -1,13 +1,13 @@
 //<editor-fold desc="React">
 import React, {Component} from "react";
 //</editor-fold>
+//<editor-fold desc="Redux">
+import {connect} from "react-redux";
+//</editor-fold>
 //<editor-fold desc="RxJs">
 import {bindCallback, of, throwError} from "rxjs";
 import {ajax} from "rxjs/ajax";
-import {exhaustMap, map, take} from "rxjs/operators";
-//</editor-fold>
-//<editor-fold desc="Redux">
-import {connect} from "react-redux";
+import {catchError, exhaustMap, map, take} from "rxjs/operators";
 //</editor-fold>
 //<editor-fold desc="Bootstrap">
 import {Modal} from "react-bootstrap";
@@ -22,19 +22,21 @@ import FormValidator from "../../../validation/FormValidator";
 
 //<editor-fold desc="Constants">
 import {paths} from "../../../constants/paths";
+import {timeout} from "../../../constants/timeout";
 //</editor-fold>
 //<editor-fold desc="Icons">
 import {IconExit} from "../../Icons";
-import {timeout} from "../../../constants/timeout";
 
 //</editor-fold>
 
 
 class AddMenuModal extends Component {
+
     //<editor-fold desc="Constructor">
     constructor(props) {
         super(props);
 
+        //<editor-fold desc="Validator">
         this.validator = new FormValidator([{
             field: "name",
             method: "isEmpty",
@@ -48,7 +50,7 @@ class AddMenuModal extends Component {
         },*/ {
             field: "name",
             method: (name) => {
-                return name.length >= 1
+                return name.length >= 1;
             },
             validWhen: true,
             message: "Name is required to be longer or equal 1 characters."
@@ -65,7 +67,7 @@ class AddMenuModal extends Component {
         },*/ {
             field: "description",
             method: (description) => {
-                return description.length >= 1
+                return description.length >= 1;
             },
             validWhen: true,
             message: "Description is required to be longer or equal 1 characters."
@@ -84,28 +86,32 @@ class AddMenuModal extends Component {
             method: (tags) => {
                 return tags.split(",")
                     .map((tag) => {
-                        return tag.trim()
+                        return tag.trim();
                     })
                     .map((tag) => {
-                        return tag.length >= 1
+                        return tag.length >= 1;
                     })
                     .reduce((total, minLength) => {
-                        return total && minLength
+                        return total && minLength;
                     }, true)
             },
             validWhen: true,
             message: "Each tag is required to be longer or equal 1 characters."
         }]);
+        //</editor-fold>
 
+        //<editor-fold desc="Handler Function Registration">
         this.handleSubmit = this.handleSubmit.bind(this);
+        //</editor-fold>
 
         this.state = {
-            name: "",
-            description: "",
-            tags: "",
+            token: window.localStorage.getItem("token"),
             validation: this.validator.valid(),
             serverMessage: "",
-            submitted: false
+            submitted: false,
+            name: "",
+            description: "",
+            tags: ""
         };
     }
 
@@ -114,11 +120,12 @@ class AddMenuModal extends Component {
     //<editor-fold desc="Bussiness Logic">
     handleSubmit = (event) => {
         event.preventDefault();
-
         const thisTemp = this;
         of(1)
             .pipe(map(() => {
                 return thisTemp.form.getValues();
+            }), catchError(error => {
+                return error;
             }))
             .pipe(exhaustMap((values) => {
                 return bindCallback(thisTemp.setState).call(thisTemp, {
@@ -126,6 +133,8 @@ class AddMenuModal extends Component {
                     description: values.description,
                     tags: values.tags.split(",").map(tag => tag.trim())
                 });
+            }), catchError(error => {
+                return error;
             }))
             .pipe(exhaustMap(() => {
                 return bindCallback(thisTemp.setState).call(thisTemp, {
@@ -133,6 +142,8 @@ class AddMenuModal extends Component {
                     submitted: true,
                     serverMessage: ""
                 });
+            }), catchError(error => {
+                return error;
             }))
             .pipe(exhaustMap(() => {
                 if (thisTemp.state.validation.isValid) {
@@ -140,7 +151,7 @@ class AddMenuModal extends Component {
                     return ajax({
                         url: paths["restApi"]["menu"],
                         method: "POST",
-                        headers: {"Content-Type": "application/json", "X-Auth-Token": this.props.token},
+                        headers: {"Content-Type": "application/json", "X-Auth-Token": this.state.token},
                         body: {
                             name: thisTemp.state.name,
                             description: thisTemp.state.description,
@@ -156,12 +167,13 @@ class AddMenuModal extends Component {
                         response: null
                     });
                 }
+            }), catchError(error => {
+                return error;
             }))
             .pipe(take(1))
             .subscribe(
                 () => {
-                    thisTemp.props.currentRestaurantPage.setState({toUpdate: true});
-                    thisTemp.props.currentRestaurantPage.forceUpdate();
+                    thisTemp.props.backgroundPage.update();
                     thisTemp.props.onHide();
                 }, (error) => {
                     switch (error.name) {
@@ -188,59 +200,58 @@ class AddMenuModal extends Component {
 
     //<editor-fold desc="Render">
     render() {
-        let validation = this.state.submitted ?                         // if the form has been submitted at least once
-            this.validator.validate(this.state) :               // then check validity every time we render
-            this.state.validation;
-        return (
-            <Modal.Body>
-                <button className="exit" onClick={this.props.onHide}><IconExit/></button>
-                <div className="modal-wrapper add-menu">
-                    <Form ref={(c) => {
-                        this.form = c;
-                    }} onSubmit={(e) => this.handleSubmit(e)}>
-                        <h2 className="title">Create menu</h2>
-
-                        <div className="input-field">
-                            <label>Name</label>
-                            <Input type="text" name="name" placeholder="Name"/>
-                        </div>
-                        <div className="error-block">
-                            <small>{validation.name.message}</small>
-                        </div>
-
-                        <div className="input-field">
-                            <label>Description</label>
-                            <Textarea name="description"/>
-                        </div>
-                        <div className="error-block">
-                            <small>{validation.description.message}</small>
-                        </div>
-
-                        <div className="input-field">
-                            <label>Tags</label>
-                            <Input type="text" name="tags" placeholder="Search"/>
-                        </div>
-                        <div className="error-block">
-                            <small>{validation.tags.message}</small>
-                        </div>
-
-                        <Button type="submit" className="normal">Create</Button>
-                        <div className="error-block">
-                            <small>{this.state.serverMessage}</small>
-                        </div>
-                    </Form>
-                </div>
-            </Modal.Body>
-        )
+        if((this.state.token == null || this.state.token === "null") || this.props.backgroundPage == null) {
+            return(<p>Something went wrong.</p>);
+        }
+        else {
+            let validation = this.state.submitted ? this.validator.validate(this.state) : this.state.validation;
+            return (
+                <Modal.Body>
+                    <button className="exit" onClick={this.props.onHide}><IconExit/></button>
+                    <div className="modal-wrapper add-menu">
+                        <Form ref={(c) => {
+                            this.form = c;
+                        }} onSubmit={(e) => this.handleSubmit(e)}>
+                            <h2 className="title">Create menu</h2>
+                            <div className="input-field">
+                                <label>Name</label>
+                                <Input type="text" name="name" placeholder="Name"/>
+                            </div>
+                            <div className="error-block">
+                                <small>{validation.name.message}</small>
+                            </div>
+                            <div className="input-field">
+                                <label>Description</label>
+                                <Textarea name="description"/>
+                            </div>
+                            <div className="error-block">
+                                <small>{validation.description.message}</small>
+                            </div>
+                            <div className="input-field">
+                                <label>Tags</label>
+                                <Input type="text" name="tags" placeholder="Search"/>
+                            </div>
+                            <div className="error-block">
+                                <small>{validation.tags.message}</small>
+                            </div>
+                            <Button type="submit" className="normal">Create</Button>
+                            <div className="error-block">
+                                <small>{this.state.serverMessage}</small>
+                            </div>
+                        </Form>
+                    </div>
+                </Modal.Body>
+            );
+        }
     }
     //</editor-fold>
+
 }
 
 //<editor-fold desc="Redux">
 const mapStateToProps = (state) => {
     return {
-        token: state.logInReducer.token,
-        currentRestaurantPage: state.currentMenuReducer.currentRestaurantPage
+        backgroundPage: state.backgroundPageReducer.backgroundPage
     };
 };
 
