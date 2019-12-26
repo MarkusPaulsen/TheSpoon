@@ -29,7 +29,6 @@ class ReviewItem extends Component {
     //<editor-fold desc="Bussiness Logic">
     handleDecline = (event) => {
         event.preventDefault();
-
         const thisTemp = this;
         of(1)
             .pipe(exhaustMap(() => {
@@ -72,7 +71,6 @@ class ReviewItem extends Component {
 
     handleAccept = (event) => {
         event.preventDefault();
-
         const thisTemp = this;
         of(1)
             .pipe(exhaustMap(() => {

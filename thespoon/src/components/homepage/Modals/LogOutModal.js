@@ -3,7 +3,6 @@ import React, {Component} from "react";
 //</editor-fold>
 //<editor-fold desc="Redux">
 import {connect} from "react-redux";
-import {logOut} from "../../../actionCreators/logInActionCreators";
 //</editor-fold>
 //<editor-fold desc="Bootstrap">
 import {Modal} from "react-bootstrap";

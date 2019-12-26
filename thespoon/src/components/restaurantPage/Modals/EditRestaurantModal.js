@@ -10,7 +10,6 @@ import {setRestaurantID} from "../../../actionCreators/restaurantActionCreators"
 import {bindCallback, of, throwError} from "rxjs";
 import {ajax} from "rxjs/ajax";
 import {catchError, exhaustMap, map, take} from "rxjs/operators";
-import {readFile} from "../../../containers/rx-file-reader"
 //</editor-fold>
 //<editor-fold desc="Bootstrap">
 import {Modal} from "react-bootstrap";
@@ -265,7 +264,7 @@ class EditRestaurantModal extends Component {
 
     handleFileSubmit = (event) => {
         const fileTemp = event.target.files[0];
-        event.preventDefault()
+        event.preventDefault();
         const thisTemp = this;
         of(1)
             .pipe(exhaustMap(() => {
