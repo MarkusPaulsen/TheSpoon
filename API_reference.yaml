@@ -1,13 +1,15 @@
 swagger: "2.0"
 info:
   description: "This is the API reference of The Spoon project.\n \n VERSIONING: The version number works in this way: it's composed of two numbers separated by a point. The first number identifies the Sprint, so for example the version 2.1 of the API reference is related to the Sprint number 2. The second number starts from 0 and has to be increased by one each time the file is modified. The person who modifies this document is responsible for increasing the number.\n \n GROUPING OF ENDPOINTS: The endpoints are grouped by dividing them into customers' operations and owners' operations. All the endpoints that are not strictly related to customers nor owners remain inside the default group.\n \n AUTHENTICATION/AUTHORIZATION: The json web token returned when the login is performed is supposed to be put into x-auth-token header in the endpoints that require authorization"
-  version: "7.1"
+  version: "7.2"
   title: "The Spoon API reference"
 tags:
   - name: "customer"
     description: "Operations about customers"
   - name: "owner"
     description: "Operations about owners"
+  - name: "consultant"
+    description: "Operations about consultants"
 paths:
   /api/user/customer/register:
     post:
@@ -89,7 +91,7 @@ paths:
       parameters:
         - in: "body"
           name: "body"
-          description: "User that needs to register"
+          description: "User that needs to login"
           required: true
           schema:
             $ref: "#/definitions/UserLogin"
@@ -1194,7 +1196,7 @@ paths:
       tags:
         - "owner"
       summary: "Edit profile data of the owner"
-      description: "Edit profile data of the logged in owner (only the email can be changed actually). The password can't be changed through this endpoint, but the dedicated one should be used instead.\n Valid values for Gender are 'Male/Female/Other'.\n The username, the name and the surname can't be changed."
+      description: "Edit profile data of the logged in owner. The password can't be changed through this endpoint, but the dedicated one should be used instead.\n The username can't be changed."
       consumes:
         - "application/json"
       parameters:
@@ -1328,6 +1330,144 @@ paths:
         - Bearer: []
       x-security-scopes:
         - "owner"
+  /api/consultant/register:
+    post:
+      tags:
+        - "consultant"
+      summary: "Creates consultant"
+      description: "Creates a new consultant profile. This endpoint is used only for consultant registration. Since the consultant is a special user, it is required that a secret word of the company is sent in order to register, that secred word is stored in the backend as an environment variable.\n The endpoint, if the registration succeeds, returns the username of the account as a confirmation."
+      operationId: "createConsultant"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Consultant that needs to register"
+          required: true
+          schema:
+            $ref: "#/definitions/Consultant"
+      responses:
+        201:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/UsernameAndToken"
+        400:
+          description: "A string describing the error. Could be for example 'Username or email already taken.' or 'Wrong company secret word.' or 'Invalid input.'"
+          schema:
+            type: "string"
+            example: "Wrong company secret word."
+        500:
+          description: "Internal server error"
+          schema:
+            type: "string"
+            example: "Internal server error."
+  /api/consultant/login:
+    post:
+      tags:
+        - "consultant"
+      summary: "Logs consultant into the system"
+      description: "Logs consultant into the system. If the login succeeds, returns the json web token."
+      operationId: "loginConsultant"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Consultant that needs to login"
+          required: true
+          schema:
+            $ref: "#/definitions/ConsultantLogin"
+      responses:
+        201:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/Token"
+        400:
+          description: "A string describing the error. Could be for example 'Invalid username or password.' or 'Invalid input.'"
+          schema:
+            type: "string"
+            example: "Invalid username or password."
+        500:
+          description: "Internal server error"
+          schema:
+            type: "string"
+            example: "Internal server error."
+  /api/consultant/statistics:
+    get:
+      tags:
+        - "consultant"
+      summary: "Return the global statistics"
+      description: "Return the aggregate statistics of ALL the users/restaurants in the application. The consultant must be logged in to access this endpoint (reserved to him). To be more precise, this is what is sent: \n - For each nationality, the number of customers\n - For each gender, the number of customers\n - For each age range, the number of customers\n - For each searched word, the number of customers\n - List of all the menu names with their ratings. It will be frontend's duty to sort them and show the top 10 and the bottom 10"
+      operationId: "getStatistics"
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/Statistics"
+        500:
+          description: "Internal server error"
+          schema:
+            type: "string"
+            example: "Internal server error."
+        401:
+          description: "Access denied"
+          schema:
+            type: "string"
+            example: "Access denied."
+      security:
+        - Bearer: []
+      x-security-scopes:
+        - "consultant"
+  /api/consultant/statistics/{nationalityName}:
+    get:
+      tags:
+        - "consultant"
+      summary: "Return statistics of a specific nationality"
+      description: "Return the statistics of the given nationality. The consultant must be logged in to access this endpoint (reserved to him)."
+      operationId: "getStatisticOfNationality"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "nationalityName"
+          in: "path"
+          description: "Nationality"
+          required: true
+          type: "string"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/StatisticsOfNationality"
+        404:
+          description: "Nationality not found"
+          schema:
+            type: "string"
+            example: "Nationality not found."
+        400:
+          description: "A string describing the error. Could be for example 'Invalid input.'"
+          schema:
+            type: "string"
+            example: "Invalid username or password."
+        500:
+          description: "Internal server error"
+          schema:
+            type: "string"
+            example: "Internal server error."
+        401:
+          description: "Access denied"
+          schema:
+            type: "string"
+            example: "Access denied."
+      security:
+        - Bearer: []
+      x-security-scopes:
+        - "consultant"
 
 securityDefinitions:
   Bearer:
@@ -1935,8 +2075,14 @@ definitions:
     properties:
       email:
         type: "string"
+      name:
+        type: "string"
+      surname:
+        type: "string"
     example:
       email: "john.doe@gmail.com"
+      name: "John"
+      surname: "Doe"
   CustomerData:
     type: "object"
     properties:
@@ -1982,3 +2128,123 @@ definitions:
     example:
       oldPassword: "123456"
       newPassword: "654321"
+  Consultant:
+    type: "object"
+    properties:
+      username:
+        type: "string"
+      name:
+        type: "string"
+      surname:
+        type: "string"
+      email:
+        type: "string"
+      companySecret:
+        type: "string"
+      password:
+        type: "string"
+    example:
+      username: "xXEmilioXx"
+      name: "Emilio"
+      surname: "Imperiali"
+      email: "consultant@mail.com"
+      companySecret: "OurCompanyRocks"
+      password: "123456"
+  ConsultantLogin:
+    type: "object"
+    properties:
+      username:
+        type: "string"
+      password:
+        type: "string"
+    example:
+      username: "xXEmilioXx"
+      password: "123456"
+  Statistics:
+    type: "object"
+    properties:
+      customersPerNationality:
+        type: "array"
+        items:
+          $ref: "#/definitions/CustomersPerNationality"
+      customersPerGender:
+        type: "array"
+        items:
+          $ref: "#/definitions/CustomersPerGender"
+      customersPerAgeRange:
+        type: "array"
+        items:
+          $ref: "#/definitions/CustomersPerAgeRange"
+      numberOfSearchesPerWord:
+        type: "array"
+        items:
+          $ref: "#/definitions/NumberOfSearchesPerWord"
+      menusWithRatings:
+        type: "array"
+        items:
+          $ref: "#/definitions/MenuForStatistics"
+    example:
+      customersPerNationality: [{"nationality": "Italian", "numberOfCustomers": 10}, {"nationality": "French", "numberOfCustomers": 8}, {"nationality": "Croatian", "numberOfCustomers": 11}]
+      customersPerGender: [{"gender": "Male", "numberOfCustomers": 10}, {"gender": "Female", "numberOfCustomers": 8}, {"gender": "Other", "numberOfCustomers": 3}]
+      customersPerAgeRange: [{"ageRange": "18-25", "numberOfCustomers": 34}, {"ageRange": "25-35", "numberOfCustomers": 28}, {"ageRange": "35-50", "numberOfCustomers": 15}]
+      numberOfSearchesPerWord: [{"word": "Pasta", "numberOfSearches": 51}, {"word": "Pizza", "numberOfSearches": 83}, {"word": "Spaghetti", "numberOfSearches": 31}]
+      menusWithRatings: [{"menuName": "New menu", "rating": 3.4}, {"menuName": "Dinner menu", "rating": 4.2}, {"menuName": "Menu of the day", "rating": 5}, {"menuName": "Launch menu", "rating": 2}, {"menuName": "Exotic menu", "rating": 3.9}]
+  CustomersPerNationality:
+    type: "object"
+    properties:
+      nationality:
+        type: "string"
+      numberOfCustomers:
+        type: "integer"
+  CustomersPerGender:
+    type: "object"
+    properties:
+      gender:
+        type: "string"
+      numberOfCustomers:
+        type: "integer"
+  CustomersPerAgeRange:
+    type: "object"
+    properties:
+      ageRange:
+        type: "string"
+      numberOfCustomers:
+        type: "integer"
+  NumberOfSearchesPerWord:
+    type: "object"
+    properties:
+      word:
+        type: "string"
+      numberOfSearches:
+        type: "integer"
+  MenuForStatistics:
+    type: "object"
+    properties:
+      menuName:
+        type: "string"
+      rating:
+        type: "number"
+  StatisticsOfNationality:
+    type: "object"
+    properties:
+      customersPerGender:
+        type: "array"
+        items:
+          $ref: "#/definitions/CustomersPerGender"
+      customersPerAgeRange:
+        type: "array"
+        items:
+          $ref: "#/definitions/CustomersPerAgeRange"
+      numberOfSearchesPerWord:
+        type: "array"
+        items:
+          $ref: "#/definitions/NumberOfSearchesPerWord"
+      menusWithRatings:
+        type: "array"
+        items:
+          $ref: "#/definitions/MenuForStatistics"
+    example:
+      customersPerGender: [{"gender": "Male", "numberOfCustomers": 10}, {"gender": "Female", "numberOfCustomers": 8}, {"gender": "Other", "numberOfCustomers": 3}]
+      customersPerAgeRange: [{"ageRange": "18-25", "numberOfCustomers": 34}, {"ageRange": "25-35", "numberOfCustomers": 28}, {"ageRange": "35-50", "numberOfCustomers": 15}]
+      numberOfSearchesPerWord: [{"word": "Pasta", "numberOfSearches": 51}, {"word": "Pizza", "numberOfSearches": 83}, {"word": "Spaghetti", "numberOfSearches": 31}]
+      menusWithRatings: [{"menuName": "New menu", "rating": 3.4}, {"menuName": "Dinner menu", "rating": 4.2}, {"menuName": "Menu of the day", "rating": 5}, {"menuName": "Launch menu", "rating": 2}, {"menuName": "Exotic menu", "rating": 3.9}]
