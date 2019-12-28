@@ -17,6 +17,10 @@ module.exports = () => {
         console.error('FATAL ERROR: AWS_SECRET_ACCESS_KEY is not defined');
         return false;
     }
+    if (!config.get('companySecret')){
+        console.error('FATAL ERROR: companySecret is not defined');
+        return false;
+    }
     else return true;
 };
 

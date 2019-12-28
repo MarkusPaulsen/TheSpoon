@@ -89,8 +89,8 @@ router.put('/', auth, isOwner, findRestaurant, async (req, res) => {
                 {
                     where: {
                     Restaurant_ID: req.restaurant.Restaurant_ID
-                }
-            });
+                    }
+                });
 
             //delete old opening hours to recreate them
             await OpeningHours.destroy({
