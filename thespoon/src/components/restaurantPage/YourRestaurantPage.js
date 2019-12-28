@@ -52,134 +52,126 @@ class YourRestaurantPage extends Component {
     //<editor-fold desc="Component Lifecycle">
     componentDidMount() {
         this.props.setBackgroundPageHere(this);
-        this.setState({
-            token: window.localStorage.getItem("token"),
-            restaurantOwner: window.localStorage.getItem("restaurantOwner"),
-            toUpdate: false
-        },() => {
-            const thisTemp = this;
-            //<editor-fold desc="Handle Restaurant Observable">
-            this.$restaurant = ajax({
-                url: paths["restApi"]["restaurant"],
-                method: "GET",
-                headers: {"X-Auth-Token": thisTemp.state.token},
-                timeout: timeout,
-                responseType: "text"
-            })
-                .subscribe(
-                    (next) => {
-                        let response = JSON.parse(next.response);
-                        thisTemp.props.setRestaurantHere(response);
-                        thisTemp.setState({
-                            restaurant: response,
-                            restaurantMessage: ""
-                        });
-                    },
-                    (error) => {
-                        switch (error.name) {
-                            case "AjaxTimeoutError":
+        const thisTemp = this;
+        //<editor-fold desc="Handle Restaurant Observable">
+        this.$restaurant = ajax({
+            url: paths["restApi"]["restaurant"],
+            method: "GET",
+            headers: {"X-Auth-Token": thisTemp.state.token},
+            timeout: timeout,
+            responseType: "text"
+        })
+            .subscribe(
+                (next) => {
+                    let response = JSON.parse(next.response);
+                    thisTemp.props.setRestaurantHere(response);
+                    thisTemp.setState({
+                        restaurant: response,
+                        restaurantMessage: ""
+                    });
+                },
+                (error) => {
+                    switch (error.name) {
+                        case "AjaxTimeoutError":
+                            thisTemp.setState({
+                                restaurant: {},
+                                restaurantMessage: "" + "The request timed out.",
+                            });
+                            break;
+                        case "InternalError":
+                        case "AjaxError":
+                            if (error.status === 0 && error.response === "") {
                                 thisTemp.setState({
                                     restaurant: {},
-                                    restaurantMessage: "" + "The request timed out.",
+                                    restaurantMessage: "There is no connection to the server."
                                 });
-                                break;
-                            case "InternalError":
-                            case "AjaxError":
-                                if (error.status === 0 && error.response === "") {
-                                    thisTemp.setState({
-                                        restaurant: {},
-                                        restaurantMessage: "There is no connection to the server."
-                                    });
-                                } else if (error.status === 400) {
-                                    this.props.openAddRestaurantModal();
-                                    thisTemp.setState({
-                                        restaurant: {},
-                                        restaurantMessage: ""
-                                    });
-                                } else {
-                                    thisTemp.setState({
-                                        restaurant: {},
-                                        restaurantMessage: error.response
-                                    });
-                                }
-                                break;
-                            default:
-                                console.log(error);
+                            } else if (error.status === 400) {
+                                this.props.openAddRestaurantModal();
                                 thisTemp.setState({
                                     restaurant: {},
-                                    restaurantMessage: "Something is not like it is supposed to be."
+                                    restaurantMessage: ""
                                 });
-                                break;
-                        }
+                            } else {
+                                thisTemp.setState({
+                                    restaurant: {},
+                                    restaurantMessage: error.response
+                                });
+                            }
+                            break;
+                        default:
+                            console.log(error);
+                            thisTemp.setState({
+                                restaurant: {},
+                                restaurantMessage: "Something is not like it is supposed to be."
+                            });
+                            break;
                     }
-                );
-            //</editor-fold>
+                }
+            );
+        //</editor-fold>
 
-            //<editor-fold desc="Handle Menus Observable">
-            this.$menus = ajax({
-                url: paths["restApi"]["menu"],
-                method: "GET",
-                headers: {"X-Auth-Token": thisTemp.state.token},
-                timeout: timeout,
-                responseType: "text"
-            })
-                .subscribe(
-                    (next) => {
-                        let response = JSON.parse(next.response);
-                        thisTemp.setState({
-                            menus: response,
-                            menusMessage: ""
-                        });
-                    },
-                    (error) => {
-                        switch (error.name) {
-                            case "AjaxTimeoutError":
+        //<editor-fold desc="Handle Menus Observable">
+        this.$menus = ajax({
+            url: paths["restApi"]["menu"],
+            method: "GET",
+            headers: {"X-Auth-Token": thisTemp.state.token},
+            timeout: timeout,
+            responseType: "text"
+        })
+            .subscribe(
+                (next) => {
+                    let response = JSON.parse(next.response);
+                    thisTemp.setState({
+                        menus: response,
+                        menusMessage: ""
+                    });
+                },
+                (error) => {
+                    switch (error.name) {
+                        case "AjaxTimeoutError":
+                            thisTemp.setState({
+                                menus: [],
+                                menusMessage: "The request timed out."
+                            });
+                            break;
+                        case "InternalError":
+                        case "AjaxError":
+                            if (error.status === 0 && error.response === "") {
                                 thisTemp.setState({
                                     menus: [],
-                                    menusMessage: "The request timed out."
+                                    menusMessage: "There is no connection to the server."
                                 });
-                                break;
-                            case "InternalError":
-                            case "AjaxError":
-                                if (error.status === 0 && error.response === "") {
-                                    thisTemp.setState({
-                                        menus: [],
-                                        menusMessage: "There is no connection to the server."
-                                    });
-                                } else {
-                                    thisTemp.setState({
-                                        menus: [],
-                                        menusMessage: error.response
-                                    });
-                                }
-                                break;
-                            default:
-                                console.log(error);
+                            } else {
                                 thisTemp.setState({
                                     menus: [],
-                                    menusMessage: "Something is not like it is supposed to be."
+                                    menusMessage: error.response
                                 });
-                                break;
-                        }
+                            }
+                            break;
+                        default:
+                            console.log(error);
+                            thisTemp.setState({
+                                menus: [],
+                                menusMessage: "Something is not like it is supposed to be."
+                            });
+                            break;
                     }
-                );
-            //</editor-fold>
-        });
-    }
+                }
+            );
+        //</editor-fold>
+    };
 
     componentWillUnmount() {
         this.$restaurant.unsubscribe();
         this.$menus.unsubscribe();
-        this.setState({
-                token: null,
-                restaurantOwner: null,
-                toUpdate: false
-            });
         this.props.setBackgroundPageHere(null);
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (this.state.toUpdate) {
+            this.setState({
+                toUpdate: false
+            });
             this.componentWillUnmount();
             this.componentDidMount();
         }

@@ -40,7 +40,10 @@ class Menu extends Component {
                     })}
                 </div>
                 <div className="modal-button">
-                    <FilterLink filter={modalVisibilityFilters.SHOW_EDIT_MENU} currentMenu={this.props}><IconEditPink/>Edit menu</FilterLink>
+                    <FilterLink
+                        filter={modalVisibilityFilters.SHOW_EDIT_MENU}
+                        currentMenu={this.props}
+                    ><IconEditPink/>Edit menu</FilterLink>
                 </div>
                 <div className="row">
                     <div className="col"><hr/></div>
@@ -58,7 +61,10 @@ class Menu extends Component {
                     );
                 })}
                 <div className="modal-button">
-                    <FilterLink filter={modalVisibilityFilters.SHOW_ADD_DISH} currentMenu={this.props}><IconAddPink/> Add dish</FilterLink>
+                    <FilterLink
+                        filter={modalVisibilityFilters.SHOW_ADD_DISH}
+                        currentMenu={this.props}
+                    ><IconAddPink/> Add dish</FilterLink>
                 </div>
 
                 <div className="row">
@@ -77,7 +83,10 @@ class Menu extends Component {
                     );
                 })}
                 <div className="modal-button">
-                    <FilterLink filter={modalVisibilityFilters.SHOW_ADD_DRINK} currentMenu={this.props}><IconAddPink/> Add drink</FilterLink>
+                    <FilterLink
+                        filter={modalVisibilityFilters.SHOW_ADD_DRINK}
+                        currentMenu={this.props}
+                    ><IconAddPink/> Add drink</FilterLink>
                 </div>
             </div>
         );

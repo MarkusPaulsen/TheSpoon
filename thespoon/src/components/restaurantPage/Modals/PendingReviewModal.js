@@ -48,7 +48,7 @@ class PendingReviewModal extends Component {
         this.$reviews = ajax({
             url: paths["restApi"]["review"],
             method: "GET",
-            headers: {"X-Auth-Token": thisTemp.props.token},
+            headers: {"X-Auth-Token": thisTemp.state.token},
             timeout: timeout,
             responseType: "text"
         })
@@ -140,6 +140,7 @@ class PendingReviewModal extends Component {
                                 return (
                                     <ReviewItem
                                         reviewID={review.reviewID}
+                                        receiptPhotoLink={review.receiptPhotoLink}
                                         menuName={review.menuName}
                                         menuItemNames={review.menuItemNames}
                                         pendingReviewModal={this}

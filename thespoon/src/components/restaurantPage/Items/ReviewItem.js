@@ -23,6 +23,10 @@ class ReviewItem extends Component {
 
         this.handleDecline = this.handleDecline.bind(this);
         this.handleAccept = this.handleAccept.bind(this);
+
+        this.state = {
+            token: window.localStorage.getItem("token")
+        };
     }
     //</editor-fold>
 
@@ -35,7 +39,7 @@ class ReviewItem extends Component {
                 return ajax({
                     url: paths["restApi"]["review"] + "/" + this.props.reviewID,
                     method: "POST",
-                    headers: {"Content-Type": "application/json", "X-Auth-Token": this.props.token},
+                    headers: {"Content-Type": "application/json", "X-Auth-Token": this.state.token},
                     body: {
                         isApproved: false
                     },
@@ -77,7 +81,7 @@ class ReviewItem extends Component {
                 return ajax({
                     url: paths["restApi"]["review"] + "/" + this.props.reviewID,
                     method: "POST",
-                    headers: {"Content-Type": "application/json", "X-Auth-Token": this.props.token},
+                    headers: {"Content-Type": "application/json", "X-Auth-Token": this.state.token},
                     body: {
                         isApproved: true
                     },
@@ -118,7 +122,7 @@ class ReviewItem extends Component {
             <div className="reviewItem">
                 <div className="receipt-photo">
                     <div className="image-wrapper">
-                        <div className="image" style={{backgroundImage: `url(${this.props.imageLink})`}}/>
+                        <div className="image" style={{backgroundImage: `url(${this.props.receiptPhotoLink})`}}/>
                     </div>
                 </div>
                 <div className="mainContent">
