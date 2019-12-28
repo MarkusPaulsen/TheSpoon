@@ -15,6 +15,9 @@ const PENDING='Pending';
 const APPROVED='Approved';
 const DISAPPROVED='Disapproved';
 
+const AWS_IMAGE_STORAGE = "https://the-spoon.s3.eu-central-1.amazonaws.com/";
+
+
 //Return pending reviews
 router.get('/', auth, isOwner, findRestaurant, async (req, res) => {
 //     console.log('In GET /api/user/owner/restaurant/review')
@@ -121,6 +124,7 @@ const formatReviews = (reviewArr) => {
 
         let reviewID = reviewArr[i].Review_ID;
         let menuName = reviewArr[i].Menu.Name;
+        let receiptPhotoLink = AWS_IMAGE_STORAGE + reviewArr[i].Image_ID;
         let menuItemNames = [];
 
         for (let j = 0; j < reviewArr[i].Menu.MenuItems.length; j++) {
@@ -134,6 +138,7 @@ const formatReviews = (reviewArr) => {
 
         let review = {
             reviewID: reviewID,
+            receiptPhotoLink: receiptPhotoLink,
             menuName: menuName,
             menuItemNames: menuItemNames
         };
