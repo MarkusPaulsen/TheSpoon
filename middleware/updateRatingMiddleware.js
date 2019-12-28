@@ -10,7 +10,7 @@ module.exports = async (menuItems, menu) => {
     try {
         console.log('Inside updateRatingMiddleware.js');
         // Loop through modified items and update the ItemRating-attribute.
-        //TODO: This only maps through one menuitem
+        //TODO: This only maps throcugh one menuitem
         console.log(menuItems);
         menuItems = await Promise.all(menuItems);
         console.log(menuItems);
@@ -120,5 +120,4 @@ const computeMenuRating = (qualityAverage, serviceAverage, menuItemsAverage, nrM
     const beta = nrMenuItemRatings/totalRatings;
     const SandQAvg = (serviceAverage + qualityAverage)/2;
     return (SandQAvg*alpha + menuItemsAverage*beta).toFixed(2);
-
 };
