@@ -2,10 +2,13 @@ const express = require('express');
 const router = express();
 router.use(express.json());
 
+const bcrypt = require('bcrypt');
+
+
 const auth = require('../middleware/authorizationMiddleware.js');
 const isCustomer = require('../middleware/checkIfCustomerMiddleware.js');
 
-const Customer=require('../models/customer.js');
+const Customer = require('../models/customer.js');
 
 //These are needed for checking the the nationality of a customer.
 const {getNames} = require('country-list');
@@ -14,7 +17,7 @@ nationalities = getNames();
 
 router.get('/', auth, isCustomer, async (req, res) => {
     console.log('In GET /api/user/customer');
-    const username=req.username;
+    const username = req.username;
 
     try {
         const customer = await Customer.findOne({
@@ -33,12 +36,12 @@ router.get('/', auth, isCustomer, async (req, res) => {
 
         res.status(200).send(customerInfo);
 
-    }catch (error) {
+    } catch (error) {
         res.status(500).send('Internal server error');
     }
 });
 
-router.put('/', auth, isCustomer, async (req,res) => {
+router.put('/', auth, isCustomer, async (req, res) => {
     try {
         //check if the email is already taken (it must be unique)
         const customer = await Customer.findAll({
@@ -57,7 +60,7 @@ router.put('/', auth, isCustomer, async (req,res) => {
 
         // Check if the nationality is valid.
         let found = false;
-        for(let i = 0; i < nationalities.length; i++) {
+        for (let i = 0; i < nationalities.length; i++) {
             if (nationalities[i] === req.body.nationality) {
                 found = true;
                 break;
@@ -78,7 +81,7 @@ router.put('/', auth, isCustomer, async (req,res) => {
                 }
             });
 
-        //get the updated owner data to send it back as a response
+        //get the updated customer data to send it back as a response
         const customerModified = await Customer.findAll({
             where: {
                 Username: req.username
@@ -90,17 +93,17 @@ router.put('/', auth, isCustomer, async (req,res) => {
             gender: customerModified[0].dataValues.Gender,
             ageRange: customerModified[0].dataValues.AgeRange,
             nationality: customerModified[0].dataValues.Nationality
-            });
+        });
     } catch (error) {
         console.log(error);
         res.status(500).send('Internal server error.');
     }
 });
 
-//Delete profile of the owner
+//Delete profile of the customer
 router.delete('/', auth, isCustomer, async (req, res) => {
     try {
-        //because of the "on delete cascade", it will also destroy owner's restaurant, menus, menu items
+
         await Customer.destroy({
             where: {
                 Username: req.username
@@ -113,10 +116,44 @@ router.delete('/', auth, isCustomer, async (req, res) => {
     }
 });
 
+//Change password of the customer
+router.put('/password', auth, isCustomer, async (req, res) => {
+    try {
+        //check if the old password sent is correct
+        const oldPassword = await Customer.findOne({
+            attributes: ['Password'],
+            where: {
+                Username: req.username
+            }
+        });
+
+        const isValid = await bcrypt.compare(req.body.oldPassword, oldPassword.Password);
+        if (!isValid) return res.status(400).send("Old password doesn't match.");
+
+        //since the old password matches, it can be changed now
+        //hash the new password with a salt
+        const salt = await bcrypt.genSalt(10);
+        const hashed = await bcrypt.hash(req.body.newPassword, salt);
+        //update the password in the database
+        await Customer.update({
+                Password: hashed,
+            },
+            {
+                where: {
+                    Username: req.username
+                }
+            });
+
+        res.status(200).send();
+    } catch (error) {
+        console.log(error);
+        res.status(500).send('Internal server error.');
+    }
+});
 
 
 // Valid inputs for ageRange and Gender
-ageRanges = [ "< 18" , "18-24" , "24-34" , "35-49" , "50-64" , "65+"];
+ageRanges = ["< 18", "18-24", "24-34", "35-49", "50-64", "65+"];
 genders = ['Male', 'Female', 'Other'];
 
 module.exports = router;
