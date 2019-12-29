@@ -14,12 +14,12 @@ import {modalVisibilityFilters} from "../../constants/modalVisibiltyFilters";
 import FilterLink from "../../containers/FilterModalLink";
 //</editor-fold>
 //<editor-fold desc="Layout">
-import Layout from "./../layout/Layout.js"
-
+import Layout from "../layout/Layout"
 //</editor-fold>
 
 
 class Homepage extends Component {
+
     //<editor-fold desc="Constructor">
     constructor(props) {
         super(props);
@@ -28,8 +28,7 @@ class Homepage extends Component {
 
         this.state = {
             token: window.localStorage.getItem("token"),
-            restaurantOwner: window.localStorage.getItem("restaurantOwner"),
-            toUpdate: false
+            user: window.localStorage.getItem("user")
         }
     }
 
@@ -38,38 +37,33 @@ class Homepage extends Component {
     //<editor-fold desc="Component Lifecycle">
     componentDidMount() {
         this.props.setBackgroundPageHere(this);
+        this.state = {
+            token: window.localStorage.getItem("token"),
+            user: window.localStorage.getItem("user")
+        };
     }
 
     componentWillUnmount() {
         this.props.setBackgroundPageHere(null);
     }
 
-    componentDidUpdate(prevProps, prevState, snapshot) {
-        if (this.state.toUpdate) {
-            this.setState({
-                toUpdate: false
-            });
-            this.componentWillUnmount();
-            this.componentDidMount();
-        }
-    }
-
     //</editor-fold>
 
     //<editor-fold desc="Business Logic">
     update() {
-        this.setState({toUpdate: true});
-        this.forceUpdate()
+        window.location.reload();
     }
 
     //</editor-fold>
 
     //<editor-fold desc="Render">
     render() {
+        console.log(this.state)
         if (this.state.token == null
             || this.state.token === "null"
-            || this.state.restaurantOwner == null
-            || this.state.restaurantOwner === "null") {
+            || this.state.user == null
+            || this.state.user === "null") {
+            //<editor-fold desc="Render Null">
             return (
                 <Layout>
                     <div className="homepage-banner">
@@ -88,18 +82,28 @@ class Homepage extends Component {
                     </div>
                 </Layout>
             );
-        } else if (this.state.restaurantOwner === "false") {
+            //</editor-fold>
+        } else if (this.state.user === "Restaurant Owner") {
+            return (
+                <Redirect to={{pathname: "/YourRestaurant"}}/>
+            );
+        } else if (this.state.user === "Customer") {
             return (
                 <Redirect to={{pathname: "/CustomerMain"}}/>
             );
+        } else if (this.state.user === "Consultant") {
+            return (
+                <Redirect to={{pathname: "/Consultant"}}/>
+            );
         } else {
             return (
-                <Redirect to={{pathname: "/YourRestaurant"}}/>
+                <Redirect to={{pathname: "/ThisShouldNotHaveHappened"}}/>
             );
         }
     }
 
     //</editor-fold>
+
 }
 
 //<editor-fold desc="Redux">
@@ -112,4 +116,5 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 export default connect(null, mapDispatchToProps)(Homepage);
+
 //</editor-fold>

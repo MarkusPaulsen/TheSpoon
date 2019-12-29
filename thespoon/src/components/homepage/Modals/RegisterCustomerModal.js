@@ -106,10 +106,12 @@ class RegisterCustomerModal extends Component {
             validWhen: true,
             message: "Password confirmation has to be identical to the password."
         }]);
+
         //</editor-fold>
 
         //<editor-fold desc="Handler Function Registration">
         this.handleSubmit = this.handleSubmit.bind(this);
+
         //</editor-fold>
 
         this.state = {
@@ -117,10 +119,13 @@ class RegisterCustomerModal extends Component {
             validation: this.validator.valid(),
             serverMessage: "",
             submitted: false,
+            //<editor-fold desc="Register States">
             email: "",
             username: "",
             password: "",
             confirmPassword: ""
+
+            //</editor-fold>
         };
     }
 
@@ -179,7 +184,7 @@ class RegisterCustomerModal extends Component {
                 (next) => {
                     let response = JSON.parse(next.response);
                     window.localStorage.setItem("token", response.token);
-                    window.localStorage.setItem("restaurantOwner", "false");
+                    window.localStorage.setItem("user", "Customer");
                     thisTemp.props.backgroundPage.update();
                     thisTemp.props.onHide();
                 }, (error) => {
@@ -208,11 +213,13 @@ class RegisterCustomerModal extends Component {
 
     //<editor-fold desc="Render">
     render() {
-        if((this.state.token != null && this.state.token !== "null") || this.props.backgroundPage == null) {
+        let validation = this.submitted ? this.validator.validate(this.state) : this.state.validation;
+        if(this.props.backgroundPage == null) {
             return(<p>Something went wrong.</p>);
-        }
-        else {
-            let validation = this.submitted ? this.validator.validate(this.state) : this.state.validation;
+        } else if(this.state.token == null || this.state.token === "null" ) {
+            return(<p>Something went wrong.</p>);
+        } else {
+            //<editor-fold desc="Render Token">
             return (
                 <Modal.Body>
                 <span className="back"> <FilterLink
@@ -273,6 +280,7 @@ class RegisterCustomerModal extends Component {
                     </div>
                 </Modal.Body>
             );
+            //</editor-fold>
         }
     }
 
@@ -288,4 +296,5 @@ const mapStateToProps = (state) => {
 };
 
 export default connect(mapStateToProps, null)(RegisterCustomerModal);
+
 //</editor-fold>

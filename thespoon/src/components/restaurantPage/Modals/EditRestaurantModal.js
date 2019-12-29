@@ -79,6 +79,7 @@ class EditRestaurantModal extends Component {
             validWhen: true,
             message: "Only alphabetic countries are allowed."
         }*/]);
+
         //</editor-fold>
 
         //<editor-fold desc="Handler Function Registration">
@@ -90,6 +91,7 @@ class EditRestaurantModal extends Component {
         this.handleFileSubmit = this.handleFileSubmit.bind(this);
         this.handleFileDelete = this.handleFileDelete.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+
         //</editor-fold>
 
         this.state = {
@@ -97,6 +99,7 @@ class EditRestaurantModal extends Component {
             validation: this.validator.valid(),
             serverMessage: "",
             submitted: false,
+            //<editor-fold desc="Restaurant States">
             name: this.props.currentRestaurantInformation.name,
             address: this.props.currentRestaurantInformation.address,
             city: this.props.currentRestaurantInformation.city,
@@ -124,6 +127,8 @@ class EditRestaurantModal extends Component {
             selectedFile: null,
             imageID: this.props.currentRestaurantInformation.imageID,
             imageMessage: ""
+
+            //</editor-fold>
         }
     }
 
@@ -497,11 +502,13 @@ class EditRestaurantModal extends Component {
 
     //<editor-fold desc="Render">
     render() {
-        if ((this.state.token == null || this.state.token === "null") || this.props.backgroundPage == null) {
-            return (<p>Something went wrong.</p>);
-        }
-        else {
-            let validation = this.submitted ? this.validator.validate(this.state) : this.state.validation;
+        let validation = this.submitted ? this.validator.validate(this.state) : this.state.validation;
+        if(this.props.backgroundPage == null) {
+            return(<p>Something went wrong.</p>);
+        } else if(this.state.token == null || this.state.token === "null" ) {
+            return(<p>Something went wrong.</p>);
+        } else {
+            //<editor-fold desc="Render Token">
             return (
                 <Modal.Body>
                     <button className="exit" onClick={this.props.onHide}><IconExit/></button>
@@ -606,6 +613,7 @@ class EditRestaurantModal extends Component {
                     </div>
                 </Modal.Body>
             );
+            //</editor-fold>
         }
     }
 

@@ -10,6 +10,7 @@ import {Modal} from "react-bootstrap";
 
 //<editor-fold desc="Icons">
 import {IconExit} from "../../Icons";
+import FormValidator from "../../../validation/FormValidator";
 //</editor-fold>
 
 class LogOutModal extends Component {
@@ -18,32 +19,45 @@ class LogOutModal extends Component {
     constructor(props) {
         super(props);
 
+        //<editor-fold desc="Validator">
+        this.validator = new FormValidator([]);
+
+        //</editor-fold>
+
         //<editor-fold desc="Handler Function Registration">
         this.handleLogOut = this.handleLogOut.bind(this);
+
         //</editor-fold>
 
         this.state = {
-            token: window.localStorage.getItem("token")
+            token: window.localStorage.getItem("token"),
+            validation: this.validator.valid(),
+            serverMessage: "",
+            submitted: false
         };
     }
+
     //</editor-fold>
 
     //<editor-fold desc="Business Logic">
     handleLogOut = (event) => {
         event.preventDefault();
         window.localStorage.setItem("token", null);
-        window.localStorage.setItem("restaurantOwner", null);
+        window.localStorage.setItem("user", null);
         this.props.backgroundPage.update();
         this.props.onHide();
     };
+
     //</editor-fold>
 
     //<editor-fold desc="Render">
     render() {
-        if((this.state.token == null || this.state.token === "null") || this.props.backgroundPage == null) {
+        let validation = this.submitted ? this.validator.validate(this.state) : this.state.validation;
+        if(this.props.backgroundPage == null) {
             return(<p>Something went wrong.</p>);
-        }
-        else {
+        } else if(this.state.token == null || this.state.token === "null" ) {
+            return(<p>Something went wrong.</p>);
+        } else {
             return (
                 <Modal.Body>
                     <button className="exit" onClick={this.props.onHide}><IconExit /></button>
@@ -60,9 +74,10 @@ class LogOutModal extends Component {
                         </form>
                     </div>
                 </Modal.Body>
-            )
+            );
         }
     }
+
     //</editor-fold>
 }
 
@@ -73,5 +88,6 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps, null)(LogOutModal)
+export default connect(mapStateToProps, null)(LogOutModal);
+
 //</editor-fold>

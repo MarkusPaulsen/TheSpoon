@@ -1,13 +1,14 @@
 //<editor-fold desc="React">
 import React, {Component} from "react";
-import {Redirect} from "react-router-dom";
+import {Link, Redirect} from "react-router-dom";
 //</editor-fold>
 //<editor-fold desc="Redux">
 import {connect} from "react-redux";
 import {setBackgroundPage} from "../../actionCreators/BackgroundPageActionCreator";
+import MainLayout from "../layout/MainLayout";
 //</editor-fold>
 
-class CustomerMainPage extends Component {
+class FailPage extends Component {
 
     //<editor-fold desc="Constructor">
     constructor(props) {
@@ -51,18 +52,28 @@ class CustomerMainPage extends Component {
             || this.state.token === "null"
             || this.state.user == null
             || this.state.user === "null") {
+            //<editor-fold desc="Render No Token">
             return (
                 <Redirect to={{pathname: "/"}}/>
             );
+            //</editor-fold>
         } else if (this.state.user === "Restaurant Owner") {
+            //<editor-fold desc="Render Restaurant Owner">
             return (
-                <Redirect to={{pathname: "/YourRestaurant"}}/>
+                <MainLayout>
+                    <div className="mainpage-banner restaurant">
+                        <div className="container">
+                            <div className="row">
+                                <div className="col-sm-8">
+                                    <h1 className="title">Something went wrong.</h1>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </MainLayout>
             );
+            //</editor-fold>
         } else if (this.state.user === "Customer") {
-            return (
-                <Redirect to={{pathname: "/CustomerMain"}}/>
-            );
-        } else if (this.state.user === "Consultant") {
             //<editor-fold desc="Render Customer">
             return (
                 <div className="mainpage-banner">
@@ -70,8 +81,26 @@ class CustomerMainPage extends Component {
                         <div className="container">
                             <div className="row">
                                 <div className="col-sm-8">
-                                    <h1 className="title">Hello Customer</h1>
-                                    <label>You can now log in on you mobile app.</label>
+                                    <h1 className="title">Something went wrong.</h1>
+                                    <Link to="/CustomerMain">Go to Customer Main Page</Link>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+
+            //</editor-fold>
+        } else if (this.state.user === "Consultant") {
+            //<editor-fold desc="Render Consultant">
+            return (
+                <div className="mainpage-banner">
+                    <div className="mainpage-text">
+                        <div className="container">
+                            <div className="row">
+                                <div className="col-sm-8">
+                                    <h1 className="title">Something went wrong.</h1>
+                                    <Link to="/">Go to Consultant Main Page</Link>
                                 </div>
                             </div>
                         </div>
@@ -81,9 +110,22 @@ class CustomerMainPage extends Component {
 
             //</editor-fold>
         } else {
+            //<editor-fold desc="Render Fail">
             return (
-                <Redirect to={{pathname: "/ThisShouldNotHaveHappened"}}/>
+                <div className="mainpage-banner">
+                    <div className="mainpage-text">
+                        <div className="container">
+                            <div className="row">
+                                <div className="col-sm-8">
+                                    <h1 className="title">Something went wrong.</h1>
+                                    <Link to="/">Go to Login</Link>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             );
+            //</editor-fold>
         }
 
     }
@@ -101,6 +143,6 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(null, mapDispatchToProps)(CustomerMainPage);
+export default connect(null, mapDispatchToProps)(FailPage);
 
 //</editor-fold>

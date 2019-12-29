@@ -110,6 +110,7 @@ class EditMenuModal extends Component {
             validation: this.validator.valid(),
             serverMessage: "",
             submitted: false,
+            //<editor-fold desc="Menu States">
             name: this.props.menu.name,
             description: this.props.menu.description,
             tags: this.props.menu.tags.map((tag) => {
@@ -117,6 +118,8 @@ class EditMenuModal extends Component {
             }).reduce((total, tagName) => {
                 return total + tagName
             }).slice(0, -2)
+
+            //</editor-fold>
         };
     }
 
@@ -242,15 +245,18 @@ class EditMenuModal extends Component {
                 }
             );
     };
+
     //</editor-fold>
 
     //<editor-fold desc="Render">
     render() {
-        if((this.state.token == null || this.state.token === "null") || this.props.backgroundPage == null) {
+        let validation = this.submitted ? this.validator.validate(this.state) : this.state.validation;
+        if(this.props.backgroundPage == null) {
             return(<p>Something went wrong.</p>);
-        }
-        else {
-            let validation = this.state.submitted ? this.validator.validate(this.state) : this.state.validation;
+        } else if(this.state.token == null || this.state.token === "null" ) {
+            return(<p>Something went wrong.</p>);
+        } else {
+            //<editor-fold desc="Render Token">
             return (
                 <Modal.Body>
                     <button className="exit" onClick={this.props.onHide}><IconExit/></button>
@@ -289,6 +295,8 @@ class EditMenuModal extends Component {
                     </div>
                 </Modal.Body>
             );
+
+            //</editor-fold>
         }
     }
 

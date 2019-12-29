@@ -6,28 +6,23 @@ import Dashboard from "./components/DashboardPage/YourDashboardPage.js";
 import YourRestaurantPage from "./components/RestaurantPage/YourRestaurantPage.js";
 import Profile from "./components/ProfilePage/YourProfilePage.js";
 import CustomerMainPage from "./components/MainPage/CustomerMainPage";
+import FailPage from "./components/FailPage/FailPage";
 //import Navbar from "./components/layout/Navbar.js"
 
-/* the Spoon app browser */
-const NoMatch = ({ location }) => {
-    console.log(location)
-    return(<h1>Fail</h1>);
-};
-
 function App() {
-return (
-      <BrowserRouter>
-          {<CustomModal />}
-          <Switch>
-            <Route exact path="/" component={HomePage} />
-            <Route exact path="/Dashboard" component={Dashboard} />
-            <Route exact path="/YourRestaurant" component={YourRestaurantPage} />
-            <Route exact path="/Profile" component={Profile} />
-            <Route exact path="/CustomerMain" component={CustomerMainPage} />
-            <Route component={NoMatch}/>
-          </Switch>
-      </BrowserRouter>
-  );
+    return (
+        <BrowserRouter>
+            {<CustomModal />}
+            <Switch>
+                <Route exact path="/" component={HomePage} />
+                <Route exact path="/Dashboard" component={Dashboard} />
+                <Route exact path="/YourRestaurant" component={YourRestaurantPage} />
+                <Route exact path="/Profile" component={Profile} />
+                <Route exact path="/CustomerMain" component={CustomerMainPage} />
+                <Route component={FailPage}/>
+            </Switch>
+        </BrowserRouter>
+    );
 }
 
 export default App;

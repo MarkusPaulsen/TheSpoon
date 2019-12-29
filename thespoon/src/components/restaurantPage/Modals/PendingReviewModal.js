@@ -12,6 +12,7 @@ import {Modal} from "react-bootstrap";
 //</editor-fold>
 //<editor-fold desc="Validator">
 import Form from "react-validation/build/form";
+import FormValidator from "../../../validation/FormValidator";
 //</editor-fold>
 
 //<editor-fold desc="Constants">
@@ -30,20 +31,28 @@ class PendingReviewModal extends Component {
     constructor(props) {
         super(props);
 
+        //<editor-fold desc="Validator">
+        this.validator = new FormValidator([]);
+
+        //</editor-fold>
+
         //<editor-fold desc="Handler Function Registration">
         this.update = this.update.bind(this);
+
         //</editor-fold>
 
         this.state = {
             token: window.localStorage.getItem("token"),
-            reviews: null,
-            reviewsMessage: null,
-            toUpdate: false
+            validation: this.validator.valid(),
+            serverMessage: "",
+            submitted: false,
+            reviews: null
         };
     }
 
     //<editor-fold desc="Component Lifecycle">
     componentDidMount() {
+        //<editor-fold desc="Mount Reviews Observable">
         const thisTemp = this;
         this.$reviews = ajax({
             url: paths["restApi"]["review"],
@@ -57,7 +66,7 @@ class PendingReviewModal extends Component {
                     let response = JSON.parse(next.response);
                     thisTemp.setState({
                         reviews: response,
-                        reviewsMessage: ""
+                        serverMessage: ""
                     });
                 },
                 (error) => {
@@ -65,7 +74,7 @@ class PendingReviewModal extends Component {
                         case "AjaxTimeoutError":
                             thisTemp.setState({
                                 reviews: [],
-                                reviewsMessage: "" + "The request timed out.",
+                                serverMessage: "" + "The request timed out.",
                             });
                             break;
                         case "InternalError":
@@ -73,17 +82,17 @@ class PendingReviewModal extends Component {
                             if (error.status === 0 && error.response === "") {
                                 thisTemp.setState({
                                     reviews: [],
-                                    reviewsMessage: "There is no connection to the server."
+                                    serverMessage: "There is no connection to the server."
                                 });
                             } else if (error.status === 400) {
                                 thisTemp.setState({
                                     reviews: [],
-                                    reviewsMessage: ""
+                                    serverMessage: ""
                                 });
                             } else {
                                 thisTemp.setState({
                                     reviews: [],
-                                    reviewsMessage: error.response
+                                    serverMessage: error.response
                                 });
                             }
                             break;
@@ -97,26 +106,22 @@ class PendingReviewModal extends Component {
                     }
                 }
             );
+
+        //</editor-fold>
     }
 
     componentWillUnmount() {
+        //<editor-fold desc="Unmount Reviews Observable">
         this.$reviews.unsubscribe();
-    }
 
-    componentDidUpdate(prevProps, prevState, snapshot) {
-        if (this.state.toUpdate) {
-            this.setState({toUpdate: false});
-            this.componentWillUnmount();
-            this.componentDidMount();
-        }
+        //</editor-fold>
     }
 
     //</editor-fold>
 
     //<editor-fold desc="Business Logic">
     update() {
-        this.setState({toUpdate: true});
-        this.forceUpdate()
+        window.location.reload();
     }
 
     //</editor-fold>
@@ -125,39 +130,57 @@ class PendingReviewModal extends Component {
 
     //<editor-fold desc="Render">
     render() {
-        if((this.state.token == null || this.state.token === "null") || this.props.backgroundPage == null) {
+        let validation = this.submitted ? this.validator.validate(this.state) : this.state.validation;
+        if(this.props.backgroundPage == null) {
             return(<p>Something went wrong.</p>);
+        } else if(this.state.token == null || this.state.token === "null" ) {
+            return(<p>Something went wrong.</p>);
+        } else {
+            //<editor-fold desc="Render Token">
+            if(this.state.reviews == null) {
+                return (
+                    <Modal.Body>
+                        <button className="exit" onClick={this.props.onHide}><IconExit /></button>
+                        <p>Loading...</p>
+                    </Modal.Body>
+                );
+            } else {
+                return (
+                    <Modal.Body>
+                        <button className="exit" onClick={this.props.onHide}><IconExit /></button>
+                        <div className="error-block">
+                            <small>{this.state.serverMessage}</small>
+                        </div>
+                        <div className="modal-wrapper add-menu">
+                            <Form ref={(c) => {this.form = c; }} onSubmit={(e) => this.handleSubmit(e)}>
+                                <h2>Pending Reviews</h2>
+                                {this.state.reviews != null &&
+                                this.state.reviews.length >= 1 ? (
+                                    this.state.reviews.map(review => {
+                                        return (
+                                            <ReviewItem
+                                                reviewID={review.reviewID}
+                                                receiptPhotoLink={review.receiptPhotoLink}
+                                                menuName={review.menuName}
+                                                menuItemNames={review.menuItemNames}
+                                                pendingReviewModal={this}
+                                            />
+                                        );
+                                    })
+                                ) : (
+                                    <div className="no-menus">
+                                        <label>
+                                            Your restaurant doesnt have any reviews yet...
+                                        </label>
+                                    </div>
+                                )}
+                            </Form>
+                        </div>
+                    </Modal.Body>
+                );
+            }
+            //</editor-fold>
         }
-        return (
-            <Modal.Body>
-                <button className="exit" onClick={this.props.onHide}><IconExit /></button>
-                <div className="modal-wrapper add-menu">
-                    <Form ref={(c) => {this.form = c; }} onSubmit={(e) => this.handleSubmit(e)}>
-                        <h2>Pending Reviews</h2>
-                        {this.state.reviews != null &&
-                        this.state.reviews.length >= 1 ? (
-                            this.state.reviews.map(review => {
-                                return (
-                                    <ReviewItem
-                                        reviewID={review.reviewID}
-                                        receiptPhotoLink={review.receiptPhotoLink}
-                                        menuName={review.menuName}
-                                        menuItemNames={review.menuItemNames}
-                                        pendingReviewModal={this}
-                                    />
-                                );
-                            })
-                        ) : (
-                            <div className="no-menus">
-                                <label>
-                                    Your restaurant doesnt have any reviews yet...
-                                </label>
-                            </div>
-                        )}
-                    </Form>
-                </div>
-            </Modal.Body>
-        )
     }
     //</editor-fold>
 }

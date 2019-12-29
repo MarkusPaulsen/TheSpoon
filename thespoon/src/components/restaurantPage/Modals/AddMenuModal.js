@@ -98,10 +98,12 @@ class AddMenuModal extends Component {
             validWhen: true,
             message: "Each tag is required to be longer or equal 1 characters."
         }]);
+
         //</editor-fold>
 
         //<editor-fold desc="Handler Function Registration">
         this.handleSubmit = this.handleSubmit.bind(this);
+
         //</editor-fold>
 
         this.state = {
@@ -109,9 +111,11 @@ class AddMenuModal extends Component {
             validation: this.validator.valid(),
             serverMessage: "",
             submitted: false,
+            //<editor-fold desc="Menu States">
             name: "",
             description: "",
             tags: ""
+            //</editor-fold>
         };
     }
 
@@ -196,15 +200,18 @@ class AddMenuModal extends Component {
                 }
             );
     };
+
     //</editor-fold>
 
     //<editor-fold desc="Render">
     render() {
-        if((this.state.token == null || this.state.token === "null") || this.props.backgroundPage == null) {
+        let validation = this.submitted ? this.validator.validate(this.state) : this.state.validation;
+        if(this.props.backgroundPage == null) {
             return(<p>Something went wrong.</p>);
-        }
-        else {
-            let validation = this.state.submitted ? this.validator.validate(this.state) : this.state.validation;
+        } else if(this.state.token == null || this.state.token === "null" ) {
+            return(<p>Something went wrong.</p>);
+        } else {
+            //<editor-fold desc="Render Token">
             return (
                 <Modal.Body>
                     <button className="exit" onClick={this.props.onHide}><IconExit/></button>
@@ -242,8 +249,10 @@ class AddMenuModal extends Component {
                     </div>
                 </Modal.Body>
             );
+            //</editor-fold>
         }
     }
+
     //</editor-fold>
 
 }

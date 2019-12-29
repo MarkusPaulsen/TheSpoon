@@ -76,6 +76,7 @@ class AddRestaurantInfo extends Component {
             validWhen: true,
             message: "Only alphabetic countries are allowed."
         }*/]);
+
         //</editor-fold>
 
         //<editor-fold desc="Handler Function Registration">
@@ -87,6 +88,7 @@ class AddRestaurantInfo extends Component {
         this.handleFileSubmit = this.handleFileSubmit.bind(this);
         this.handleFileDelete = this.handleFileDelete.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+
         //</editor-fold>
 
         this.state = {
@@ -94,6 +96,7 @@ class AddRestaurantInfo extends Component {
             validation: this.validator.valid(),
             serverMessage: "",
             submitted: false,
+            //<editor-fold desc="Restaurant States">
             name: "",
             address: "",
             city: "",
@@ -106,6 +109,8 @@ class AddRestaurantInfo extends Component {
             selectedFile: null,
             imageID: 0,
             imageMessage: ""
+
+            //</editor-fold>
         }
     }
 
@@ -479,10 +484,13 @@ class AddRestaurantInfo extends Component {
 
     //<editor-fold desc="Render">
     render() {
-        if ((this.state.token == null || this.state.token === "null") || this.props.backgroundPage == null) {
-            return (<p>Something went wrong.</p>);
+        let validation = this.submitted ? this.validator.validate(this.state) : this.state.validation;
+        if(this.props.backgroundPage == null) {
+            return(<p>Something went wrong.</p>);
+        } else if(this.state.token == null || this.state.token === "null" ) {
+            return(<p>Something went wrong.</p>);
         } else {
-            let validation = this.submitted ? this.validator.validate(this.state) : this.state.validation;
+            //<editor-fold desc="Render Token">
             return (
                 <Modal.Body>
                     <div className="modal-wrapper restaurant-info">
@@ -586,6 +594,8 @@ class AddRestaurantInfo extends Component {
                     </div>
                 </Modal.Body>
             );
+
+            //</editor-fold>
         }
 
     }

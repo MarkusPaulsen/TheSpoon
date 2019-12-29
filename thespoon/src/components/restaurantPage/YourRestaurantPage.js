@@ -26,10 +26,11 @@ import MainLayout from "../layout/MainLayout.js";
 //<editor-fold desc="Components">
 import Sidebar from "./Items/Sidebar";
 import Menu from "./Items/Menu";
-
 //</editor-fold>
 
+
 class YourRestaurantPage extends Component {
+
     //<editor-fold desc="Constructor">
     constructor(props) {
         super(props);
@@ -38,12 +39,15 @@ class YourRestaurantPage extends Component {
 
         this.state = {
             token: window.localStorage.getItem("token"),
-            restaurantOwner: window.localStorage.getItem("restaurantOwner"),
-            toUpdate: false,
+            user: window.localStorage.getItem("user"),
+            //<editor-fold desc="State Restaurant">
             restaurant: null,
-            menus: null,
             restaurantMessage: "",
+            //</editor-fold>
+            //<editor-fold desc="State Menu">
+            menus: null,
             menusMessage: ""
+            //</editor-fold>
         };
     }
 
@@ -52,8 +56,12 @@ class YourRestaurantPage extends Component {
     //<editor-fold desc="Component Lifecycle">
     componentDidMount() {
         this.props.setBackgroundPageHere(this);
+        this.state = {
+            token: window.localStorage.getItem("token"),
+            user: window.localStorage.getItem("user")
+        };
         const thisTemp = this;
-        //<editor-fold desc="Handle Restaurant Observable">
+        //<editor-fold desc="Mount Restaurant Observable">
         this.$restaurant = ajax({
             url: paths["restApi"]["restaurant"],
             method: "GET",
@@ -108,9 +116,9 @@ class YourRestaurantPage extends Component {
                     }
                 }
             );
-        //</editor-fold>
 
-        //<editor-fold desc="Handle Menus Observable">
+        //</editor-fold>
+        //<editor-fold desc="Mount Menus Observable">
         this.$menus = ajax({
             url: paths["restApi"]["menu"],
             method: "GET",
@@ -158,31 +166,25 @@ class YourRestaurantPage extends Component {
                     }
                 }
             );
+
         //</editor-fold>
     };
 
     componentWillUnmount() {
-        this.$restaurant.unsubscribe();
+        //<editor-fold desc="Unmount Menus Observable">
         this.$menus.unsubscribe();
+        //</editor-fold>
+        //<editor-fold desc="Unmount Restaurant Observable">
+        this.$restaurant.unsubscribe();
+        //</editor-fold>
         this.props.setBackgroundPageHere(null);
-    }
-
-    componentDidUpdate(prevProps, prevState, snapshot) {
-        if (this.state.toUpdate) {
-            this.setState({
-                toUpdate: false
-            });
-            this.componentWillUnmount();
-            this.componentDidMount();
-        }
     }
 
     //</editor-fold>
 
     //<editor-fold desc="Business Logic">
     update() {
-        this.setState({toUpdate: true});
-        this.forceUpdate()
+        window.location.reload();
     }
 
     //</editor-fold>
@@ -191,82 +193,105 @@ class YourRestaurantPage extends Component {
     render() {
         if (this.state.token == null
             || this.state.token === "null"
-            || this.state.restaurantOwner == null
-            || this.state.restaurantOwner === "null") {
+            || this.state.user == null
+            || this.state.user === "null") {
             return (
                 <Redirect to={{pathname: "/"}}/>
             );
-        } else if(this.state.restaurantOwner === "false") {
-            return (
-                <Redirect to={{pathname: "/CustomerMain"}}/>
-            );
-        } else if (this.state.restaurant == null || this.state.menus == null) {
-            return (
-                <p>Loading...</p>
-            );
-        } else {
-            return (
-                <MainLayout>
-                    <div className="mainpage-banner restaurant">
-                        <div className="container">
-                            <div className="row">
-                                <div className="col-sm-4">
-                                    <Sidebar
-                                        name={this.state.restaurant.name}
-                                        address={this.state.restaurant.address}
-                                        city={this.state.restaurant.city}
-                                        country={this.state.restaurant.country}
-                                        imageLink={this.state.restaurant.imageLink}
-                                        openingHours={this.state.restaurant.openingHours}
-                                    />
-                                </div>
-                                <div className="col-sm-8">
-                                    <div className="error-block">
-                                        <small>{this.state.restaurantMessage}</small>
+        } else if (this.state.user === "Restaurant Owner") {
+            //<editor-fold desc="Render Restaurant Owner">
+            if(this.state.restaurant == null || this.state.menus == null) {
+                return (
+                    <MainLayout>
+                        <div className="mainpage-banner restaurant">
+                            <div className="container">
+                                <div className="row">
+                                    <div className="col-sm-8">
+                                        <h1>Loading...</h1>
                                     </div>
-                                    <div className="error-block">
-                                        <small>{this.state.menusMessage}</small>
-                                    </div>
-                                    <h3 className="title">Your menus</h3>
-                                    <div className="no-menus">
-                                        <h4>Your menu has pending reviews...</h4>
-                                        <button className="wide">
-                                            <FilterLink filter={modalVisibilityFilters.SHOW_PENDING_REVIEW}>
-                                                See Reviews
-                                            </FilterLink>
-                                        </button>
-                                    </div>
-                                    {typeof this.state.menus !== "undefined" &&
-                                    this.state.menus.length >= 1 ? (
-                                        this.state.menus.map(menu => {
-                                            return (
-                                                <Menu
-                                                    key={menu.menuID}
-                                                    menuID={menu.menuID}
-                                                    name={menu.name}
-                                                    tags={menu.tags}
-                                                    description={menu.description}
-                                                    menuItems={menu.menuItems}
-                                                />
-                                            );
-                                        })
-                                    ) : (
-                                        <div className="no-menus">
-                                            <label>
-                                                Your restaurant doesnt have any menus yet...
-                                            </label>
-                                        </div>
-                                    )}
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </MainLayout>
+                    </MainLayout>
+                );
+            } else {
+                return (
+                    <MainLayout>
+                        <div className="mainpage-banner restaurant">
+                            <div className="container">
+                                <div className="row">
+                                    <div className="col-sm-4">
+                                        <Sidebar
+                                            name={this.state.restaurant.name}
+                                            address={this.state.restaurant.address}
+                                            city={this.state.restaurant.city}
+                                            country={this.state.restaurant.country}
+                                            imageLink={this.state.restaurant.imageLink}
+                                            openingHours={this.state.restaurant.openingHours}
+                                        />
+                                    </div>
+                                    <div className="col-sm-8">
+                                        <div className="error-block">
+                                            <small>{this.state.restaurantMessage}</small>
+                                        </div>
+                                        <div className="error-block">
+                                            <small>{this.state.menusMessage}</small>
+                                        </div>
+                                        <h3 className="title">Your menus</h3>
+                                        <div className="no-menus">
+                                            <h4>Your menu has pending reviews...</h4>
+                                            <button className="wide">
+                                                <FilterLink filter={modalVisibilityFilters.SHOW_PENDING_REVIEW}>
+                                                    See Reviews
+                                                </FilterLink>
+                                            </button>
+                                        </div>
+                                        {typeof this.state.menus !== "undefined" &&
+                                        this.state.menus.length >= 1 ? (
+                                            this.state.menus.map(menu => {
+                                                return (
+                                                    <Menu
+                                                        key={menu.menuID}
+                                                        menuID={menu.menuID}
+                                                        name={menu.name}
+                                                        tags={menu.tags}
+                                                        description={menu.description}
+                                                        menuItems={menu.menuItems}
+                                                    />
+                                                );
+                                            })
+                                        ) : (
+                                            <div className="no-menus">
+                                                <label>
+                                                    Your restaurant doesnt have any menus yet...
+                                                </label>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </MainLayout>
+                );
+            }
+            //</editor-fold>
+        } else if (this.state.user === "Customer") {
+            return (
+                <Redirect to={{pathname: "/CustomerMain"}}/>
+            );
+        } else if (this.state.user === "Consultant") {
+            return (
+                <Redirect to={{pathname: "/Consultant"}}/>
+            );
+        } else {
+            return (
+                <Redirect to={{pathname: "/ThisShouldNotHaveHappened"}}/>
             );
         }
     }
 
     //</editor-fold>
+
 }
 
 //<editor-fold desc="Redux">
@@ -275,12 +300,14 @@ const mapDispatchToProps = (dispatch) => {
         setBackgroundPageHere: (backgroundPage) => {
             dispatch(setBackgroundPage(backgroundPage));
         },
+        //<editor-fold desc="Redux Restaurant">
         setRestaurantHere: (currentRestaurantInformation) => {
             dispatch(setCurrentRestaurantInformation(currentRestaurantInformation));
         },
         openAddRestaurantModal: () => {
             dispatch(setModalVisibilityFilterAction(modalVisibilityFilters.SHOW_ADD_RESTAURANT));
         }
+        //</editor-fold>
     };
 };
 

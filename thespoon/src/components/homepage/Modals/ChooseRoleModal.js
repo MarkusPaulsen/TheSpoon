@@ -10,12 +10,21 @@ import FormValidator from "../../../validation/FormValidator";
 
 
 class ChooseRoleModal extends Component {
+
     //<editor-fold desc="Constructor">
     constructor(props) {
         super(props);
 
+        //<editor-fold desc="Validator">
+        this.validator = new FormValidator([]);
+
+        //</editor-fold>
+
         this.state = {
-            token: window.localStorage.getItem("token")
+            token: window.localStorage.getItem("token"),
+            validation: this.validator.valid(),
+            serverMessage: "",
+            submitted: false
         };
     }
 
@@ -23,10 +32,13 @@ class ChooseRoleModal extends Component {
 
     //<editor-fold desc="Render">
     render() {
-        if((this.state.token != null && this.state.token !== "null") || this.props.backgroundPage == null) {
+        let validation = this.submitted ? this.validator.validate(this.state) : this.state.validation;
+        if(this.props.backgroundPage == null) {
             return(<p>Something went wrong.</p>);
-        }
-        else {
+        } else if(this.state.token == null || this.state.token === "null" ) {
+            return(<p>Something went wrong.</p>);
+        } else {
+            //<editor-fold desc="Render Token">
             return(
                 <Modal.Body>
                     <button className="exit" onClick={this.props.onHide}><IconExit /></button>
@@ -45,9 +57,12 @@ class ChooseRoleModal extends Component {
                     </div>
                 </Modal.Body>
             );
+            //</editor-fold>
         }
     }
+
     //</editor-fold>
+
 }
 
 //<editor-fold desc="Redux">
@@ -58,4 +73,5 @@ const mapStateToProps = (state) => {
 };
 
 export default connect(mapStateToProps, null)(ChooseRoleModal);
+
 //</editor-fold>

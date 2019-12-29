@@ -117,6 +117,7 @@ class EditMenuItemModal extends Component {
             validWhen: true,
             message: "Each tag is required to be longer or equal 1 characters."
         }]);
+
         //</editor-fold>
 
         //<editor-fold desc="Handler Function Registration">
@@ -124,6 +125,7 @@ class EditMenuItemModal extends Component {
         this.handleFileDelete = this.handleFileDelete.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleDelete = this.handleDelete.bind(this);
+
         //</editor-fold>
 
         this.state = {
@@ -131,6 +133,7 @@ class EditMenuItemModal extends Component {
             validation: this.validator.valid(),
             serverMessage: "",
             submitted: false,
+            //<editor-fold desc="Restaurant states">
             name: this.props.currentMenuItem.name,
             description: this.props.currentMenuItem.description,
             priceEuros: this.props.currentMenuItem.priceEuros,
@@ -142,6 +145,8 @@ class EditMenuItemModal extends Component {
             }).reduce((total, tagName) => {
                 return total + tagName
             }, "").slice(0, -1)
+
+            //</editor-fold>
         };
     }
 
@@ -385,14 +390,18 @@ class EditMenuItemModal extends Component {
                 }
             );
     };
+
     //</editor-fold>
 
     //<editor-fold desc="Render">
     render() {
-        if ((this.state.token == null || this.state.token === "null") || this.props.backgroundPage == null) {
-            return (<p>Something went wrong.</p>);
+        let validation = this.submitted ? this.validator.validate(this.state) : this.state.validation;
+        if(this.props.backgroundPage == null) {
+            return(<p>Something went wrong.</p>);
+        } else if(this.state.token == null || this.state.token === "null" ) {
+            return(<p>Something went wrong.</p>);
         } else {
-            let validation = !this.submitted ? this.state.validation : this.validator.validate(this.state);
+            //<editor-fold desc="Render Token">
             return (
                 <Modal.Body>
                     <button className="exit" onClick={this.props.onHide}><IconExit/></button>
@@ -461,6 +470,8 @@ class EditMenuItemModal extends Component {
                     </div>
                 </Modal.Body>
             );
+
+            //</editor-fold>
         }
     }
 

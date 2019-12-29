@@ -71,10 +71,12 @@ class LogInModal extends Component {
             validWhen: true,
             message: "Password is required to be longer or equal 5 characters."
         } ]);
+
         //</editor-fold>
 
         //<editor-fold desc="Handler Function Registration">
         this.handleSubmit = this.handleSubmit.bind(this);
+
         //</editor-fold>
 
         this.state = {
@@ -82,14 +84,19 @@ class LogInModal extends Component {
             validation: this.validator.valid(),
             serverMessage: "",
             submitted: false,
+            //<editor-fold desc="Login States">
             username: "",
             password: ""
+
+            //</editor-fold>
         };
     }
+
     //</editor-fold>
 
     //<editor-fold desc="Business Logic">
     handleSubmit = (event) => {
+        console.log("Step 1")
         event.preventDefault();
 
         const thisTemp = this;
@@ -146,7 +153,7 @@ class LogInModal extends Component {
                 (next) => {
                     let response = JSON.parse(next.response);
                     window.localStorage.setItem("token", response.token);
-                    window.localStorage.setItem("restaurantOwner", "true");
+                    window.localStorage.setItem("user", "Restaurant Owner");
                     thisTemp.props.backgroundPage.update();
                     thisTemp.props.onHide();
                 }, (error) => {
@@ -174,11 +181,11 @@ class LogInModal extends Component {
 
     //<editor-fold desc="Render">
     render() {
-        if((this.state.token != null && this.state.token !== "null") || this.props.backgroundPage == null) {
+        let validation = this.submitted ? this.validator.validate(this.state) : this.state.validation;
+        if(this.props.backgroundPage == null) {
             return(<p>Something went wrong.</p>);
-        }
-        else {
-            let validation = this.submitted ? this.validator.validate(this.state) : this.state.validation;
+        } else if(this.state.token == null || this.state.token === "null" ) {
+            //<editor-fold desc="Render No Token">
             return (
                 <Modal.Body>
                     <button className="exit" onClick={this.props.onHide}><IconExit/></button>
@@ -218,6 +225,10 @@ class LogInModal extends Component {
                     </div>
                 </Modal.Body>
             );
+
+            //</editor-fold>
+        } else {
+            return(<p>Something went wrong.</p>);
         }
     }
 
@@ -232,5 +243,6 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps, null)(LogInModal)
+export default connect(mapStateToProps, null)(LogInModal);
+
 //</editor-fold>
