@@ -1,9 +1,7 @@
 const Sequelize = require('sequelize');
 const db = require('../sequelizeSettings');
 
-const Search=require('./search.js');
-
-const Customer = db.define('Customer', {
+const Consultant = db.define('Consultant', {
     Username: {
         type: Sequelize.STRING,
         primaryKey: true
@@ -17,16 +15,10 @@ const Customer = db.define('Customer', {
     Surname: {
         type: Sequelize.STRING
     },
-    Nationality: {
-        type: Sequelize.STRING
-    },
-    AgeRange: {
-        type: Sequelize.STRING
-    },
     Email: {
         type: Sequelize.STRING
     },
-    Gender: {
+    CompanySecret: {
         type: Sequelize.STRING
     }
 }, {
@@ -34,8 +26,4 @@ const Customer = db.define('Customer', {
     timestamps: false
 });
 
-Search.belongsTo(Customer, {
-    foreignKey: 'Username'
-})
-
-module.exports = Customer;
+module.exports = Consultant;
