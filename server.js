@@ -26,13 +26,11 @@ const path = require("path");
 
 app.use(express.static(path.join(__dirname, "thespoon", "build")));
 
-/*
+
 app.get("*", (req, res) => {
     res.sendFile(path.join(__dirname, "thespoon", "build", "index.html"));
 
 });
-
-*/
 
 //END OF THE REQUIRED CODE TO MAKE THE DEPLOY WORK
 

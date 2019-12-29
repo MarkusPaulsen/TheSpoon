@@ -38,28 +38,17 @@ class Homepage extends Component {
     //<editor-fold desc="Component Lifecycle">
     componentDidMount() {
         this.props.setBackgroundPageHere(this);
-        this.setState({
-                token: window.localStorage.getItem("token"),
-                restaurantOwner: window.localStorage.getItem("restaurantOwner"),
-                toUpdate: false
-            },
-            () => {
-            });
     }
 
     componentWillUnmount() {
-        this.setState({
-                token: null,
-                restaurantOwner: null,
-                toUpdate: false
-            },
-            () => {
-            });
         this.props.setBackgroundPageHere(null);
     }
 
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (this.state.toUpdate) {
+            this.setState({
+                toUpdate: false
+            });
             this.componentWillUnmount();
             this.componentDidMount();
         }
@@ -77,7 +66,10 @@ class Homepage extends Component {
 
     //<editor-fold desc="Render">
     render() {
-        if (this.state.token == null || this.state.token === "null") {
+        if (this.state.token == null
+            || this.state.token === "null"
+            || this.state.restaurantOwner == null
+            || this.state.restaurantOwner === "null") {
             return (
                 <Layout>
                     <div className="homepage-banner">
@@ -98,11 +90,11 @@ class Homepage extends Component {
             );
         } else if (this.state.restaurantOwner === "false") {
             return (
-                <Redirect to={{pathname: "/CustomerMain/"}}/>
+                <Redirect to={{pathname: "/CustomerMain"}}/>
             );
         } else {
             return (
-                <Redirect to={{pathname: "/YourRestaurant/"}}/>
+                <Redirect to={{pathname: "/YourRestaurant"}}/>
             );
         }
     }

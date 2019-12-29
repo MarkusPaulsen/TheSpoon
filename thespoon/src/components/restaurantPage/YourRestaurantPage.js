@@ -189,13 +189,16 @@ class YourRestaurantPage extends Component {
 
     //<editor-fold desc="Render">
     render() {
-        if (this.state.token == null || this.state.token === "null") {
+        if (this.state.token == null
+            || this.state.token === "null"
+            || this.state.restaurantOwner == null
+            || this.state.restaurantOwner === "null") {
             return (
                 <Redirect to={{pathname: "/"}}/>
             );
         } else if(this.state.restaurantOwner === "false") {
             return (
-                <Redirect to={{pathname: "/CustomerMain/"}}/>
+                <Redirect to={{pathname: "/CustomerMain"}}/>
             );
         } else if (this.state.restaurant == null || this.state.menus == null) {
             return (
