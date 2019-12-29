@@ -14,17 +14,17 @@ import {Modal} from "react-bootstrap";
 import {modalVisibilityFilters} from "../constants/modalVisibiltyFilters";
 //</editor-fold>
 //<editor-fold desc="Modals">
-import LogInModal from "../components/HomePage/Modals/LogInModal";
-import LogOutModal from "../components/HomePage/Modals/LogOutModal";
-import RegisterRestaurantowner from "../components/HomePage/Modals/RegisterRestaurantOwnerModal";
+import LogInModal from "../components/Homepage/Modals/LogInModal";
+import LogOutModal from "../components/Homepage/Modals/LogOutModal";
+import RegisterRestaurantowner from "../components/Homepage/Modals/RegisterRestaurantOwnerModal";
 import AddRestaurantModal from "../components/RestaurantPage/Modals/AddRestaurantModal"
 import EditRestaurantModal from "../components/RestaurantPage/Modals/EditRestaurantModal";
 import AddMenuModal from "../components/RestaurantPage/Modals/AddMenuModal";
 import EditMenuModal from "../components/RestaurantPage/Modals/EditMenuModal";
 import AddMenuItemModal from "../components/RestaurantPage/Modals/AddMenuItemModal";
 import EditMenuItemModal from "../components/RestaurantPage/Modals/EditMenuItemModal";
-import ChooseRoleModal from "../components/HomePage/Modals/ChooseRoleModal";
-import RegisterCustomer from "../components/HomePage/Modals/RegisterCustomerModal";
+import ChooseRoleModal from "../components/Homepage/Modals/ChooseRoleModal";
+import RegisterCustomer from "../components/Homepage/Modals/RegisterCustomerModal";
 import PendingReviewModal from "../components/RestaurantPage/Modals/PendingReviewModal";
 //</editor-fold>
 

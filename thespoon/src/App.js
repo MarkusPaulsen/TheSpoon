@@ -1,6 +1,6 @@
 import React from "react";
 import {BrowserRouter, Switch, Route, Link} from "react-router-dom";
-import HomePage from "./components/homepage/Homepage";
+import HomePage from "./components/Homepage/Homepage";
 import CustomModal from "./containers/CustomModal";
 import Dashboard from "./components/DashboardPage/YourDashboardPage";
 import YourRestaurantPage from "./components/RestaurantPage/YourRestaurantPage";
