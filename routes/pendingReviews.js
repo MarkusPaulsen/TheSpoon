@@ -88,12 +88,13 @@ router.post('/:reviewID', auth, isOwner, findRestaurant, async (req, res) => {
                     Review_ID: reviewID
                 }
             });
+        /*
         if (status === APPROVED) {
             // const menuID = {Menu_ID: ownerReviewCheck.Menu_ID}
              // Also find every itemReview associated to the current menuReview
             // await updateRating(itemReviews, menuID)
         }
-
+        */
 
         //get pending reviews
         const reviews = await MenuReview.findAll({
