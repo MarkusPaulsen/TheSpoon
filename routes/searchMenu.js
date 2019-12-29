@@ -11,6 +11,7 @@ const Restaurant = require('../models/restaurants.js');
 const Tag = require('../models/tag.js');
 const ItemReview = require('../models/itemReview.js');
 const MenuReview = require('../models/menuReview.js');
+const OpeningHours = require('../models/openingHours.js');
 
 
 router.get('/:menuID', async (req, res) => {
@@ -22,6 +23,10 @@ router.get('/:menuID', async (req, res) => {
             },
             include: [{
                 model: Restaurant,
+                include: [{
+                    attributes: ['Day', 'OpenTime', 'CloseTime'],
+                    model: OpeningHours
+                }]
             }, {
                 model: TaggedMenu,
                 attributes: ['Tag'],
@@ -75,7 +80,8 @@ router.get('/:menuID', async (req, res) => {
                 city: menuInfo.Restaurant.City,
                 country: menuInfo.Restaurant.Country,
                 latitude: menuInfo.Restaurant.Latitude,
-                longitude: menuInfo.Restaurant.Longitude
+                longitude: menuInfo.Restaurant.Longitude,
+                openingHours: menuInfo.Restaurant.OpeningHours
             },
             menuName: menuInfo.Name,
             description: menuInfo.Description,
@@ -86,6 +92,7 @@ router.get('/:menuID', async (req, res) => {
 
         res.status(200).send(result);
     } catch (error){
+        console.log(error);
         res.status(500).send('Internal server error.');
     }
 });
