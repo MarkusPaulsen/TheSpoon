@@ -252,8 +252,6 @@ class RegisterRestaurantOwnerModal extends Component {
         if(this.props.backgroundPage == null) {
             return(<p>Something went wrong.</p>);
         } else if(this.state.token == null || this.state.token === "null" ) {
-            return(<p>Something went wrong.</p>);
-        } else {
             //<editor-fold desc="Render Token">
             return (
                 <Modal.Body>
@@ -326,6 +324,8 @@ class RegisterRestaurantOwnerModal extends Component {
                 </Modal.Body>
             );
             //</editor-fold>
+        } else {
+            return(<p>Something went wrong.</p>);
         }
     }
 
