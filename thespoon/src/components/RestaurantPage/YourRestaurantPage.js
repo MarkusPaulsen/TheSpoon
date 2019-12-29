@@ -248,7 +248,7 @@ class YourRestaurantPage extends Component {
                                         </div>
                                         {typeof this.state.menus !== "undefined" &&
                                         this.state.menus.length >= 1 ? (
-                                            this.state.menus.map(menu => {
+                                            this.state.menus.map((menu) => {
                                                 return (
                                                     <Menu
                                                         key={menu.menuID}

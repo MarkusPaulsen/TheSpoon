@@ -33,12 +33,12 @@ import {IconExit} from "../../Icons";
 
 
 const selectStyles = {
-    menu: () => ({
+    menu: () => {return {
         fontSize: 15,
         fontWeight: 500,
         textAlign: "left",
         backgroundColor: "#ffffff"
-    })
+    }}
 };
 
 class EditRestaurantModal extends Component {
@@ -143,7 +143,7 @@ class EditRestaurantModal extends Component {
                     selectedDay: selectedDay,
                     selectedOpeningHoursMessage: ""
                 });
-            }), catchError(error => {
+            }), catchError((error) => {
                 return error;
             }))
             .pipe(take(1))
@@ -167,7 +167,7 @@ class EditRestaurantModal extends Component {
                     selectedOpenTime: selectedOpenTime,
                     selectedOpeningHoursMessage: ""
                 });
-            }), catchError(error => {
+            }), catchError((error) => {
                 return error;
             }))
             .pipe(take(1))
@@ -191,7 +191,7 @@ class EditRestaurantModal extends Component {
                     selectedCloseTime: selectedCloseTime,
                     selectedOpeningHoursMessage: ""
                 });
-            }), catchError(error => {
+            }), catchError((error) => {
                 return error;
             }))
             .pipe(take(1))
@@ -217,7 +217,7 @@ class EditRestaurantModal extends Component {
                     openTime: thisTemp.state.selectedOpenTime,
                     closeTime: thisTemp.state.selectedCloseTime
                 };
-            }), catchError(error => {
+            }), catchError((error) => {
                 return error;
             }))
             .pipe(exhaustMap((newOpeningHours) => {
@@ -225,7 +225,7 @@ class EditRestaurantModal extends Component {
                     selectedOpeningHours: [...thisTemp.state.selectedOpeningHours, newOpeningHours],
                     selectedOpeningHoursMessage: ""
                 });
-            }), catchError(error => {
+            }), catchError((error) => {
                 return error;
             }))
             .pipe(take(1))
@@ -251,7 +251,7 @@ class EditRestaurantModal extends Component {
                     }),
                     selectedOpeningHoursMessage: ""
                 });
-            }), catchError(error => {
+            }), catchError((error) => {
                 return error;
             }))
             .pipe(take(1))
@@ -277,7 +277,7 @@ class EditRestaurantModal extends Component {
                     imageMessage: "",
                     selectedFile: fileTemp
                 });
-            }), catchError(error => {
+            }), catchError((error) => {
                 return error;
             }))
             .pipe(map(() => {
@@ -292,7 +292,7 @@ class EditRestaurantModal extends Component {
                         response: "Incorrect file type (" + fileTemp.type + "). Please only use image/png or image/jpeg."
                     });
                 }
-            }), catchError(error => {
+            }), catchError((error) => {
                 return error;
             }))
             .pipe(exhaustMap((formData) => {
@@ -304,7 +304,7 @@ class EditRestaurantModal extends Component {
                     timeout: timeout,
                     responseType: "text"
                 })
-            }), catchError(error => {
+            }), catchError((error) => {
                 return error;
             }))
             .pipe(take(1))
@@ -359,7 +359,7 @@ class EditRestaurantModal extends Component {
                     imageMessage: "",
                     selectedFile: null
                 });
-            }), catchError(error => {
+            }), catchError((error) => {
                 return error;
             }))
             .pipe(take(1))
@@ -381,7 +381,7 @@ class EditRestaurantModal extends Component {
         of(1)
             .pipe(map(() => {
                 return thisTemp.form.getValues();
-            }), catchError(error => {
+            }), catchError((error) => {
                 return error;
             }))
             .pipe(exhaustMap((values) => {
@@ -391,7 +391,7 @@ class EditRestaurantModal extends Component {
                     city: values.city,
                     country: values.country
                 });
-            }), catchError(error => {
+            }), catchError((error) => {
                 return error;
             }))
             .pipe(exhaustMap(() => {
@@ -402,7 +402,7 @@ class EditRestaurantModal extends Component {
                     selectedOpeningHoursMessage: "",
                     imageMessage: "",
                 });
-            }), catchError(error => {
+            }), catchError((error) => {
                 return error;
             }))
             .pipe(exhaustMap(() => {
@@ -430,7 +430,7 @@ class EditRestaurantModal extends Component {
                     return throwError({status: 0});
                 }
 
-            }), catchError(error => {
+            }), catchError((error) => {
                 return error;
             }))
             .pipe(exhaustMap((osmData) => {
@@ -466,7 +466,7 @@ class EditRestaurantModal extends Component {
                         response: "Location data cannot be calculated. Probably the location does not exist."
                     });
                 }
-            }), catchError(error => {
+            }), catchError((error) => {
                 return error;
             }))
             .pipe(take(1))

@@ -64,7 +64,7 @@ class CustomModal extends Component {
                 );
             case modalVisibilityFilters.SHOW_EDIT_RESTAURANT:
                 return (
-                    <EditRestaurantModal onHide={() => this.props.handleClose()} restaurant={ item }/>
+                    <EditRestaurantModal onHide={() => this.props.handleClose()} restaurant={item}/>
                 );
             case modalVisibilityFilters.SHOW_ADD_MENU:
                 return (
@@ -72,7 +72,7 @@ class CustomModal extends Component {
                 );
             case modalVisibilityFilters.SHOW_EDIT_MENU:
                 return (
-                    <EditMenuModal onHide={() => this.props.handleClose()} menu={ item }/>
+                    <EditMenuModal onHide={() => this.props.handleClose()} menu={item}/>
                 );
 
             case modalVisibilityFilters.SHOW_PENDING_REVIEW:
@@ -90,7 +90,7 @@ class CustomModal extends Component {
             case modalVisibilityFilters.SHOW_EDIT_DISH:
             case modalVisibilityFilters.SHOW_EDIT_DRINK:
                 return (
-                    <EditMenuItemModal onHide={() => this.props.handleClose()} menuItem={ item }/>
+                    <EditMenuItemModal onHide={() => this.props.handleClose()} menuItem={item}/>
                 );
             default:
                 return null;

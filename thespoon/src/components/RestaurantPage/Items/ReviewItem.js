@@ -18,7 +18,7 @@ import {timeout} from "../../../constants/timeout";
 
 class ReviewItem extends Component {
     //<editor-fold desc="Constructor">
-    constructor(props){
+    constructor(props) {
         super(props);
 
         this.handleDecline = this.handleDecline.bind(this);

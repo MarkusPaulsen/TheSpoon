@@ -159,7 +159,7 @@ class AddMenuItemModal extends Component {
                     imageMessage: "",
                     selectedFile: fileTemp
                 });
-            }), catchError(error => {
+            }), catchError((error) => {
                 return error;
             }))
             .pipe(map(() => {
@@ -174,7 +174,7 @@ class AddMenuItemModal extends Component {
                         response: "Incorrect file type (" + fileTemp.type + "). Please only use image/png or image/jpeg."
                     });
                 }
-            }), catchError(error => {
+            }), catchError((error) => {
                 return error;
             }))
             .pipe(exhaustMap((formData) => {
@@ -186,7 +186,7 @@ class AddMenuItemModal extends Component {
                     timeout: timeout,
                     responseType: "text"
                 })
-            }), catchError(error => {
+            }), catchError((error) => {
                 return error;
             }))
             .pipe(take(1))
@@ -241,7 +241,7 @@ class AddMenuItemModal extends Component {
                     imageMessage: "",
                     selectedFile: null
                 });
-            }), catchError(error => {
+            }), catchError((error) => {
                 return error;
             }))
             .pipe(take(1))
@@ -264,7 +264,7 @@ class AddMenuItemModal extends Component {
         of(1)
             .pipe(map(() => {
                 return thisTemp.form.getValues();
-            }), catchError(error => {
+            }), catchError((error) => {
                 return error;
             }))
             .pipe(exhaustMap((values) => {
@@ -274,7 +274,7 @@ class AddMenuItemModal extends Component {
                     priceEuros: parseInt(values.priceEuros),
                     tags: values.tags.split(",").map(tag => tag.trim())
                 });
-            }), catchError(error => {
+            }), catchError((error) => {
                 return error;
             }))
             .pipe(exhaustMap(() => {
@@ -283,7 +283,7 @@ class AddMenuItemModal extends Component {
                     submitted: true,
                     serverMessage: ""
                 });
-            }), catchError(error => {
+            }), catchError((error) => {
                 return error;
             }))
             .pipe(exhaustMap(() => {
@@ -313,7 +313,7 @@ class AddMenuItemModal extends Component {
                         response: null
                     });
                 }
-            }), catchError(error => {
+            }), catchError((error) => {
                 return error;
             }))
             .pipe(take(1))

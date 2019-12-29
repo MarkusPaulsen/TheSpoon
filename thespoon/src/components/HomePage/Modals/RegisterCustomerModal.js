@@ -102,7 +102,7 @@ class RegisterCustomerModal extends Component {
             message: "Password confirmation is required to be longer or equal 5 characters."
         }, {
             field: "confirmPassword",
-            method: (confirmPassword, state) => (confirmPassword === state.password),
+            method: (confirmPassword, state) => {return confirmPassword === state.password},
             validWhen: true,
             message: "Password confirmation has to be identical to the password."
         }]);
