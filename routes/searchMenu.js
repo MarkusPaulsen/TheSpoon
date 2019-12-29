@@ -73,6 +73,13 @@ router.get('/:menuID', async (req, res) => {
                 tags: tags
             }
         });
+        const openingHours =  await menuInfo.Restaurant.OpeningHours.map( oh => {
+            return {
+                day: oh.Day,
+                openTime: oh.OpenTime,
+                closeTime: oh.CloseTime
+            }
+        });
         const result = {
             restaurant: {
                 restaurantName: menuInfo.Restaurant.Name,
@@ -81,7 +88,7 @@ router.get('/:menuID', async (req, res) => {
                 country: menuInfo.Restaurant.Country,
                 latitude: menuInfo.Restaurant.Latitude,
                 longitude: menuInfo.Restaurant.Longitude,
-                openingHours: menuInfo.Restaurant.OpeningHours
+                openingHours: openingHours
             },
             menuName: menuInfo.Name,
             description: menuInfo.Description,
