@@ -14,7 +14,7 @@ import {modalVisibilityFilters} from "../../constants/modalVisibiltyFilters";
 import FilterLink from "../../containers/FilterModalLink";
 //</editor-fold>
 //<editor-fold desc="Layout">
-import Layout from "../layout/Layout"
+import Layout from "../Layout/Layout"
 //</editor-fold>
 
 

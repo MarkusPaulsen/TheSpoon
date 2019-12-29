@@ -8,7 +8,7 @@ import {setBackgroundPage} from "../../actionCreators/BackgroundPageActionCreato
 //</editor-fold>
 
 //<editor-fold desc="Layout">
-import MainLayout from "../layout/MainLayout.js";
+import MainLayout from "../Layout/MainLayout.js";
 //</editor-fold>
 
 

@@ -5,7 +5,7 @@ import {Link, Redirect} from "react-router-dom";
 //<editor-fold desc="Redux">
 import {connect} from "react-redux";
 import {setBackgroundPage} from "../../actionCreators/BackgroundPageActionCreator";
-import MainLayout from "../layout/MainLayout";
+import MainLayout from "../Layout/MainLayout";
 //</editor-fold>
 
 class FailPage extends Component {

@@ -21,7 +21,7 @@ import {timeout} from "../../constants/timeout"
 import FilterLink from "../../containers/FilterModalLink";
 //</editor-fold>
 //<editor-fold desc="Layout">
-import MainLayout from "../layout/MainLayout.js";
+import MainLayout from "../Layout/MainLayout.js";
 //</editor-fold>
 //<editor-fold desc="Components">
 import Sidebar from "./Items/Sidebar";
