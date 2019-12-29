@@ -1,10 +1,10 @@
 import React from "react";
 import {BrowserRouter, Switch, Route, Link} from "react-router-dom";
-import HomePage from "./components/homepage/Homepage.js";
+import HomePage from "./components/homepage/Homepage";
 import CustomModal from "./containers/CustomModal";
-import Dashboard from "./components/DashboardPage/YourDashboardPage.js";
-import YourRestaurantPage from "./components/RestaurantPage/YourRestaurantPage.js";
-import Profile from "./components/ProfilePage/YourProfilePage.js";
+import Dashboard from "./components/DashboardPage/YourDashboardPage";
+import YourRestaurantPage from "./components/RestaurantPage/YourRestaurantPage";
+import Profile from "./components/ProfilePage/YourProfilePage";
 import CustomerMainPage from "./components/mainPage/CustomerMainPage";
 import FailPage from "./components/FailPage/FailPage";
 //import Navbar from "./components/layout/Navbar.js"
