@@ -15,6 +15,8 @@ import * as Colors from "../../styles/colors";
 import * as Api from "../../services/api";
 import { AirbnbRating } from "react-native-ratings";
 import Icon from "react-native-vector-icons/MaterialIcons";
+import { Dimensions } from "react-native";
+import OpeningHours from "./OpeningHours";
 
 function MenuItem({
   menuItemName,
@@ -121,7 +123,8 @@ export default class Menu extends Component {
       dishItems: "",
       drinkItems: "",
       menuID: null,
-      restaurantImage: null
+      restaurantImage: null,
+      showOpeningHours: false
     };
   }
 
@@ -133,7 +136,10 @@ export default class Menu extends Component {
       "restaurantName",
       "default value"
     );
-    const restaurantImage = navigation.getParam("restaurantImage", "default value");
+    const restaurantImage = navigation.getParam(
+      "restaurantImage",
+      "default value"
+    );
     this.setState({ restaurantImage: restaurantImage });
     await this.getMenuItem(menuId, restaurantName);
   };
@@ -163,12 +169,20 @@ export default class Menu extends Component {
         score: index["rating"],
         type: index["type"]
       }));
+      const openingHours = [
+        { day: "Monday", openTime: "10.00", closeTime: "23.00" },
+        { day: "Tuesday", openTime: "10.00", closeTime: "23.00" },
+        { day: "Wednesday", openTime: "10.00", closeTime: "23.00" },
+        { day: "Thursday", openTime: "10.00", closeTime: "23.00" },
+        { day: "Friday", openTime: "10.00", closeTime: "23.00" }
+      ];
       const restaurantInfo = {
         latitude: parseFloat(responseJson["restaurant"]["latitude"]),
         longitude: parseFloat(responseJson["restaurant"]["longitude"]),
         address: responseJson["restaurant"]["address"],
         city: responseJson["restaurant"]["city"],
-        country: responseJson["restaurant"]["country"]
+        country: responseJson["restaurant"]["country"],
+        openingHours
       };
 
       const dishItems = [];
@@ -196,6 +210,7 @@ export default class Menu extends Component {
   }
 
   render() {
+    const screenWidth = Math.round(Dimensions.get("window").width);
     return (
       <SafeAreaView style={styles.container}>
         <ScrollView
@@ -376,6 +391,35 @@ export default class Menu extends Component {
                 />
               </View>
             ) : null}
+            <TouchableOpacity
+              style={{
+                flex: 1,
+                flexDirection: "row",
+                height: 50,
+                width: screenWidth * 0.9,
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginTop: 5
+              }}
+              onPress={() => this.setState({ showOpeningHours: true })}
+            >
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <Icon name={"access-time"} size={30} color={Colors.GRAY_DARK} />
+                <Text style={{ color: Colors.GRAY_DARK, marginLeft: 5 }}>
+                  Opening Hours
+                </Text>
+              </View>
+              <Icon
+                name={"keyboard-arrow-right"}
+                size={30}
+                color={Colors.GRAY_DARK}
+              />
+            </TouchableOpacity>
+            <OpeningHours
+              data={this.state.restaurantInfo.openingHours}
+              visible={this.state.showOpeningHours}
+              backButton={() => this.setState({ showOpeningHours: false })}
+            />
             <View style={{ flex: 1 }}>
               {this.state.isLoading ? (
                 <Text> No map to display </Text>
@@ -391,7 +435,7 @@ export default class Menu extends Component {
                     width: 360,
                     height: 270,
                     alignSelf: "center",
-                    marginTop: 30
+                    marginTop: 15
                   }}
                 >
                   <MapView.Marker
