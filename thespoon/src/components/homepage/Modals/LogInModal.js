@@ -176,7 +176,7 @@ class LogInModal extends Component {
 
                         <div className="input-field">
                             <IconName/>
-                            <Input type="username" name="username" placeholder="Username" id="loginFormUsername"/>
+                            <Input type="text" name="username" placeholder="Username" id="loginFormUsername"/>
                         </div>
                         <div className="error-block">
                             <small>{validation.username.message}</small>

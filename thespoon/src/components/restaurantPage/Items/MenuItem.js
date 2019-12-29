@@ -22,7 +22,7 @@ class MenuItem extends Component {
             <div className="foodItem">
                 <div className="image-setup">
                     <div className="image-wrapper">
-                        <img src={this.props.imageLink}/>
+                        <div className="image" style={{backgroundImage: `url(${this.props.imageLink})`}}/>
                     </div>
                 </div>
                 <div className="mainContent">
@@ -38,7 +38,7 @@ class MenuItem extends Component {
                         })}
                     </div>
                 </div>
-                <div className="price">{this.props.priceEuros}</div>
+                <div className="price">{this.props.priceEuros}€</div>
                 <div className="edit-button">
                     <FilterLink filter={this.props.type === "dish" ? modalVisibilityFilters.SHOW_EDIT_DISH : modalVisibilityFilters.SHOW_EDIT_DRINK} currentMenu={this.props.currentMenu} currentMenuItem={this.props} currentRestaurantPage={this.props.currentRestaurantPage}><IconEditGrey/></FilterLink>
                 </div>

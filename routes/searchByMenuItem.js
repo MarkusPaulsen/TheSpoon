@@ -13,8 +13,10 @@ const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
 router.get('/', async (req, res) => {
-    let matchingItems;
     try {
+        let matchingItems;
+        //TODO: Query should not be case sensitive.
+        //TODO: Validate input.
         matchingItems = await MenuItem.findAll({
             attributes: ['Name', 'Menu_ID'],
             where: {
@@ -68,7 +70,7 @@ router.get('/', async (req, res) => {
 
         res.status(200).send(result);
     } catch (error) {
-        res.status(404).send(error + ' :(');
+        res.status(500).send('Internal server error.');
     }
 });
 
@@ -120,4 +122,3 @@ const deg2rad = (deg) => {
 };
 
 module.exports = router;
-

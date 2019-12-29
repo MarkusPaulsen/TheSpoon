@@ -20,12 +20,13 @@ class Sidebar extends Component {
     //<editor-fold desc="Render">
     render() {
         return (
-            <div className="sidebar">
-                <div className="image-setup">
-                    <div className="image-wrapper">
-                        <div className="image" style={{backgroundImage: `url(${this.props.imageLink})`}}/>
+            <div className="sidebar-hover">
+                <div className="sidebar">
+                    <div className="image-setup">
+                        <div className="image-wrapper">
+                            <div className="image" style={{backgroundImage: `url(${this.props.imageLink})`}}/>
+                        </div>
                     </div>
-                </div>
                 <h4 className="title">{this.props.name}</h4>
                 <div className="part">
                     <IconLocationTurqoise/>
@@ -49,7 +50,13 @@ class Sidebar extends Component {
                     </ul>
                 </div>
                 <div className="modal-button">
-                    <FilterLink filter={modalVisibilityFilters.SHOW_EDIT_RESTAURANT}><IconEditPink/>Edit information</FilterLink>
+                    <FilterLink filter={modalVisibilityFilters.SHOW_EDIT_RESTAURANT} currentRestaurantInformation={this.props} currentRestaurantPage={this.props.currentRestaurantPage}><IconEditPink/>Edit information</FilterLink>
+                </div>
+                </div>
+                <div className="sidebar-bottom">
+                    <button className="wide">
+                        <FilterLink filter={modalVisibilityFilters.SHOW_ADD_MENU} currentRestaurantInformation={this.props} currentRestaurantPage={this.props.currentRestaurantPage}>Create new menu</FilterLink>
+                    </button>
                 </div>
             </div>
         );

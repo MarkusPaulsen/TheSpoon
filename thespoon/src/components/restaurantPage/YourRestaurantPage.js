@@ -10,6 +10,7 @@ import {exhaustMap, catchError} from "rxjs/operators";
 //<editor-fold desc="Redux">
 import {connect} from "react-redux";
 import {setModalVisibilityFilterAction} from "../../actionCreators/modalVisibilityFilterActionCreators";
+import {setRestaurantInformation} from "../../actionCreators/restaurantActionCreators";
 //</editor-fold>
 
 //<editor-fold desc="Constants">
@@ -26,7 +27,7 @@ import MainLayout from "../layout/MainLayout.js";
 //<editor-fold desc="Components">
 import Sidebar from "./Items/Sidebar";
 import Menu from "./Items/Menu";
-
+import {setCurrentRestaurantPage} from "../../actionCreators/CurrentMenuActionCreators";
 //</editor-fold>
 
 class YourRestaurantPage extends Component {
@@ -267,10 +268,10 @@ class YourRestaurantPage extends Component {
                                             country={this.state.restaurant.country}
                                             imageLink={this.state.restaurant.imageLink}
                                             openingHours={this.state.restaurant.openingHours}
+                                            currentRestaurantPage={this}
                                         />
                                     </div>
                                     <div className="col-sm-8">
-                                        <button type="button" onClick={this.update}>update</button>
                                         <div className="error-block">
                                             <small>{this.state.serverMessageFinishedLoadingRestaurantData}</small>
                                         </div>
@@ -279,9 +280,10 @@ class YourRestaurantPage extends Component {
                                         </div>
                                         <h3 className="title">Your menus</h3>
                                         <div className="no-menus">
+                                            <h4>Your menu has pending reviews...</h4>
                                             <button className="wide">
-                                                <FilterLink filter={modalVisibilityFilters.SHOW_ADD_MENU} currentRestaurantPage={this}>
-                                                    Create new menu
+                                                <FilterLink filter={modalVisibilityFilters.SHOW_PENDING_REVIEW} currentRestaurantPage={this}>
+                                                    See Reviews
                                                 </FilterLink>
                                             </button>
                                         </div>
@@ -330,9 +332,10 @@ const mapStateToProps = (state) => {
     };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch, ownProps) => {
     return {
         openRestaurantConfiguration: () => {
+            dispatch(setRestaurantInformation(ownProps));
             dispatch(setModalVisibilityFilterAction(modalVisibilityFilters.SHOW_ADD_RESTAURANT));
         }
     };

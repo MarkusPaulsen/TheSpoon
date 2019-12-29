@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { StyleSheet, Text, View, TouchableOpacity, Alert } from "react-native";
 
-export default class customizedButton extends Component {
+export default class CustomizedButton extends Component {
     setNativeProps = (nativeProps) => {
         this._root.setNativeProps(nativeProps);
     }

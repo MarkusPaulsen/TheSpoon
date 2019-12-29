@@ -23,11 +23,10 @@ import FormValidator from "../../../validation/FormValidator";
 //<editor-fold desc="Constants">
 import {paths} from "../../../constants/paths";
 import {modalVisibilityFilters} from "../../../constants/modalVisibiltyFilters";
+import {timeout} from "../../../constants/timeout";
 //</editor-fold>
 //<editor-fold desc="Icons">
 import {IconExit} from "../../Icons";
-import {timeout} from "../../../constants/timeout";
-
 //</editor-fold>
 
 
@@ -124,7 +123,7 @@ class AddMenuItemModal extends Component {
             name: "",
             description: "",
             priceEuros: 0,
-            type: "",
+            type: this.props.modalVisibilityFilter === modalVisibilityFilters.SHOW_ADD_DISH ? "dish" : "drink",
             imageID: 0,
             imageMessage: "",
             tags: "",
@@ -141,7 +140,7 @@ class AddMenuItemModal extends Component {
         const thisTemp = this;
         thisTemp.setState({imageMessage: "", selectedFile: null});
         let file = event.target.files[0];
-        if (["image/png", "image/jpeg"].includes(file.type)) {
+        if(["image/png", "image/jpeg"].includes(file.type)) {
             let formData = new FormData();
             formData.append("image", file);
             let reader = new FileReader();
@@ -223,9 +222,7 @@ class AddMenuItemModal extends Component {
                     name: values.name,
                     description: values.description,
                     priceEuros: parseInt(values.priceEuros),
-                    type: thisTemp.props.modalVisibilityFilter === modalVisibilityFilters.SHOW_ADD_DISH ? "dish" : "drink",
-                    imageID: thisTemp.state.imageID,
-                    tags: values.tags.split(",").map(tag => tag.trim()),
+                    tags: values.tags.split(",").map(tag => tag.trim())
                 });
             }))
             .pipe(exhaustMap(() => {
@@ -239,7 +236,9 @@ class AddMenuItemModal extends Component {
                 if (thisTemp.state.validation.isValid) {
                     thisTemp.setState({serverMessage: "New dish is added"});
                     return ajax({
-                        url: paths["restApi"]["menu"] + "/" + thisTemp.props.currentMenu.menuID + "/" + "menuItem",
+                        url: paths["restApi"]["menu"] + "/"
+                            + thisTemp.props.currentMenu.menuID + "/"
+                            + "menuItem",
                         method: "POST",
                         headers: {"Content-Type": "application/json", "X-Auth-Token": thisTemp.props.token},
                         body: {
@@ -264,8 +263,8 @@ class AddMenuItemModal extends Component {
             .pipe(take(1))
             .subscribe(
                 () => {
-                    thisTemp.props.currentMenu.currentRestaurantPage.setState({toUpdate: true});
-                    thisTemp.props.currentMenu.currentRestaurantPage.forceUpdate();
+                    thisTemp.props.currentRestaurantPage.setState({toUpdate: true});
+                    thisTemp.props.currentRestaurantPage.forceUpdate();
                     thisTemp.props.onHide();
                 }, (error) => {
                     switch (error.name) {
@@ -353,7 +352,7 @@ class AddMenuItemModal extends Component {
 
                         <div className="input-field">
                             <label>Tags</label>
-                            <Input type="tags" name="tags" placeholder="Tags"/>
+                            <Input type="text" name="tags" placeholder="Tags"/>
                         </div>
                         <div className="error-block">
                             <small>{validation.tags.message}</small>

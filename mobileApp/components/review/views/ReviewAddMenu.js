@@ -44,7 +44,7 @@ export default class ReviewAddMenu extends Component {
         method: "GET",
         headers: {
           accept: "application/json",
-          "x-auth-token": JSON.parse(token)
+          "x-auth-token": token
         }
       });
       const responseJson = await response.json();

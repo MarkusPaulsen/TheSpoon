@@ -275,7 +275,7 @@ class RegisterRestaurantOwnerModal extends Component {
 
                         <div className="input-field name">
                             <IconName/>
-                            <Input type="text" name="name" placeholder="Name"/>
+                            <Input type="text" name="name" placeholder="First name"/>
                             <Input type="text" name="surname" placeholder="Surname"/>
                         </div>
                         <div className="error-block">
@@ -301,9 +301,6 @@ class RegisterRestaurantOwnerModal extends Component {
                         </div>
 
                         <Button type="submit" className="normal">Sign up</Button>
-                        {/*<button className="normal">
-                        <FilterLink filter={modalVisibilityFilters.SHOW_RESTAURANT_INFORMATION}>Continue</FilterLink>
-                    </button>*/}
                         <div className="error-block">
                             <small>{this.state.serverMessage}</small>
                         </div>

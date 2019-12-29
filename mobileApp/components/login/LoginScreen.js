@@ -10,9 +10,9 @@ import {
 } from "react-native";
 import Validate from "./validation.js";
 import validate from "./validation";
-import Profile from "../profile/profile";
+import Profile from "../profile/Profile";
 import * as Api from "../../services/api";
-import * as Colors  from "../../styles/colors";
+import * as Colors from "../../styles/colors";
 import Icon from "react-native-vector-icons/MaterialIcons";
 
 export default class LoginScreen extends Component {
@@ -32,7 +32,6 @@ export default class LoginScreen extends Component {
 
   componentDidMount = async () => {
     this.focusListener = this.props.navigation.addListener("didFocus", () => {
-      //this.getToken();
       const parent = this.props.navigation.getParam("parent", "Profile");
       this.setState({ parent });
     });
@@ -58,11 +57,10 @@ export default class LoginScreen extends Component {
         },
         body: data
       });
-      const responseText = await res.text();
       if (res.ok) {
-        const jsonResponse = JSON.parse(responseText);
+        const jsonResponse = await res.json();
         this.setState({ token: jsonResponse.token });
-        this.storeToken(JSON.stringify(jsonResponse.token));
+        this.storeToken(jsonResponse.token);
         console.log("Token is set to: ", this.state.token);
         this.props.navigation.navigate(this.state.parent);
       }
@@ -70,7 +68,7 @@ export default class LoginScreen extends Component {
         this.setState({ invalidError: true });
       }
     } catch (e) {
-      console.error("Error logging in: ", e);
+      console.log("Error logging in: ", e);
     }
   }
 
@@ -97,18 +95,9 @@ export default class LoginScreen extends Component {
 
   async storeToken(user) {
     try {
-      await AsyncStorage.setItem("userToken",user);
+      await AsyncStorage.setItem("userToken", user);
     } catch (e) {
       console.log("Error storing token: ", e);
-    }
-  }
-
-  async getToken(user) {
-    try {
-      const token = await AsyncStorage.getItem("userToken");
-      const data = JSON.parse(token);
-    } catch (e) {
-      console.log("Error getting token: ", e);
     }
   }
 
@@ -117,7 +106,7 @@ export default class LoginScreen extends Component {
       <View style={styles.container}>
         <Text style={styles.text}>Log in</Text>
         <View style={{ flex: 2, justifyContent: "space-around" }}>
-          <View style={{ flexDirection: "row", alignItems:"baseline"}}>
+          <View style={{ flexDirection: "row", alignItems: "baseline" }}>
             <Icon name="email" size={30} color={Colors.PINK} />
             <TextInput
               placeholder={"Username"}
@@ -132,7 +121,7 @@ export default class LoginScreen extends Component {
               error={this.state.usernameError}
               style={styles.textInput}
             />
-            <Text style={{color: Colors.PINK }}>
+            <Text style={{ color: Colors.PINK }}>
               {this.state.usernameError ? "*" : null}
             </Text>
           </View>
@@ -151,7 +140,7 @@ export default class LoginScreen extends Component {
               secureTextEntry={true}
               style={styles.textInput}
             />
-            <Text style={{color:Colors.PINK}}>
+            <Text style={{ color: Colors.PINK }}>
               {this.state.passwordError ? "*" : null}
             </Text>
           </View>
@@ -219,7 +208,7 @@ const styles = StyleSheet.create({
   },
   registrationButton: {
     color: Colors.TURQUOISE,
-    fontFamily:"robotoBold",
+    fontFamily: "robotoBold",
     marginLeft: 5
   },
   registration: {

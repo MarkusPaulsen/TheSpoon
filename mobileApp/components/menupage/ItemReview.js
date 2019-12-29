@@ -66,7 +66,7 @@ export default class ItemReview extends Component {
         console.log("Failed");
       }
     } catch (e) {
-      console.error(e);
+      console.log(e);
     }
   }
 

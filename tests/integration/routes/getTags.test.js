@@ -33,8 +33,8 @@ describe('api/user/owner/tag', () => {
 
         let token;
 
-        const exec = () => {
-          return request(app)
+        const exec = async () => {
+          return await request(app)
               .get('/api/user/owner/tag')
               .set('x-auth-token', token)
         };
