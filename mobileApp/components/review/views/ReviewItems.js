@@ -33,24 +33,16 @@ export default class ReviewItems extends Component {
     this.setState({ imageID, menuItems, menuID, menuName, restaurant, token });
   };
 
-  setRatingCount(rating, item, itemID) {
+  setRatingCount(rating, item) {
     item.rating = rating;
 
-    const menuItems = this.state.menuItems.filter(e => e.menuItemID !== itemID);
-    const updatedMenuItems = menuItems.concat(item);
-
-    this.setState({ menuItems: updatedMenuItems });
-    this.state.reviewedScores.push(item);
-    if (this.state.reviewedScores.length === this.state.menuItems.length) {
+    if (this.state.menuItems.every(e => e.rating !== null)) {
       this.setState({ disableButton: false });
     }
   }
 
-  onChangeText(text, item, itemID) {
+  onChangeText(text, item) {
     item.content = text;
-    const menuItems = this.state.menuItems.filter(e => e.menuItemID !== itemID);
-    const updatedMenuItems = menuItems.concat(item);
-    this.setState({ menuItems: updatedMenuItems });
   }
 
   render() {
@@ -85,7 +77,7 @@ export default class ReviewItems extends Component {
                   size={30}
                   selectedColor={Colors.PINK}
                   onFinishRating={rating =>
-                    this.setRatingCount(rating, item, item.menuItemID)
+                    this.setRatingCount(rating, item)
                   }
                 />
                 <View style={styles.textBox}>
@@ -96,7 +88,7 @@ export default class ReviewItems extends Component {
                     placeholder={"Review"}
                     textAlignVertical={"top"}
                     onChangeText={text =>
-                      this.onChangeText(text, item, item.menuItemID)
+                      this.onChangeText(text, item)
                     }
                   />
                 </View>
