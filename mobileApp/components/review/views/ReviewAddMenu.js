@@ -21,7 +21,7 @@ export default class ReviewAddMenu extends Component {
       menuName: null,
       restaurant: null,
       imageID: null,
-      backgroundColor: "#FFFFFF",
+      backgroundColor: Colors.WHITE,
       colorIndex: 2,
       menus: "",
       token: null

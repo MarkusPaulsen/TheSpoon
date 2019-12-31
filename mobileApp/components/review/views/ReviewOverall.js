@@ -5,7 +5,8 @@ import {
   StyleSheet,
   AsyncStorage,
   Alert,
-  TouchableOpacity
+  TouchableOpacity,
+  SafeAreaView
 } from "react-native";
 import * as Typography from "../../../styles/typography";
 import * as Colors from "../../../styles/colors";
@@ -115,14 +116,14 @@ export default class ReviewOverall extends Component {
       );
     };
     return (
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <View>
+          <BackButton navigation={this.props.navigation} />
           <View style={styles.header}>
             <Text style={[Typography.FONT_H3_BLACK, { textAlign: "center" }]}>
-              What's your overall{"\n"}impression?
+              What's your overall impression?
             </Text>
           </View>
-          <BackButton navigation={this.props.navigation} />
         </View>
         <View style={{ alignItems: "center", flex: 5 }}>
           <Text
@@ -195,7 +196,7 @@ export default class ReviewOverall extends Component {
             <Circles colorIndex={this.state.colorIndex} />
           </View>
         )}
-      </View>
+      </SafeAreaView>
     );
   }
 }
@@ -206,11 +207,7 @@ const styles = StyleSheet.create({
     marginTop: 50
   },
   header: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
+    top: 20,
     justifyContent: "center",
     alignItems: "center"
   },

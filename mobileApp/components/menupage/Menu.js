@@ -205,7 +205,7 @@ export default class Menu extends Component {
 
   render() {
     return (
-      <SafeAreaView style={styles.container}>
+      <View style={styles.container}>
         <ScrollView
           contentContainerStyle={{
             flexGrow: 1,
@@ -216,7 +216,7 @@ export default class Menu extends Component {
             <View>
               <Image
                 source={{ uri: this.state.restaurantImage }}
-                style={{ width: 370, height: 180, justifyContent: "center" }}
+                style={{ width: 380, height: 180, justifyContent: "center"}}
               />
               <View style={{ marginTop: 40, position: "absolute" }}>
                 <TouchableOpacity
@@ -421,7 +421,7 @@ export default class Menu extends Component {
             </View>
           </SafeAreaView>
         </ScrollView>
-      </SafeAreaView>
+      </View>
     );
   }
 }

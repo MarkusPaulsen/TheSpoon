@@ -28,7 +28,9 @@ class ReviewAddImage extends Component {
       loggedIn: false,
       isLoaded: false,
       imageID: null,
-      token: null
+      token: null,
+      alertReceived: false,
+      uploadingImage: false
     };
   }
   componentDidMount = async () => {
@@ -62,7 +64,7 @@ class ReviewAddImage extends Component {
               <Text style={Typography.FONT_H2_BLACK}>Write </Text>
               <Text style={Typography.FONT_H2_PINK}>Review</Text>
             </View>
-            <View style={{ flex: 3 }}>
+            <View style={{ flex: 4 }}>
               {imageUrl ? (
                 <TouchableOpacity
                   onPress={() => this._onOpenActionSheet()}
@@ -72,7 +74,7 @@ class ReviewAddImage extends Component {
                     source={{ uri: imageUrl }}
                     style={{
                       width: 250,
-                      height: 350,
+                      height: 300,
                       alignSelf: "center",
                       marginTop: 30
                     }}
@@ -100,6 +102,13 @@ class ReviewAddImage extends Component {
                 </View>
               )}
             </View>
+            {!this.state.alertReceived && this.state.uploadingImage ? (
+              <View style={{ flex: 1 }}>
+                <Text style={Typography.FONT_SMALL_PINK}>
+                  Photo is uploading, please wait
+                </Text>
+              </View>
+            ) : null}
             <ContinueButton
               disableButton={this.state.disableButton}
               navigation={this.props}
@@ -184,6 +193,7 @@ class ReviewAddImage extends Component {
 
   async postImage() {
     try {
+      this.setState({ uploadingImage: true });
       const token = this.state.token;
       const data = this.createFormData(this.state.imageUrl);
       const response = await fetch(Api.SERVER_POST_IMAGE, {
@@ -196,8 +206,13 @@ class ReviewAddImage extends Component {
       });
       if (response.ok) {
         const responseText = await response.json();
-        Alert.alert("Upload success!");
-        this.setState({ imageID: responseText.imageID, disableButton: false });
+        await Alert.alert("Upload success!");
+        this.setState({
+          imageID: responseText.imageID,
+          disableButton: false,
+          alertReceived: true,
+          uploadingImage: false
+        });
       }
       if (!response.ok) {
         Alert.alert("Upload failed");

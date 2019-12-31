@@ -18,7 +18,7 @@ export default class ReviewAddItems extends Component {
     this.state = {
       disableButton: true,
       menuItemName: null,
-      backgroundColor: "#FFFFFF",
+      backgroundColor: Colors.WHITE,
       colorIndex: 3,
       menuItems: "",
       imageID: null,
