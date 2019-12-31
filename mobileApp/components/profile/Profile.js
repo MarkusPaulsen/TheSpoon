@@ -112,25 +112,25 @@ export default class Profile extends Component {
           "x-auth-token": token
         }
       });
-      const responseJson = await response.json();
-      const reviews = responseJson.map(index => ({
-        menuReviewID: index.menuReviewID.toString(),
-        menuID: index.menuID,
-        menuName: index.menuName,
-        restaurantName: index.restaurantName,
-        serviceRating: index.serviceRating,
-        qualityOverPriceRating: index.qualityOverPriceRating,
-        date: index.date,
-        receiptImageID: index.receiptImageID,
-        status: index.status,
-        menuItemsReviews: index.menuItemsReviews
-      }));
       if (response.ok) {
+        const responseJson = await response.json();
+        const reviews = responseJson.map(index => ({
+          menuReviewID: index.menuReviewID.toString(),
+          menuID: index.menuID,
+          menuName: index.menuName,
+          restaurantName: index.restaurantName,
+          serviceRating: index.serviceRating,
+          qualityOverPriceRating: index.qualityOverPriceRating,
+          date: index.date,
+          receiptImageID: index.receiptImageID,
+          status: index.status,
+          menuItemsReviews: index.menuItemsReviews
+        }));
         this.setState({ reviews });
         console.log("Success fetching reviews");
       }
       if (!response.ok) {
-        console.log("Fetching reviews failed");
+        console.log("Failed fetching reviews");
       }
     } catch (error) {
       console.log("Error fetching reviews: ", error);
@@ -146,13 +146,12 @@ export default class Profile extends Component {
           "x-auth-token": token
         }
       });
-      const responseJson = await response.json();
       if (response.ok) {
-        console.log("Deletion success, ", responseJson);
+        console.log("Deletion success, ");
         Alert.alert("Review deleted");
       }
       if (!response.ok) {
-        console.log("Deletion failed, ", responseJson);
+        console.log("Deletion failed, ");
         Alert.alert("Deletion failed");
       }
     } catch (error) {
@@ -375,7 +374,9 @@ export default class Profile extends Component {
       return props.navigation.navigate("Login", { parent: "Profile" });
     };
     if (!this.state.isLoaded) {
-      return <ActivityIndicator style={{ alignSelf: "center", marginTop: 150 }} />;
+      return (
+        <ActivityIndicator style={{ alignSelf: "center", marginTop: 150 }} />
+      );
     }
     if (this.state.isLoaded) {
       if (this.state.loggedIn) {

@@ -70,13 +70,12 @@ export default class ReviewOverall extends Component {
         },
         body: data
       });
-      const responseText = await response.text();
       if (response.ok) {
         console.log("Review was posted successfully!");
         Alert.alert("Review success!");
       }
       if (!response.ok) {
-        console.log("Review failed", responseText);
+        console.log("Review failed");
         Alert.alert("Submitting review failed!");
       }
     } catch (e) {

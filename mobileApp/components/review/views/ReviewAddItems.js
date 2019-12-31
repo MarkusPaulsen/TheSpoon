@@ -50,12 +50,17 @@ export default class ReviewAddItems extends Component {
           "x-auth-token": token
         }
       });
-      const responseJson = await response.json();
-      const menuItems = responseJson.map(index => ({
-        menuItemID: index.menuItemID.toString(),
-        menuItemName: index.name
-      }));
-      this.setState({ menuItems });
+      if (response.ok) {
+        const responseJson = await response.json();
+        const menuItems = responseJson.map(index => ({
+          menuItemID: index.menuItemID.toString(),
+          menuItemName: index.name
+        }));
+        this.setState({ menuItems });
+      }
+      if (!response.ok) {
+        console.log("Failed fetching menuItems");
+      }
     } catch (e) {
       console.log("ERROR fetching menuItems", e);
     }

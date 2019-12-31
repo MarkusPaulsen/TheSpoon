@@ -47,12 +47,12 @@ export default class ReviewAddMenu extends Component {
           "x-auth-token": token
         }
       });
-      const responseJson = await response.json();
-      const menus = responseJson.map(index => ({
-        menuID: index.menuID.toString(),
-        menuName: index.name
-      }));
       if (response.ok) {
+        const responseJson = await response.json();
+        const menus = responseJson.map(index => ({
+          menuID: index.menuID.toString(),
+          menuName: index.name
+        }));
         this.setState({ menus });
       }
       if (!response.ok) {

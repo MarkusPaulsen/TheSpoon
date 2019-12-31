@@ -170,8 +170,8 @@ export default class Search extends Component {
         method: "GET",
         accept: "application/json"
       });
-      const responseJson = await response.json();
       if (response.ok) {
+        const responseJson = await response.json();
         const searchResults = responseJson.map(index => ({
           id: index.menu.menuID.toString(),
           menuName: index.menu.name,
@@ -186,7 +186,6 @@ export default class Search extends Component {
       }
       if (!response.ok) {
         this.setState({ searchResults: null });
-        // TODO: Add error message
       }
     } catch (e) {
       console.error(e);

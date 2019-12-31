@@ -133,7 +133,10 @@ export default class Menu extends Component {
       "restaurantName",
       "default value"
     );
-    const restaurantImage = navigation.getParam("restaurantImage", "default value");
+    const restaurantImage = navigation.getParam(
+      "restaurantImage",
+      "default value"
+    );
     this.setState({ restaurantImage: restaurantImage });
     await this.getMenuItem(menuId, restaurantName);
   };
@@ -144,52 +147,57 @@ export default class Menu extends Component {
         method: "GET",
         accept: "application/json"
       });
-      const responseJson = await response.json();
-      const menuInfo = {
-        id: menuId,
-        restaurantName,
-        menuName: responseJson["menuName"],
-        menuDescription: responseJson["description"],
-        tags: responseJson["tags"],
-        score: responseJson["menuRating"]
-      };
-      const menuItems = responseJson["menuItems"].map(index => ({
-        id: index["menuItemID"].toString(),
-        menuItemName: index["name"],
-        menuItemDescription: index["description"],
-        priceEuros: index["priceEuros"],
-        menuItemImage: index["imageLink"],
-        tags: index["tags"],
-        score: index["rating"],
-        type: index["type"]
-      }));
-      const restaurantInfo = {
-        latitude: parseFloat(responseJson["restaurant"]["latitude"]),
-        longitude: parseFloat(responseJson["restaurant"]["longitude"]),
-        address: responseJson["restaurant"]["address"],
-        city: responseJson["restaurant"]["city"],
-        country: responseJson["restaurant"]["country"]
-      };
+      if (response.ok) {
+        const responseJson = await response.json();
+        const menuInfo = {
+          id: menuId,
+          restaurantName,
+          menuName: responseJson["menuName"],
+          menuDescription: responseJson["description"],
+          tags: responseJson["tags"],
+          score: responseJson["menuRating"]
+        };
+        const menuItems = responseJson["menuItems"].map(index => ({
+          id: index["menuItemID"].toString(),
+          menuItemName: index["name"],
+          menuItemDescription: index["description"],
+          priceEuros: index["priceEuros"],
+          menuItemImage: index["imageLink"],
+          tags: index["tags"],
+          score: index["rating"],
+          type: index["type"]
+        }));
+        const restaurantInfo = {
+          latitude: parseFloat(responseJson["restaurant"]["latitude"]),
+          longitude: parseFloat(responseJson["restaurant"]["longitude"]),
+          address: responseJson["restaurant"]["address"],
+          city: responseJson["restaurant"]["city"],
+          country: responseJson["restaurant"]["country"]
+        };
 
-      const dishItems = [];
-      const drinkItems = [];
+        const dishItems = [];
+        const drinkItems = [];
 
-      menuItems.map(item => {
-        if (item.type == "dish") {
-          dishItems.push(item);
-        } else if (item.type == "drink") {
-          drinkItems.push(item);
-        }
-      });
+        menuItems.map(item => {
+          if (item.type == "dish") {
+            dishItems.push(item);
+          } else if (item.type == "drink") {
+            drinkItems.push(item);
+          }
+        });
 
-      this.setState({
-        menuInfo,
-        menuItems,
-        dishItems,
-        drinkItems,
-        restaurantInfo,
-        isLoading: false
-      });
+        this.setState({
+          menuInfo,
+          menuItems,
+          dishItems,
+          drinkItems,
+          restaurantInfo,
+          isLoading: false
+        });
+      }
+      if (!response.ok) {
+        console.log("Error fetching the menu");
+      }
     } catch (e) {
       console.log(e);
     }
