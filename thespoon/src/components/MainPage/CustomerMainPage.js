@@ -7,12 +7,7 @@ import {connect} from "react-redux";
 import {setBackgroundPage} from "../../actionCreators/BackgroundPageActionCreator";
 //</editor-fold>
 
-//<editor-fold desc="Layout">
-import MainLayout from "../Layout/MainLayout.js";
-//</editor-fold>
-
-
-class YourDashboardPage extends Component {
+class CustomerMainPage extends Component {
 
     //<editor-fold desc="Constructor">
     constructor(props) {
@@ -25,6 +20,7 @@ class YourDashboardPage extends Component {
             user: window.localStorage.getItem("user")
         }
     }
+
     //</editor-fold>
 
     //<editor-fold desc="Component Lifecycle">
@@ -34,8 +30,7 @@ class YourDashboardPage extends Component {
             token: window.localStorage.getItem("token"),
             user: window.localStorage.getItem("user")
         };
-
-    };
+    }
 
     componentWillUnmount() {
         this.props.setBackgroundPageHere(null);
@@ -48,7 +43,7 @@ class YourDashboardPage extends Component {
         window.location.reload();
     }
 
-//</editor-fold>
+    //</editor-fold>
 
     //<editor-fold desc="Render">
     render() {
@@ -60,52 +55,37 @@ class YourDashboardPage extends Component {
                 <Redirect to={{pathname: "/"}}/>
             );
         } else if (this.state.user === "Restaurant Owner") {
-            //<editor-fold desc="Render Restaurant Owner">
-            if (false) {
-                return (
-                    <MainLayout>
-                        <div className="mainpage-banner restaurant">
-                            <div className="container">
-                                <div className="row">
-                                    <div className="col-sm-8">
-                                        <h1>Loading...</h1>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </MainLayout>
-                );
-            } else {
-                return (
-                    <MainLayout>
-                        <div className="mainpage-banner">
-                            <div className="mainpage-text">
-                                <div className="container">
-                                    <div className="row">
-                                        <div className="col-sm-8">
-                                            <h1 className="title">This is your dashboard</h1>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </MainLayout>
-                );
-            }
-            //</editor-fold>
+            return (
+                <Redirect to={{pathname: "/YourRestaurant"}}/>
+            );
         } else if (this.state.user === "Customer") {
             return (
                 <Redirect to={{pathname: "/CustomerMain"}}/>
             );
         } else if (this.state.user === "Consultant") {
+            //<editor-fold desc="Render Customer">
             return (
-                <Redirect to={{pathname: "/Consultant"}}/>
+                <div className="mainpage-banner">
+                    <div className="mainpage-text">
+                        <div className="container">
+                            <div className="row">
+                                <div className="col-sm-8">
+                                    <h1 className="title">Hello Customer</h1>
+                                    <label>You can now log in on you mobile app.</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             );
+
+            //</editor-fold>
         } else {
             return (
                 <Redirect to={{pathname: "/ThisShouldNotHaveHappened"}}/>
             );
         }
+
     }
 
     //</editor-fold>
@@ -121,5 +101,6 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(null, mapDispatchToProps)(YourDashboardPage);
+export default connect(null, mapDispatchToProps)(CustomerMainPage);
+
 //</editor-fold>
