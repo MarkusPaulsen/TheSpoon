@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 const db = require('../sequelizeSettings');
 const Menu = require('./menu');
-
+const OpeningHours = require('./openingHours.js');
 
 const Restaurant = db.define('Restaurant', {
         Restaurant_ID: {
@@ -38,5 +38,10 @@ const Restaurant = db.define('Restaurant', {
         timestamps: false
     }
 );
+
+Restaurant.hasMany(OpeningHours, {
+    foreignKey: 'Restaurant_ID'
+});
+
 
 module.exports = Restaurant;
