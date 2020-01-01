@@ -16,7 +16,6 @@ const OpeningHours = require('../models/openingHours.js');
 
 router.get('/:menuID', async (req, res) => {
     try {
-        //TODO: Validate input.
         let menuInfo = await Menu.findOne({
             where: {
                 Menu_ID: req.params.menuID
