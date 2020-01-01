@@ -102,7 +102,7 @@ class CustomModal extends Component {
     render() {
         if(this.props.modalVisibilityFilter !== modalVisibilityFilters.HIDE_ALL) {
             return(
-                <Modal show={true} onHide={() => this.props.handleClose()} centered>
+                <Modal show={true} onHide={() => this.props.handleClose()} backdrop="static" centered>
                     {this.getVisibleModal(this.props.modalVisibilityFilter, this.props.currentMenu)}
                 </Modal>
             );
