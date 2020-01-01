@@ -12,6 +12,13 @@ const findRestaurant = require('../middleware/findRestaurantOfOwnerMiddleware.js
 
 //Configure data of the restaurant
 router.post('/', auth, isOwner, async (req, res) => {
+    const restaurant = await Restaurant.findOne ({
+        where: {
+            Owner: req.username
+        }
+    });
+    if (restaurant > 0) return res.status(400).send('The owner already has a restaurant.');
+
     const latlong = await openGeocoder()
         .geocode(req.body.address + ', ' + req.body.city)
         .end(async (err, geo) => {

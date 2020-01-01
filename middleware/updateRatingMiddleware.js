@@ -10,12 +10,13 @@ module.exports = async (menuItems, menu) => {
     try {
         console.log('Inside updateRatingMiddleware.js');
         // Loop through modified items and update the ItemRating-attribute.
-        //TODO: This only maps throcugh one menuitem
-        console.log(menuItems);
+
         menuItems = await Promise.all(menuItems);
-        console.log(menuItems);
+
         menuItems = await menuItems.map(async mi => {
-            console.log('MenuItemID: ' + mi.menuItemID);
+            // TODO: This should only return ItemReviews with status "Approved"
+            // [Op.and]: [{MI_ID: mi.menuItemID}, {Status: 'Approved'}]
+
             const reviews = await ItemReview.findAll({
                 attributes: ['ItemRating'],
                 where: {
@@ -52,6 +53,8 @@ module.exports = async (menuItems, menu) => {
 
         let menuItemsRating = await averageRating(mir, 'Rating');
         // Find the new ratings of the Menu
+        // TODO: This should only return approved reviews.
+        // [Op.and]: [{Menu_ID: menu.Menu_ID}, {Status: 'Approved'}]
         let menuReviews = await MenuReview.findAll({
             attributes: ['ServiceRating', 'QualityRating'],
             where: {

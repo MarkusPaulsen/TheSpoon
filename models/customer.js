@@ -34,8 +34,8 @@ const Customer = db.define('Customer', {
     timestamps: false
 });
 
-Customer.hasMany(Search, {
+Search.belongsTo(Customer, {
     foreignKey: 'Username'
-});
+})
 
 module.exports = Customer;
