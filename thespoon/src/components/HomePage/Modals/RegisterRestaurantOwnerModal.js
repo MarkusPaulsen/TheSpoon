@@ -192,7 +192,6 @@ class RegisterRestaurantOwnerModal extends Component {
             }))
             .pipe(exhaustMap(() => {
                 if (thisTemp.state.validation.isValid) {
-                    thisTemp.props.logIn(thisTemp.state.username);
                     thisTemp.setState({serverMessage: "Registration is processing"});
                     return ajax({
                         url: paths["restApi"]["registrationRestaurantOwner"],
