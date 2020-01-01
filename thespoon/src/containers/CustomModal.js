@@ -14,18 +14,18 @@ import {Modal} from "react-bootstrap";
 import {modalVisibilityFilters} from "../constants/modalVisibiltyFilters";
 //</editor-fold>
 //<editor-fold desc="Modals">
-import LogInModal from "../components/homepage/Modals/LogInModal";
-import LogOutModal from "../components/homepage/Modals/LogOutModal";
-import RegisterRestaurantowner from "../components/homepage/Modals/RegisterRestaurantOwnerModal";
-import AddRestaurantModal from "../components/homepage/Modals/AddRestaurantModal"
-import EditRestaurantModal from "../components/restaurantPage/Modals/EditRestaurantModal";
-import AddMenuModal from "../components/restaurantPage/Modals/AddMenuModal";
-import EditMenuModal from "../components/restaurantPage/Modals/EditMenuModal";
-import AddMenuItemModal from "../components/restaurantPage/Modals/AddMenuItemModal";
-import EditMenuItemModal from "../components/restaurantPage/Modals/EditMenuItemModal";
-import ChooseRoleModal from "../components/homepage/Modals/ChooseRoleModal";
-import RegisterCustomer from "../components/homepage/Modals/RegisterCustomerModal";
-import PendingReviewModal from "../components/restaurantPage/Modals/PendingReviewModal";
+import LogInModal from "../components/HomePage/Modals/LogInModal";
+import LogOutModal from "../components/HomePage/Modals/LogOutModal";
+import RegisterRestaurantowner from "../components/HomePage/Modals/RegisterRestaurantOwnerModal";
+import AddRestaurantModal from "../components/RestaurantPage/Modals/AddRestaurantModal"
+import EditRestaurantModal from "../components/RestaurantPage/Modals/EditRestaurantModal";
+import AddMenuModal from "../components/RestaurantPage/Modals/AddMenuModal";
+import EditMenuModal from "../components/RestaurantPage/Modals/EditMenuModal";
+import AddMenuItemModal from "../components/RestaurantPage/Modals/AddMenuItemModal";
+import EditMenuItemModal from "../components/RestaurantPage/Modals/EditMenuItemModal";
+import ChooseRoleModal from "../components/HomePage/Modals/ChooseRoleModal";
+import RegisterCustomer from "../components/HomePage/Modals/RegisterCustomerModal";
+import PendingReviewModal from "../components/RestaurantPage/Modals/PendingReviewModal";
 //</editor-fold>
 
 class CustomModal extends Component {
@@ -64,7 +64,7 @@ class CustomModal extends Component {
                 );
             case modalVisibilityFilters.SHOW_EDIT_RESTAURANT:
                 return (
-                    <EditRestaurantModal onHide={() => this.props.handleClose()} restaurant={ item }/>
+                    <EditRestaurantModal onHide={() => this.props.handleClose()} restaurant={item}/>
                 );
             case modalVisibilityFilters.SHOW_ADD_MENU:
                 return (
@@ -72,7 +72,7 @@ class CustomModal extends Component {
                 );
             case modalVisibilityFilters.SHOW_EDIT_MENU:
                 return (
-                    <EditMenuModal onHide={() => this.props.handleClose()} menu={ item }/>
+                    <EditMenuModal onHide={() => this.props.handleClose()} menu={item}/>
                 );
 
             case modalVisibilityFilters.SHOW_PENDING_REVIEW:
@@ -90,7 +90,7 @@ class CustomModal extends Component {
             case modalVisibilityFilters.SHOW_EDIT_DISH:
             case modalVisibilityFilters.SHOW_EDIT_DRINK:
                 return (
-                    <EditMenuItemModal onHide={() => this.props.handleClose()} menuItem={ item }/>
+                    <EditMenuItemModal onHide={() => this.props.handleClose()} menuItem={item}/>
                 );
             default:
                 return null;

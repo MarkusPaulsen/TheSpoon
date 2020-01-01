@@ -32,7 +32,7 @@ class TagItem extends Component {
                     else {
                         if(modal.state.chosenTags.find((tag) => {
                             return tag === next
-                        }) == null && modal.state.chosenTags.length < 3){
+                        }) == null && modal.state.chosenTags.length < 4){
                             modal.setState({
                                 chosenTags: modal.state.chosenTags.concat([next])
                             })
