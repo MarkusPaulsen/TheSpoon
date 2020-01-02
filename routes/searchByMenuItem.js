@@ -15,16 +15,14 @@ const Op = Sequelize.Op;
 router.get('/', async (req, res) => {
     try {
         let matchingItems;
-        //TODO: Query should not be case sensitive.
-        //TODO: Validate input.
         matchingItems = await MenuItem.findAll({
             attributes: ['Name', 'Menu_ID'],
             where: {
-                Name: {[Op.substring]: req.query.menuItemName}
+                Name: {[Op.iLike]: '%'+ req.query.menuItemName + '%'}
             }
         });
-        if (matchingItems === null) {
-            return res.status(404).send('No matching Menus.');
+        if (matchingItems.length < 1) {
+            return res.status(404).send('No matching menus.');
         }
         matchingItems = await pruneByMenuID(matchingItems);
 
