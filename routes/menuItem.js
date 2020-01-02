@@ -93,8 +93,6 @@ router.post('/:menuID/menuItem', auth, isOwner, findRestaurant, async (req, res)
             menuItems: menuItems
         }
 
-        //TODO: remove this console log
-        console.log('sending 200');
         await updatePriceAverage(menuID);
         res.status(200).send(menuInfo);
 

@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 const db = require('../sequelizeSettings');
-const Restaurant = require('./restaurant.js');
+const Restaurant = require('./restaurants.js');
 
 const OpeningHours = db.define('OpeningHours', {
     Restaurant_ID: {
@@ -23,5 +23,6 @@ const OpeningHours = db.define('OpeningHours', {
     freezeTableName: true,
     timestamps: false
 });
+
 
 module.exports = OpeningHours;

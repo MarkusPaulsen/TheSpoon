@@ -1,29 +1,28 @@
 import React from "react";
-import {BrowserRouter, Switch, Route} from "react-router-dom";
-import HomePage from "./components/homepage/Homepage.js";
-import MainPage from "./components/mainPage/YourMainPage.js";
+import {BrowserRouter, Switch, Route, Link} from "react-router-dom";
+import HomePage from "./components/HomePage/Homepage";
 import CustomModal from "./containers/CustomModal";
-import Dashboard from "./components/DashboardPage/YourDashboardPage.js";
-import YourRestaurant from "./components/restaurantPage/YourRestaurantPage.js";
-import Profile from "./components/ProfilePage/YourProfilePage.js";
-import CustomerPage from "./components/CustomerPage/CustomerPage";
-//import Navbar from "./components/layout/Navbar.js"
+import Dashboard from "./components/DashboardPage/YourDashboardPage";
+import YourRestaurantPage from "./components/RestaurantPage/YourRestaurantPage";
+import Profile from "./components/ProfilePage/YourProfilePage";
+import CustomerMainPage from "./components/MainPage/CustomerMainPage";
+import FailPage from "./components/FailPage/FailPage";
+//import Navbar from "./components/Layout/Navbar.js"
 
-/* the Spoon app browser */
 function App() {
-return (
-      <BrowserRouter>
-          {<CustomModal />}
-          <Switch>
-            <Route exact path="/" component={HomePage} />
-            <Route exact path="/Mainpage" component={MainPage} />
-            <Route exact path="/Dashboard" component={Dashboard} />
-            <Route exact path="/YourRestaurant" component={YourRestaurant} />
-            <Route exact path="/Profile" component={Profile} />
-            <Route exact path="/CustomerPage" component={CustomerPage} />
-          </Switch>
-      </BrowserRouter>
-  );
+    return (
+        <BrowserRouter>
+            {<CustomModal />}
+            <Switch>
+                <Route exact path="/" component={HomePage} />
+                <Route exact path="/Dashboard" component={Dashboard} />
+                <Route exact path="/YourRestaurant" component={YourRestaurantPage} />
+                <Route exact path="/Profile" component={Profile} />
+                <Route exact path="/CustomerMain" component={CustomerMainPage} />
+                <Route component={FailPage}/>
+            </Switch>
+        </BrowserRouter>
+    );
 }
 
 export default App;

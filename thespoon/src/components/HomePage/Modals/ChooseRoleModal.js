@@ -4,12 +4,42 @@ import {IconExit} from "../../Icons";
 import {Modal} from "react-bootstrap";
 import {modalVisibilityFilters} from "../../../constants/modalVisibiltyFilters";
 import FilterLink from "../../../containers/FilterModalLink";
+import {connect} from "react-redux";
+import FormValidator from "../../../validation/FormValidator";
 
 
 
 class ChooseRoleModal extends Component {
+
+    //<editor-fold desc="Constructor">
+    constructor(props) {
+        super(props);
+
+        //<editor-fold desc="Validator">
+        this.validator = new FormValidator([]);
+
+        //</editor-fold>
+
+        this.state = {
+            token: window.localStorage.getItem("token"),
+            validation: this.validator.valid(),
+            serverMessage: "",
+            submitted: false
+        };
+    }
+
+    //</editor-fold>
+
+    //<editor-fold desc="Render">
     render() {
-        return(
+        let validation = this.submitted ? this.validator.validate(this.state) : this.state.validation;
+        if(this.props.backgroundPage == null) {
+            return(<p>Something went wrong.</p>);
+        } else if(this.state.token == null || this.state.token === "null" ) {
+            return(<p>Something went wrong.</p>);
+        } else {
+            //<editor-fold desc="Render Token">
+            return(
                 <Modal.Body>
                     <button className="exit" onClick={this.props.onHide}><IconExit /></button>
                     <div className="modal-wrapper choose-role">
@@ -26,8 +56,22 @@ class ChooseRoleModal extends Component {
                         </div>
                     </div>
                 </Modal.Body>
-        )
+            );
+            //</editor-fold>
+        }
     }
+
+    //</editor-fold>
+
 }
 
-export default ChooseRoleModal;
+//<editor-fold desc="Redux">
+const mapStateToProps = (state) => {
+    return {
+        backgroundPage: state.backgroundPageReducer.backgroundPage
+    };
+};
+
+export default connect(mapStateToProps, null)(ChooseRoleModal);
+
+//</editor-fold>
