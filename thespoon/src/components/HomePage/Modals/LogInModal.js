@@ -96,14 +96,13 @@ class LogInModal extends Component {
 
     //<editor-fold desc="Business Logic">
     handleSubmit = (event) => {
-        console.log("Step 1")
         event.preventDefault();
 
         const thisTemp = this;
         of(1)
             .pipe(map(() => {
                 return thisTemp.form.getValues();
-            }), catchError(error => {
+            }), catchError((error) => {
                 return error;
             }))
             .pipe(exhaustMap((values) => {
@@ -111,7 +110,7 @@ class LogInModal extends Component {
                     username: values.username,
                     password: values.password
                 });
-            }), catchError(error => {
+            }), catchError((error) => {
                 return error;
             }))
             .pipe(exhaustMap(() => {
@@ -120,7 +119,7 @@ class LogInModal extends Component {
                     submitted: true,
                     serverMessage: ""
                 });
-            }), catchError(error => {
+            }), catchError((error) => {
                 return error;
             }))
             .pipe(exhaustMap(() => {
@@ -145,7 +144,7 @@ class LogInModal extends Component {
                         response: null
                     });
                 }
-            }), catchError(error => {
+            }), catchError((error) => {
                 return error;
             }))
             .pipe(take(1))

@@ -132,7 +132,7 @@ class EditMenuModal extends Component {
         of(1)
             .pipe(map(() => {
                 return thisTemp.form.getValues();
-            }), catchError(error => {
+            }), catchError((error) => {
                 return error;
             }))
             .pipe(exhaustMap((values) => {
@@ -141,7 +141,7 @@ class EditMenuModal extends Component {
                     description: values.description,
                     tags: values.tags.split(",").map(tag => tag.trim())
                 });
-            }), catchError(error => {
+            }), catchError((error) => {
                 return error;
             }))
             .pipe(exhaustMap(() => {
@@ -150,7 +150,7 @@ class EditMenuModal extends Component {
                     submitted: true,
                     serverMessage: ""
                 });
-            }), catchError(error => {
+            }), catchError((error) => {
                 return error;
             }))
             .pipe(exhaustMap(() => {
@@ -176,7 +176,7 @@ class EditMenuModal extends Component {
                         response: null
                     });
                 }
-            }), catchError(error => {
+            }), catchError((error) => {
                 return error;
             }))
             .pipe(take(1))
@@ -216,7 +216,7 @@ class EditMenuModal extends Component {
                     method: "DELETE",
                     headers: {"Content-Type": "application/json", "X-Auth-Token": this.state.token},
                 })
-            }), catchError(error => {
+            }), catchError((error) => {
                 return error;
             }))
             .pipe(take(1))

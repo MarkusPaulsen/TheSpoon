@@ -58,7 +58,6 @@ class Homepage extends Component {
 
     //<editor-fold desc="Render">
     render() {
-        console.log(this.state)
         if (this.state.token == null
             || this.state.token === "null"
             || this.state.user == null

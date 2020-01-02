@@ -15,9 +15,11 @@ const FilterModalLink = ({children, onClick}) => {
 //</editor-fold>
 
 //<editor-fold desc="Redux">
-const mapStateToProps = (state, ownProps) => ({
-    active: ownProps.filter === state.modalVisibilityFilter
-});
+const mapStateToProps = (state, ownProps) => {
+    return{
+        active: ownProps.filter === state.modalVisibilityFilter
+    }
+};
 
 const mapDispatchToProps = (dispatch, ownProps) => {
     return {

@@ -7,7 +7,6 @@ import YourRestaurantPage from "./components/RestaurantPage/YourRestaurantPage";
 import Profile from "./components/ProfilePage/YourProfilePage";
 import CustomerMainPage from "./components/MainPage/CustomerMainPage";
 import FailPage from "./components/FailPage/FailPage";
-//import Navbar from "./components/Layout/Navbar.js"
 
 function App() {
     return (
