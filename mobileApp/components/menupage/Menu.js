@@ -169,20 +169,13 @@ export default class Menu extends Component {
         score: index["rating"],
         type: index["type"]
       }));
-      const openingHours = [
-        { day: "Monday", openTime: "10.00", closeTime: "23.00" },
-        { day: "Tuesday", openTime: "10.00", closeTime: "23.00" },
-        { day: "Wednesday", openTime: "10.00", closeTime: "23.00" },
-        { day: "Thursday", openTime: "10.00", closeTime: "23.00" },
-        { day: "Friday", openTime: "10.00", closeTime: "23.00" }
-      ];
       const restaurantInfo = {
         latitude: parseFloat(responseJson["restaurant"]["latitude"]),
         longitude: parseFloat(responseJson["restaurant"]["longitude"]),
         address: responseJson["restaurant"]["address"],
         city: responseJson["restaurant"]["city"],
         country: responseJson["restaurant"]["country"],
-        openingHours
+        openingHours: responseJson["restaurant"]["openingHours"]
       };
 
       const dishItems = [];
