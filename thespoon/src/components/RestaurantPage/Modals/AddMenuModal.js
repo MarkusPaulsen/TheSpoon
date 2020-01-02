@@ -13,6 +13,7 @@ import {catchError, exhaustMap, map, take, bufferTime, filter, distinctUntilChan
 import {Modal} from "react-bootstrap";
 //</editor-fold>
 //<editor-fold desc="Validator">
+import validator from "validator";
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import Button from "react-validation/build/button";
@@ -29,6 +30,7 @@ import {IconExit} from "../../Icons";
 //</editor-fold>
 //<editor-fold desc="Items">
 import TagItem from "../Items/TagItem";
+
 //</editor-fold>
 
 
@@ -44,12 +46,14 @@ class AddMenuModal extends Component {
             method: "isEmpty",
             validWhen: false,
             message: "Name is required."
-        }, /*{
+        }, {
             field: "name",
-            method: "isAlphanumeric",
+            method: (name) => {
+                return validator.isAlphanumeric(name);
+            },
             validWhen: true,
             message: "Name is required to be alphanumeric."
-        },*/ {
+        }, {
             field: "name",
             method: (name) => {
                 return name.length >= 1;
@@ -61,12 +65,14 @@ class AddMenuModal extends Component {
             method: "isEmpty",
             validWhen: false,
             message: "Description name is required."
-        }, /*{
+        }, {
             field: "description",
-            method: "isAlphanumeric",
+            method: (description) => {
+                return validator.isAlphanumeric(description);
+            },
             validWhen: true,
             message: "Description is required to be alphanumeric."
-        },*/ {
+        }, {
             field: "description",
             method: (description) => {
                 return description.length >= 1;
@@ -92,7 +98,7 @@ class AddMenuModal extends Component {
             name: "",
             description: "",
             availableTags: [],
-            serverMessageFinishedLoadingAvailableTags:"",
+            serverMessageFinishedLoadingAvailableTags: "",
             finishedLoadingAvailableTags: false,
             autocompleteTags: [],
             chosenTags: [],
@@ -103,6 +109,7 @@ class AddMenuModal extends Component {
 
     //</editor-fold>
 
+    //<editor-fold desc="Component Lifecycle Model">
     componentDidMount() {
         const thisTemp = this;
 
@@ -126,26 +133,43 @@ class AddMenuModal extends Component {
                 }))
             .subscribe(
                 () => {
-                    thisTemp.setState({serverMessageFinishedLoadingAvailableTags: "", finishedLoadingAvailableTags: true});
+                    thisTemp.setState({
+                        serverMessageFinishedLoadingAvailableTags: "",
+                        finishedLoadingAvailableTags: true
+                    });
                 }, (error) => {
                     switch (error.name) {
                         case "AjaxTimeoutError":
-                            thisTemp.setState({serverMessageFinishedLoadingAvailableTags: ""  +"The request timed out.", finishedLoadingAvailableTags: true});
+                            thisTemp.setState({
+                                serverMessageFinishedLoadingAvailableTags: "" + "The request timed out.",
+                                finishedLoadingAvailableTags: true
+                            });
                             break;
                         case "InternalError":
                         case "AjaxError":
                             if (error.status === 0 && error.response === "") {
-                                thisTemp.setState({serverMessageFinishedLoadingAvailableTags: "There is no connection to the server.", finishedLoadingAvailableTags: true});
+                                thisTemp.setState({
+                                    serverMessageFinishedLoadingAvailableTags: "There is no connection to the server.",
+                                    finishedLoadingAvailableTags: true
+                                });
                             } else if (error.status === 400) {
-                                this.props.openRestaurantConfiguration();
-                                thisTemp.setState({serverMessageFinishedLoadingAvailableTags: "", finishedLoadingAvailableTags: true});
+                                thisTemp.setState({
+                                    serverMessageFinishedLoadingAvailableTags: "",
+                                    finishedLoadingAvailableTags: true
+                                });
                             } else {
-                                thisTemp.setState({serverMessageFinishedLoadingAvailableTags: error.response, finishedLoadingAvailableTags: true});
+                                thisTemp.setState({
+                                    serverMessageFinishedLoadingAvailableTags: error.response,
+                                    finishedLoadingAvailableTags: true
+                                });
                             }
                             break;
                         default:
                             console.log(error);
-                            thisTemp.setState({serverMessageFinishedLoadingAvailableTags: "Something is not like it is supposed to be.", finishedLoadingAvailableTags: true});
+                            thisTemp.setState({
+                                serverMessageFinishedLoadingAvailableTags: "Something is not like it is supposed to be.",
+                                finishedLoadingAvailableTags: true
+                            });
                             break;
                     }
                 }
@@ -159,10 +183,9 @@ class AddMenuModal extends Component {
             }))
             .pipe(bufferTime(1000))
             .pipe(map((valueArray) => {
-                if(valueArray.length >= 1){
-                    return valueArray[valueArray.length-1]
-                }
-                else {
+                if (valueArray.length >= 1) {
+                    return valueArray[valueArray.length - 1]
+                } else {
                     return null
                 }
             }))
@@ -171,13 +194,12 @@ class AddMenuModal extends Component {
             }))
             .pipe(distinctUntilChanged())
             .pipe(map((value) => {
-                if(value.length >= 1) {
+                if (value.length >= 1) {
                     let searchValue = value[0].toUpperCase() + value.slice(1);
                     return thisTemp.state.availableTags.filter((availableTag) => {
                         return availableTag.startsWith(searchValue)
                     })
-                }
-                else {
+                } else {
                     return []
                 }
             }))
@@ -208,12 +230,13 @@ class AddMenuModal extends Component {
         //</editor-fold>
     }
 
-
-    update() {
-        window.location.reload();
-    }
+    //</editor-fold>
 
     //<editor-fold desc="Bussiness Logic">
+    update = () => {
+        window.location.reload();
+    };
+
     handleSubmit = (event) => {
         event.preventDefault();
         const thisTemp = this;
@@ -221,7 +244,7 @@ class AddMenuModal extends Component {
             .pipe(map(() => {
                 return thisTemp.form.getValues();
             }), catchError((error) => {
-                return error;
+                return throwError(error);
             }))
             .pipe(exhaustMap((values) => {
                 return bindCallback(thisTemp.setState).call(thisTemp, {
@@ -229,7 +252,7 @@ class AddMenuModal extends Component {
                     description: values.description
                 });
             }), catchError((error) => {
-                return error;
+                return throwError(error);
             }))
             .pipe(exhaustMap(() => {
                 return bindCallback(thisTemp.setState).call(thisTemp, {
@@ -238,7 +261,7 @@ class AddMenuModal extends Component {
                     serverMessage: ""
                 });
             }), catchError((error) => {
-                return error;
+                return throwError(error);
             }))
             .pipe(exhaustMap(() => {
                 if (thisTemp.state.validation.isValid) {
@@ -263,7 +286,7 @@ class AddMenuModal extends Component {
                     });
                 }
             }), catchError((error) => {
-                return error;
+                return throwError(error);
             }))
             .pipe(take(1))
             .subscribe(
@@ -297,10 +320,10 @@ class AddMenuModal extends Component {
     //<editor-fold desc="Render">
     render() {
         let validation = this.submitted ? this.validator.validate(this.state) : this.state.validation;
-        if(this.props.backgroundPage == null) {
-            return(<p>Something went wrong.</p>);
-        } else if(this.state.token == null || this.state.token === "null" ) {
-            return(<p>Something went wrong.</p>);
+        if (this.props.backgroundPage == null) {
+            return (<p>Something went wrong.</p>);
+        } else if (this.state.token == null || this.state.token === "null") {
+            return (<p>Something went wrong.</p>);
         } else {
             //<editor-fold desc="Render Token">
             return (
@@ -311,7 +334,6 @@ class AddMenuModal extends Component {
                             this.form = c;
                         }} onSubmit={(e) => this.handleSubmit(e)}>
                             <h2 className="title">Create menu</h2>
-    
                             <div className="input-field">
                                 <label>Name</label>
                                 <Input type="text" name="name" placeholder="Name"/>
@@ -319,15 +341,13 @@ class AddMenuModal extends Component {
                             <div className="error-block">
                                 <small>{validation.name.message}</small>
                             </div>
-    
                             <div className="input-field">
                                 <label>Description</label>
-                                <Textarea name="description"/>
+                                <Textarea name="description" placeholder="Description"/>
                             </div>
                             <div className="error-block">
                                 <small>{validation.description.message}</small>
                             </div>
-    
                             <div className="input-field">
                                 <label>Available Tags</label>
                                 <input id="tagInput" type="text" name="tags" placeholder="Search"/>
@@ -337,7 +357,6 @@ class AddMenuModal extends Component {
                                     })}
                                 </ul>
                             </div>
-    
                             <div className="input-field">
                                 <label>Chosen Tags</label>
                                 <ul>
@@ -346,11 +365,9 @@ class AddMenuModal extends Component {
                                     })}
                                 </ul>
                             </div>
-    
                             <div className="error-block">
                                 <small>{this.state.tagsMessage}</small>
                             </div>
-    
                             <Button type="submit" className="normal">Create</Button>
                             <div className="error-block">
                                 <small>{this.state.serverMessage}</small>

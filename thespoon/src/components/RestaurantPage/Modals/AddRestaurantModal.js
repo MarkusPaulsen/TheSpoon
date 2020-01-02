@@ -72,9 +72,11 @@ class AddRestaurantInfo extends Component {
             message: "Country name required"
         }, /*{
             field: "country",
-            method: "isAlpha",
+            method: (description) => {
+                return description.length >= 1
+            },
             validWhen: true,
-            message: "Only alphabetic countries are allowed."
+            message: "Country is required to be alphanumeric."
         }*/]);
 
         //</editor-fold>
@@ -126,7 +128,7 @@ class AddRestaurantInfo extends Component {
                     selectedOpeningHoursMessage: ""
                 });
             }), catchError((error) => {
-                return error;
+                return throwError(error);
             }))
             .pipe(take(1))
             .subscribe(
@@ -150,7 +152,7 @@ class AddRestaurantInfo extends Component {
                     selectedOpeningHoursMessage: ""
                 });
             }), catchError((error) => {
-                return error;
+                return throwError(error);
             }))
             .pipe(take(1))
             .subscribe(
@@ -174,7 +176,7 @@ class AddRestaurantInfo extends Component {
                     selectedOpeningHoursMessage: ""
                 });
             }), catchError((error) => {
-                return error;
+                return throwError(error);
             }))
             .pipe(take(1))
             .subscribe(
@@ -200,7 +202,7 @@ class AddRestaurantInfo extends Component {
                     closeTime: thisTemp.state.selectedCloseTime
                 };
             }), catchError((error) => {
-                return error;
+                return throwError(error);
             }))
             .pipe(exhaustMap((newOpeningHours) => {
                 return bindCallback(thisTemp.setState).call(thisTemp, {
@@ -208,7 +210,7 @@ class AddRestaurantInfo extends Component {
                     selectedOpeningHoursMessage: ""
                 });
             }), catchError((error) => {
-                return error;
+                return throwError(error);
             }))
             .pipe(take(1))
             .subscribe(
@@ -234,7 +236,7 @@ class AddRestaurantInfo extends Component {
                     selectedOpeningHoursMessage: ""
                 });
             }), catchError((error) => {
-                return error;
+                return throwError(error);
             }))
             .pipe(take(1))
             .subscribe(
@@ -260,7 +262,7 @@ class AddRestaurantInfo extends Component {
                     selectedFile: fileTemp
                 });
             }), catchError((error) => {
-                return error;
+                return throwError(error);
             }))
             .pipe(map(() => {
                 if (["image/png", "image/jpeg"].includes(fileTemp.type)) {
@@ -275,7 +277,7 @@ class AddRestaurantInfo extends Component {
                     });
                 }
             }), catchError((error) => {
-                return error;
+                return throwError(error);
             }))
             .pipe(exhaustMap((formData) => {
                 return ajax({
@@ -287,7 +289,7 @@ class AddRestaurantInfo extends Component {
                     responseType: "text"
                 })
             }), catchError((error) => {
-                return error;
+                return throwError(error);
             }))
             .pipe(take(1))
             .subscribe(
@@ -342,7 +344,7 @@ class AddRestaurantInfo extends Component {
                     selectedFile: null
                 });
             }), catchError((error) => {
-                return error;
+                return throwError(error);
             }))
             .pipe(take(1))
             .subscribe(
@@ -364,7 +366,7 @@ class AddRestaurantInfo extends Component {
             .pipe(map(() => {
                 return thisTemp.form.getValues();
             }), catchError((error) => {
-                return error;
+                return throwError(error);
             }))
             .pipe(exhaustMap((values) => {
                 return bindCallback(thisTemp.setState).call(thisTemp, {
@@ -374,7 +376,7 @@ class AddRestaurantInfo extends Component {
                     country: values.country
                 });
             }), catchError((error) => {
-                return error;
+                return throwError(error);
             }))
             .pipe(exhaustMap(() => {
                 return bindCallback(thisTemp.setState).call(thisTemp, {
@@ -385,7 +387,7 @@ class AddRestaurantInfo extends Component {
                     imageMessage: "",
                 });
             }), catchError((error) => {
-                return error;
+                return throwError(error);
             }))
             .pipe(exhaustMap(() => {
                 if (thisTemp.state.validation.isValid && thisTemp.state.selectedOpeningHours.length > 0 && thisTemp.state.imageID !== "") {
@@ -413,7 +415,7 @@ class AddRestaurantInfo extends Component {
                 }
 
             }), catchError((error) => {
-                return error;
+                return throwError(error);
             }))
             .pipe(exhaustMap((osmData) => {
                 if (Array.isArray(osmData.response) && osmData.response.length > 0) {
@@ -449,7 +451,7 @@ class AddRestaurantInfo extends Component {
                     });
                 }
             }), catchError((error) => {
-                return error;
+                return throwError(error);
             }))
             .pipe(take(1))
             .subscribe(
@@ -493,7 +495,7 @@ class AddRestaurantInfo extends Component {
             //<editor-fold desc="Render Token">
             return (
                 <Modal.Body>
-                    <div className="modal-wrapper restaurant-info">
+                    <div className="modal-wrapper add-restaurant">
                         <Form ref={(c) => {
                             this.form = c;
                         }} onSubmit={this.handleSubmit}>
