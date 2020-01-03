@@ -193,7 +193,7 @@ class YourRestaurantPage extends Component {
     //</editor-fold>
 
     //<editor-fold desc="Business Logic">
-    update() {
+    update = () => {
         window.location.reload();
     }
 

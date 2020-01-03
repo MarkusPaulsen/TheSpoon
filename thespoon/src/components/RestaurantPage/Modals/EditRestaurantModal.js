@@ -10,6 +10,7 @@ import {setRestaurantID} from "../../../actionCreators/restaurantActionCreators"
 import {bindCallback, of, throwError} from "rxjs";
 import {ajax} from "rxjs/ajax";
 import {catchError, exhaustMap, map, take} from "rxjs/operators";
+import {readFileURL} from "../Tools/FileReader"
 //</editor-fold>
 //<editor-fold desc="Bootstrap">
 import {Modal} from "react-bootstrap";
@@ -125,6 +126,7 @@ class EditRestaurantModal extends Component {
             selectedOpenTime: null,
             selectedCloseTime: null,
             selectedFile: null,
+            selectedFileData: null,
             imageID: this.props.currentRestaurantInformation.imageID,
             imageMessage: ""
 
@@ -144,7 +146,7 @@ class EditRestaurantModal extends Component {
                     selectedOpeningHoursMessage: ""
                 });
             }), catchError((error) => {
-                return error;
+                return throwError(error);
             }))
             .pipe(take(1))
             .subscribe(
@@ -168,7 +170,7 @@ class EditRestaurantModal extends Component {
                     selectedOpeningHoursMessage: ""
                 });
             }), catchError((error) => {
-                return error;
+                return throwError(error);
             }))
             .pipe(take(1))
             .subscribe(
@@ -192,7 +194,7 @@ class EditRestaurantModal extends Component {
                     selectedOpeningHoursMessage: ""
                 });
             }), catchError((error) => {
-                return error;
+                return throwError(error);
             }))
             .pipe(take(1))
             .subscribe(
@@ -218,7 +220,7 @@ class EditRestaurantModal extends Component {
                     closeTime: thisTemp.state.selectedCloseTime
                 };
             }), catchError((error) => {
-                return error;
+                return throwError(error);
             }))
             .pipe(exhaustMap((newOpeningHours) => {
                 return bindCallback(thisTemp.setState).call(thisTemp, {
@@ -226,7 +228,7 @@ class EditRestaurantModal extends Component {
                     selectedOpeningHoursMessage: ""
                 });
             }), catchError((error) => {
-                return error;
+                return throwError(error);
             }))
             .pipe(take(1))
             .subscribe(
@@ -252,7 +254,7 @@ class EditRestaurantModal extends Component {
                     selectedOpeningHoursMessage: ""
                 });
             }), catchError((error) => {
-                return error;
+                return throwError(error);
             }))
             .pipe(take(1))
             .subscribe(
@@ -278,13 +280,11 @@ class EditRestaurantModal extends Component {
                     selectedFile: fileTemp
                 });
             }), catchError((error) => {
-                return error;
+                return throwError(error);
             }))
-            .pipe(map(() => {
+            .pipe(exhaustMap(() => {
                 if (["image/png", "image/jpeg"].includes(fileTemp.type)) {
-                    let formData = new FormData();
-                    formData.append("image", fileTemp);
-                    return formData;
+                    return readFileURL(fileTemp);
                 } else {
                     return throwError({
                         name: "InternalError",
@@ -292,6 +292,20 @@ class EditRestaurantModal extends Component {
                         response: "Incorrect file type (" + fileTemp.type + "). Please only use image/png or image/jpeg."
                     });
                 }
+            }), catchError((error) => {
+                return throwError(error);
+            }))
+            .pipe(exhaustMap((fileData) => {
+                return bindCallback(thisTemp.setState).call(thisTemp, {
+                    selectedFileData: fileData
+                });
+            }), catchError((error) => {
+                return error;
+            }))
+            .pipe(map(() => {
+                let formData = new FormData();
+                formData.append("image", fileTemp);
+                return formData;
             }), catchError((error) => {
                 return error;
             }))
@@ -305,7 +319,7 @@ class EditRestaurantModal extends Component {
                     responseType: "text"
                 })
             }), catchError((error) => {
-                return error;
+                return throwError(error);
             }))
             .pipe(take(1))
             .subscribe(
@@ -357,10 +371,11 @@ class EditRestaurantModal extends Component {
             .pipe(exhaustMap(() => {
                 return bindCallback(thisTemp.setState).call(thisTemp, {
                     imageMessage: "",
-                    selectedFile: null
+                    selectedFile: null,
+                    selectedFileData: null
                 });
             }), catchError((error) => {
-                return error;
+                return throwError(error);
             }))
             .pipe(take(1))
             .subscribe(
@@ -369,7 +384,9 @@ class EditRestaurantModal extends Component {
                     console.log(error);
                     thisTemp.setState({
                         imageMessage: "Something is not like it is supposed to be.",
-                        serverMessage: ""
+                        serverMessage: "",
+                        selectedFile: null,
+                        selectedFileData: null
                     });
                 }
             );
@@ -382,7 +399,7 @@ class EditRestaurantModal extends Component {
             .pipe(map(() => {
                 return thisTemp.form.getValues();
             }), catchError((error) => {
-                return error;
+                return throwError(error);
             }))
             .pipe(exhaustMap((values) => {
                 return bindCallback(thisTemp.setState).call(thisTemp, {
@@ -392,7 +409,7 @@ class EditRestaurantModal extends Component {
                     country: values.country
                 });
             }), catchError((error) => {
-                return error;
+                return throwError(error);
             }))
             .pipe(exhaustMap(() => {
                 return bindCallback(thisTemp.setState).call(thisTemp, {
@@ -403,7 +420,7 @@ class EditRestaurantModal extends Component {
                     imageMessage: "",
                 });
             }), catchError((error) => {
-                return error;
+                return throwError(error);
             }))
             .pipe(exhaustMap(() => {
                 if (thisTemp.state.validation.isValid && thisTemp.state.selectedOpeningHours.length > 0 && thisTemp.state.imageID !== "") {
@@ -431,7 +448,7 @@ class EditRestaurantModal extends Component {
                 }
 
             }), catchError((error) => {
-                return error;
+                return throwError(error);
             }))
             .pipe(exhaustMap((osmData) => {
                 if (Array.isArray(osmData.response) && osmData.response.length > 0) {
@@ -467,7 +484,7 @@ class EditRestaurantModal extends Component {
                     });
                 }
             }), catchError((error) => {
-                return error;
+                return throwError(error);
             }))
             .pipe(take(1))
             .subscribe(
@@ -512,7 +529,7 @@ class EditRestaurantModal extends Component {
             return (
                 <Modal.Body>
                     <button className="exit" onClick={this.props.onHide}><IconExit/></button>
-                    <div className="modal-wrapper restaurant-info">
+                    <div className="modal-wrapper edit-restaurant">
                         <Form ref={(c) => {
                             this.form = c;
                         }} onSubmit={this.handleSubmit}>
@@ -531,13 +548,18 @@ class EditRestaurantModal extends Component {
                                 <label htmlFor="file">+ Upload image</label>
                                 {this.state.selectedFile &&
                                 <label className="selected-file">
-                            <span onClick={this.handleFileDelete}
-                                  role="button"
-                                  className="remove-button">
-                                X
-                            </span>
+                                    <span
+                                        onClick={this.handleFileDelete}
+                                        role="button"
+                                        className="remove-button"
+                                    >
+                                        X
+                                    </span>
                                     {this.state.selectedFile.name}
                                 </label>
+                                }
+                                {this.state.selectedFileData &&
+                                <img src={this.state.selectedFileData} alt={this.state.selectedFile.name}/>
                                 }
                             </div>
                             <div className="error-block">
