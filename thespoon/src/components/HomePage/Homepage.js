@@ -15,6 +15,7 @@ import FilterLink from "../../containers/FilterModalLink";
 //</editor-fold>
 //<editor-fold desc="Layout">
 import Layout from "../Layout/Layout"
+
 //</editor-fold>
 
 
@@ -37,14 +38,13 @@ class Homepage extends Component {
     //<editor-fold desc="Component Lifecycle">
     componentDidMount() {
         this.props.setBackgroundPageHere(this);
-        this.state = {
-            token: window.localStorage.getItem("token"),
-            user: window.localStorage.getItem("user")
-        };
-    }
-
-    componentWillUnmount() {
-        this.props.setBackgroundPageHere(null);
+        this.setState({
+                token: window.localStorage.getItem("token"),
+                user: window.localStorage.getItem("user")
+            },
+            (error) => {
+            }
+        );
     }
 
     //</editor-fold>
