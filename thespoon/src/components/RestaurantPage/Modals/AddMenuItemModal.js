@@ -427,7 +427,9 @@ class AddMenuItemModal extends Component {
                                 </label>
                                 }
                                 {this.state.selectedFileData &&
-                                <img src={this.state.selectedFileData} alt={this.state.selectedFile.name}/>
+                                <div className="image-wrapper">
+                                    <div className="image" style={{backgroundImage: `url(${this.state.selectedFileData})`}}/>
+                                </div>
                                 }
                             </div>
                             <div className="error-block">
