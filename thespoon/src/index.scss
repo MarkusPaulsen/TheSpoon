@@ -174,7 +174,7 @@ button {
   }
 
   a {
-    color: var(--white);  
+    color: var(--white);
   }
 
   span {
@@ -218,7 +218,7 @@ header {
   left: 0;
   right: 0;
   z-index: 1;
-  
+
   nav {
     height: 4rem;
     display: flex;
@@ -286,31 +286,31 @@ header {
 
 /* HOMEPAGE > */
 .homepage-banner {
-    background-image: url('/images/background_web.png');
-    background-repeat: no-repeat;
-    background-position: center center;
-    background-size: cover;
-    height: calc(100vh);
-    position: relative;
-    margin: 0;
-    color: var(--white);
-    position: relative;
+  background-image: url('/images/background_web.png');
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  height: calc(100vh);
+  position: relative;
+  margin: 0;
+  color: var(--white);
+  position: relative;
 
-    .homepage-text {
-      position: absolute;
-      left: 0;
-      right: 0;
-      top: 50%;
-      transform: translateY(-50%);
+  .homepage-text {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
 
-      .title {
-        margin-bottom: 3.5rem;
-      }
-
-      button {
-        font-size: 0.75rem;
-      }
+    .title {
+      margin-bottom: 3.5rem;
     }
+
+    button {
+      font-size: 0.75rem;
+    }
+  }
 
   @include media-breakpoint-down(sm) {
     .title {
@@ -525,7 +525,7 @@ header {
           width: 100%;
         }
       }
-      
+
       &.name {
         > div {
           width: calc(40% - .25rem);
@@ -549,7 +549,7 @@ header {
       padding: 3rem;
 
       .input-field > div {
-          width: 100%;
+        width: 100%;
       }
 
       .inputfile {
@@ -578,6 +578,27 @@ header {
         text-align: center;
         span {
           margin-right: .5rem;
+        }
+      }
+
+      .image-wrapper {
+        height: 0;
+        width: 50%;
+        padding-bottom: 50%;
+        position: relative;
+
+
+        .image {
+          position: absolute;
+          left: 0;
+          right: 0;
+          top: 0;
+          bottom: 0;
+          background-repeat: no-repeat;
+          position: absolute;
+          background-position: center center;
+          background-size: cover;
+          border-radius: 100%;
         }
       }
 
@@ -624,8 +645,8 @@ header {
           }
 
           .css-144g6cj-Menu {
-              border-left: 1px solid var(--pink);
-              border-right: 1px solid var(--pink);       
+            border-left: 1px solid var(--pink);
+            border-right: 1px solid var(--pink);
           }
 
           .css-yk16xz-control {
@@ -664,7 +685,7 @@ header {
           &.disabled span {
             background-color: var(--grey);
             &:hover {
-               cursor: not-allowed;
+              cursor: not-allowed;
             }
           }
         }
@@ -695,7 +716,7 @@ header {
         }
       }
 
-      .days, .hours {   
+      .days, .hours {
         border-bottom: 1px solid var(--pink);
       }
 
@@ -762,60 +783,60 @@ header {
   }
 
   @include media-breakpoint-down(xs) {
-   .modal-wrapper {
-     padding: 2rem 1rem;
-     .title {
-       margin-bottom: 2rem;
-     }
-     .input-field {
-       i {
-         margin-right: .1rem;
-       }
-       &.name {
-         > div {
-           width: 80%;
-           margin-right: 0;
-           &:first-of-type {
-             margin-right: 0;
-           }
-           &:last-child {
-             margin-top: 1rem;
-             margin-left: calc(22px + 0.1rem);
-           }
-         }
-       }
-     }
-     button {
-       margin: 0;
-     }
+    .modal-wrapper {
+      padding: 2rem 1rem;
+      .title {
+        margin-bottom: 2rem;
+      }
+      .input-field {
+        i {
+          margin-right: .1rem;
+        }
+        &.name {
+          > div {
+            width: 80%;
+            margin-right: 0;
+            &:first-of-type {
+              margin-right: 0;
+            }
+            &:last-child {
+              margin-top: 1rem;
+              margin-left: calc(22px + 0.1rem);
+            }
+          }
+        }
+      }
+      button {
+        margin: 0;
+      }
 
-     .account-type {
-       margin: .25rem 0 2rem;
-       .role {
-         display: block;
-       }
-     }
+      .account-type {
+        margin: .25rem 0 2rem;
+        .role {
+          display: block;
+        }
+      }
 
-     &.restaurant-info {
-       padding: 1rem;
-       .opening-hours {
-         .hours-selector {
-           margin-bottom: 2.5rem;
-           .days {
-             width: 100%;
-           }
-           .hours {
-             top: 50px;
-             width: calc(50% - 5px);
-             left: 0;
-           }
-         }
-         .selected-hours {
-           margin-left: 0;
-         }
-       }
-     }
-   }
+      &.restaurant-info {
+        padding: 1rem;
+        .opening-hours {
+          .hours-selector {
+            margin-bottom: 2.5rem;
+            .days {
+              width: 100%;
+            }
+            .hours {
+              top: 50px;
+              width: calc(50% - 5px);
+              left: 0;
+            }
+          }
+          .selected-hours {
+            margin-left: 0;
+          }
+        }
+      }
+    }
   }
 
 }
@@ -1012,10 +1033,10 @@ header {
   .modal-button {
     color: var(--pink);
     text-align: center;
-     span {
-       position: relative;
-       padding-left: 1.25rem;
-     }
+    span {
+      position: relative;
+      padding-left: 1.25rem;
+    }
     i {
       position: absolute;
       left: 0;
