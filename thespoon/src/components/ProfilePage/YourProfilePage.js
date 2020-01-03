@@ -311,7 +311,7 @@ class YourProfilePage extends Component {
         of(1)
             .pipe(exhaustMap(() => {
                 return ajax({
-                    url: paths["restApi"]["menu"] + "/" + this.props.currentMenu.menuID,
+                    url: paths["restApi"]["restaurantOwner"],
                     method: "DELETE",
                     headers: {"Content-Type": "application/json", "X-Auth-Token": this.state.token},
                 })
@@ -321,8 +321,9 @@ class YourProfilePage extends Component {
             .pipe(take(1))
             .subscribe(
                 () => {
-                    thisTemp.props.backgroundPage.update();
-                    thisTemp.props.onHide();
+                    window.localStorage.setItem("token", null);
+                    window.localStorage.setItem("user", null);
+                    thisTemp.update()
                 }, (error) => {
                     switch (error.name) {
                         case "AjaxTimeoutError":
