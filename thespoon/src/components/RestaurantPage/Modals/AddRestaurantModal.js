@@ -10,6 +10,7 @@ import {setRestaurantID} from "../../../actionCreators/restaurantActionCreators"
 import {bindCallback, of, throwError} from "rxjs";
 import {ajax} from "rxjs/ajax";
 import {catchError, exhaustMap, map, take} from "rxjs/operators";
+import {readFileURL} from "../Tools/FileReader"
 //</editor-fold>
 //<editor-fold desc="Bootstrap">
 import {Modal} from "react-bootstrap";
@@ -109,8 +110,9 @@ class AddRestaurantInfo extends Component {
             selectedOpenTime: null,
             selectedCloseTime: null,
             selectedFile: null,
+            selectedFileData: null,
             imageID: 0,
-            imageMessage: ""
+            imageMessage: "",
 
             //</editor-fold>
         }
@@ -264,11 +266,9 @@ class AddRestaurantInfo extends Component {
             }), catchError((error) => {
                 return throwError(error);
             }))
-            .pipe(map(() => {
+            .pipe(exhaustMap(() => {
                 if (["image/png", "image/jpeg"].includes(fileTemp.type)) {
-                    let formData = new FormData();
-                    formData.append("image", fileTemp);
-                    return formData;
+                    return readFileURL(fileTemp);
                 } else {
                     return throwError({
                         name: "InternalError",
@@ -278,6 +278,20 @@ class AddRestaurantInfo extends Component {
                 }
             }), catchError((error) => {
                 return throwError(error);
+            }))
+            .pipe(exhaustMap((fileData) => {
+                return bindCallback(thisTemp.setState).call(thisTemp, {
+                    selectedFileData: fileData
+                });
+            }), catchError((error) => {
+                return error;
+            }))
+            .pipe(map(() => {
+                let formData = new FormData();
+                formData.append("image", fileTemp);
+                return formData;
+            }), catchError((error) => {
+                return error;
             }))
             .pipe(exhaustMap((formData) => {
                 return ajax({
@@ -341,7 +355,8 @@ class AddRestaurantInfo extends Component {
             .pipe(exhaustMap(() => {
                 return bindCallback(thisTemp.setState).call(thisTemp, {
                     imageMessage: "",
-                    selectedFile: null
+                    selectedFile: null,
+                    selectedFileData: null
                 });
             }), catchError((error) => {
                 return throwError(error);
@@ -353,7 +368,9 @@ class AddRestaurantInfo extends Component {
                     console.log(error);
                     thisTemp.setState({
                         imageMessage: "Something is not like it is supposed to be.",
-                        serverMessage: ""
+                        serverMessage: "",
+                        selectedFile: null,
+                        selectedFileData: null
                     });
                 }
             );
@@ -514,13 +531,18 @@ class AddRestaurantInfo extends Component {
                                 <label htmlFor="file">+ Upload image</label>
                                 {this.state.selectedFile &&
                                 <label className="selected-file">
-                            <span onClick={this.handleFileDelete}
-                                  role="button"
-                                  className="remove-button">
-                                X
-                            </span>
+                                    <span
+                                        onClick={this.handleFileDelete}
+                                        role="button"
+                                        className="remove-button"
+                                    >
+                                        X
+                                    </span>
                                     {this.state.selectedFile.name}
                                 </label>
+                                }
+                                {this.state.selectedFileData &&
+                                <img src={this.state.selectedFileData} alt={this.state.selectedFile.name}/>
                                 }
                             </div>
                             <div className="error-block">

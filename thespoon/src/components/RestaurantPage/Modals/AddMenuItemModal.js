@@ -8,6 +8,7 @@ import {connect} from "react-redux";
 import {bindCallback, fromEvent, of, throwError} from "rxjs";
 import {ajax} from "rxjs/ajax";
 import {catchError, exhaustMap, map, take, bufferTime, filter, distinctUntilChanged} from "rxjs/operators";
+import {readFileURL} from "../Tools/FileReader"
 //</editor-fold>
 //<editor-fold desc="Bootstrap">
 import {Modal} from "react-bootstrap";
@@ -121,6 +122,8 @@ class AddMenuItemModal extends Component {
             description: "",
             priceEuros: 0,
             type: this.props.modalVisibilityFilter === modalVisibilityFilters.SHOW_ADD_DISH ? "dish" : "drink",
+            selectedFile: null,
+            selectedFileData: null,
             imageID: 0,
             imageMessage: "",
             availableTags: [],
@@ -277,11 +280,9 @@ class AddMenuItemModal extends Component {
             }), catchError((error) => {
                 return throwError(error);
             }))
-            .pipe(map(() => {
+            .pipe(exhaustMap(() => {
                 if (["image/png", "image/jpeg"].includes(fileTemp.type)) {
-                    let formData = new FormData();
-                    formData.append("image", fileTemp);
-                    return formData;
+                    return readFileURL(fileTemp);
                 } else {
                     return throwError({
                         name: "InternalError",
@@ -291,6 +292,20 @@ class AddMenuItemModal extends Component {
                 }
             }), catchError((error) => {
                 return throwError(error);
+            }))
+            .pipe(exhaustMap((fileData) => {
+                return bindCallback(thisTemp.setState).call(thisTemp, {
+                    selectedFileData: fileData
+                });
+            }), catchError((error) => {
+                return error;
+            }))
+            .pipe(map(() => {
+                let formData = new FormData();
+                formData.append("image", fileTemp);
+                return formData;
+            }), catchError((error) => {
+                return error;
             }))
             .pipe(exhaustMap((formData) => {
                 return ajax({
@@ -315,7 +330,8 @@ class AddMenuItemModal extends Component {
                             thisTemp.setState({
                                 imageMessage: "Image could not be uploaded, as the request timed out.",
                                 serverMessage: "",
-                                selectedFile: null
+                                selectedFile: null,
+                                selectedFileData: null
                             });
                             break;
                         case "InternalError":
@@ -324,13 +340,15 @@ class AddMenuItemModal extends Component {
                                 thisTemp.setState({
                                     imageMessage: "Image could not be uploaded, as there is no connection to the server.",
                                     serverMessage: "",
-                                    selectedFile: null
+                                    selectedFile: null,
+                                    selectedFileData: null
                                 });
                             } else {
                                 thisTemp.setState({
                                     imageMessage: "Image could not be uploaded, as " + error.response,
                                     serverMessage: "",
-                                    selectedFile: null
+                                    selectedFile: null,
+                                    selectedFileData: null
                                 });
                             }
                             break;
@@ -339,7 +357,8 @@ class AddMenuItemModal extends Component {
                             thisTemp.setState({
                                 imageMessage: "Something is not like it is supposed to be.",
                                 serverMessage: "",
-                                selectedFile: null
+                                selectedFile: null,
+                                selectedFileData: null
                             });
                             break;
                     }
@@ -354,7 +373,8 @@ class AddMenuItemModal extends Component {
             .pipe(exhaustMap(() => {
                 return bindCallback(thisTemp.setState).call(thisTemp, {
                     imageMessage: "",
-                    selectedFile: null
+                    selectedFile: null,
+                    selectedFileData: null
                 });
             }), catchError((error) => {
                 return throwError(error);
@@ -367,7 +387,9 @@ class AddMenuItemModal extends Component {
                     console.log(error);
                     thisTemp.setState({
                         imageMessage: "Something is not like it is supposed to be.",
-                        serverMessage: ""
+                        serverMessage: "",
+                        selectedFile: null,
+                        selectedFileData: null
                     });
                 }
             );
@@ -508,13 +530,18 @@ class AddMenuItemModal extends Component {
                                 <label htmlFor="file">+ Upload image</label>
                                 {this.state.selectedFile &&
                                 <label className="selected-file">
-                            <span onClick={this.handleFileDelete}
-                                  role="button"
-                                  className="remove-button">
-                                X
-                            </span>
+                                    <span
+                                        onClick={this.handleFileDelete}
+                                        role="button"
+                                        className="remove-button"
+                                    >
+                                        X
+                                    </span>
                                     {this.state.selectedFile.name}
                                 </label>
+                                }
+                                {this.state.selectedFileData &&
+                                <img src={this.state.selectedFileData} alt={this.state.selectedFile.name}/>
                                 }
                             </div>
                             <div className="error-block">
