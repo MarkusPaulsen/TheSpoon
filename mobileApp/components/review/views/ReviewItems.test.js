@@ -42,16 +42,10 @@ describe("Review Items Component", () => {
       rating: null,
       content: ""
     };
-    const itemID = "1";
 
     component.setState({
       menuItems: [
-        {
-          menuItemID: "1",
-          menuItemName: "item1",
-          rating: null,
-          content: ""
-        },
+        item,
         {
           menuItemID: "2",
           menuItemName: "item2",
@@ -62,12 +56,12 @@ describe("Review Items Component", () => {
     });
     component.update();
 
-    component.instance().onChangeText(text, item, itemID);
+    component.instance().onChangeText(text, item);
     component.update();
 
     expect(component.state().menuItems).toEqual([
-      { menuItemID: "2", menuItemName: "item2", rating: null, content: "" },
-      { menuItemID: "1", menuItemName: "item1", rating: null, content: text }
+      { menuItemID: "1", menuItemName: "item1", rating: null, content: text },
+      { menuItemID: "2", menuItemName: "item2", rating: null, content: "" }
     ]);
   });
 
@@ -79,16 +73,10 @@ describe("Review Items Component", () => {
       rating: null,
       content: ""
     };
-    const itemID = "1";
 
     component.setState({
       menuItems: [
-        {
-          menuItemID: "1",
-          menuItemName: "item1",
-          rating: null,
-          content: ""
-        },
+        item,
         {
           menuItemID: "2",
           menuItemName: "item2",
@@ -100,12 +88,12 @@ describe("Review Items Component", () => {
 
     component.update();
 
-    component.instance().setRatingCount(rating, item, itemID);
+    component.instance().setRatingCount(rating, item);
     component.update();
 
     expect(component.state().menuItems).toEqual([
-      { menuItemID: "2", menuItemName: "item2", rating: null, content: "" },
-      { menuItemID: "1", menuItemName: "item1", rating: rating, content: "" }
+      { menuItemID: "1", menuItemName: "item1", rating: rating, content: "" },
+      { menuItemID: "2", menuItemName: "item2", rating: null, content: "" }
     ]);
   });
 
@@ -117,36 +105,24 @@ describe("Review Items Component", () => {
       rating: null,
       content: ""
     };
-    const itemID = "1";
+    const item2 = {
+      menuItemID: "2",
+      menuItemName: "item2",
+      rating: null,
+      content: ""
+    };
 
     component.setState({
-      menuItems: [
-        {
-          menuItemID: "1",
-          menuItemName: "item1",
-          rating: null,
-          content: ""
-        },
-        {
-          menuItemID: "2",
-          menuItemName: "item2",
-          rating: null,
-          content: ""
-        }
-      ],
-      reviewedScores: [
-        {
-          menuItemID: "2",
-          menuItemName: "item2",
-          rating: null,
-          content: ""
-        }
-      ]
+      menuItems: [item, item2]
     });
 
     component.update();
 
-    component.instance().setRatingCount(rating, item, itemID);
+    component.instance().setRatingCount(rating, item);
+    component.update();
+    expect(component.state().disableButton).toBeTruthy();
+
+    component.instance().setRatingCount(rating, item2);
     component.update();
     expect(component.state().disableButton).toBeFalsy();
   });

@@ -146,7 +146,7 @@ class EditRestaurantModal extends Component {
                     selectedOpeningHoursMessage: ""
                 });
             }), catchError((error) => {
-                return error;
+                return throwError(error);
             }))
             .pipe(take(1))
             .subscribe(
@@ -170,7 +170,7 @@ class EditRestaurantModal extends Component {
                     selectedOpeningHoursMessage: ""
                 });
             }), catchError((error) => {
-                return error;
+                return throwError(error);
             }))
             .pipe(take(1))
             .subscribe(
@@ -194,7 +194,7 @@ class EditRestaurantModal extends Component {
                     selectedOpeningHoursMessage: ""
                 });
             }), catchError((error) => {
-                return error;
+                return throwError(error);
             }))
             .pipe(take(1))
             .subscribe(
@@ -220,7 +220,7 @@ class EditRestaurantModal extends Component {
                     closeTime: thisTemp.state.selectedCloseTime
                 };
             }), catchError((error) => {
-                return error;
+                return throwError(error);
             }))
             .pipe(exhaustMap((newOpeningHours) => {
                 return bindCallback(thisTemp.setState).call(thisTemp, {
@@ -228,7 +228,7 @@ class EditRestaurantModal extends Component {
                     selectedOpeningHoursMessage: ""
                 });
             }), catchError((error) => {
-                return error;
+                return throwError(error);
             }))
             .pipe(take(1))
             .subscribe(
@@ -254,7 +254,7 @@ class EditRestaurantModal extends Component {
                     selectedOpeningHoursMessage: ""
                 });
             }), catchError((error) => {
-                return error;
+                return throwError(error);
             }))
             .pipe(take(1))
             .subscribe(
@@ -280,7 +280,7 @@ class EditRestaurantModal extends Component {
                     selectedFile: fileTemp
                 });
             }), catchError((error) => {
-                return error;
+                return throwError(error);
             }))
             .pipe(exhaustMap(() => {
                 if (["image/png", "image/jpeg"].includes(fileTemp.type)) {
@@ -293,7 +293,7 @@ class EditRestaurantModal extends Component {
                     });
                 }
             }), catchError((error) => {
-                return error;
+                return throwError(error);
             }))
             .pipe(exhaustMap((fileData) => {
                 return bindCallback(thisTemp.setState).call(thisTemp, {
@@ -319,7 +319,7 @@ class EditRestaurantModal extends Component {
                     responseType: "text"
                 })
             }), catchError((error) => {
-                return error;
+                return throwError(error);
             }))
             .pipe(take(1))
             .subscribe(
@@ -375,7 +375,7 @@ class EditRestaurantModal extends Component {
                     selectedFileData: null
                 });
             }), catchError((error) => {
-                return error;
+                return throwError(error);
             }))
             .pipe(take(1))
             .subscribe(
@@ -399,7 +399,7 @@ class EditRestaurantModal extends Component {
             .pipe(map(() => {
                 return thisTemp.form.getValues();
             }), catchError((error) => {
-                return error;
+                return throwError(error);
             }))
             .pipe(exhaustMap((values) => {
                 return bindCallback(thisTemp.setState).call(thisTemp, {
@@ -409,7 +409,7 @@ class EditRestaurantModal extends Component {
                     country: values.country
                 });
             }), catchError((error) => {
-                return error;
+                return throwError(error);
             }))
             .pipe(exhaustMap(() => {
                 return bindCallback(thisTemp.setState).call(thisTemp, {
@@ -420,7 +420,7 @@ class EditRestaurantModal extends Component {
                     imageMessage: "",
                 });
             }), catchError((error) => {
-                return error;
+                return throwError(error);
             }))
             .pipe(exhaustMap(() => {
                 if (thisTemp.state.validation.isValid && thisTemp.state.selectedOpeningHours.length > 0 && thisTemp.state.imageID !== "") {
@@ -448,7 +448,7 @@ class EditRestaurantModal extends Component {
                 }
 
             }), catchError((error) => {
-                return error;
+                return throwError(error);
             }))
             .pipe(exhaustMap((osmData) => {
                 if (Array.isArray(osmData.response) && osmData.response.length > 0) {
@@ -484,7 +484,7 @@ class EditRestaurantModal extends Component {
                     });
                 }
             }), catchError((error) => {
-                return error;
+                return throwError(error);
             }))
             .pipe(take(1))
             .subscribe(
@@ -529,7 +529,7 @@ class EditRestaurantModal extends Component {
             return (
                 <Modal.Body>
                     <button className="exit" onClick={this.props.onHide}><IconExit/></button>
-                    <div className="modal-wrapper restaurant-info">
+                    <div className="modal-wrapper edit-restaurant">
                         <Form ref={(c) => {
                             this.form = c;
                         }} onSubmit={this.handleSubmit}>
