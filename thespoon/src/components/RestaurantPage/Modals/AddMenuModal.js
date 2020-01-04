@@ -269,7 +269,7 @@ class AddMenuModal extends Component {
                     return ajax({
                         url: paths["restApi"]["menu"],
                         method: "POST",
-                        headers: {"Content-Type": "application/json", "X-Auth-Token": this.state.token},
+                        headers: {"Content-Type": "application/json", "X-Auth-Token": thisTemp.state.token},
                         body: {
                             name: thisTemp.state.name,
                             description: thisTemp.state.description,
