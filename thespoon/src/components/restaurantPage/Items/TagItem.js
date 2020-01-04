@@ -13,7 +13,7 @@ class TagItem extends Component {
         this.handleClick = this.handleClick.bind(this);
     }
 
-    handleClick() {
+    handleClick= () => {
         const thisTemp = this;
         const modal = thisTemp.props.modal;
         of(1)

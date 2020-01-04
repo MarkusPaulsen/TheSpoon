@@ -284,14 +284,14 @@ class AddRestaurantInfo extends Component {
                     selectedFileData: fileData
                 });
             }), catchError((error) => {
-                return error;
+                return throwError(error);
             }))
             .pipe(map(() => {
                 let formData = new FormData();
                 formData.append("image", fileTemp);
                 return formData;
             }), catchError((error) => {
-                return error;
+                return throwError(error);
             }))
             .pipe(exhaustMap((formData) => {
                 return ajax({

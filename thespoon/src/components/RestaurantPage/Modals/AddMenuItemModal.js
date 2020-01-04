@@ -163,7 +163,7 @@ class AddMenuItemModal extends Component {
                     selectedFile: fileTemp
                 });
             }), catchError((error) => {
-                return error;
+                return throwError(error);
             }))
             .pipe(exhaustMap(() => {
                 if (["image/png", "image/jpeg"].includes(fileTemp.type)) {
@@ -176,21 +176,21 @@ class AddMenuItemModal extends Component {
                     });
                 }
             }), catchError((error) => {
-                return error;
+                return throwError(error);
             }))
             .pipe(exhaustMap((fileData) => {
                 return bindCallback(thisTemp.setState).call(thisTemp, {
                     selectedFileData: fileData
                 });
             }), catchError((error) => {
-                return error;
+                return throwError(error);
             }))
             .pipe(map(() => {
                 let formData = new FormData();
                 formData.append("image", fileTemp);
                 return formData;
             }), catchError((error) => {
-                return error;
+                return throwError(error);
             }))
             .pipe(exhaustMap((formData) => {
                 return ajax({
@@ -202,7 +202,7 @@ class AddMenuItemModal extends Component {
                     responseType: "text"
                 })
             }), catchError((error) => {
-                return error;
+                return throwError(error);
             }))
             .pipe(take(1))
             .subscribe(
@@ -262,7 +262,7 @@ class AddMenuItemModal extends Component {
                     selectedFileData: null
                 });
             }), catchError((error) => {
-                return error;
+                return throwError(error);
             }))
             .pipe(take(1))
             .subscribe(
@@ -287,7 +287,7 @@ class AddMenuItemModal extends Component {
             .pipe(map(() => {
                 return thisTemp.form.getValues();
             }), catchError((error) => {
-                return error;
+                return throwError(error);
             }))
             .pipe(exhaustMap((values) => {
                 return bindCallback(thisTemp.setState).call(thisTemp, {
@@ -297,7 +297,7 @@ class AddMenuItemModal extends Component {
                     tags: values.tags.split(",").map(tag => tag.trim())
                 });
             }), catchError((error) => {
-                return error;
+                return throwError(error);
             }))
             .pipe(exhaustMap(() => {
                 return bindCallback(thisTemp.setState).call(thisTemp, {
@@ -306,7 +306,7 @@ class AddMenuItemModal extends Component {
                     serverMessage: ""
                 });
             }), catchError((error) => {
-                return error;
+                return throwError(error);
             }))
             .pipe(exhaustMap(() => {
                 if (thisTemp.state.validation.isValid) {
@@ -336,7 +336,7 @@ class AddMenuItemModal extends Component {
                     });
                 }
             }), catchError((error) => {
-                return error;
+                return throwError(error);
             }))
             .pipe(take(1))
             .subscribe(
