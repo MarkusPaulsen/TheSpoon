@@ -148,9 +148,7 @@ class AddMenuItemModal extends Component {
             serverMessageFinishedLoadingAvailableTags: "",
             finishedLoadingAvailableTags: false,
             autocompleteTags: [],
-            chosenTags: this.props._menuItem.tags ? this.props._menuItem.tags.map((tag) => {
-                return tag.name
-            }) : [],
+            chosenTags: [],
             tagsMessage: ""
 
             //</editor-fold>
@@ -689,8 +687,7 @@ const mapStateToProps = (state) => {
     return {
         _backgroundPage: state._backgroundPageReducer._backgroundPage,
         _modal: state._modalReducer._modal,
-        _menu: state._menuReducer._menu,
-        _menuItem: state._menuReducer._menuItem
+        _menu: state._menuReducer._menu
     };
 };
 
