@@ -44,7 +44,7 @@ class LogOutModal extends Component {
         event.preventDefault();
         window.localStorage.setItem("token", null);
         window.localStorage.setItem("user", null);
-        this.props.backgroundPage.update();
+        this.props._backgroundPage.update();
         this.props.onHide();
     };
 
@@ -53,22 +53,37 @@ class LogOutModal extends Component {
     //<editor-fold desc="Render">
     render() {
         let validation = this.submitted ? this.validator.validate(this.state) : this.state.validation;
-        if(this.props.backgroundPage == null) {
+        if(this.props._backgroundPage == null) {
             return(<p>Something went wrong.</p>);
         } else if(this.state.token == null || this.state.token === "null" ) {
             return(<p>Something went wrong.</p>);
         } else {
             return (
                 <Modal.Body>
-                    <button className="exit" onClick={this.props.onHide}><IconExit /></button>
+                    <button
+                        className="exit"
+                        onClick={this.props.onHide}
+                    >
+                        <IconExit />
+                    </button>
                     <div className="modal-wrapper logout">
                         <form>
-                            <h2 className="title">Log out</h2>
-                            <label>Are you sure you want to logout?</label>
-                            <button className="wide" onClick={this.handleLogOut}>
+                            <h2 className="title">
+                                Log out
+                            </h2>
+                            <label>
+                                Are you sure you want to logout?
+                            </label>
+                            <button
+                                className="wide"
+                                onClick={this.handleLogOut}
+                            >
                                 Yes
                             </button>
-                            <button className="wide" onClick={this.props.onHide}>
+                            <button
+                                className="wide"
+                                onClick={this.props.onHide}
+                            >
                                 No
                             </button>
                         </form>
@@ -84,7 +99,7 @@ class LogOutModal extends Component {
 //<editor-fold desc="Redux">
 const mapStateToProps = (state) => {
     return {
-        backgroundPage: state.backgroundPageReducer.backgroundPage
+        _backgroundPage: state._backgroundPageReducer._backgroundPage
     };
 };
 

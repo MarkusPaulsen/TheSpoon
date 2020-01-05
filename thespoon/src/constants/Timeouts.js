@@ -1,0 +1,1 @@
+export const timeouts = 10000;

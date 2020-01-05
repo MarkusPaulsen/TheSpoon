@@ -3,13 +3,14 @@ import React, {Component} from "react";
 //</editor-fold>
 
 //<editor-fold desc="Constants">
-import {modalVisibilityFilters} from "../../../constants/modalVisibiltyFilters";
+import {modals} from "../../../constants/Modals";
 //</editor-fold>
 //<editor-fold desc="Containers">
 import FilterLink from "../../../containers/FilterModalLink";
 //</editor-fold>
 //<editor-fold desc="Icons">
 import {IconEditGrey} from "../../Icons";
+
 //</editor-fold>
 
 
@@ -18,10 +19,11 @@ class MenuItem extends Component {
     constructor(props) {
         super(props);
     }
+
     //</editor-fold>
 
     //<editor-fold desc="Render">
-    render () {
+    render() {
         return (
             <div className="foodItem">
                 <div className="image-setup">
@@ -33,7 +35,7 @@ class MenuItem extends Component {
                     <h5 className="foodItemName">{this.props.name}</h5>
                     <div className="description">{this.props.description}</div>
                     <div className="tags">
-                        {this.props.tags.map(tag => {
+                        {this.props.tags && this.props.tags.map(tag => {
                             return (
                                 <div className="tag" key={tag.color}>
                                     {tag.name}
@@ -45,12 +47,14 @@ class MenuItem extends Component {
                 <div className="price">{this.props.priceEuros}€</div>
                 <div className="edit-button">
                     <FilterLink
-                        filter={this.props.type === "dish"
-                            ? modalVisibilityFilters.SHOW_EDIT_DISH
-                            : modalVisibilityFilters.SHOW_EDIT_DRINK}
-                        currentMenu={this.props.currentMenu}
-                        currentMenuItem={this.props}
-                    ><IconEditGrey/></FilterLink>
+                        modal={this.props.type === "dish"
+                            ? modals.SHOW_EDIT_DISH
+                            : modals.SHOW_EDIT_DRINK}
+                        menu={this.props.menu}
+                        menuItem={this.props}
+                    >
+                        <IconEditGrey/>
+                    </FilterLink>
                 </div>
                 <div>
                     <p>{this.props.menuItemReviews.rating}</p>
@@ -67,6 +71,7 @@ class MenuItem extends Component {
             </div>
         )
     }
+
     //</editor-fold>
 }
 

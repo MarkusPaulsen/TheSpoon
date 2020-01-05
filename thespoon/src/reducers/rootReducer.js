@@ -1,14 +1,14 @@
 import {combineReducers} from "redux";
-import modalVisibiltyFilterReducer from "./modalVisibilityFilterReducer";
-import restaurantReducer from "./restaurantReducer";
-import currentMenuReducer from "./currentMenuReducer";
-import backgroundPageReducer from "./BackgroundPageReducer";
+import _modalReducer from "./ModalReducer";
+import _restaurantReducer from "./RestaurantReducer";
+import _menuReducer from "./MenuReducer";
+import _backgroundPageReducer from "./BackgroundPageReducer";
 
-const rootReducer = combineReducers({
-    modalVisibiltyFilterReducer: modalVisibiltyFilterReducer,
-    restaurantReducer: restaurantReducer,
-    currentMenuReducer: currentMenuReducer,
-    backgroundPageReducer: backgroundPageReducer
+const _rootReducer = combineReducers({
+    _modalReducer: _modalReducer,
+    _restaurantReducer: _restaurantReducer,
+    _menuReducer: _menuReducer,
+    _backgroundPageReducer: _backgroundPageReducer
 });
 
-export default rootReducer;
+export default _rootReducer;

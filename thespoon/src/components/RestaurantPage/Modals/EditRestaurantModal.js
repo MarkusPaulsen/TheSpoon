@@ -4,7 +4,7 @@ import Select from "react-select";
 //</editor-fold>
 //<editor-fold desc="Redux">
 import {connect} from "react-redux";
-import {setRestaurantID} from "../../../actionCreators/restaurantActionCreators";
+import {_setRestaurantID} from "../../../actionCreators/RestaurantActionCreators";
 //</editor-fold>
 //<editor-fold desc="RxJs">
 import {bindCallback, of, throwError} from "rxjs";
@@ -23,10 +23,10 @@ import FormValidator from "../../../validation/FormValidator";
 //</editor-fold>
 
 //<editor-fold desc="Constants">
-import {paths} from "../../../constants/paths";
-import {days} from "../../../constants/days";
-import {hours} from "../../../constants/hours";
-import {timeout} from "../../../constants/timeout";
+import {paths} from "../../../constants/Paths";
+import {days} from "../../../constants/Days";
+import {hours} from "../../../constants/Hours";
+import {timeouts} from "../../../constants/Timeouts";
 //</editor-fold>
 //<editor-fold desc="Icons">
 import {IconExit} from "../../Icons";
@@ -101,11 +101,11 @@ class EditRestaurantModal extends Component {
             serverMessage: "",
             submitted: false,
             //<editor-fold desc="Restaurant States">
-            name: this.props.currentRestaurantInformation.name,
-            address: this.props.currentRestaurantInformation.address,
-            city: this.props.currentRestaurantInformation.city,
-            country: this.props.currentRestaurantInformation.country,
-            selectedOpeningHours: this.props.currentRestaurantInformation.openingHours.map(openingHour => {
+            name: this.props._restaurantInfo.name,
+            address: this.props._restaurantInfo.address,
+            city: this.props._restaurantInfo.city,
+            country: this.props._restaurantInfo.country,
+            selectedOpeningHours: this.props._restaurantInfo.openingHours.map(openingHour => {
                 return {
                     day: {
                         value: openingHour.day,
@@ -127,7 +127,7 @@ class EditRestaurantModal extends Component {
             selectedCloseTime: null,
             selectedFile: null,
             selectedFileData: null,
-            imageID: this.props.currentRestaurantInformation.imageID,
+            imageID: this.props._restaurantInfo.imageID,
             imageMessage: ""
 
             //</editor-fold>
@@ -315,7 +315,7 @@ class EditRestaurantModal extends Component {
                     method: "POST",
                     headers: {"X-Auth-Token": thisTemp.state.token},
                     body: formData,
-                    timeout: timeout,
+                    timeout: timeouts,
                     responseType: "text"
                 })
             }), catchError((error) => {
@@ -473,7 +473,7 @@ class EditRestaurantModal extends Component {
                                 }
                             })
                         },
-                        timeout: timeout,
+                        timeout: timeouts,
                         responseType: "text"
                     })
                 } else {
@@ -490,8 +490,8 @@ class EditRestaurantModal extends Component {
             .subscribe(
                 (next) => {
                     let response = JSON.parse(next.response);
-                    thisTemp.props.setRestaurantID(response.restaurantID);
-                    thisTemp.props.backgroundPage.update();
+                    thisTemp.props._setRestaurantID(response.restaurantID);
+                    thisTemp.props._backgroundPage.update();
                     thisTemp.props.onHide();
                 }, (error) => {
                     switch (error.name) {
@@ -520,7 +520,7 @@ class EditRestaurantModal extends Component {
     //<editor-fold desc="Render">
     render() {
         let validation = this.submitted ? this.validator.validate(this.state) : this.state.validation;
-        if(this.props.backgroundPage == null) {
+        if(this.props._backgroundPage == null) {
             return(<p>Something went wrong.</p>);
         } else if(this.state.token == null || this.state.token === "null" ) {
             return(<p>Something went wrong.</p>);
@@ -528,24 +528,54 @@ class EditRestaurantModal extends Component {
             //<editor-fold desc="Render Token">
             return (
                 <Modal.Body>
-                    <button className="exit" onClick={this.props.onHide}><IconExit/></button>
+                    <button
+                        className="exit"
+                        onClick={this.props.onHide}
+                    >
+                        <IconExit/>
+                    </button>
                     <div className="modal-wrapper edit-restaurant">
-                        <Form ref={(c) => {
-                            this.form = c;
-                        }} onSubmit={this.handleSubmit}>
-                            <h2>Configure restaurant data</h2>
+                        <Form
+                            ref={(c) => {this.form = c;}}
+                            onSubmit={this.handleSubmit}
+                            autocomplete="on"
+                        >
+                            <h2>
+                                Configure restaurant data
+                            </h2>
                             <div className="input-field">
-                                <label>Restaurant name</label>
-                                <Input type="text" name="name" value={this.state.name}/>
+                                <label>
+                                    Name
+                                </label>
+                                <Input
+                                    type="text"
+                                    pattern="[a-zA-Z0-9 _]{1,}"
+                                    title="Name must be alphanumeric and must contain at least 1 letter."
+                                    name="name"
+                                    value={this.state.name}
+                                    required
+                                />
                             </div>
                             <div className="error-block">
-                                <small>{validation.name.message}</small>
+                                <small>
+                                    {validation.name.message}
+                                </small>
                             </div>
                             <div className="input-field image">
-                                <label>Image</label>
-                                <input type="file" name="file" id="file" className="inputfile"
-                                       onChange={this.handleFileSubmit}/>
-                                <label htmlFor="file">+ Upload image</label>
+                                <label>
+                                    Image
+                                </label>
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    name="file"
+                                    id="file"
+                                    className="inputfile"
+                                    onChange={this.handleFileSubmit}
+                                />
+                                <label htmlFor="file">
+                                    + Upload image
+                                </label>
                                 {this.state.selectedFile &&
                                 <label className="selected-file">
                                     <span
@@ -559,77 +589,146 @@ class EditRestaurantModal extends Component {
                                 </label>
                                 }
                                 {this.state.selectedFileData &&
-                                <img src={this.state.selectedFileData} alt={this.state.selectedFile.name}/>
+                                <img
+                                    src={this.state.selectedFileData}
+                                    alt={this.state.selectedFile.name}
+                                />
                                 }
                             </div>
                             <div className="error-block">
-                                <small>{this.state.imageMessage}</small>
+                                <small>
+                                    {this.state.imageMessage}
+                                </small>
                             </div>
                             <div className="input-field">
-                                <label>Address</label>
-                                <Input type="text" name="address" value={this.state.address}/>
+                                <label>
+                                    Address
+                                </label>
+                                <Input
+                                    type="text"
+                                    pattern="[a-zA-Z0-9 _]{1,}"
+                                    title="Address must be alphanumeric and must contain at least 1 letter."
+                                    name="address"
+                                    value={this.state.address}
+                                    required
+                                />
                             </div>
                             <div className="error-block">
-                                <small>{validation.address.message}</small>
+                                <small>
+                                    {validation.address.message}
+                                </small>
                             </div>
                             <div className="input-field">
-                                <label>City</label>
-                                <Input type="text" name="city" value={this.state.city}/>
+                                <label>
+                                    City
+                                </label>
+                                <Input
+                                    type="text"
+                                    pattern="[a-zA-Z0-9 _]{1,}"
+                                    title="City must be alphanumeric and must contain at least 1 letter."
+                                    name="city"
+                                    value={this.state.city}
+                                    required
+                                />
                             </div>
                             <div className="error-block">
-                                <small>{validation.city.message}</small>
+                                <small>
+                                    {validation.city.message}
+                                </small>
                             </div>
                             <div className="input-field">
                                 <label>Country</label>
-                                <Input type="text" name="country" value={this.state.country}/>
+                                <Input
+                                    type="text"
+                                    pattern="[a-zA-Z0-9 _]{1,}"
+                                    title="Country must be alphanumeric and must contain at least 1 letter."
+                                    name="country"
+                                    value={this.state.country}
+                                    required
+                                />
                             </div>
                             <div className="error-block">
-                                <small>{validation.country.message}</small>
+                                <small>
+                                    {validation.country.message}
+                                </small>
                             </div>
                             <div className="input-field opening-hours">
-                                <label>Opening hours</label>
+                                <label>
+                                    Opening hours
+                                </label>
                                 <div className="hours-selector">
                                     <Select options={days}
                                             onChange={this.handleDayChange}
                                             placeholder="Day"
                                             styles={selectStyles}
-                                            className="days"/>
+                                            className="days"
+                                    />
                                     <Select options={hours}
                                             onChange={this.handleOpenTimeChange}
                                             placeholder="Start"
                                             styles={selectStyles}
-                                            className="hours start"/>
+                                            className="hours start"
+                                    />
                                     <Select options={hours}
                                             onChange={this.handleCloseTimeChange}
                                             placeholder="End"
                                             styles={selectStyles}
-                                            className="hours end"/>
+                                            className="hours end"
+                                    />
                                 </div>
                                 {(this.state.selectedDay && this.state.selectedOpenTime && this.state.selectedCloseTime) ?
-                                    <div className="add-button"><span onClick={this.handleHoursAdd} role="button">+ Add</span>
+                                    <div className="add-button">
+                                        <span
+                                            onClick={this.handleHoursAdd}
+                                            role="button"
+                                        >
+                                            + Add
+                                        </span>
                                     </div>
                                     :
-                                    <div className="add-button disabled"><span disabled="disabled" role="button">+ Add</span></div>
+                                    <div className="add-button disabled">
+                                        <span
+                                            disabled="disabled"
+                                            role="button"
+                                        >
+                                            + Add
+                                        </span>
+                                    </div>
                                 }
                                 <div className="selected-hours">
-                                    {this.state.selectedOpeningHours.map((oh, i) =>
-                                        <div key={i}>
-                                            {oh.day.label}: {oh.openTime.label} - {oh.closeTime.label}
-                                            <span onClick={() => this.handleHoursRemove(oh)}
-                                                  role="button"
-                                                  className="remove-button">
-                                        X
-                                    </span>
-                                        </div>)
-                                    }
+                                    {this.state.selectedOpeningHours.map((oh, i) => {
+                                        return(
+                                            <div key={i}>
+                                                {oh.day.label}: {oh.openTime.label} - {oh.closeTime.label}
+                                                <span
+                                                    onClick={() => {
+                                                        this.handleHoursRemove(oh)
+                                                    }}
+                                                    role="button"
+                                                    className="remove-button"
+                                                >
+                                                X
+                                            </span>
+                                            </div>
+                                        );
+                                    })}
                                 </div>
                                 <div className="error-block">
-                                    <small>{this.state.selectedOpeningHoursMessage}</small>
+                                    <small>
+                                        {this.state.selectedOpeningHoursMessage}
+                                    </small>
                                 </div>
                             </div>
-                            <Button type="submit" className="normal">Done</Button>
+                            <Button
+                                type="submit"
+                                className="normal"
+                            >
+                                Done
+                            </Button>
                             <div className="error-block">
-                                <small>{this.state.serverMessage}</small>
+                                <small>
+                                    {this.state.serverMessage}
+                                </small>
                             </div>
                         </Form>
                     </div>
@@ -646,14 +745,16 @@ class EditRestaurantModal extends Component {
 //<editor-fold desc="Redux">
 const mapStateToProps = (state) => {
     return {
-        backgroundPage: state.backgroundPageReducer.backgroundPage,
-        currentRestaurantInformation: state.restaurantReducer.currentRestaurantInformation
+        _backgroundPage: state._backgroundPageReducer._backgroundPage,
+        _restaurantInfo: state._restaurantReducer._restaurantInfo
     };
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        setRestaurantID: (restaurantID) => dispatch(setRestaurantID(restaurantID))
+        _setRestaurantID: (_restaurantID) => {
+            dispatch(_setRestaurantID(_restaurantID));
+        }
     };
 };
 

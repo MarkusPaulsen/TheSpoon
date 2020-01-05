@@ -1,14 +1,14 @@
 //<editor-fold desc="React">
 import React, {Component} from "react";
 //</editor-fold>
-//<editor-fold desc="Redux">
-import {connect} from "react-redux";
-//</editor-fold>
 //<editor-fold desc="RxJs">
 import {bindCallback, of, throwError} from "rxjs";
 import {ajax} from "rxjs/ajax";
 import {catchError, exhaustMap, map, take} from "rxjs/operators";
 import {readFileURL} from "../Tools/FileReader"
+//</editor-fold>
+//<editor-fold desc="Redux">
+import {connect} from "react-redux";
 //</editor-fold>
 //<editor-fold desc="Bootstrap">
 import {Modal} from "react-bootstrap";
@@ -22,9 +22,9 @@ import FormValidator from "../../../validation/FormValidator";
 //</editor-fold>
 
 //<editor-fold desc="Constants">
-import {paths} from "../../../constants/paths";
-import {modalVisibilityFilters} from "../../../constants/modalVisibiltyFilters";
-import {timeout} from "../../../constants/timeout";
+import {paths} from "../../../constants/Paths";
+import {modals} from "../../../constants/Modals";
+import {timeouts} from "../../../constants/Timeouts";
 //</editor-fold>
 //<editor-fold desc="Icons">
 import {IconExit} from "../../Icons";
@@ -138,7 +138,7 @@ class AddMenuItemModal extends Component {
             name: "",
             description: "",
             priceEuros: 0,
-            type: this.props.modalVisibilityFilter === modalVisibilityFilters.SHOW_ADD_DISH ? "dish" : "drink",
+            type: this.props._modal === modals.SHOW_ADD_DISH ? "dish" : "drink",
             selectedFile: null,
             selectedFileData: null,
             imageID: 0,
@@ -147,6 +147,129 @@ class AddMenuItemModal extends Component {
 
             //</editor-fold>
         };
+    }
+
+    //</editor-fold>
+
+    //<editor-fold desc="Component Lifecycle Model">
+    componentDidMount() {
+        const thisTemp = this;
+
+        //<editor-fold desc="Mount Available Tags Observable">
+        this.$availableTags = ajax({
+            url: paths["restApi"]["tag"],
+            method: "GET",
+            headers: {"X-Auth-Token": thisTemp.state.token},
+            timeout: timeouts,
+            responseType: "text"
+        })
+            .pipe(
+                exhaustMap((next) => {
+                    let response = JSON.parse(next.response);
+                    return bindCallback(thisTemp.setState).call(thisTemp, {
+                        availableTags: response
+                    });
+                }),
+                catchError((error) => {
+                    throw error
+                }))
+            .subscribe(
+                () => {
+                    thisTemp.setState({
+                        serverMessageFinishedLoadingAvailableTags: "",
+                        finishedLoadingAvailableTags: true
+                    });
+                }, (error) => {
+                    switch (error.name) {
+                        case "AjaxTimeoutError":
+                            thisTemp.setState({
+                                serverMessageFinishedLoadingAvailableTags: "" + "The request timed out.",
+                                finishedLoadingAvailableTags: true
+                            });
+                            break;
+                        case "InternalError":
+                        case "AjaxError":
+                            if (error.status === 0 && error.response === "") {
+                                thisTemp.setState({
+                                    serverMessageFinishedLoadingAvailableTags: "There is no connection to the server.",
+                                    finishedLoadingAvailableTags: true
+                                });
+                            } else if (error.status === 400) {
+                                thisTemp.setState({
+                                    serverMessageFinishedLoadingAvailableTags: "",
+                                    finishedLoadingAvailableTags: true
+                                });
+                            } else {
+                                thisTemp.setState({
+                                    serverMessageFinishedLoadingAvailableTags: error.response,
+                                    finishedLoadingAvailableTags: true
+                                });
+                            }
+                            break;
+                        default:
+                            console.log(error);
+                            thisTemp.setState({
+                                serverMessageFinishedLoadingAvailableTags: "Something is not like it is supposed to be.",
+                                finishedLoadingAvailableTags: true
+                            });
+                            break;
+                    }
+                }
+            );
+        //</editor-fold>
+
+        //<editor-fold desc="Mount Tags Observable">
+        this.$tags = fromEvent(document.getElementById("tagInput"), "input")
+            .pipe(map((event) => {
+                return event.target.value
+            }))
+            .pipe(bufferTime(1000))
+            .pipe(map((valueArray) => {
+                if (valueArray.length >= 1) {
+                    return valueArray[valueArray.length - 1]
+                } else {
+                    return null
+                }
+            }))
+            .pipe(filter((value) => {
+                return value != null
+            }))
+            .pipe(distinctUntilChanged())
+            .pipe(map((value) => {
+                if (value.length >= 1) {
+                    let searchValue = value[0].toUpperCase() + value.slice(1);
+                    return thisTemp.state.availableTags.filter((availableTag) => {
+                        return availableTag.startsWith(searchValue)
+                    })
+                } else {
+                    return []
+                }
+            }))
+            .subscribe(
+                (next) => {
+                    thisTemp.setState({
+                        autocompleteTags: next,
+                        tagsMessage: ""
+                    });
+                },
+                (error) => {
+                    console.log(error);
+                    thisTemp.setState({
+                        autocompleteTags: [],
+                        tagsMessage: "Something is not like it is supposed to be."
+                    });
+                }
+            );
+        //</editor-fold>
+    }
+
+    componentWillUnmount() {
+        //<editor-fold desc="Unmount Tags Observable">
+        this.$tags.unsubscribe();
+        //</editor-fold>
+        //<editor-fold desc="Unmount Available Tags Observable">
+        this.$availableTags.unsubscribe();
+        //</editor-fold>
     }
 
     //</editor-fold>
@@ -198,7 +321,7 @@ class AddMenuItemModal extends Component {
                     method: "POST",
                     headers: {"X-Auth-Token": thisTemp.state.token},
                     body: formData,
-                    timeout: timeout,
+                    timeout: timeouts,
                     responseType: "text"
                 })
             }), catchError((error) => {
@@ -293,8 +416,7 @@ class AddMenuItemModal extends Component {
                 return bindCallback(thisTemp.setState).call(thisTemp, {
                     name: values.name,
                     description: values.description,
-                    priceEuros: parseInt(values.priceEuros),
-                    tags: values.tags.split(",").map(tag => tag.trim())
+                    priceEuros: parseFloat(values.priceEuros)
                 });
             }), catchError((error) => {
                 return error;
@@ -313,7 +435,7 @@ class AddMenuItemModal extends Component {
                     thisTemp.setState({serverMessage: "New dish is added"});
                     return ajax({
                         url: paths["restApi"]["menu"] + "/"
-                            + thisTemp.props.currentMenu.menuID + "/"
+                            + thisTemp.props._menu.menuID + "/"
                             + "menuItem",
                         method: "POST",
                         headers: {"Content-Type": "application/json", "X-Auth-Token": thisTemp.state.token},
@@ -323,9 +445,9 @@ class AddMenuItemModal extends Component {
                             priceEuros: thisTemp.state.priceEuros,
                             type: thisTemp.state.type,
                             imageID: thisTemp.state.imageID,
-                            tags: thisTemp.state.tags
+                            tags: thisTemp.state.chosenTags
                         },
-                        timeout: timeout,
+                        timeout: timeouts,
                         responseType: "text"
                     })
                 } else {
@@ -341,7 +463,7 @@ class AddMenuItemModal extends Component {
             .pipe(take(1))
             .subscribe(
                 () => {
-                    thisTemp.props.backgroundPage.update();
+                    thisTemp.props._backgroundPage.update();
                     thisTemp.props.onHide();
                 }, (error) => {
                     switch (error.name) {
@@ -369,7 +491,7 @@ class AddMenuItemModal extends Component {
     //<editor-fold desc="Render">
     render() {
         let validation = this.submitted ? this.validator.validate(this.state) : this.state.validation;
-        if (this.props.backgroundPage == null) {
+        if (this.props._backgroundPage == null) {
             return (<p>Something went wrong.</p>);
         } else if (this.state.token == null || this.state.token === "null") {
             return (<p>Something went wrong.</p>);
@@ -379,41 +501,79 @@ class AddMenuItemModal extends Component {
                 <Modal.Body>
                     <button className="exit" onClick={this.props.onHide}><IconExit/></button>
                     <div className="modal-wrapper restaurant-info">
-                        <Form ref={(c) => {
-                            this.form = c;
-                        }} onSubmit={(e) => this.handleSubmit(e)}>
+                        <Form
+                            ref={(c) => {this.form = c;}}
+                            onSubmit={(e) => this.handleSubmit(e)}
+                            autocomplete="on"
+                        >
                             <h2>Add</h2>
                             <div className="account-type">
-                                <h4><span
-                                    className="role">{this.props.modalVisibilityFilter === modalVisibilityFilters.SHOW_ADD_DISH ? "dish" : "drink"}</span>
+                                <h4>
+                                    <span className="role">
+                                        {this.props._modal === modals.SHOW_ADD_DISH ? "dish" : "drink"}
+                                    </span>
                                 </h4>
                             </div>
                             <div className="input-field">
                                 <label>Name</label>
-                                <Input type="text" name="name" placeholder="Name"/>
+                                <Input
+                                    type="text"
+                                    pattern="[a-zA-Z0-9]{1,}"
+                                    title="Name must be alphanumeric and must contain at least 1 letter."
+                                    name="name"
+                                    placeholder="Name"
+                                    required
+                                />
                             </div>
                             <div className="error-block">
-                                <small>{validation.name.message}</small>
+                                <small>
+                                    {validation.name.message}
+                                </small>
                             </div>
                             <div className="input-field">
-                                <label>Description</label>
-                                <Textarea name="description"/>
+                                <label>
+                                    Description
+                                </label>
+                                <Textarea
+                                    name="description"
+                                    placeholder="Description"
+                                    required
+                                />
                             </div>
                             <div className="error-block">
-                                <small>{validation.description.message}</small>
+                                <small>
+                                    {validation.description.message}
+                                </small>
                             </div>
                             <div className="input-field">
                                 <label>Price in Euro (€)</label>
-                                <Input name="priceEuros" placeholder="Price"/>
+                                <Input
+                                    type="number"
+                                    min="0"
+                                    step="0.01"
+                                    name="priceEuros"
+                                    placeholder="Price"
+                                    required
+                                />
                             </div>
                             <div className="error-block">
-                                <small>{validation.priceEuros.message}</small>
+                                <small>
+                                    {validation.priceEuros.message}
+                                </small>
                             </div>
                             <div className="input-field image">
                                 <label>Image</label>
-                                <input type="file" name="file" id="file" className="inputfile"
-                                       onChange={this.handleFileSubmit}/>
-                                <label htmlFor="file">+ Upload image</label>
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    name="file"
+                                    id="file"
+                                    className="inputfile"
+                                    onChange={this.handleFileSubmit}
+                                />
+                                <label htmlFor="file">
+                                    + Upload image
+                                </label>
                                 {this.state.selectedFile &&
                                 <label className="selected-file">
                                     <span
@@ -433,18 +593,59 @@ class AddMenuItemModal extends Component {
                                 }
                             </div>
                             <div className="error-block">
-                                <small>{this.state.imageMessage}</small>
+                                <small>
+                                    {this.state.imageMessage}
+                                </small>
                             </div>
                             <div className="input-field">
-                                <label>Tags</label>
-                                <Input type="text" name="tags" placeholder="Tags"/>
+                                <label>Available Tags</label>
+                                <input
+                                    id="tagInput"
+                                    type="text"
+                                    name="tags"
+                                    placeholder="Search"
+                                />
+                                <ul>
+                                    {this.state.autocompleteTags.map((tag) => {
+                                        return (
+                                            <TagItem
+                                                tag={tag}
+                                                modal={this}
+                                                added={false}
+                                            />
+                                            );
+                                    })}
+                                </ul>
+                            </div>
+                            <div className="input-field">
+                                <label>Chosen Tags</label>
+                                <ul>
+                                    {this.state.chosenTags.map((tag) => {
+                                        return (
+                                            <TagItem
+                                                tag={tag}
+                                                modal={this}
+                                                added={true}
+                                            />
+                                            );
+                                    })}
+                                </ul>
                             </div>
                             <div className="error-block">
-                                <small>{validation.tags.message}</small>
+                                <small>
+                                    {this.state.tagsMessage}
+                                </small>
                             </div>
-                            <Button type="submit" className="normal">Add</Button>
+                            <Button
+                                type="submit"
+                                className="normal"
+                            >
+                                Add
+                            </Button>
                             <div className="error-block">
-                                <small>{this.state.serverMessage}</small>
+                                <small>
+                                    {this.state.serverMessage}
+                                </small>
                             </div>
                         </Form>
                     </div>
@@ -461,9 +662,9 @@ class AddMenuItemModal extends Component {
 //<editor-fold desc="Redux">
 const mapStateToProps = (state) => {
     return {
-        backgroundPage: state.backgroundPageReducer.backgroundPage,
-        modalVisibilityFilter: state.modalVisibiltyFilterReducer.modalVisibilityFilter,
-        currentMenu: state.currentMenuReducer.currentMenu
+        _backgroundPage: state._backgroundPageReducer._backgroundPage,
+        _modal: state._modalReducer._modal,
+        _menu: state._menuReducer._menu
     };
 };
 

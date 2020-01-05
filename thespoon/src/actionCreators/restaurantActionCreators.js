@@ -1,16 +1,19 @@
-import * as currentRestaurantInformationAction from "../actions/restaurantActions";
-import restaurantReducer from "../reducers/restaurantReducer";
+//<editor-fold desc="Actions">
+import {_SET_RESTAURANT_ID, _SET_RESTAURANT_INFO} from "../actions/RestaurantActions";
+//</editor-fold>
 
-export const setRestaurantID = (restaurantID) => {
+//<editor-fold desc="Creators">
+export const _setRestaurantID = (_restaurantID) => {
     return {
-        type: currentRestaurantInformationAction.SETTING_UP_RESTAURANT_ID,
-        restaurantID: restaurantID,
+        type: _SET_RESTAURANT_ID,
+        _restaurantID: _restaurantID,
     };
 };
 
-export const setCurrentRestaurantInformation = (currentRestaurantInformation) => {
+export const _setRestaurantInfo = (_restaurantInfo) => {
     return {
-        type: currentRestaurantInformationAction.SETTING_UP_RESTAURANT,
-        currentRestaurantInformation: currentRestaurantInformation,
+        type: _SET_RESTAURANT_INFO,
+        _restaurantInfo: _restaurantInfo,
     };
 };
+//</editor-fold>

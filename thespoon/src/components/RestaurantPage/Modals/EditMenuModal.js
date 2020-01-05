@@ -22,8 +22,8 @@ import FormValidator from "../../../validation/FormValidator";
 //</editor-fold>
 
 //<editor-fold desc="Constants">
-import {paths} from "../../../constants/paths";
-import {timeout} from "../../../constants/timeout";
+import {paths} from "../../../constants/Paths";
+import {timeouts} from "../../../constants/Timeouts";
 //</editor-fold>
 //<editor-fold desc="Icons">
 import {IconExit} from "../../Icons";
@@ -96,15 +96,15 @@ class EditMenuModal extends Component {
             serverMessage: "",
             submitted: false,
             //<editor-fold desc="Menu States">
-            name: this.props.menu.name,
-            description: this.props.menu.description,
+            name: this.props._menu.name,
+            description: this.props._menu.description,
             availableTags: [],
             serverMessageFinishedLoadingAvailableTags: "",
             finishedLoadingAvailableTags: false,
             autocompleteTags: [],
-            chosenTags: this.props.menu.tags.map((tag) => {
+            chosenTags: this.props._menu.tags ? this.props._menu.tags.map((tag) => {
                 return tag.name
-            }),
+            }) : [],
             tagsMessage: ""
 
             //</editor-fold>
@@ -122,7 +122,7 @@ class EditMenuModal extends Component {
             url: paths["restApi"]["tag"],
             method: "GET",
             headers: {"X-Auth-Token": thisTemp.state.token},
-            timeout: timeout,
+            timeout: timeouts,
             responseType: "text"
         })
             .pipe(
@@ -272,7 +272,7 @@ class EditMenuModal extends Component {
                     thisTemp.setState({serverMessage: "Menu is edited"});
                     return ajax({
                         url: paths["restApi"]["menu"] + "/"
-                            + this.props.menu.menuID,
+                            + thisTemp.props._menu.menuID,
                         method: "PUT",
                         headers: {"Content-Type": "application/json", "X-Auth-Token": this.state.token},
                         body: {
@@ -280,7 +280,7 @@ class EditMenuModal extends Component {
                             description: thisTemp.state.description,
                             tags: thisTemp.state.chosenTags
                         },
-                        timeout: timeout,
+                        timeout: timeouts,
                         responseType: "text"
                     })
                 } else {
@@ -296,7 +296,7 @@ class EditMenuModal extends Component {
             .pipe(take(1))
             .subscribe(
                 () => {
-                    thisTemp.props.backgroundPage.update();
+                    thisTemp.props._backgroundPage.update();
                     thisTemp.props.onHide();
                 }, (error) => {
                     switch (error.name) {
@@ -326,7 +326,8 @@ class EditMenuModal extends Component {
         of(1)
             .pipe(exhaustMap(() => {
                 return ajax({
-                    url: paths["restApi"]["menu"] + "/" + this.props.currentMenu.menuID,
+                    url: paths["restApi"]["menu"] + "/"
+                        + thisTemp.props._menu.menuID,
                     method: "DELETE",
                     headers: {"Content-Type": "application/json", "X-Auth-Token": this.state.token},
                 })
@@ -336,7 +337,7 @@ class EditMenuModal extends Component {
             .pipe(take(1))
             .subscribe(
                 () => {
-                    thisTemp.props.backgroundPage.update();
+                    thisTemp.props._backgroundPage.update();
                     thisTemp.props.onHide();
                 }, (error) => {
                     switch (error.name) {
@@ -365,7 +366,7 @@ class EditMenuModal extends Component {
     //<editor-fold desc="Render">
     render() {
         let validation = this.submitted ? this.validator.validate(this.state) : this.state.validation;
-        if (this.props.backgroundPage == null) {
+        if (this.props._backgroundPage == null) {
             return (<p>Something went wrong.</p>);
         } else if (this.state.token == null || this.state.token === "null") {
             return (<p>Something went wrong.</p>);
@@ -373,51 +374,114 @@ class EditMenuModal extends Component {
             //<editor-fold desc="Render Token">
             return (
                 <Modal.Body>
-                    <button className="exit" onClick={this.props.onHide}><IconExit/></button>
+                    <button
+                        className="exit"
+                        onClick={this.props.onHide}
+                    >
+                        <IconExit/>
+                    </button>
                     <div className="modal-wrapper edit-menu">
-                        <Form ref={(c) => {
-                            this.form = c;
-                        }} onSubmit={(e) => this.handleSubmit(e)}>
-                            <h2 className="title">Edit menu</h2>
+                        <Form
+                            ref={(c) => {this.form = c;}}
+                            onSubmit={(e) => this.handleSubmit(e)}
+                            autocomplete="on"
+                        >
+                            <h2 className="title">
+                                Edit menu
+                            </h2>
                             <div className="input-field">
                                 <label>Name</label>
-                                <Input type="text" name="name" placeholder="Name" value={this.state.name}/>
+                                <Input
+                                    type="text"
+                                    pattern="[a-zA-Z0-9 _]{1,}"
+                                    title="Name must be alphanumeric and must contain at least 1 letter."
+                                    name="name"
+                                    placeholder="Name"
+                                    value={this.state.name}
+                                    required
+                                />
                             </div>
                             <div className="error-block">
-                                <small>{validation.name.message}</small>
+                                <small>
+                                    {validation.name.message}
+                                </small>
                             </div>
                             <div className="input-field">
-                                <label>Description</label>
-                                <Textarea name="description" placeholder="Description" value={this.state.description}/>
+                                <label>
+                                    Description
+                                </label>
+                                <Textarea
+                                    name="description"
+                                    placeholder="Description"
+                                    value={this.state.description}
+                                    required
+                                />
                             </div>
                             <div className="error-block">
-                                <small>{validation.description.message}</small>
+                                <small>
+                                    {validation.description.message}
+                                </small>
                             </div>
                             <div className="input-field">
-                                <label>Available Tags</label>
-                                <input id="tagInput" type="text" name="tags" placeholder="Search"/>
+                                <label>
+                                    Available Tags
+                                </label>
+                                <input
+                                    id="tagInput"
+                                    type="text"
+                                    name="tags"
+                                    placeholder="Search"
+                                />
                                 <ul>
                                     {this.state.autocompleteTags.map((tag) => {
-                                        return (<TagItem tag={tag} modal={this} added={false}/>);
+                                        return (
+                                            <TagItem
+                                                tag={tag}
+                                                modal={this}
+                                                added={false}
+                                            />
+                                            );
                                     })}
                                 </ul>
                             </div>
                             <div className="input-field">
-                                <label>Chosen Tags</label>
+                                <label>
+                                    Chosen Tags
+                                </label>
                                 <ul>
                                     {this.state.chosenTags.map((tag) => {
-                                        return (<TagItem tag={tag} modal={this} added={true}/>);
+                                        return (
+                                            <TagItem
+                                                tag={tag}
+                                                modal={this}
+                                                added={true}
+                                            />
+                                            );
                                     })}
                                 </ul>
                             </div>
                             <div className="error-block">
-                                <small>{this.state.tagsMessage}</small>
+                                <small>
+                                    {this.state.tagsMessage}
+                                </small>
                             </div>
-                            <Button type="submit" className="normal">Save</Button>
-                            <Button type="button" className="delete-button" onClick={this.handleDelete}>Delete
-                                Menu</Button>
+                            <Button
+                                type="submit"
+                                className="normal"
+                            >
+                                Save
+                            </Button>
+                            <Button
+                                type="button"
+                                className="delete-button"
+                                onClick={this.handleDelete}
+                            >
+                                Delete Menu
+                            </Button>
                             <div className="error-block">
-                                <small>{this.state.serverMessage}</small>
+                                <small>
+                                    {this.state.serverMessage}
+                                </small>
                             </div>
                         </Form>
                     </div>
@@ -435,8 +499,8 @@ class EditMenuModal extends Component {
 //<editor-fold desc="Redux">
 const mapStateToProps = (state) => {
     return {
-        backgroundPage: state.backgroundPageReducer.backgroundPage,
-        currentMenu: state.currentMenuReducer.currentMenu
+        _backgroundPage: state._backgroundPageReducer._backgroundPage,
+        _menu: state._menuReducer._menu
     };
 };
 

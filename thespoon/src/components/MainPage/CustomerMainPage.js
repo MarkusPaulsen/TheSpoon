@@ -4,8 +4,10 @@ import {Redirect} from "react-router-dom";
 //</editor-fold>
 //<editor-fold desc="Redux">
 import {connect} from "react-redux";
-import {setBackgroundPage} from "../../actionCreators/BackgroundPageActionCreator";
+import {_setBackgroundPage} from "../../actionCreators/BackgroundPageActionCreator";
+
 //</editor-fold>
+
 
 class CustomerMainPage extends Component {
 
@@ -25,15 +27,11 @@ class CustomerMainPage extends Component {
 
     //<editor-fold desc="Component Lifecycle">
     componentDidMount() {
-        this.props.setBackgroundPageHere(this);
-        this.state = {
+        this.props._setBackgroundPageHere(this);
+        this.setState({
             token: window.localStorage.getItem("token"),
             user: window.localStorage.getItem("user")
-        };
-    }
-
-    componentWillUnmount() {
-        this.props.setBackgroundPageHere(null);
+        });
     }
 
     //</editor-fold>
@@ -41,7 +39,7 @@ class CustomerMainPage extends Component {
     //<editor-fold desc="Business Logic">
     update = () => {
         window.location.reload();
-    }
+    };
 
     //</editor-fold>
 
@@ -95,8 +93,8 @@ class CustomerMainPage extends Component {
 //<editor-fold desc="Redux">
 const mapDispatchToProps = (dispatch) => {
     return {
-        setBackgroundPageHere: (backgroundPage) => {
-            dispatch(setBackgroundPage(backgroundPage));
+        _setBackgroundPageHere: (_backgroundPage) => {
+            dispatch(_setBackgroundPage(_backgroundPage));
         }
     };
 };

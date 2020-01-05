@@ -1,19 +1,23 @@
-import * as currentRestaurantInformationAction from "../actions/restaurantActions";
-import {initialStateRestaurantReducer} from "./initialStateRestaurantReducer"
+//<editor-fold desc="Initial State">
+import {_initialStateRestaurantReducer} from "../initialStates/InitialStateRestaurantReducer";
+//</editor-fold>
+//<editor-fold desc="Actions">
+import {_SET_RESTAURANT_ID, _SET_RESTAURANT_INFO} from "../actions/RestaurantActions";
+//</editor-fold>
 
-const restaurantReducer = (state = initialStateRestaurantReducer, action) => {
+const _restaurantReducer = (state = _initialStateRestaurantReducer, action) => {
     switch (action.type) {
-        case currentRestaurantInformationAction.SETTING_UP_RESTAURANT_ID:
+        case _SET_RESTAURANT_ID:
             return Object.assign({}, state, {
-            restaurantID: action.restaurantID,
-        });
-        case currentRestaurantInformationAction.SETTING_UP_RESTAURANT:
+                _restaurantID: action._restaurantID,
+            });
+        case _SET_RESTAURANT_INFO:
             return Object.assign({}, state, {
-                currentRestaurantInformation: action.currentRestaurantInformation,
+                _restaurantInfo: action._restaurantInfo,
             });
         default:
             return Object.assign({}, state, {});
     }
 };
 
-export default restaurantReducer;
+export default _restaurantReducer;
