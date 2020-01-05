@@ -10,6 +10,9 @@ import {readFileURL} from "../Tools/FileReader"
 //<editor-fold desc="Redux">
 import {connect} from "react-redux";
 //</editor-fold>
+//<editor-fold desc="Redux">
+import {connect} from "react-redux";
+//</editor-fold>
 //<editor-fold desc="Bootstrap">
 import {Modal} from "react-bootstrap";
 //</editor-fold>
@@ -587,9 +590,16 @@ class AddMenuItemModal extends Component {
                                 </label>
                                 }
                                 {this.state.selectedFileData &&
+<<<<<<< Updated upstream
                                 <div className="image-wrapper">
                                     <div className="image" style={{backgroundImage: `url(${this.state.selectedFileData})`}}/>
                                 </div>
+=======
+                                <img
+                                    src={this.state.selectedFileData}
+                                    alt={this.state.selectedFile.name}
+                                />
+>>>>>>> Stashed changes
                                 }
                             </div>
                             <div className="error-block">
