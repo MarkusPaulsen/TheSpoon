@@ -26,6 +26,7 @@ import MainLayout from "../Layout/MainLayout.js";
 //<editor-fold desc="Components">
 import Sidebar from "./Items/Sidebar";
 import Menu from "./Items/Menu";
+
 //</editor-fold>
 
 
@@ -79,6 +80,7 @@ class YourRestaurantPage extends Component {
                     });
                 },
                 (error) => {
+                    console.log(error)
                     switch (error.name) {
                         case "AjaxTimeoutError":
                             thisTemp.setState({
@@ -88,12 +90,18 @@ class YourRestaurantPage extends Component {
                             break;
                         case "InternalError":
                         case "AjaxError":
-                            if (error.status === 0 && error.response === "") {
+                            if (
+                                error.status === 0
+                                && error.response === ""
+                            ) {
                                 thisTemp.setState({
                                     restaurant: {},
                                     restaurantMessage: "There is no connection to the server."
                                 });
-                            } else if (error.status === 400) {
+                            } else if (
+                                error.status === 404
+                                && error.response === "No restaurant associated to this account found."
+                            ) {
                                 this.props.openAddRestaurantModal();
                                 thisTemp.setState({
                                     restaurant: {},
@@ -183,7 +191,7 @@ class YourRestaurantPage extends Component {
     //</editor-fold>
 
     //<editor-fold desc="Business Logic">
-    update() {
+    update = () => {
         window.location.reload();
     }
 
@@ -200,7 +208,7 @@ class YourRestaurantPage extends Component {
             );
         } else if (this.state.user === "Restaurant Owner") {
             //<editor-fold desc="Render Restaurant Owner">
-            if(this.state.restaurant == null || this.state.menus == null) {
+            if (this.state.restaurant == null || this.state.menus == null) {
                 return (
                     <MainLayout>
                         <div className="mainpage-banner restaurant">
@@ -248,7 +256,7 @@ class YourRestaurantPage extends Component {
                                         </div>
                                         {typeof this.state.menus !== "undefined" &&
                                         this.state.menus.length >= 1 ? (
-                                            this.state.menus.map(menu => {
+                                            this.state.menus.map((menu) => {
                                                 return (
                                                     <Menu
                                                         key={menu.menuID}

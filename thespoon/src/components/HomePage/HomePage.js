@@ -18,7 +18,7 @@ import Layout from "../Layout/Layout"
 //</editor-fold>
 
 
-class Homepage extends Component {
+class HomePage extends Component {
 
     //<editor-fold desc="Constructor">
     constructor(props) {
@@ -50,7 +50,7 @@ class Homepage extends Component {
     //</editor-fold>
 
     //<editor-fold desc="Business Logic">
-    update() {
+    update = () => {
         window.location.reload();
     }
 
@@ -58,7 +58,6 @@ class Homepage extends Component {
 
     //<editor-fold desc="Render">
     render() {
-        console.log(this.state)
         if (this.state.token == null
             || this.state.token === "null"
             || this.state.user == null
@@ -115,6 +114,6 @@ const mapDispatchToProps = (dispatch) => {
     };
 };
 
-export default connect(null, mapDispatchToProps)(Homepage);
+export default connect(null, mapDispatchToProps)(HomePage);
 
 //</editor-fold>

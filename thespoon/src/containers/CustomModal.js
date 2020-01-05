@@ -64,7 +64,7 @@ class CustomModal extends Component {
                 );
             case modalVisibilityFilters.SHOW_EDIT_RESTAURANT:
                 return (
-                    <EditRestaurantModal onHide={() => this.props.handleClose()} restaurant={ item }/>
+                    <EditRestaurantModal onHide={() => this.props.handleClose()} restaurant={item}/>
                 );
             case modalVisibilityFilters.SHOW_ADD_MENU:
                 return (
@@ -72,7 +72,7 @@ class CustomModal extends Component {
                 );
             case modalVisibilityFilters.SHOW_EDIT_MENU:
                 return (
-                    <EditMenuModal onHide={() => this.props.handleClose()} menu={ item }/>
+                    <EditMenuModal onHide={() => this.props.handleClose()} menu={item}/>
                 );
 
             case modalVisibilityFilters.SHOW_PENDING_REVIEW:
@@ -90,7 +90,7 @@ class CustomModal extends Component {
             case modalVisibilityFilters.SHOW_EDIT_DISH:
             case modalVisibilityFilters.SHOW_EDIT_DRINK:
                 return (
-                    <EditMenuItemModal onHide={() => this.props.handleClose()} menuItem={ item }/>
+                    <EditMenuItemModal onHide={() => this.props.handleClose()} menuItem={item}/>
                 );
             default:
                 return null;
@@ -102,7 +102,7 @@ class CustomModal extends Component {
     render() {
         if(this.props.modalVisibilityFilter !== modalVisibilityFilters.HIDE_ALL) {
             return(
-                <Modal show={true} onHide={() => this.props.handleClose()} centered>
+                <Modal show={true} onHide={() => this.props.handleClose()} backdrop="static" centered>
                     {this.getVisibleModal(this.props.modalVisibilityFilter, this.props.currentMenu)}
                 </Modal>
             );

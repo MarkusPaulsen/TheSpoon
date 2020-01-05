@@ -102,7 +102,7 @@ class RegisterCustomerModal extends Component {
             message: "Password confirmation is required to be longer or equal 5 characters."
         }, {
             field: "confirmPassword",
-            method: (confirmPassword, state) => (confirmPassword === state.password),
+            method: (confirmPassword, state) => {return confirmPassword === state.password},
             validWhen: true,
             message: "Password confirmation has to be identical to the password."
         }]);
@@ -217,9 +217,7 @@ class RegisterCustomerModal extends Component {
         if(this.props.backgroundPage == null) {
             return(<p>Something went wrong.</p>);
         } else if(this.state.token == null || this.state.token === "null" ) {
-            return(<p>Something went wrong.</p>);
-        } else {
-            //<editor-fold desc="Render Token">
+            //<editor-fold desc="Render No Token">
             return (
                 <Modal.Body>
                 <span className="back"> <FilterLink
@@ -281,6 +279,8 @@ class RegisterCustomerModal extends Component {
                 </Modal.Body>
             );
             //</editor-fold>
+        } else {
+            return(<p>Something went wrong.</p>);
         }
     }
 
