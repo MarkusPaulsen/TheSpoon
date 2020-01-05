@@ -1,8 +1,16 @@
-import {SETTING_UP_RESTAURANT} from "../actions/restaurantActions";
+import * as currentRestaurantInformationAction from "../actions/restaurantActions";
+import restaurantReducer from "../reducers/restaurantReducer";
 
 export const setRestaurantID = (restaurantID) => {
     return {
-        type: SETTING_UP_RESTAURANT,
-        restaurantID: restaurantID
+        type: currentRestaurantInformationAction.SETTING_UP_RESTAURANT_ID,
+        restaurantID: restaurantID,
+    };
+};
+
+export const setCurrentRestaurantInformation = (currentRestaurantInformation) => {
+    return {
+        type: currentRestaurantInformationAction.SETTING_UP_RESTAURANT,
+        currentRestaurantInformation: currentRestaurantInformation,
     };
 };

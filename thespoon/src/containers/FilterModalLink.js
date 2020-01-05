@@ -4,11 +4,8 @@ import React from "react";
 //<editor-fold desc="Redux">
 import {connect} from "react-redux";
 import {setModalVisibilityFilterAction} from "../actionCreators/modalVisibilityFilterActionCreators";
-import {
-    setCurrentMenu,
-    setCurrentMenuItem,
-    setCurrentRestaurantPage
-} from "../actionCreators/CurrentMenuActionCreators";
+import {setCurrentMenu, setCurrentMenuItem} from "../actionCreators/CurrentMenuActionCreators";
+import {setCurrentRestaurantInformation} from "../actionCreators/restaurantActionCreators";
 //</editor-fold>
 
 //<editor-fold desc="Business Logic">
@@ -30,8 +27,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
             dispatch(setCurrentMenu(ownProps.currentMenu));
             ownProps.currentMenuItem &&
             dispatch(setCurrentMenuItem(ownProps.currentMenuItem));
-            ownProps.currentRestaurantPage &&
-            dispatch(setCurrentRestaurantPage(ownProps.currentRestaurantPage));
+            ownProps.currentRestaurantInformation &&
+            dispatch(setCurrentRestaurantInformation(ownProps.currentRestaurantInformation));
         }
     };
 };

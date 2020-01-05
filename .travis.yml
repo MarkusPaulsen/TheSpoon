@@ -17,3 +17,4 @@ notifications:
   on_failure: always
 script:
   - npm test
+  - cd mobileApp && npm install && npm test

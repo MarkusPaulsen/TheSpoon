@@ -49,6 +49,9 @@ router.get('/', auth, isOwner, findRestaurant, async (req, res) => {
                 model: OpeningHours
             }]
         });
+        if (restaurant === null){
+            res.status(404).send('No restaurant associated to this account found.');
+        }
         let openingHours = await restaurant.OpeningHours.map( o => {
             return {
                 day: o.Day,
@@ -66,7 +69,7 @@ router.get('/', auth, isOwner, findRestaurant, async (req, res) => {
         };
         res.status(200).send(restaurant);
     } catch (error) {
-        res.status(400).send(error+ ' :(');
+        res.status(500).send('Internal server error.');
     }
 });
 
@@ -86,8 +89,8 @@ router.put('/', auth, isOwner, findRestaurant, async (req, res) => {
                 {
                     where: {
                     Restaurant_ID: req.restaurant.Restaurant_ID
-                }
-            });
+                    }
+                });
 
             //delete old opening hours to recreate them
             await OpeningHours.destroy({

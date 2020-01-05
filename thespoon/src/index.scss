@@ -157,6 +157,7 @@ button {
     width: 8.333333333333334rem;
   }
 
+
   &.delete-button {
     width: 8.333333333333334rem;
     background: var(--white);
@@ -472,7 +473,7 @@ header {
     text-align: center;
 
     .title {
-      margin-bottom: 3rem;
+      margin-bottom: 2rem;
     }
 
     textarea {
@@ -495,7 +496,7 @@ header {
     }
 
     .account-type {
-      margin: .25rem 0 3rem;
+      margin: .25rem 0 2rem;
       .role {
         color: var(--turquoise);
       }
@@ -510,7 +511,7 @@ header {
     }
 
     .input-field {
-      margin-bottom: 1.5rem;
+      margin: 1rem 0 0.5rem;
 
       i {
         margin-right: 1rem;
@@ -718,7 +719,6 @@ header {
 
     &.add-menu {
       .input-field {
-        margin-bottom: 1.25rem;
         > div {
           width: 100%;
         }
@@ -825,82 +825,93 @@ header {
 
 
 /* SIDEBAR > */
-.sidebar {
-  margin-top: 3.66666rem;
-  padding: 6rem 2.5rem 2.5rem;
-  background-color: var(--white);
-  font-size: 0.625rem;
-  position: relative;
-  border-radius: 0.8333333333333334rem;
-
-  .image-setup {
-    position: absolute;
-    top: -5.333333333rem;
-    left: 2.5rem;
-    right: 2.5rem;
-    height: 100%;
-  }
-  .image-wrapper {
-    height: 0;
-    padding-bottom: 100%;
+.sidebar-hover {
+  .sidebar {
+    margin-top: 3.66666rem;
+    padding: 6rem 2.5rem 2.5rem;
+    background-color: var(--white);
+    font-size: 0.625rem;
     position: relative;
+    border-radius: 0.8333333333333334rem;
 
-    .image {
+    .image-setup {
       position: absolute;
-      left: 0;
-      right: 0;
-      top: 0 ;
-      bottom: 0;
-      background-size: cover;
-      background-position: center center;
-      background-repeat: no-repeat;
-      border-radius: 100%;
+      top: -5.333333333rem;
+      left: 2.5rem;
+      right: 2.5rem;
+      height: 100%;
     }
-  }
 
-  .title {
-    margin-bottom: 1.5rem;
-    text-align: center;
-  }
-  .part {
-    position: relative;
-    margin-bottom: 0.5rem;
-    > i {
-      position: absolute;
-      left: 0;
-      top: 0;
-    }
-  }
+    .image-wrapper {
+      height: 0;
+      padding-bottom: 100%;
+      position: relative;
 
-  ul {
-    display: inline-block;
-    list-style-type: none;
-    padding-left: 1.5rem;
-    margin: 0;
-    li {
-      margin-bottom: 0.5rem;
-      span {
-        font-weight: 500;
+      .image {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        background-size: cover;
+        background-position: center center;
+        background-repeat: no-repeat;
+        border-radius: 100%;
       }
     }
-  }
 
-  .modal-button {
-    color: var(--pink);
-    text-align: center;
-    &:hover {
-      cursor: pointer;
+    .title {
+      margin-bottom: 1.5rem;
+      text-align: center;
     }
-    span {
+
+    .part {
       position: relative;
-      padding-left: 1.25rem;
+      margin-bottom: 0.5rem;
+
+      > i {
+        position: absolute;
+        left: 0;
+        top: 0;
+      }
     }
-    i {
-      position: absolute;
-      left: 0;
-      top: 50%;
-      transform: translateY(-50%);
+
+    ul {
+      display: inline-block;
+      list-style-type: none;
+      padding-left: 1.5rem;
+      margin: 0;
+
+      li {
+        margin-bottom: 0.5rem;
+
+        span {
+          font-weight: 500;
+        }
+      }
     }
+
+    .modal-button {
+      color: var(--pink);
+      text-align: center;
+
+      &:hover {
+        cursor: pointer;
+      }
+
+      span {
+        position: relative;
+        padding-left: 1.25rem;
+      }
+
+      i {
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+      }
+    }
+
   }
 
   @include media-breakpoint-down(md) {
@@ -925,6 +936,12 @@ header {
       }
     }
   }
+  .sidebar-bottom {
+    margin-top: 1rem;
+    padding-right: 1rem;
+    padding-left: 1rem;
+    position: relative;
+  }
 }
 /* < SIDEBAR*/
 
@@ -941,6 +958,9 @@ header {
   padding: 1.75rem;
   text-align: center;
   margin-bottom: 1.25rem;
+  h4 {
+    margin-bottom: 1rem;
+  }
   label {
     font-weight: 500;
     margin-bottom: 1.25rem;
@@ -981,7 +1001,7 @@ header {
       padding: 0.1rem 1rem;
       border-radius: 5px;
       font-weight: bold;
-      margin: 0 0.5rem;
+      margin: 0 0.5rem 0.25rem;
     }
     @include media-breakpoint-down(sm) {
       .tag {
@@ -1025,21 +1045,17 @@ header {
   background: var(--light-grey);
   border-radius: 0.8333333333333334rem;
   display: flex;
+  position: relative;
   //padding: 0.5rem;
   .image-setup {
-    background: lightgrey;
-    flex-direction: row;
-    display: flex;
-    border-radius: 100%;
     margin: 0.5rem;
     margin-left: 1rem;
+    width: 25%;
   }
   .image-wrapper {
     height: 0;
     width: 100%;
     padding-bottom: 100%;
-    background: #007bff;
-    border-radius: 100%;
     position: relative;
 
 
@@ -1050,7 +1066,10 @@ header {
       top: 0 ;
       bottom: 0;
       background-repeat: no-repeat;
-      border-radius: 50%;
+      position: absolute;
+      background-position: center center;
+      background-size: cover;
+      border-radius: 100%;
     }
 
     @include media-breakpoint-down(xs) {
@@ -1069,18 +1088,12 @@ header {
     text-align: left;
     display: flex;
     margin: 0.5rem;
+    width: 75%;
     .foodItemName {
       margin-bottom: 0.5rem;
     }
     .description {
       margin-bottom: 0.5rem;
-    }
-    .tags {
-      background: var(--turquoise);
-      color: var(--white);
-      padding: 0.1rem 1rem;
-      border-radius: 5px;
-      font-weight: bold;
     }
   }
   .price {
@@ -1089,9 +1102,10 @@ header {
     margin-right: 0.75rem;
     margin-top: 1rem;
     font-weight: 500;
+    width: 5%;
   }
   .edit-button {
-    position: relative;
+    position: absolute;
     top: -0.25rem;
     right: -0.25rem;
     &:hover {
@@ -1101,3 +1115,71 @@ header {
 
 }
 /* < FOOD ITEMS */
+
+/* REVIEW ITEMS > */
+.reviewItem {
+  background: var(--light-grey);
+  margin: 1rem 0 1rem 0;
+  flex-direction: row;
+  border-radius: 0.8333333333333334rem;
+  display: flex;
+  height: 150px;
+
+  .receipt-photo {
+    background: lightgrey;
+    border-radius: 100%;
+    height: 130px;
+    width: 130px;
+    margin: 10px;
+    .image-wrapper {
+      height: 0;
+      padding-bottom: 100%;
+      position: relative;
+
+      .image {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        background-size: cover;
+        background-position: center center;
+        background-repeat: no-repeat;
+        border-radius: 100%;
+      }
+    }
+
+  }
+  .mainContent {
+    margin-left: 10px;
+    text-align: left;
+    flex-direction: column;
+    font-size: 0.625rem;
+
+    .menuName {
+      margin: 0.5rem 0 0.5rem 0;
+    }
+
+    .review-validation {
+      flex-direction: row;
+      align-items: center;
+
+      .review-button {
+        height: 0.85rem;
+        margin: 1.5rem 0.10rem 0 0.10rem;
+        width: 4rem;
+        font-size: 0.6rem;
+        padding: 0.1rem;
+        -webkit-box-shadow: none;
+        -moz-box-shadow: none;
+        box-shadow: none;
+
+        &.decline {
+          background-color: var(--grey);
+        }
+      }
+    }
+  }
+}
+
+/* < REVIEW ITEMS */
