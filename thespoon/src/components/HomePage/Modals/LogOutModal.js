@@ -52,7 +52,6 @@ class LogOutModal extends Component {
 
     //<editor-fold desc="Render">
     render() {
-        let validation = this.submitted ? this.validator.validate(this.state) : this.state.validation;
         if(this.props._backgroundPage == null) {
             return(<p>Something went wrong.</p>);
         } else if(this.state.token == null || this.state.token === "null" ) {

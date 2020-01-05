@@ -2,13 +2,10 @@
 import React, {Component} from "react";
 //</editor-fold>
 //<editor-fold desc="RxJs">
-import {bindCallback, of, throwError} from "rxjs";
+import {bindCallback, fromEvent, of, throwError} from "rxjs";
 import {ajax} from "rxjs/ajax";
-import {catchError, exhaustMap, map, take} from "rxjs/operators";
+import {bufferTime, catchError, distinctUntilChanged, exhaustMap, map, take, filter} from "rxjs/operators";
 import {readFileURL} from "../Tools/FileReader"
-//</editor-fold>
-//<editor-fold desc="Redux">
-import {connect} from "react-redux";
 //</editor-fold>
 //<editor-fold desc="Redux">
 import {connect} from "react-redux";
@@ -31,6 +28,7 @@ import {timeouts} from "../../../constants/Timeouts";
 //</editor-fold>
 //<editor-fold desc="Icons">
 import {IconExit} from "../../Icons";
+import TagItem from "../Items/TagItem";
 
 //</editor-fold>
 
@@ -590,16 +588,9 @@ class AddMenuItemModal extends Component {
                                 </label>
                                 }
                                 {this.state.selectedFileData &&
-<<<<<<< Updated upstream
                                 <div className="image-wrapper">
                                     <div className="image" style={{backgroundImage: `url(${this.state.selectedFileData})`}}/>
                                 </div>
-=======
-                                <img
-                                    src={this.state.selectedFileData}
-                                    alt={this.state.selectedFile.name}
-                                />
->>>>>>> Stashed changes
                                 }
                             </div>
                             <div className="error-block">
