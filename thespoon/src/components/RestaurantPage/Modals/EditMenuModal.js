@@ -382,8 +382,12 @@ class EditMenuModal extends Component {
                     </button>
                     <div className="modal-wrapper edit-menu">
                         <Form
-                            ref={(c) => {this.form = c;}}
-                            onSubmit={(e) => this.handleSubmit(e)}
+                            ref={(c) => {
+                                this.form = c;
+                            }}
+                            onSubmit={(e) => {
+                                this.handleSubmit(e)
+                            }}
                             autocomplete="on"
                         >
                             <h2 className="title">
@@ -440,7 +444,7 @@ class EditMenuModal extends Component {
                                                 modal={this}
                                                 added={false}
                                             />
-                                            );
+                                        );
                                     })}
                                 </ul>
                             </div>
@@ -456,7 +460,7 @@ class EditMenuModal extends Component {
                                                 modal={this}
                                                 added={true}
                                             />
-                                            );
+                                        );
                                     })}
                                 </ul>
                             </div>

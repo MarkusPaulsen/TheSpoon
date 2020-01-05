@@ -1,14 +1,14 @@
 //<editor-fold desc="React">
 import React, {Component} from "react";
 //</editor-fold>
-//<editor-fold desc="Redux">
-import {connect} from "react-redux";
-//</editor-fold>
 //<editor-fold desc="RxJs">
 import {bindCallback, fromEvent, of, throwError} from "rxjs";
 import {ajax} from "rxjs/ajax";
 import {bufferTime, catchError, distinctUntilChanged, exhaustMap, map, take, filter} from "rxjs/operators";
 import {readFileURL} from "../Tools/FileReader"
+//</editor-fold>
+//<editor-fold desc="Redux">
+import {connect} from "react-redux";
 //</editor-fold>
 //<editor-fold desc="Bootstrap">
 import {Modal} from "react-bootstrap";
@@ -135,7 +135,7 @@ class EditMenuItemModal extends Component {
             validation: this.validator.valid(),
             serverMessage: "",
             submitted: false,
-            //<editor-fold desc="Restaurant states">
+            //<editor-fold desc="Menu Item States">
             name: this.props._menuItem.name,
             description: this.props._menuItem.description,
             priceEuros: this.props._menuItem.priceEuros,
@@ -346,7 +346,8 @@ class EditMenuItemModal extends Component {
                             thisTemp.setState({
                                 imageMessage: "Image could not be uploaded, as the request timed out.",
                                 serverMessage: "",
-                                selectedFile: null
+                                selectedFile: null,
+                                selectedFileData: null
                             });
                             break;
                         case "InternalError":
@@ -355,13 +356,15 @@ class EditMenuItemModal extends Component {
                                 thisTemp.setState({
                                     imageMessage: "Image could not be uploaded, as there is no connection to the server.",
                                     serverMessage: "",
-                                    selectedFile: null
+                                    selectedFile: null,
+                                    selectedFileData: null
                                 });
                             } else {
                                 thisTemp.setState({
                                     imageMessage: "Image could not be uploaded, as " + error.response,
                                     serverMessage: "",
-                                    selectedFile: null
+                                    selectedFile: null,
+                                    selectedFileData: null
                                 });
                             }
                             break;
@@ -370,7 +373,8 @@ class EditMenuItemModal extends Component {
                             thisTemp.setState({
                                 imageMessage: "Something is not like it is supposed to be.",
                                 serverMessage: "",
-                                selectedFile: null
+                                selectedFile: null,
+                                selectedFileData: null
                             });
                             break;
                     }
@@ -450,7 +454,7 @@ class EditMenuItemModal extends Component {
                             priceEuros: thisTemp.state.priceEuros,
                             type: thisTemp.state.type,
                             imageID: thisTemp.state.imageID,
-                            tags: thisTemp.state.tags
+                            tags: thisTemp.state.chosenTags
                         },
                         timeout: timeouts,
                         responseType: "text"
@@ -634,7 +638,9 @@ class EditMenuItemModal extends Component {
                                     className="inputfile"
                                     onChange={this.handleFileSubmit}
                                 />
-                                <label htmlFor="file">+ Upload image</label>
+                                <label htmlFor="file">
+                                    + Upload image
+                                </label>
                                 {this.state.selectedFile &&
                                 <label className="selected-file">
                                     <span
@@ -648,10 +654,9 @@ class EditMenuItemModal extends Component {
                                 </label>
                                 }
                                 {this.state.selectedFileData &&
-                                <img
-                                    src={this.state.selectedFileData}
-                                    alt={this.state.selectedFile.name}
-                                />
+                                <div className="image-wrapper">
+                                    <div className="image" style={{backgroundImage: `url(${this.state.selectedFileData})`}}/>
+                                </div>
                                 }
                             </div>
                             <div className="error-block">

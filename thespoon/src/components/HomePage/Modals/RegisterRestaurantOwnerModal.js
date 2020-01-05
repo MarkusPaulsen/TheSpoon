@@ -286,13 +286,19 @@ class RegisterRestaurantOwnerModal extends Component {
                             <IconBack/>
                         </FilterLink>
                     </span>
-                    <button className="exit" onClick={this.props.onHide}><IconExit/></button>
+                    <button
+                        className="exit"
+                        onClick={this.props.onHide}
+                    >
+                        <IconExit/>
+                    </button>
                     <div className="modal-wrapper ">
                         <Form
                             ref={(c) => {
                                 this.form = c;
                             }}
-                            onSubmit={this.handleSubmit}>
+                            onSubmit={this.handleSubmit}
+                        >
                             <h2>
                                 Sign up
                             </h2>

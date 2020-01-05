@@ -34,12 +34,14 @@ import {IconExit} from "../../Icons";
 
 
 const selectStyles = {
-    menu: () => {return {
-        fontSize: 15,
-        fontWeight: 500,
-        textAlign: "left",
-        backgroundColor: "#ffffff"
-    }}
+    menu: () => {
+        return {
+            fontSize: 15,
+            fontWeight: 500,
+            textAlign: "left",
+            backgroundColor: "#ffffff"
+        }
+    }
 };
 
 class EditRestaurantModal extends Component {
@@ -150,7 +152,8 @@ class EditRestaurantModal extends Component {
             }))
             .pipe(take(1))
             .subscribe(
-                () => {},
+                () => {
+                },
                 (error) => {
                     console.log(error);
                     thisTemp.setState({
@@ -174,7 +177,8 @@ class EditRestaurantModal extends Component {
             }))
             .pipe(take(1))
             .subscribe(
-                () => {},
+                () => {
+                },
                 (error) => {
                     console.log(error);
                     thisTemp.setState({
@@ -198,7 +202,8 @@ class EditRestaurantModal extends Component {
             }))
             .pipe(take(1))
             .subscribe(
-                () => {},
+                () => {
+                },
                 (error) => {
                     console.log(error);
                     thisTemp.setState({
@@ -232,7 +237,8 @@ class EditRestaurantModal extends Component {
             }))
             .pipe(take(1))
             .subscribe(
-                () => {},
+                () => {
+                },
                 (error) => {
                     console.log(error);
                     thisTemp.setState({
@@ -258,7 +264,8 @@ class EditRestaurantModal extends Component {
             }))
             .pipe(take(1))
             .subscribe(
-                () => {},
+                () => {
+                },
                 (error) => {
                     console.log(error);
                     thisTemp.setState({
@@ -379,7 +386,8 @@ class EditRestaurantModal extends Component {
             }))
             .pipe(take(1))
             .subscribe(
-                () => {},
+                () => {
+                },
                 (error) => {
                     console.log(error);
                     thisTemp.setState({
@@ -520,10 +528,10 @@ class EditRestaurantModal extends Component {
     //<editor-fold desc="Render">
     render() {
         let validation = this.submitted ? this.validator.validate(this.state) : this.state.validation;
-        if(this.props._backgroundPage == null) {
-            return(<p>Something went wrong.</p>);
-        } else if(this.state.token == null || this.state.token === "null" ) {
-            return(<p>Something went wrong.</p>);
+        if (this.props._backgroundPage == null) {
+            return (<p>Something went wrong.</p>);
+        } else if (this.state.token == null || this.state.token === "null") {
+            return (<p>Something went wrong.</p>);
         } else {
             //<editor-fold desc="Render Token">
             return (
@@ -536,7 +544,9 @@ class EditRestaurantModal extends Component {
                     </button>
                     <div className="modal-wrapper edit-restaurant">
                         <Form
-                            ref={(c) => {this.form = c;}}
+                            ref={(c) => {
+                                this.form = c;
+                            }}
                             onSubmit={this.handleSubmit}
                             autocomplete="on"
                         >
@@ -552,6 +562,7 @@ class EditRestaurantModal extends Component {
                                     pattern="[a-zA-Z0-9 _]{1,}"
                                     title="Name must be alphanumeric and must contain at least 1 letter."
                                     name="name"
+                                    placeholder="Restaurant name"
                                     value={this.state.name}
                                     required
                                 />
@@ -589,10 +600,12 @@ class EditRestaurantModal extends Component {
                                 </label>
                                 }
                                 {this.state.selectedFileData &&
-                                <img
-                                    src={this.state.selectedFileData}
-                                    alt={this.state.selectedFile.name}
-                                />
+                                <div className="image-wrapper">
+                                    <div
+                                        className="image"
+                                        style={{backgroundImage: `url(${this.state.selectedFileData})`}}
+                                    />
+                                </div>
                                 }
                             </div>
                             <div className="error-block">
@@ -609,6 +622,7 @@ class EditRestaurantModal extends Component {
                                     pattern="[a-zA-Z0-9 _]{1,}"
                                     title="Address must be alphanumeric and must contain at least 1 letter."
                                     name="address"
+                                    placeholder="Address"
                                     value={this.state.address}
                                     required
                                 />
@@ -627,6 +641,7 @@ class EditRestaurantModal extends Component {
                                     pattern="[a-zA-Z0-9 _]{1,}"
                                     title="City must be alphanumeric and must contain at least 1 letter."
                                     name="city"
+                                    placeholder="City"
                                     value={this.state.city}
                                     required
                                 />
@@ -637,12 +652,15 @@ class EditRestaurantModal extends Component {
                                 </small>
                             </div>
                             <div className="input-field">
-                                <label>Country</label>
+                                <label>
+                                    Country
+                                </label>
                                 <Input
                                     type="text"
                                     pattern="[a-zA-Z0-9 _]{1,}"
                                     title="Country must be alphanumeric and must contain at least 1 letter."
                                     name="country"
+                                    placeholder="Country"
                                     value={this.state.country}
                                     required
                                 />
@@ -697,7 +715,7 @@ class EditRestaurantModal extends Component {
                                 }
                                 <div className="selected-hours">
                                     {this.state.selectedOpeningHours.map((oh, i) => {
-                                        return(
+                                        return (
                                             <div key={i}>
                                                 {oh.day.label}: {oh.openTime.label} - {oh.closeTime.label}
                                                 <span

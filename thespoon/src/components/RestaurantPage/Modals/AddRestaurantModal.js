@@ -526,6 +526,7 @@ class AddRestaurantInfo extends Component {
                                 this.form = c;
                             }}
                             onSubmit={this.handleSubmit}
+                            autocomplete="on"
                         >
                             <h2>
                                 Configure restaurant data
@@ -576,10 +577,12 @@ class AddRestaurantInfo extends Component {
                                 </label>
                                 }
                                 {this.state.selectedFileData &&
-                                <img
-                                    src={this.state.selectedFileData}
-                                    alt={this.state.selectedFile.name}
-                                />
+                                <div className="image-wrapper">
+                                    <div
+                                        className="image"
+                                        style={{backgroundImage: `url(${this.state.selectedFileData})`}}
+                                    />
+                                </div>
                                 }
                             </div>
                             <div className="error-block">
@@ -611,7 +614,7 @@ class AddRestaurantInfo extends Component {
                                 </label>
                                 <Input
                                     type="text"
-                                    pattern="[a-zA-Z0-9]{1,}"
+                                    pattern="[a-zA-Z0-9 _]{1,}"
                                     title="City must be alphanumeric and must contain at least 1 letter."
                                     name="city"
                                     placeholder="City"
@@ -629,7 +632,7 @@ class AddRestaurantInfo extends Component {
                                 </label>
                                 <Input
                                     type="text"
-                                    pattern="[a-zA-Z0-9]{1,}"
+                                    pattern="[a-zA-Z0-9 _]{1,}"
                                     title="Country must be alphanumeric and must contain at least 1 letter."
                                     name="country"
                                     placeholder="Country"
@@ -686,7 +689,7 @@ class AddRestaurantInfo extends Component {
                                 }
                                 <div className="selected-hours">
                                     {this.state.selectedOpeningHours.map((oh, i) => {
-                                        return(
+                                        return (
                                             <div key={i}>
                                                 {oh.day.label}: {oh.openTime.label} - {oh.closeTime.label}
                                                 <span

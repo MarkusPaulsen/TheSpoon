@@ -24,14 +24,6 @@ const mapStateToProps = (state, ownProps) => {
 const mapDispatchToProps = (dispatch, ownProps) => {
     return {
         onClick: () => {
-            console.log("Modal:");
-            console.log(ownProps.modal);
-            console.log("Menu:");
-            console.log(ownProps.menu);
-            console.log("Menu Item:");
-            console.log(ownProps.menuItem);
-            console.log("Restaurant info:");
-            console.log(ownProps.restaurantInfo);
             dispatch(_setModal(ownProps.modal));
             ownProps.menu &&
             dispatch(_setMenu(ownProps.menu));

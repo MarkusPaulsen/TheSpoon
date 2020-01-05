@@ -330,7 +330,8 @@ class AddMenuModal extends Component {
                 <Modal.Body>
                     <button
                         className="exit"
-                        onClick={this.props.onHide}>
+                        onClick={this.props.onHide}
+                    >
                         <IconExit/>
                     </button>
                     <div className="modal-wrapper add-menu">

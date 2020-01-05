@@ -144,7 +144,14 @@ class AddMenuItemModal extends Component {
             selectedFileData: null,
             imageID: 0,
             imageMessage: "",
-            tags: ""
+            availableTags: [],
+            serverMessageFinishedLoadingAvailableTags: "",
+            finishedLoadingAvailableTags: false,
+            autocompleteTags: [],
+            chosenTags: this.props._menuItem.tags ? this.props._menuItem.tags.map((tag) => {
+                return tag.name
+            }) : [],
+            tagsMessage: ""
 
             //</editor-fold>
         };
@@ -500,14 +507,21 @@ class AddMenuItemModal extends Component {
             //<editor-fold desc="Render Token">
             return (
                 <Modal.Body>
-                    <button className="exit" onClick={this.props.onHide}><IconExit/></button>
+                    <button
+                        className="exit"
+                        onClick={this.props.onHide}
+                    >
+                        <IconExit/>
+                    </button>
                     <div className="modal-wrapper restaurant-info">
                         <Form
                             ref={(c) => {this.form = c;}}
                             onSubmit={(e) => this.handleSubmit(e)}
                             autocomplete="on"
                         >
-                            <h2>Add</h2>
+                            <h2>
+                                Add
+                            </h2>
                             <div className="account-type">
                                 <h4>
                                     <span className="role">
@@ -516,10 +530,12 @@ class AddMenuItemModal extends Component {
                                 </h4>
                             </div>
                             <div className="input-field">
-                                <label>Name</label>
+                                <label>
+                                    Name
+                                </label>
                                 <Input
                                     type="text"
-                                    pattern="[a-zA-Z0-9]{1,}"
+                                    pattern="[a-zA-Z0-9 _]{1,}"
                                     title="Name must be alphanumeric and must contain at least 1 letter."
                                     name="name"
                                     placeholder="Name"
@@ -547,7 +563,9 @@ class AddMenuItemModal extends Component {
                                 </small>
                             </div>
                             <div className="input-field">
-                                <label>Price in Euro (€)</label>
+                                <label>
+                                    Price in Euro (€)
+                                </label>
                                 <Input
                                     type="number"
                                     min="0"
@@ -563,7 +581,9 @@ class AddMenuItemModal extends Component {
                                 </small>
                             </div>
                             <div className="input-field image">
-                                <label>Image</label>
+                                <label>
+                                    Image
+                                </label>
                                 <input
                                     type="file"
                                     accept="image/*"
@@ -599,7 +619,9 @@ class AddMenuItemModal extends Component {
                                 </small>
                             </div>
                             <div className="input-field">
-                                <label>Available Tags</label>
+                                <label>
+                                    Available Tags
+                                </label>
                                 <input
                                     id="tagInput"
                                     type="text"
@@ -619,7 +641,9 @@ class AddMenuItemModal extends Component {
                                 </ul>
                             </div>
                             <div className="input-field">
-                                <label>Chosen Tags</label>
+                                <label>
+                                    Chosen Tags
+                                </label>
                                 <ul>
                                     {this.state.chosenTags.map((tag) => {
                                         return (
@@ -665,7 +689,8 @@ const mapStateToProps = (state) => {
     return {
         _backgroundPage: state._backgroundPageReducer._backgroundPage,
         _modal: state._modalReducer._modal,
-        _menu: state._menuReducer._menu
+        _menu: state._menuReducer._menu,
+        _menuItem: state._menuReducer._menuItem
     };
 };
 
