@@ -6,6 +6,8 @@ const Restaurant = require('../models/restaurant');
 const OpeningHours = require('../models/openingHours');
 const openGeocoder = require('node-open-geocoder');
 
+const inputValidator = require('../middleware/inputValidationMiddleware.js');
+const validationSchema = require('../validationSchemas.js');
 const auth = require('../middleware/authorizationMiddleware.js');
 const isOwner = require('../middleware/checkIfOwnerMiddleware.js');
 const findRestaurant = require('../middleware/findRestaurantOfOwnerMiddleware.js');
@@ -81,7 +83,7 @@ router.get('/', auth, isOwner, findRestaurant, async (req, res) => {
 });
 
 //Edit restaurant's information
-router.put('/', auth, isOwner, findRestaurant, async (req, res) => {
+router.put('/', auth, inputValidator(validationSchema.configureDataOfRestaurantValidation), isOwner, findRestaurant, async (req, res) => {
     try {
         await openGeocoder()
             .geocode(req.body.address + ', ' + req.body.city)
