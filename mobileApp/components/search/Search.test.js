@@ -170,23 +170,23 @@ describe("Search Component", () => {
 
   it("Should remove sort criteria", () => {
     const sortBy = "Price (low-high)";
-    component.setState({ selectedFilter: sortBy });
-    component.instance().setFilter(sortBy);
-    expect(component.state().selectedFilter).toBe("");
+    component.setState({ selectedSorting: sortBy });
+    component.instance().setSorting(sortBy);
+    expect(component.state().selectedSorting).toBe("");
   });
 
   it("Should set sort criteria", () => {
     const sortBy = "Price (low-high)";
-    component.setState({ selectedFilter: "" });
-    component.instance().setFilter(sortBy);
-    expect(component.state().selectedFilter).toBe(sortBy);
+    component.setState({ selectedSorting: "" });
+    component.instance().setSorting(sortBy);
+    expect(component.state().selectedSorting).toBe(sortBy);
   });
 
   it("Should sort results by price low-high", () => {
     const sortBy = "Price (low-high)";
-    component.setState({ searchResults, selectedFilter: sortBy });
+    component.setState({ searchResults, selectedSorting: sortBy });
 
-    component.instance().applyFilter();
+    component.instance().applySorting();
     component.update();
 
     expect(component.state().searchResults).toEqual([obj2, obj1, obj3]);
@@ -194,9 +194,9 @@ describe("Search Component", () => {
 
   it("Should sort results by price high-low", () => {
     const sortBy = "Price (high-low)";
-    component.setState({ searchResults, selectedFilter: sortBy });
+    component.setState({ searchResults, selectedSorting: sortBy });
 
-    component.instance().applyFilter();
+    component.instance().applySorting();
     component.update();
 
     expect(component.state().searchResults).toEqual([obj3, obj1, obj2]);
@@ -204,9 +204,9 @@ describe("Search Component", () => {
 
   it("Should sort results by review", () => {
     const sortBy = "Review";
-    component.setState({ searchResults, selectedFilter: sortBy });
+    component.setState({ searchResults, selectedSorting: sortBy });
 
-    component.instance().applyFilter();
+    component.instance().applySorting();
     component.update();
 
     expect(component.state().searchResults).toEqual([obj2, obj1, obj3]);
@@ -214,7 +214,7 @@ describe("Search Component", () => {
 
   it("Should sort results by distance", () => {
     const sortBy = "Distance";
-    component.setState({ searchResults, selectedFilter: sortBy });
+    component.setState({ searchResults, selectedSorting: sortBy });
 
     const locationPermission = true;
     const latitude = "24,539045";
@@ -226,7 +226,7 @@ describe("Search Component", () => {
         component.setState({ locationPermission, latitude, longitude });
       });
 
-    component.instance().applyFilter();
+    component.instance().applySorting();
     component.update();
 
     expect(component.state().searchResults).toEqual([obj1, obj3, obj2]);

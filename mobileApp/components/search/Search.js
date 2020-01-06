@@ -196,9 +196,9 @@ export default class Search extends Component {
     this.setState({ modalVisible: !this.state.modalVisible });
   }
 
-  setFilter(item) {
-    if (this.state.selectedFilter === item) {
-      this.setState({ selectedFilter: "" });
+  setSorting(item) {
+    if (this.state.selectedSorting === item) {
+      this.setState({ selectedSorting: "" });
     } else {
       //this.setState({ selectedSorting: item });
       if (item === "Distance" && this.state.locationPermission === false) {
@@ -234,29 +234,18 @@ export default class Search extends Component {
       sorted.sort((a, b) => b.price - a.price);
       this.setState({ searchResults: sorted });
     } else if (this.state.selectedSorting === "Review") {
-      sorted.sort((a, b) =>
-        a.score > b.score
-          ? -1
-          : a.score === b.score
-          ? a.menuName > b.menuName
-            ? 1
-            : -1
-          : 1
+      sorted.sort((a, b) => b.score - a.score
       );
       this.setState({ searchResults: sorted });
     } else if (this.state.selectedSorting === "Distance") {
       if (this.state.locationPermission === true) {
         const sorted = this.state.searchResults;
-        sorted.sort((a, b) =>
-          a.distance > b.distance
-            ? 1
-            : a.distance === b.distance
-            ? a.menuName > b.menuName
-              ? 1
-              : -1
-            : -1
+        sorted.sort((a, b) => a.distance - b.distance
         );
         this.setState({ searchResults: sorted });
+      } else {
+        this.findCoordinates();
+        this.applySorting();
       }
     }
   }
