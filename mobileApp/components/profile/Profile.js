@@ -96,7 +96,7 @@ export default class Profile extends Component {
       const userData = JSON.stringify({
         email: this.state.updatedUserInfo.email,
         gender: this.state.updatedUserInfo.gender,
-        ageRange: this.state.updatedUserInfo.age,
+        ageRange: this.state.updatedUserInfo.ageRange,
         nationality: this.state.updatedUserInfo.nationality
       });
       console.log(userData);
@@ -133,10 +133,11 @@ export default class Profile extends Component {
       });
       if (response.ok) {
         const responseJson = await response.json();
+        console.log(responseJson);
         const userInfo = {
           username: responseJson.username,
           email: responseJson.email,
-          age: responseJson.age,
+          ageRange: responseJson.ageRange,
           nationality: responseJson.nationality,
           gender: responseJson.gender
         };
@@ -230,9 +231,9 @@ export default class Profile extends Component {
     }
   };
 
-  updateAge = age => {
+  updateAgeRange = ageRange => {
     this.setState({
-      updatedUserInfo: { ...this.state.updatedUserInfo, age: age }
+      updatedUserInfo: { ...this.state.updatedUserInfo, ageRange: ageRange }
     });
     if (!this.state.saveButton) {
       this.setState({ saveButton: true });
@@ -549,8 +550,8 @@ export default class Profile extends Component {
                   <View style={[styles.line, { marginTop: 10 }]} />
                   <Text style={Typography.FONT_H4_BLACK}>Age</Text>
                   <PickerSelect
-                    value={this.state.updatedUserInfo.age}
-                    onValueChange={value => this.updateAge(value)}
+                    value={this.state.updatedUserInfo.ageRange}
+                    onValueChange={value => this.updateAgeRange(value)}
                     items={[
                       { label: "< 18", value: "< 18" },
                       { label: "18-24", value: "18-24" },
