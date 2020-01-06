@@ -22,6 +22,7 @@ import Icon from "react-native-vector-icons/MaterialIcons";
 import { AirbnbRating } from "react-native-ratings";
 import PickerSelect from "react-native-picker-select";
 import CountryPicker from "react-native-country-picker-modal";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 export default class Profile extends Component {
   constructor(props) {
@@ -31,9 +32,18 @@ export default class Profile extends Component {
       isLoaded: false,
       token: null,
       userInfo: "",
+      updatedUserInfo: "",
       reviews: [],
-      saveButton: false
+      saveButton: false,
+      oldPassword: "",
+      newPassword: "",
+      newPasswordConfirmed: "",
+      showPasswordModal: false,
+      emptyFields: false,
+      unequalPasswords: false,
+      cca2: "FR"
     };
+    this.changePassword = this.changePassword.bind(this);
   }
 
   componentDidMount = async () => {
@@ -81,6 +91,37 @@ export default class Profile extends Component {
     );
   }
 
+  async updateUserInfo(token) {
+    try {
+      const userData = JSON.stringify({
+        email: this.state.updatedUserInfo.email,
+        gender: this.state.updatedUserInfo.gender,
+        ageRange: this.state.updatedUserInfo.age,
+        nationality: this.state.updatedUserInfo.nationality
+      });
+      console.log(userData);
+      const response = await fetch(Api.SERVER_PROFILE_UPDATEUSERINFO, {
+        method: "PUT",
+        headers: {
+          Accept: "application/json",
+          "x-auth-token": token,
+          "Content-Type": "application/json"
+        },
+        body: userData
+      });
+      console.log(response);
+      if (response.ok) {
+        console.log("Success updating userInformation");
+        this.setState({ saveButton: false });
+      }
+      if (!response.ok) {
+        console.log("Updating userInformation failed");
+      }
+    } catch (error) {
+      console.log("Error fetching user info: ", error);
+    }
+  }
+
   async getUserInfo(token) {
     try {
       const response = await fetch(Api.SERVER_PROFILE_USERINFO, {
@@ -93,18 +134,17 @@ export default class Profile extends Component {
       if (response.ok) {
         const responseJson = await response.json();
         const userInfo = {
-          name: "Name",
-          surname: "Surname",
           username: responseJson.username,
           email: responseJson.email,
-          age: "",
-          nationality: "",
-          gender: ""
+          age: responseJson.age,
+          nationality: responseJson.nationality,
+          gender: responseJson.gender
         };
         this.setState({ userInfo });
+        this.setState({ updatedUserInfo: userInfo });
+        console.log(this.state.updatedUserInfo);
         console.log("Success fetching profileData");
       }
-      this.setState({ userInfo });
       if (!response.ok) {
         console.log("Fetching profileData failed");
       }
@@ -181,30 +221,70 @@ export default class Profile extends Component {
     );
   };
 
-  updateName = name => {
-    this.setState({ userInfo: { ...this.state.userInfo, name: name } });
-    if (!this.state.savedButton) {
-      this.setState({ savedButton: true });
-    }
-  };
-
-  updateSurname = surname => {
-    this.setState({ userInfo: { ...this.state.userInfo, surname: surname } });
-    if (!this.state.savedButton) {
-      this.setState({ savedButton: true });
-    }
-  };
-
   updateEmail = email => {
-    this.setState({ userInfo: { ...this.state.userInfo, email: email } });
-    if (!this.state.savedButton) {
-      this.setState({ savedButton: true });
+    this.setState({
+      updatedUserInfo: { ...this.state.updatedUserInfo, email: email }
+    });
+    if (!this.state.saveButton) {
+      this.setState({ saveButton: true });
     }
   };
 
   updateAge = age => {
-    this.setState({ userInfo: { ...this.state.userInfo, age: age } });
+    this.setState({
+      updatedUserInfo: { ...this.state.updatedUserInfo, age: age }
+    });
+    if (!this.state.saveButton) {
+      this.setState({ saveButton: true });
+    }
   };
+
+  passwordValidation() {
+    if (
+      this.state.oldPassword === "" ||
+      this.state.newPassword === "" ||
+      this.state.newPasswordConfirmed === ""
+    ) {
+      this.setState({ emptyFields: true });
+    } else {
+      this.setState({ emptyFields: false });
+      if (this.state.newPassword !== this.state.newPasswordConfirmed) {
+        this.setState({ unequalPasswords: true });
+      } else {
+        this.setState({ unequalPasswords: false });
+        this.changePassword(this.state.token);
+      }
+    }
+  }
+
+  async changePassword(token) {
+    try {
+      const passwords = JSON.stringify({
+        oldPassword: this.state.oldPassword,
+        newPassword: this.state.newPassword
+      });
+      console.log(passwords);
+      const response = await fetch(Api.SERVER_PROFILE_CHANGEPASSWORD, {
+        method: "PUT",
+        headers: {
+          Accept: "application/json",
+          "x-auth-token": token,
+          "Content-Type": "application/json"
+        },
+        body: passwords
+      });
+      console.log(response);
+      if (response.ok) {
+        console.log("Success changing password");
+        this.setState({ showPasswordModal: false });
+      }
+      if (!response.ok) {
+        console.log("Changing password failed");
+      }
+    } catch (error) {
+      console.log("Error changing password: ", error);
+    }
+  }
 
   render() {
     const screenWidth = Math.round(Dimensions.get("window").width);
@@ -272,14 +352,15 @@ export default class Profile extends Component {
                 styles.modalContainer,
                 {
                   width: screenWidth * 0.85,
-                  marginLeft: (screenWidth * 0.15) / 2
+                  marginLeft: (screenWidth * 0.15) / 2,
+                  marginTop: 20
                 }
               ]}
             >
               <TouchableOpacity
                 onPress={() => this.setState({ modalItem: null })}
               >
-                <Icon name={"chevron-left"} size={40} style={styles.button} />
+                <Icon name={"chevron-left"} size={40} />
               </TouchableOpacity>
               <View style={{ flexDirection: "row" }}>
                 <Text style={Typography.FONT_H2_BLACK}>Your </Text>
@@ -450,97 +531,212 @@ export default class Profile extends Component {
                   </TouchableOpacity>
                 </View>
               </View>
-              <View>
-                <Text style={Typography.FONT_H4_BLACK}>Name</Text>
-                <TextInput
-                  style={[Typography.FONT_REGULAR_THIN, styles.userInfoText]}
-                  value={this.state.userInfo.name}
-                  onChangeText={this.updateName}
-                />
-                <View style={styles.line} />
-                <Text style={Typography.FONT_H4_BLACK}>Surname</Text>
-                <TextInput
-                  style={[Typography.FONT_REGULAR_THIN, styles.userInfoText]}
-                  value={this.state.userInfo.surname}
-                  onChangeText={this.updateSurname}
-                />
-                <View style={styles.line} />
-                <Text style={Typography.FONT_H4_BLACK}>Username</Text>
-                <Text
-                  style={[Typography.FONT_REGULAR_THIN, styles.userInfoText]}
-                >
-                  {this.state.userInfo.username}
-                </Text>
-                <View style={styles.line} />
-                <Text style={Typography.FONT_H4_BLACK}>Email</Text>
-                <TextInput
-                  style={[Typography.FONT_REGULAR_THIN, styles.userInfoText]}
-                  value={this.state.userInfo.email}
-                  onChangeText={this.updateEmail}
-                />
-                <View style={styles.line} />
-                <Text style={Typography.FONT_H4_BLACK}>Age</Text>
-                <PickerSelect
-                  onValueChange={value => this.updateAge(value)}
-                  items={[
-                    { label: "< 18", value: "< 18" },
-                    { label: "18-24", value: "18-24" },
-                    { label: "25-34", value: "24-34" },
-                    { label: "35-49", value: "35-49" },
-                    { label: "50-64", value: "50-64" },
-                    { label: "65+", value: "65+" }
-                  ]}
-                />
-                <View style={styles.line} />
-                <Text style={Typography.FONT_H4_BLACK}>Nationality</Text>
-                {this.state.userInfo.nationality !== "" ? (
+              <KeyboardAwareScrollView>
+                <View>
+                  <Text style={Typography.FONT_H4_BLACK}>Username</Text>
                   <Text
                     style={[Typography.FONT_REGULAR_THIN, styles.userInfoText]}
                   >
-                    {this.state.userInfo.nationality}
+                    {this.state.updatedUserInfo.username}
                   </Text>
-                ) : (
-                  <CountryPicker
-                    onSelect={value =>
-                      this.setState({
-                        userInfo: {
-                          ...this.state.userInfo,
-                          nationality: value.name
-                        }
-                      })
-                    }
+                  <View style={[styles.line, { marginTop: 10 }]} />
+                  <Text style={Typography.FONT_H4_BLACK}>Email</Text>
+                  <TextInput
+                    style={[Typography.FONT_REGULAR_THIN, styles.userInfoText]}
+                    value={this.state.updatedUserInfo.email}
+                    onChangeText={this.updateEmail}
                   />
-                )}
-                <View style={styles.line} />
-                <Text style={Typography.FONT_H4_BLACK}>Gender</Text>
-                <PickerSelect
-                  onValueChange={value =>
-                    this.setState({
-                      userInfo: { ...this.state.userInfo, gender: value }
-                    })
-                  }
-                  items={[
-                    { label: "Male", value: "Male" },
-                    { label: "Female", value: "Female" },
-                    { label: "Undefined", value: "Undefined" }
-                  ]}
-                />
-                <View style={styles.line} />
-                <TouchableOpacity style={styles.saveButton}>
-                  <Text
-                    style={[Typography.FONT_H4_WHITE, { textAlign: "center" }]}
+                  <View style={[styles.line, { marginTop: 10 }]} />
+                  <Text style={Typography.FONT_H4_BLACK}>Age</Text>
+                  <PickerSelect
+                    value={this.state.updatedUserInfo.age}
+                    onValueChange={value => this.updateAge(value)}
+                    items={[
+                      { label: "< 18", value: "< 18" },
+                      { label: "18-24", value: "18-24" },
+                      { label: "25-34", value: "24-34" },
+                      { label: "35-49", value: "35-49" },
+                      { label: "50-64", value: "50-64" },
+                      { label: "65+", value: "65+" }
+                    ]}
+                  />
+                  <View style={[styles.line, { marginTop: 5 }]} />
+                  <Text style={Typography.FONT_H4_BLACK}>Nationality</Text>
+                  <View
+                    style={{
+                      flexDirection: "row"
+                    }}
                   >
-                    SAVE
-                  </Text>
-                </TouchableOpacity>
-              </View>
-              <View style={{ flexDirection: "row", marginBottom: 10 }}>
+                    <View style={{ marginTop: 10 }}>
+                      <CountryPicker
+                        withFilter={true}
+                        withAlphaFilter={true}
+                        onSelect={value => {
+                          this.setState({
+                            updatedUserInfo: {
+                              ...this.state.updatedUserInfo,
+                              nationality: value.name
+                            }
+                          });
+                          this.setState({ cca2: value.cca2 });
+                          if (!this.state.saveButton) {
+                            this.setState({ saveButton: true });
+                          }
+                        }}
+                        countryCode={this.state.cca2}
+                        withCountryNameButton={true}
+                      />
+                    </View>
+                  </View>
+                  <View style={[styles.line, { marginTop: 10 }]} />
+                  <Text style={Typography.FONT_H4_BLACK}>Gender</Text>
+                  <PickerSelect
+                    value={this.state.updatedUserInfo.gender}
+                    onValueChange={value => {
+                      this.setState({
+                        updatedUserInfo: {
+                          ...this.state.updatedUserInfo,
+                          gender: value
+                        }
+                      });
+                      if (!this.state.saveButton) {
+                        this.setState({ saveButton: true });
+                      }
+                    }}
+                    items={[
+                      { label: "Male", value: "Male" },
+                      { label: "Female", value: "Female" },
+                      { label: "Other", value: "Other" }
+                    ]}
+                  />
+                  <View style={[styles.line, { marginTop: 5 }]} />
+                </View>
+              </KeyboardAwareScrollView>
+              <TouchableOpacity
+                style={[
+                  styles.saveButton,
+                  {
+                    backgroundColor: this.state.saveButton
+                      ? Colors.PINK
+                      : Colors.GRAY_MEDIUM
+                  }
+                ]}
+                onPress={() => this.updateUserInfo(this.state.token)}
+              >
+                <Text
+                  style={[Typography.FONT_H4_WHITE, { textAlign: "center" }]}
+                >
+                  SAVE
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => this.setState({ showPasswordModal: true })}
+                style={{ alignSelf: "center" }}
+              >
+                <Text
+                  style={[
+                    Typography.FONT_REGULAR_THIN,
+                    { textDecorationLine: "underline" }
+                  ]}
+                >
+                  Change password
+                </Text>
+              </TouchableOpacity>
+              <Modal
+                animationType="slide"
+                transparent={false}
+                visible={this.state.showPasswordModal}
+              >
+                <SafeAreaView
+                  style={{
+                    width: screenWidth * 0.85,
+                    marginLeft: (screenWidth * 0.15) / 2,
+                    marginTop: 20
+                  }}
+                >
+                  <TouchableOpacity
+                    onPress={() => this.setState({ showPasswordModal: false })}
+                  >
+                    <Icon name={"chevron-left"} size={40} />
+                  </TouchableOpacity>
+                  <View>
+                    <Text
+                      style={[
+                        Typography.FONT_H3_BLACK,
+                        { alignSelf: "center" }
+                      ]}
+                    >
+                      Change password
+                    </Text>
+                    <TextInput
+                      placeholder={"Current password"}
+                      secureTextEntry={true}
+                      style={styles.passwordField}
+                      value={this.state.oldPassword}
+                      onChangeText={value =>
+                        this.setState({ oldPassword: value })
+                      }
+                    />
+                    <TextInput
+                      placeholder={"New password"}
+                      secureTextEntry={true}
+                      style={styles.passwordField}
+                      value={this.state.newPassword}
+                      onChangeText={value =>
+                        this.setState({ newPassword: value })
+                      }
+                    />
+                    <TextInput
+                      placeholder={"Repeat new password"}
+                      secureTextEntry={true}
+                      style={styles.passwordField}
+                      value={this.state.newPasswordConfirmed}
+                      onChangeText={value =>
+                        this.setState({ newPasswordConfirmed: value })
+                      }
+                    />
+                    <Text style={Typography.FONT_REGULAR_THIN}>
+                      {this.state.emptyFields
+                        ? "All fields must be filled out"
+                        : this.state.unequalPasswords
+                        ? "The two passwords are not equal"
+                        : ""}
+                    </Text>
+                    <TouchableOpacity
+                      style={[
+                        styles.saveButton,
+                        {
+                          backgroundColor: Colors.PINK
+                        }
+                      ]}
+                      onPress={() => this.passwordValidation()}
+                    >
+                      <Text
+                        style={[
+                          Typography.FONT_H4_WHITE,
+                          { textAlign: "center" }
+                        ]}
+                      >
+                        SAVE
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+                </SafeAreaView>
+              </Modal>
+              <View
+                style={{
+                  flexDirection: "row",
+                  marginBottom: 10,
+                  marginTop: 30
+                }}
+              >
                 <Text style={Typography.FONT_H3_BLACK}>Your </Text>
                 <Text style={Typography.FONT_H3_PINK}>Reviews</Text>
               </View>
               <View style={{ flex: 6 }}>
                 <SafeAreaView style={styles.reviewsList}>
                   <FlatList
+                    style={{ marginBottom: 20 }}
                     data={this.state.reviews}
                     extraData={this.state}
                     contentContainerStyle={{ flex: 1 }}
@@ -583,7 +779,7 @@ const styles = StyleSheet.create({
     marginTop: 10
   },
   line: {
-    marginVertical: 5,
+    marginBottom: 5,
     borderBottomWidth: 1,
     borderBottomColor: Colors.GRAY_LIGHT
   },
@@ -627,5 +823,19 @@ const styles = StyleSheet.create({
   field: {
     flexDirection: "row",
     justifyContent: "space-between"
+  },
+  saveButton: {
+    width: 155,
+    height: 34,
+    borderRadius: 50,
+    justifyContent: "center",
+    marginTop: 20,
+    marginBottom: 20,
+    alignSelf: "center"
+  },
+  passwordField: {
+    borderBottomColor: Colors.GRAY_LIGHT,
+    borderBottomWidth: 1.5,
+    marginVertical: 15
   }
 });
