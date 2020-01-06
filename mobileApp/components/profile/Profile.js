@@ -371,7 +371,7 @@ export default class Profile extends Component {
                 <Text style={Typography.FONT_MED_GRAY}>Status: </Text>
                 <Text style={Typography.FONT_MED_GRAY}>{review.status}</Text>
               </View>
-              <Text
+              <View
                 style={{
                   width: 120,
                   height: 120,
@@ -389,7 +389,7 @@ export default class Profile extends Component {
                       review.receiptImageID
                   }}
                 />
-              </Text>
+              </View>
               <View style={[styles.field, { marginVertical: 30 }]}>
                 <Text style={Typography.FONT_H4_BLACK}>Restaurant </Text>
                 <Text style={Typography.FONT_H4_PINK}>
