@@ -184,17 +184,13 @@ export default class Search extends Component {
       const lat = this.state.latitude;
       const long = this.state.longitude;
       const token = this.state.token;
-      const response = await fetch(
-        Api.SERVER_SEARCH(searchString, lat, long),
-        {
-          method: "GET",
-          accept: "application/json",
-          headers: {
-            "X-Auth-Token": token
-          }
+      const response = await fetch(Api.SERVER_SEARCH(searchString, lat, long), {
+        method: "GET",
+        accept: "application/json",
+        headers: {
+          "X-Auth-Token": token
         }
-
-      );
+      });
       if (response.ok) {
         const responseJson = await response.json();
         const searchResults = responseJson.map(index => ({
@@ -286,6 +282,10 @@ export default class Search extends Component {
     }
   }
 
+  scrollToTop = () => {
+    this.flatListRef.scrollToIndex({ animated: true, index: 0 });
+  };
+
   render() {
     const screenWidth = Math.round(Dimensions.get("window").width);
 
@@ -367,7 +367,10 @@ export default class Search extends Component {
                 {this.state.selectedSorting ? (
                   <TouchableOpacity
                     style={styles.applyButton}
-                    onPress={() => this.applySorting()}
+                    onPress={() => {
+                      this.applySorting();
+                      this.scrollToTop();
+                    }}
                   >
                     <Text
                       style={[
@@ -433,6 +436,9 @@ export default class Search extends Component {
             {this.state.searchResults && this.state.searched ? (
               <SafeAreaView style={styles.containerResults}>
                 <FlatList
+                  ref={ref => {
+                    this.flatListRef = ref;
+                  }}
                   data={this.state.searchResults}
                   extraData={this.state}
                   renderItem={({ item }) => (
@@ -496,7 +502,8 @@ const styles = StyleSheet.create({
   },
   containerResults: {
     backgroundColor: Colors.WHITE,
-    alignItems: "center"
+    alignItems: "center",
+    marginBottom: 10
   },
   text: {
     flex: 1,
