@@ -13,7 +13,9 @@ import {
   ScrollView,
   Modal,
   Dimensions,
-  TextInput
+  TextInput,
+  StatusBar,
+  Platform
 } from "react-native";
 import * as Typography from "../../styles/typography";
 import * as Colors from "../../styles/colors";
@@ -198,16 +200,16 @@ export default class Profile extends Component {
       if (response.ok) {
         console.log("Deletion success, ");
         Alert.alert("Review deleted");
-        this.setState({oldPassword: ""});
-        this.setState({newPassword: ""});
-        this.setState({newPasswordConfirmed: ""});
+        this.setState({ oldPassword: "" });
+        this.setState({ newPassword: "" });
+        this.setState({ newPasswordConfirmed: "" });
       }
       if (!response.ok) {
         console.log("Deletion failed, ");
         Alert.alert("Deletion failed");
-        this.setState({oldPassword: ""});
-        this.setState({newPassword: ""});
-        this.setState({newPasswordConfirmed: ""});
+        this.setState({ oldPassword: "" });
+        this.setState({ newPassword: "" });
+        this.setState({ newPasswordConfirmed: "" });
       }
     } catch (error) {
       console.log("Error deleting review: ", error);
@@ -260,7 +262,9 @@ export default class Profile extends Component {
         errorMessage: "New password must be at least 5 characters"
       });
     } else if (this.state.newPassword !== this.state.newPasswordConfirmed) {
-      this.setState({ errorMessage: "The fields for new password must be identical" });
+      this.setState({
+        errorMessage: "The fields for new password must be identical"
+      });
     } else {
       this.setState({ errorMessage: "" });
       this.changePassword(this.state.token);
@@ -507,263 +511,273 @@ export default class Profile extends Component {
     if (this.state.isLoaded) {
       if (this.state.loggedIn) {
         return (
-          <ScrollView>
-            <View
-              style={[
-                styles.container,
-                {
-                  width: screenWidth * 0.85,
-                  marginLeft: (screenWidth * 0.15) / 2
-                }
-              ]}
-            >
+          <SafeAreaView style={styles.paddingStatusBar}>
+            <ScrollView>
               <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between"
-                }}
-              >
-                <View style={{ flexDirection: "row", marginBottom: 20 }}>
-                  <Text style={Typography.FONT_H2_BLACK}>Your </Text>
-                  <Text style={Typography.FONT_H2_PINK}>Profile</Text>
-                </View>
-                <View style={{ flexDirection: "row" }}>
-                  <TouchableOpacity
-                    onPress={() => {
-                      this.logout();
-                    }}
-                  >
-                    <Icon
-                      name="exit-to-app"
-                      size={32}
-                      color={Colors.GRAY_DARK}
-                    />
-                  </TouchableOpacity>
-                </View>
-              </View>
-              <KeyboardAwareScrollView>
-                <View>
-                  <Text style={Typography.FONT_H4_BLACK}>Username</Text>
-                  <Text
-                    style={[Typography.FONT_REGULAR_THIN, styles.userInfoText]}
-                  >
-                    {this.state.updatedUserInfo.username}
-                  </Text>
-                  <View style={[styles.line, { marginTop: 10 }]} />
-                  <Text style={Typography.FONT_H4_BLACK}>Email</Text>
-                  <TextInput
-                    style={[Typography.FONT_REGULAR_THIN, styles.userInfoText]}
-                    value={this.state.updatedUserInfo.email}
-                    onChangeText={this.updateEmail}
-                  />
-                  <View style={[styles.line, { marginTop: 10 }]} />
-                  <Text style={Typography.FONT_H4_BLACK}>Age</Text>
-                  <PickerSelect
-                    value={this.state.updatedUserInfo.ageRange}
-                    onValueChange={value => this.updateAgeRange(value)}
-                    items={[
-                      { label: "< 18", value: "< 18" },
-                      { label: "18-24", value: "18-24" },
-                      { label: "25-34", value: "24-34" },
-                      { label: "35-49", value: "35-49" },
-                      { label: "50-64", value: "50-64" },
-                      { label: "65+", value: "65+" }
-                    ]}
-                  />
-                  <View style={[styles.line, { marginTop: 5 }]} />
-                  <Text style={Typography.FONT_H4_BLACK}>Nationality</Text>
-                  <View
-                    style={{
-                      flexDirection: "row"
-                    }}
-                  >
-                    <View style={{ marginTop: 10 }}>
-                      <CountryPicker
-                        withFilter={true}
-                        withAlphaFilter={true}
-                        onSelect={value => {
-                          this.setState({
-                            updatedUserInfo: {
-                              ...this.state.updatedUserInfo,
-                              nationality: value.name
-                            }
-                          });
-                          this.setState({ cca2: value.cca2 });
-                          if (!this.state.saveButton) {
-                            this.setState({ saveButton: true });
-                          }
-                        }}
-                        countryCode={this.state.cca2}
-                        withCountryNameButton={true}
-                      />
-                    </View>
-                  </View>
-                  <View style={[styles.line, { marginTop: 10 }]} />
-                  <Text style={Typography.FONT_H4_BLACK}>Gender</Text>
-                  <PickerSelect
-                    value={this.state.updatedUserInfo.gender}
-                    onValueChange={value => {
-                      this.setState({
-                        updatedUserInfo: {
-                          ...this.state.updatedUserInfo,
-                          gender: value
-                        }
-                      });
-                      if (!this.state.saveButton) {
-                        this.setState({ saveButton: true });
-                      }
-                    }}
-                    items={[
-                      { label: "Male", value: "Male" },
-                      { label: "Female", value: "Female" },
-                      { label: "Other", value: "Other" }
-                    ]}
-                  />
-                  <View style={[styles.line, { marginTop: 5 }]} />
-                </View>
-              </KeyboardAwareScrollView>
-              <TouchableOpacity
                 style={[
-                  styles.saveButton,
+                  styles.container,
                   {
-                    backgroundColor: this.state.saveButton
-                      ? Colors.PINK
-                      : Colors.GRAY_MEDIUM
+                    width: screenWidth * 0.85,
+                    marginLeft: (screenWidth * 0.15) / 2
                   }
                 ]}
-                onPress={() => this.updateUserInfo(this.state.token)}
               >
-                <Text
-                  style={[Typography.FONT_H4_WHITE, { textAlign: "center" }]}
-                >
-                  SAVE
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => this.setState({ showPasswordModal: true })}
-                style={{ alignSelf: "center" }}
-              >
-                <Text
-                  style={[
-                    Typography.FONT_REGULAR_THIN,
-                    { textDecorationLine: "underline" }
-                  ]}
-                >
-                  Change password
-                </Text>
-              </TouchableOpacity>
-              <Modal
-                animationType="slide"
-                transparent={false}
-                visible={this.state.showPasswordModal}
-              >
-                <SafeAreaView
+                <View
                   style={{
-                    width: screenWidth * 0.85,
-                    marginLeft: (screenWidth * 0.15) / 2,
-                    marginTop: 20
+                    flexDirection: "row",
+                    justifyContent: "space-between"
                   }}
                 >
-                  <TouchableOpacity
-                    onPress={() => this.setState({ showPasswordModal: false })}
-                  >
-                    <Icon name={"chevron-left"} size={40} />
-                  </TouchableOpacity>
-                  <View>
-                    <Text
-                      style={[
-                        Typography.FONT_H3_BLACK,
-                        { alignSelf: "center" }
-                      ]}
-                    >
-                      Change password
-                    </Text>
-                    <TextInput
-                      placeholder={"Current password"}
-                      secureTextEntry={true}
-                      style={styles.passwordField}
-                      value={this.state.oldPassword}
-                      onChangeText={value =>
-                        this.setState({ oldPassword: value })
-                      }
-                    />
-                    <TextInput
-                      placeholder={"New password"}
-                      secureTextEntry={true}
-                      style={styles.passwordField}
-                      value={this.state.newPassword}
-                      onChangeText={value =>
-                        this.setState({ newPassword: value })
-                      }
-                    />
-                    <TextInput
-                      placeholder={"Repeat new password"}
-                      secureTextEntry={true}
-                      style={styles.passwordField}
-                      value={this.state.newPasswordConfirmed}
-                      onChangeText={value =>
-                        this.setState({ newPasswordConfirmed: value })
-                      }
-                    />
-                    <Text style={Typography.FONT_REGULAR_THIN}>
-                      {this.state.errorMessage}
-                    </Text>
+                  <View style={{ flexDirection: "row", marginBottom: 20 }}>
+                    <Text style={Typography.FONT_H2_BLACK}>Your </Text>
+                    <Text style={Typography.FONT_H2_PINK}>Profile</Text>
+                  </View>
+                  <View style={{ flexDirection: "row" }}>
                     <TouchableOpacity
-                      style={[
-                        styles.saveButton,
-                        {
-                          backgroundColor: Colors.PINK
-                        }
-                      ]}
-                      onPress={() => this.passwordValidation()}
+                      onPress={() => {
+                        this.logout();
+                      }}
                     >
-                      <Text
-                        style={[
-                          Typography.FONT_H4_WHITE,
-                          { textAlign: "center" }
-                        ]}
-                      >
-                        SAVE
-                      </Text>
+                      <Icon
+                        name="exit-to-app"
+                        size={32}
+                        color={Colors.GRAY_DARK}
+                      />
                     </TouchableOpacity>
                   </View>
-                </SafeAreaView>
-              </Modal>
-              <View
-                style={{
-                  flexDirection: "row",
-                  marginBottom: 10,
-                  marginTop: 30
-                }}
-              >
-                <Text style={Typography.FONT_H3_BLACK}>Your </Text>
-                <Text style={Typography.FONT_H3_PINK}>Reviews</Text>
-              </View>
-              <View style={{ flex: 6 }}>
-                <SafeAreaView style={styles.reviewsList}>
-                  <FlatList
-                    style={{ marginBottom: 20 }}
-                    data={this.state.reviews}
-                    extraData={this.state}
-                    contentContainerStyle={{ flex: 1 }}
-                    renderItem={({ item }) => (
-                      <YourReviews
-                        menu={item.menuName}
-                        restaurant={item.restaurantName}
-                        status={item.status}
-                        item={item}
+                </View>
+                <KeyboardAwareScrollView>
+                  <View>
+                    <Text style={Typography.FONT_H4_BLACK}>Username</Text>
+                    <Text
+                      style={[
+                        Typography.FONT_REGULAR_THIN,
+                        styles.userInfoText
+                      ]}
+                    >
+                      {this.state.updatedUserInfo.username}
+                    </Text>
+                    <View style={[styles.line, { marginTop: 10 }]} />
+                    <Text style={Typography.FONT_H4_BLACK}>Email</Text>
+                    <TextInput
+                      style={[
+                        Typography.FONT_REGULAR_THIN,
+                        styles.userInfoText
+                      ]}
+                      value={this.state.updatedUserInfo.email}
+                      onChangeText={this.updateEmail}
+                    />
+                    <View style={[styles.line, { marginTop: 10 }]} />
+                    <Text style={Typography.FONT_H4_BLACK}>Age</Text>
+                    <PickerSelect
+                      value={this.state.updatedUserInfo.ageRange}
+                      onValueChange={value => this.updateAgeRange(value)}
+                      items={[
+                        { label: "< 18", value: "< 18" },
+                        { label: "18-24", value: "18-24" },
+                        { label: "25-34", value: "24-34" },
+                        { label: "35-49", value: "35-49" },
+                        { label: "50-64", value: "50-64" },
+                        { label: "65+", value: "65+" }
+                      ]}
+                    />
+                    <View style={[styles.line, { marginTop: 5 }]} />
+                    <Text style={Typography.FONT_H4_BLACK}>Nationality</Text>
+                    <View
+                      style={{
+                        flexDirection: "row"
+                      }}
+                    >
+                      <View style={{ marginTop: 10 }}>
+                        <CountryPicker
+                          withFilter={true}
+                          withAlphaFilter={true}
+                          onSelect={value => {
+                            this.setState({
+                              updatedUserInfo: {
+                                ...this.state.updatedUserInfo,
+                                nationality: value.name
+                              }
+                            });
+                            this.setState({ cca2: value.cca2 });
+                            if (!this.state.saveButton) {
+                              this.setState({ saveButton: true });
+                            }
+                          }}
+                          countryCode={this.state.cca2}
+                          withCountryNameButton={true}
+                        />
+                      </View>
+                    </View>
+                    <View style={[styles.line, { marginTop: 10 }]} />
+                    <Text style={Typography.FONT_H4_BLACK}>Gender</Text>
+                    <PickerSelect
+                      value={this.state.updatedUserInfo.gender}
+                      onValueChange={value => {
+                        this.setState({
+                          updatedUserInfo: {
+                            ...this.state.updatedUserInfo,
+                            gender: value
+                          }
+                        });
+                        if (!this.state.saveButton) {
+                          this.setState({ saveButton: true });
+                        }
+                      }}
+                      items={[
+                        { label: "Male", value: "Male" },
+                        { label: "Female", value: "Female" },
+                        { label: "Other", value: "Other" }
+                      ]}
+                    />
+                    <View style={[styles.line, { marginTop: 5 }]} />
+                  </View>
+                </KeyboardAwareScrollView>
+                <TouchableOpacity
+                  style={[
+                    styles.saveButton,
+                    {
+                      backgroundColor: this.state.saveButton
+                        ? Colors.PINK
+                        : Colors.GRAY_MEDIUM
+                    }
+                  ]}
+                  onPress={() => this.updateUserInfo(this.state.token)}
+                >
+                  <Text
+                    style={[Typography.FONT_H4_WHITE, { textAlign: "center" }]}
+                  >
+                    SAVE
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => this.setState({ showPasswordModal: true })}
+                  style={{ alignSelf: "center" }}
+                >
+                  <Text
+                    style={[
+                      Typography.FONT_REGULAR_THIN,
+                      { textDecorationLine: "underline" }
+                    ]}
+                  >
+                    Change password
+                  </Text>
+                </TouchableOpacity>
+                <Modal
+                  animationType="slide"
+                  transparent={false}
+                  visible={this.state.showPasswordModal}
+                >
+                  <SafeAreaView
+                    style={{
+                      width: screenWidth * 0.85,
+                      marginLeft: (screenWidth * 0.15) / 2,
+                      marginTop: 20
+                    }}
+                  >
+                    <TouchableOpacity
+                      onPress={() =>
+                        this.setState({ showPasswordModal: false })
+                      }
+                    >
+                      <Icon name={"chevron-left"} size={40} />
+                    </TouchableOpacity>
+                    <View>
+                      <Text
+                        style={[
+                          Typography.FONT_H3_BLACK,
+                          { alignSelf: "center" }
+                        ]}
+                      >
+                        Change password
+                      </Text>
+                      <TextInput
+                        placeholder={"Current password"}
+                        secureTextEntry={true}
+                        style={styles.passwordField}
+                        value={this.state.oldPassword}
+                        onChangeText={value =>
+                          this.setState({ oldPassword: value })
+                        }
                       />
-                    )}
-                    keyExtractor={item => item.menuReviewID}
+                      <TextInput
+                        placeholder={"New password"}
+                        secureTextEntry={true}
+                        style={styles.passwordField}
+                        value={this.state.newPassword}
+                        onChangeText={value =>
+                          this.setState({ newPassword: value })
+                        }
+                      />
+                      <TextInput
+                        placeholder={"Repeat new password"}
+                        secureTextEntry={true}
+                        style={styles.passwordField}
+                        value={this.state.newPasswordConfirmed}
+                        onChangeText={value =>
+                          this.setState({ newPasswordConfirmed: value })
+                        }
+                      />
+                      <Text style={Typography.FONT_REGULAR_THIN}>
+                        {this.state.errorMessage}
+                      </Text>
+                      <TouchableOpacity
+                        style={[
+                          styles.saveButton,
+                          {
+                            backgroundColor: Colors.PINK
+                          }
+                        ]}
+                        onPress={() => this.passwordValidation()}
+                      >
+                        <Text
+                          style={[
+                            Typography.FONT_H4_WHITE,
+                            { textAlign: "center" }
+                          ]}
+                        >
+                          SAVE
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                  </SafeAreaView>
+                </Modal>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    marginBottom: 10,
+                    marginTop: 30
+                  }}
+                >
+                  <Text style={Typography.FONT_H3_BLACK}>Your </Text>
+                  <Text style={Typography.FONT_H3_PINK}>Reviews</Text>
+                </View>
+                <View style={{ flex: 6 }}>
+                  <SafeAreaView style={styles.reviewsList}>
+                    <FlatList
+                      style={{ marginBottom: 20 }}
+                      data={this.state.reviews}
+                      extraData={this.state}
+                      contentContainerStyle={{ flex: 1 }}
+                      renderItem={({ item }) => (
+                        <YourReviews
+                          menu={item.menuName}
+                          restaurant={item.restaurantName}
+                          status={item.status}
+                          item={item}
+                        />
+                      )}
+                      keyExtractor={item => item.menuReviewID}
+                    />
+                  </SafeAreaView>
+                  <FullReviewModal
+                    review={this.state.modalItem}
+                    visible={this.state.modalItem != null}
                   />
-                </SafeAreaView>
-                <FullReviewModal
-                  review={this.state.modalItem}
-                  visible={this.state.modalItem != null}
-                />
+                </View>
               </View>
-            </View>
-          </ScrollView>
+            </ScrollView>
+          </SafeAreaView>
         );
       }
       if (!this.state.loggedIn) {
@@ -776,7 +790,7 @@ export default class Profile extends Component {
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    marginTop: 60
+    marginTop: 40
   },
   logout_icon: {
     marginTop: 60
@@ -843,5 +857,8 @@ const styles = StyleSheet.create({
     borderBottomColor: Colors.GRAY_LIGHT,
     borderBottomWidth: 1.5,
     marginVertical: 15
+  },
+  paddingStatusBar: {
+    paddingTop: StatusBar.currentHeight
   }
 });
