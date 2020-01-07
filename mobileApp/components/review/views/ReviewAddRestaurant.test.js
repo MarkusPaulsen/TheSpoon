@@ -32,7 +32,7 @@ describe("Review Add Restaurant Component", () => {
 
     // Mock the functions called in componentDidMount
     jest
-      .spyOn(ReviewAddRestaurant.prototype, "getAllMenus")
+      .spyOn(ReviewAddRestaurant.prototype, "getAllRestaurants")
       .mockImplementationOnce(() => Promise.resolve());
 
     component = setUp({ navigation });

@@ -45,7 +45,7 @@ export default class ReviewAddRestaurant extends Component {
         if (this.state.loggedIn) {
           const imageID = this.props.navigation.getParam("imageID", "0");
           this.setState({ imageID, token });
-          await this.getAllMenus(token);
+          await this.getAllRestaurants(token);
         }
       });
     });
@@ -55,7 +55,7 @@ export default class ReviewAddRestaurant extends Component {
     this.focusListener.remove();
   }
 
-  async getAllMenus(token) {
+  async getAllRestaurants(token) {
     try {
       const response = await fetch(Api.SERVER_GET_RESTAURANTS, {
         method: "GET",
