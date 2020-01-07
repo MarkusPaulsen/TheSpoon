@@ -120,7 +120,7 @@ class PendingReviewModal extends Component {
     //</editor-fold>
 
     //<editor-fold desc="Business Logic">
-    update() {
+    update = () => {
         window.location.reload();
     }
 
@@ -152,7 +152,7 @@ class PendingReviewModal extends Component {
                             <small>{this.state.serverMessage}</small>
                         </div>
                         <div className="modal-wrapper add-menu">
-                            <Form ref={(c) => {this.form = c; }} onSubmit={(e) => this.handleSubmit(e)}>
+                            <Form ref={(c) => {this.form = c;}} onSubmit={(e) => this.handleSubmit(e)}>
                                 <h2>Pending Reviews</h2>
                                 {this.state.reviews != null &&
                                 this.state.reviews.length >= 1 ? (

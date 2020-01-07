@@ -36,9 +36,7 @@ class ChooseRoleModal extends Component {
         if(this.props.backgroundPage == null) {
             return(<p>Something went wrong.</p>);
         } else if(this.state.token == null || this.state.token === "null" ) {
-            return(<p>Something went wrong.</p>);
-        } else {
-            //<editor-fold desc="Render Token">
+            //<editor-fold desc="Render No Token">
             return(
                 <Modal.Body>
                     <button className="exit" onClick={this.props.onHide}><IconExit /></button>
@@ -58,6 +56,8 @@ class ChooseRoleModal extends Component {
                 </Modal.Body>
             );
             //</editor-fold>
+        } else {
+            return(<p>Something went wrong.</p>);
         }
     }
 

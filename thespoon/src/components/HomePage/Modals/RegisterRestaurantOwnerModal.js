@@ -132,7 +132,7 @@ class RegisterRestaurantOwnerModal extends Component {
             message: "Password confirmation is required to be longer or equal 5 characters."
         }, {
             field: "confirmPassword",
-            method: (confirmPassword, state) => (confirmPassword === state.password),
+            method: (confirmPassword, state) => {return confirmPassword === state.password},
             validWhen: true,
             message: "Password confirmation has to be identical to the password."
         }]);
@@ -192,7 +192,6 @@ class RegisterRestaurantOwnerModal extends Component {
             }))
             .pipe(exhaustMap(() => {
                 if (thisTemp.state.validation.isValid) {
-                    thisTemp.props.logIn(thisTemp.state.username);
                     thisTemp.setState({serverMessage: "Registration is processing"});
                     return ajax({
                         url: paths["restApi"]["registrationRestaurantOwner"],
@@ -252,8 +251,6 @@ class RegisterRestaurantOwnerModal extends Component {
         if(this.props.backgroundPage == null) {
             return(<p>Something went wrong.</p>);
         } else if(this.state.token == null || this.state.token === "null" ) {
-            return(<p>Something went wrong.</p>);
-        } else {
             //<editor-fold desc="Render Token">
             return (
                 <Modal.Body>
@@ -326,6 +323,8 @@ class RegisterRestaurantOwnerModal extends Component {
                 </Modal.Body>
             );
             //</editor-fold>
+        } else {
+            return(<p>Something went wrong.</p>);
         }
     }
 

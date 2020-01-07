@@ -13,6 +13,7 @@ import BackButton from "../components/backButton";
 import ContinueButton from "../components/continueButton";
 import { AirbnbRating } from "react-native-ratings";
 import * as Colors from "../../../styles/colors";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { NavigationActions, StackActions } from "react-navigation";
 
 export default class ReviewItems extends Component {
@@ -63,24 +64,16 @@ export default class ReviewItems extends Component {
     this.focusListener.remove();
   }
 
-  setRatingCount(rating, item, itemID) {
+  setRatingCount(rating, item) {
     item.rating = rating;
 
-    const menuItems = this.state.menuItems.filter(e => e.menuItemID !== itemID);
-    const updatedMenuItems = menuItems.concat(item);
-
-    this.setState({ menuItems: updatedMenuItems });
-    this.state.reviewedScores.push(item);
-    if (this.state.reviewedScores.length === this.state.menuItems.length) {
+    if (this.state.menuItems.every(e => e.rating !== null)) {
       this.setState({ disableButton: false });
     }
   }
 
-  onChangeText(text, item, itemID) {
+  onChangeText(text, item) {
     item.content = text;
-    const menuItems = this.state.menuItems.filter(e => e.menuItemID !== itemID);
-    const updatedMenuItems = menuItems.concat(item);
-    this.setState({ menuItems: updatedMenuItems });
   }
 
   render() {
@@ -106,6 +99,7 @@ export default class ReviewItems extends Component {
       }
       if (this.state.loggedIn) {
         return (
+            <KeyboardAwareScrollView>
           <View style={styles.container}>
             <View>
               <View style={styles.header}>
@@ -168,6 +162,7 @@ export default class ReviewItems extends Component {
               colorIndex={this.state.colorIndex}
             />
           </View>
+            </KeyboardAwareScrollView>
         );
       }
     }

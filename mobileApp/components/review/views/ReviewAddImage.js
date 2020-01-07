@@ -206,7 +206,7 @@ class ReviewAddImage extends Component {
       });
       if (response.ok) {
         const responseText = await response.json();
-        await Alert.alert("Upload success!");
+        Alert.alert("Upload success!");
         this.setState({
           imageID: responseText.imageID,
           disableButton: false,

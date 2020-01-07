@@ -15,6 +15,8 @@ import * as Colors from "../../styles/colors";
 import * as Api from "../../services/api";
 import { AirbnbRating } from "react-native-ratings";
 import Icon from "react-native-vector-icons/MaterialIcons";
+import { Dimensions } from "react-native";
+import OpeningHours from "./OpeningHours";
 
 function MenuItem({
   menuItemName,
@@ -121,7 +123,8 @@ export default class Menu extends Component {
       dishItems: "",
       drinkItems: "",
       menuID: null,
-      restaurantImage: null
+      restaurantImage: null,
+      showOpeningHours: false
     };
   }
 
@@ -147,65 +150,62 @@ export default class Menu extends Component {
         method: "GET",
         accept: "application/json"
       });
-      if (response.ok) {
-        const responseJson = await response.json();
-        const menuInfo = {
-          id: menuId,
-          restaurantName,
-          menuName: responseJson["menuName"],
-          menuDescription: responseJson["description"],
-          tags: responseJson["tags"],
-          score: responseJson["menuRating"]
-        };
-        const menuItems = responseJson["menuItems"].map(index => ({
-          id: index["menuItemID"].toString(),
-          menuItemName: index["name"],
-          menuItemDescription: index["description"],
-          priceEuros: index["priceEuros"],
-          menuItemImage: index["imageLink"],
-          tags: index["tags"],
-          score: index["rating"],
-          type: index["type"]
-        }));
-        const restaurantInfo = {
-          latitude: parseFloat(responseJson["restaurant"]["latitude"]),
-          longitude: parseFloat(responseJson["restaurant"]["longitude"]),
-          address: responseJson["restaurant"]["address"],
-          city: responseJson["restaurant"]["city"],
-          country: responseJson["restaurant"]["country"]
-        };
+      const responseJson = await response.json();
+      const menuInfo = {
+        id: menuId,
+        restaurantName,
+        menuName: responseJson["menuName"],
+        menuDescription: responseJson["description"],
+        tags: responseJson["tags"],
+        score: responseJson["menuRating"]
+      };
+      const menuItems = responseJson["menuItems"].map(index => ({
+        id: index["menuItemID"].toString(),
+        menuItemName: index["name"],
+        menuItemDescription: index["description"],
+        priceEuros: index["priceEuros"],
+        menuItemImage: index["imageLink"],
+        tags: index["tags"],
+        score: index["rating"],
+        type: index["type"]
+      }));
+      const restaurantInfo = {
+        latitude: parseFloat(responseJson["restaurant"]["latitude"]),
+        longitude: parseFloat(responseJson["restaurant"]["longitude"]),
+        address: responseJson["restaurant"]["address"],
+        city: responseJson["restaurant"]["city"],
+        country: responseJson["restaurant"]["country"],
+        openingHours: responseJson["restaurant"]["openingHours"]
+      };
 
-        const dishItems = [];
-        const drinkItems = [];
+      const dishItems = [];
+      const drinkItems = [];
 
-        menuItems.map(item => {
-          if (item.type == "dish") {
-            dishItems.push(item);
-          } else if (item.type == "drink") {
-            drinkItems.push(item);
-          }
-        });
+      menuItems.map(item => {
+        if (item.type == "dish") {
+          dishItems.push(item);
+        } else if (item.type == "drink") {
+          drinkItems.push(item);
+        }
+      });
 
-        this.setState({
-          menuInfo,
-          menuItems,
-          dishItems,
-          drinkItems,
-          restaurantInfo,
-          isLoading: false
-        });
-      }
-      if (!response.ok) {
-        console.log("Error fetching the menu");
-      }
+      this.setState({
+        menuInfo,
+        menuItems,
+        dishItems,
+        drinkItems,
+        restaurantInfo,
+        isLoading: false
+      });
     } catch (e) {
       console.log(e);
     }
   }
 
   render() {
+    const screenWidth = Math.round(Dimensions.get("window").width);
     return (
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <ScrollView
           contentContainerStyle={{
             flexGrow: 1,
@@ -216,7 +216,7 @@ export default class Menu extends Component {
             <View>
               <Image
                 source={{ uri: this.state.restaurantImage }}
-                style={{ width: 380, height: 180, justifyContent: "center"}}
+                style={{ width: 370, height: 180, justifyContent: "center" }}
               />
               <View style={{ marginTop: 40, position: "absolute" }}>
                 <TouchableOpacity
@@ -384,6 +384,35 @@ export default class Menu extends Component {
                 />
               </View>
             ) : null}
+            <TouchableOpacity
+              style={{
+                flex: 1,
+                flexDirection: "row",
+                height: 50,
+                width: screenWidth * 0.9,
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginTop: 5
+              }}
+              onPress={() => this.setState({ showOpeningHours: true })}
+            >
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                <Icon name={"access-time"} size={30} color={Colors.GRAY_DARK} />
+                <Text style={{ color: Colors.GRAY_DARK, marginLeft: 5 }}>
+                  Opening Hours
+                </Text>
+              </View>
+              <Icon
+                name={"keyboard-arrow-right"}
+                size={30}
+                color={Colors.GRAY_DARK}
+              />
+            </TouchableOpacity>
+            <OpeningHours
+              data={this.state.restaurantInfo.openingHours}
+              visible={this.state.showOpeningHours}
+              backButton={() => this.setState({ showOpeningHours: false })}
+            />
             <View style={{ flex: 1 }}>
               {this.state.isLoading ? (
                 <Text> No map to display </Text>
@@ -399,7 +428,7 @@ export default class Menu extends Component {
                     width: 360,
                     height: 270,
                     alignSelf: "center",
-                    marginTop: 30
+                    marginTop: 15
                   }}
                 >
                   <MapView.Marker
@@ -421,7 +450,7 @@ export default class Menu extends Component {
             </View>
           </SafeAreaView>
         </ScrollView>
-      </View>
+      </SafeAreaView>
     );
   }
 }

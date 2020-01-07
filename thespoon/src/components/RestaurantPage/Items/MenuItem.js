@@ -15,7 +15,7 @@ import {IconEditGrey} from "../../Icons";
 
 class MenuItem extends Component {
     //<editor-fold desc="Constructor">
-    constructor(props){
+    constructor(props) {
         super(props);
     }
     //</editor-fold>

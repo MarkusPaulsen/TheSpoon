@@ -96,23 +96,22 @@ class LogInModal extends Component {
 
     //<editor-fold desc="Business Logic">
     handleSubmit = (event) => {
-        console.log("Step 1")
         event.preventDefault();
 
         const thisTemp = this;
         of(1)
             .pipe(map(() => {
                 return thisTemp.form.getValues();
-            }), catchError(error => {
-                return error;
+            }), catchError((error) => {
+                return throwError(error);
             }))
             .pipe(exhaustMap((values) => {
                 return bindCallback(thisTemp.setState).call(thisTemp, {
                     username: values.username,
                     password: values.password
                 });
-            }), catchError(error => {
-                return error;
+            }), catchError((error) => {
+                return throwError(error);
             }))
             .pipe(exhaustMap(() => {
                 return bindCallback(thisTemp.setState).call(thisTemp, {
@@ -120,8 +119,8 @@ class LogInModal extends Component {
                     submitted: true,
                     serverMessage: ""
                 });
-            }), catchError(error => {
-                return error;
+            }), catchError((error) => {
+                return throwError(error);
             }))
             .pipe(exhaustMap(() => {
                 if (thisTemp.state.validation.isValid) {
@@ -145,8 +144,8 @@ class LogInModal extends Component {
                         response: null
                     });
                 }
-            }), catchError(error => {
-                return error;
+            }), catchError((error) => {
+                return throwError(error);
             }))
             .pipe(take(1))
             .subscribe(
