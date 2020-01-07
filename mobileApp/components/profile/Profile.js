@@ -14,8 +14,7 @@ import {
   Modal,
   Dimensions,
   TextInput,
-  StatusBar,
-  Platform
+  StatusBar
 } from "react-native";
 import * as Typography from "../../styles/typography";
 import * as Colors from "../../styles/colors";
@@ -89,15 +88,6 @@ export default class Profile extends Component {
       ],
       { cancelable: false }
     );
-  }
-
-  checkValidEmail() {
-    if (!this.state.updatedUserInfo.email.includes("@")) {
-      this.setState({ emailError: "Please enter a valid email" });
-    } else {
-      this.setState({ emailError: "" });
-      this.updateUserInfo(this.state.token);
-    }
   }
 
   async updateUserInfo(token) {
@@ -648,11 +638,6 @@ export default class Profile extends Component {
                     <View style={[styles.line, { marginTop: 5 }]} />
                   </View>
                 </KeyboardAwareScrollView>
-                <Text
-                  style={[Typography.FONT_REGULAR_THIN, { color: Colors.PINK }]}
-                >
-                  {this.state.emailError}
-                </Text>
                 <TouchableOpacity
                   style={[
                     styles.saveButton,
@@ -662,7 +647,7 @@ export default class Profile extends Component {
                         : Colors.GRAY_MEDIUM
                     }
                   ]}
-                  onPress={() => this.checkValidEmail()}
+                  onPress={() => this.updateUserInfo(this.state.token)}
                 >
                   <Text
                     style={[Typography.FONT_H4_WHITE, { textAlign: "center" }]}
