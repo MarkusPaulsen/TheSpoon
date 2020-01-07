@@ -1,21 +1,28 @@
 import React from "react";
 import { mount } from "enzyme";
 import ReviewAddMenu from "./ReviewAddMenu";
+import { AsyncStorage as storage } from "react-native";
 
 const setUp = (props = {}) => {
   return mount(<ReviewAddMenu {...props} />);
 };
 
+const userToken =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOjI5LCJpYXQiOjE1NjE5OTg2NjB9.SWYMJXTTM8pe6NQw1QwS-d8Btt6Isuzzk5JtH775uV0";
+
 describe("Review Add Menu Component", () => {
   let component;
 
-  beforeEach(done => {
+  beforeEach(async () => {
     const navigation = {
       navigate: jest.fn(),
       getParam: (param, defaultValue) => {
         return defaultValue;
-      }
+      },
+      addListener: (param, func) => func()
     };
+
+    await storage.setItem("userToken", userToken);
 
     // Mock the functions called in componentDidMount
     jest
@@ -25,7 +32,6 @@ describe("Review Add Menu Component", () => {
     component = setUp({ navigation });
     fetch.resetMocks();
     jest.useFakeTimers();
-    done();
   });
 
   it("ComponentDidMount fetch successful", async () => {
@@ -49,9 +55,9 @@ describe("Review Add Menu Component", () => {
 
     const instance = component.instance();
     await instance.componentDidMount();
-    component.update();
+    await component.update();
 
-    expect(component.state().token).toBe("0");
+    expect(component.state().token).toBe(userToken);
     expect(component.state().restaurant).toBe("no-restaurant");
     expect(component.state().imageID).toBe("0");
 
@@ -67,9 +73,9 @@ describe("Review Add Menu Component", () => {
 
     const instance = component.instance();
     await instance.componentDidMount();
-    component.update();
+    await component.update();
 
-    expect(component.state().token).toBe("0");
+    expect(component.state().token).toBe(userToken);
     expect(component.state().restaurant).toBe("no-restaurant");
     expect(component.state().imageID).toBe("0");
 

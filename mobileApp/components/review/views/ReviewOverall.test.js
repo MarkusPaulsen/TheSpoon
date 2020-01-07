@@ -34,7 +34,8 @@ describe("Review Overall Component", () => {
     const navigation = {
       navigate: jest.fn(),
       getParam: (param, defaultValue) =>
-        param === "menuItemReviews" ? menuItems : defaultValue
+        param === "menuItemReviews" ? menuItems : defaultValue,
+      addListener: (param, func) => func()
     };
     component = setUp({ navigation });
     await storage.setItem("userToken", userToken);

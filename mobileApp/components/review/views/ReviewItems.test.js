@@ -14,7 +14,8 @@ describe("Review Items Component", () => {
       navigate: jest.fn(),
       getParam: (param, defaultValue) => {
         return defaultValue;
-      }
+      },
+      addListener: (param, func) => func()
     };
     component = setUp({ navigation });
     fetch.resetMocks();

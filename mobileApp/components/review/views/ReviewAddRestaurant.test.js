@@ -20,7 +20,8 @@ describe("Review Add Restaurant Component", () => {
       navigate: jest.fn(),
       getParam: (param, defaultValue) => {
         return defaultValue;
-      }
+      },
+      addListener: (param, func) => func()
     };
 
     // Mock the functions called in componentDidMount
