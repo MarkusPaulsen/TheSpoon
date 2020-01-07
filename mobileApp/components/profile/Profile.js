@@ -98,7 +98,6 @@ export default class Profile extends Component {
         ageRange: this.state.updatedUserInfo.ageRange,
         nationality: this.state.updatedUserInfo.nationality
       });
-      console.log(userData);
       const response = await fetch(Api.SERVER_PROFILE_UPDATEUSERINFO, {
         method: "PUT",
         headers: {
@@ -108,7 +107,6 @@ export default class Profile extends Component {
         },
         body: userData
       });
-      console.log(response);
       if (response.ok) {
         Alert.alert("Profile information updated");
         this.setState({ saveButton: false });
@@ -132,7 +130,6 @@ export default class Profile extends Component {
       });
       if (response.ok) {
         const responseJson = await response.json();
-        console.log(responseJson);
         const userInfo = {
           username: responseJson.username,
           email: responseJson.email,
@@ -142,8 +139,6 @@ export default class Profile extends Component {
         };
         this.setState({ userInfo });
         this.setState({ updatedUserInfo: userInfo });
-        console.log(this.state.updatedUserInfo);
-        console.log("Success fetching profileData");
       }
       if (!response.ok) {
         console.log("Fetching profileData failed");
@@ -199,16 +194,10 @@ export default class Profile extends Component {
       if (response.ok) {
         console.log("Deletion success, ");
         Alert.alert("Review deleted");
-        this.setState({ oldPassword: "" });
-        this.setState({ newPassword: "" });
-        this.setState({ newPasswordConfirmed: "" });
       }
       if (!response.ok) {
         console.log("Deletion failed, ");
         Alert.alert("Deletion failed");
-        this.setState({ oldPassword: "" });
-        this.setState({ newPassword: "" });
-        this.setState({ newPasswordConfirmed: "" });
       }
     } catch (error) {
       console.log("Error deleting review: ", error);
@@ -253,7 +242,7 @@ export default class Profile extends Component {
     }
   };
 
-  passwordValidation() {
+  async passwordValidation() {
     if (
       this.state.oldPassword === "" ||
       this.state.newPassword === "" ||
@@ -274,7 +263,7 @@ export default class Profile extends Component {
       });
     } else {
       this.setState({ errorMessage: "" });
-      this.changePassword(this.state.token);
+      await this.changePassword(this.state.token);
     }
   }
 
@@ -284,7 +273,6 @@ export default class Profile extends Component {
         oldPassword: this.state.oldPassword,
         newPassword: this.state.newPassword
       });
-      console.log(passwords);
       const response = await fetch(Api.SERVER_PROFILE_CHANGEPASSWORD, {
         method: "PUT",
         headers: {
@@ -294,7 +282,6 @@ export default class Profile extends Component {
         },
         body: passwords
       });
-      console.log(response);
       if (response.ok) {
         this.setState({ showPasswordModal: false });
         Alert.alert("Password changed");
@@ -305,6 +292,9 @@ export default class Profile extends Component {
     } catch (error) {
       console.log("Error changing password: ", error);
     }
+    this.setState({ oldPassword: "" });
+    this.setState({ newPassword: "" });
+    this.setState({ newPasswordConfirmed: "" });
   }
 
   render() {

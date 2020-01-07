@@ -160,6 +160,15 @@ describe("Profile Component", () => {
       expect(Alert.alert).toHaveBeenCalledWith("Review deleted");
     });
 
+    it("Should fail to delete review", async () => {
+      fetch.mockResponseOnce(JSON.stringify({}), { status: 404 });
+
+      await component.instance().deleteReview();
+      component.update();
+
+      expect(Alert.alert).toHaveBeenCalledWith("Deletion failed");
+    });
+
     it("Should update email", () => {
       const instance = component.instance();
       const email = "test@test.com";
@@ -240,6 +249,23 @@ describe("Profile Component", () => {
       expect(component.state().newPasswordConfirmed).toEqual("");
       expect(component.state().errorMessage).toEqual("");
       expect(component.state().showPasswordModal).toBeFalsy();
+    });
+
+    it("Should successfully update userInfo", async () => {
+
+      fetch.mockResponseOnce(JSON.stringify({}), { status: 201, ok: true });
+
+      await component.instance().updateUserInfo(userToken);
+      await component.update();
+
+      expect(component.state().saveButton).toBeFalsy();
+    });
+
+    it("Should call logout successfully", async() => {
+      await component.instance().logout();
+      await component.update();
+
+      expect(Alert.alert).toHaveBeenCalled();
     });
   });
 });
