@@ -2,11 +2,14 @@ import React from "react";
 import { mount } from "enzyme";
 import Search from "./Search";
 import * as SearchFile from "./Search";
+import { AsyncStorage as storage } from "react-native";
 
-const setUp = () => {
-  const component = mount(<Search />);
-  return component;
+const setUp = (props = {}) => {
+  return mount(<Search {...props} />);
 };
+
+const userToken =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOjI5LCJpYXQiOjE1NjE5OTg2NjB9.SWYMJXTTM8pe6NQw1QwS-d8Btt6Isuzzk5JtH775uV0";
 
 const obj1 = {
   id: 1,
@@ -45,9 +48,29 @@ const searchResults = [obj1, obj2, obj3];
 describe("Search Component", () => {
   let component;
 
-  beforeEach(() => {
-    component = setUp();
+  beforeEach(async () => {
+    const navigation = {
+      navigate: jest.fn(),
+      getParam: (param, defaultValue) => defaultValue,
+      addListener: (param, func) => func()
+    };
+
+    await storage.setItem("userToken", userToken);
+
+    jest
+      .spyOn(Search.prototype, "findCoordinates")
+      .mockImplementationOnce(() => Promise.resolve());
+
+    component = setUp({ navigation });
+    fetch.resetMocks();
     jest.useFakeTimers();
+  });
+
+  it("ComponentDidMount", async () => {
+    await component.instance().componentDidMount();
+    await component.update();
+    expect(component.state().token).toEqual(userToken);
+    expect(component.state().isLoaded).toBeTruthy();
   });
 
   it("Should render without errors", () => {
@@ -60,13 +83,6 @@ describe("Search Component", () => {
       node => node.prop("testID") === "heading" && node.type() === "View"
     );
     expect(wrapper.text()).toBe("What do you want to eat today?");
-  });
-
-  it("Should render a search icon", () => {
-    const icon = component.findWhere(
-      node => node.prop("testID") === "searchIcon"
-    );
-    expect(icon.length).toBe(1);
   });
 
   it("Should render a search field", () => {
@@ -96,6 +112,7 @@ describe("Search Component", () => {
         score: 4
       }
     ];
+
     component.instance().getResults = jest.fn(() => {
       component.setState({ searchResults: mockData, searched: true });
     });
@@ -238,5 +255,65 @@ describe("Search Component", () => {
     expect(SearchFile.getPriceCategory(15)).toBe("$$");
     expect(SearchFile.getPriceCategory(8)).toBe("$");
     expect(SearchFile.getPriceCategory()).toBe("");
+  });
+
+  it("Should get results successfully", async () => {
+    const mockData = [
+      {
+        menu: {
+          menuID: 1,
+          name: "Menu",
+          tags: [{ name: "italian", color: "#00000" }],
+          rating: 5,
+          averagePrice: 23
+        },
+        restaurantData: {
+          restaurantName: "Restaurant",
+          restaurantImageLink: "link",
+          distance: 0.2
+        }
+      },
+      {
+        menu: {
+          menuID: 2,
+          name: "Menu2",
+          tags: [{ name: "italian", color: "#00000" }],
+          rating: 4,
+          averagePrice: 23
+        },
+        restaurantData: {
+          restaurantName: "Restaurant2",
+          restaurantImageLink: "link2",
+          distance: 0.1
+        }
+      }
+    ];
+
+    fetch.mockResponseOnce(JSON.stringify(mockData), { status: 201, ok: true });
+
+    await component.instance().getResults();
+
+    expect(component.state().searchResults).toEqual([
+      {
+        id: "1",
+        menuName: "Menu",
+        restaurantName: "Restaurant",
+        tags: [{ name: "italian", color: "#00000" }],
+        score: 5,
+        price: 23,
+        image: "link",
+        distance: 0.2
+      },
+      {
+        id: "2",
+        menuName: "Menu2",
+        restaurantName: "Restaurant2",
+        tags: [{ name: "italian", color: "#00000" }],
+        score: 4,
+        price: 23,
+        image: "link2",
+        distance: 0.1
+      }
+    ]);
   });
 });

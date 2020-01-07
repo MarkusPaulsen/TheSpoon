@@ -145,7 +145,7 @@ export default class Search extends Component {
     this.focusListener.remove();
   }
 
-  findCoordinates = () => {
+  findCoordinates () {
     navigator.geolocation.getCurrentPosition(
       position => {
         this.setState({ locationPermission: true });
