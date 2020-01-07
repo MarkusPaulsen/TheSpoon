@@ -39,11 +39,9 @@ export default class Profile extends Component {
       newPassword: "",
       newPasswordConfirmed: "",
       showPasswordModal: false,
-      emptyFields: false,
-      unequalPasswords: false,
-      cca2: "FR"
+      cca2: "FR",
+      passwordError: ""
     };
-    this.changePassword = this.changePassword.bind(this);
   }
 
   componentDidMount = async () => {
@@ -200,10 +198,16 @@ export default class Profile extends Component {
       if (response.ok) {
         console.log("Deletion success, ");
         Alert.alert("Review deleted");
+        this.setState({oldPassword: ""});
+        this.setState({newPassword: ""});
+        this.setState({newPasswordConfirmed: ""});
       }
       if (!response.ok) {
         console.log("Deletion failed, ");
         Alert.alert("Deletion failed");
+        this.setState({oldPassword: ""});
+        this.setState({newPassword: ""});
+        this.setState({newPasswordConfirmed: ""});
       }
     } catch (error) {
       console.log("Error deleting review: ", error);
@@ -246,15 +250,20 @@ export default class Profile extends Component {
       this.state.newPassword === "" ||
       this.state.newPasswordConfirmed === ""
     ) {
-      this.setState({ emptyFields: true });
+      this.setState({ errorMessage: "All fields must be filled out" });
+    } else if (this.state.oldPassword === this.state.newPassword) {
+      this.setState({
+        errorMessage: "New password cannot be the same as old password"
+      });
+    } else if (this.state.newPassword.length < 5) {
+      this.setState({
+        errorMessage: "New password must be at least 5 characters"
+      });
+    } else if (this.state.newPassword !== this.state.newPasswordConfirmed) {
+      this.setState({ errorMessage: "The fields for new password must be identical" });
     } else {
-      this.setState({ emptyFields: false });
-      if (this.state.newPassword !== this.state.newPasswordConfirmed) {
-        this.setState({ unequalPasswords: true });
-      } else {
-        this.setState({ unequalPasswords: false });
-        this.changePassword(this.state.token);
-      }
+      this.setState({ errorMessage: "" });
+      this.changePassword(this.state.token);
     }
   }
 
@@ -276,11 +285,11 @@ export default class Profile extends Component {
       });
       console.log(response);
       if (response.ok) {
-        console.log("Success changing password");
         this.setState({ showPasswordModal: false });
+        Alert.alert("Password changed");
       }
       if (!response.ok) {
-        console.log("Changing password failed");
+        Alert.alert("Password could not be changed");
       }
     } catch (error) {
       console.log("Error changing password: ", error);
@@ -697,11 +706,7 @@ export default class Profile extends Component {
                       }
                     />
                     <Text style={Typography.FONT_REGULAR_THIN}>
-                      {this.state.emptyFields
-                        ? "All fields must be filled out"
-                        : this.state.unequalPasswords
-                        ? "The two passwords are not equal"
-                        : ""}
+                      {this.state.errorMessage}
                     </Text>
                     <TouchableOpacity
                       style={[
