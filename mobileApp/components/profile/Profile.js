@@ -42,7 +42,7 @@ export default class Profile extends Component {
       newPasswordConfirmed: "",
       showPasswordModal: false,
       cca2: "FR",
-      passwordError: ""
+      errorMessage: ""
     };
   }
 
@@ -91,6 +91,15 @@ export default class Profile extends Component {
     );
   }
 
+  checkValidEmail() {
+    if (!this.state.updatedUserInfo.email.includes("@")) {
+      this.setState({ emailError: "Please enter a valid email" });
+    } else {
+      this.setState({ emailError: "" });
+      this.updateUserInfo(this.state.token);
+    }
+  }
+
   async updateUserInfo(token) {
     try {
       const userData = JSON.stringify({
@@ -111,11 +120,11 @@ export default class Profile extends Component {
       });
       console.log(response);
       if (response.ok) {
-        console.log("Success updating userInformation");
+        Alert.alert("Profile information updated");
         this.setState({ saveButton: false });
       }
       if (!response.ok) {
-        console.log("Updating userInformation failed");
+        Alert.alert("Could not update profile information");
       }
     } catch (error) {
       console.log("Error fetching user info: ", error);
@@ -214,6 +223,14 @@ export default class Profile extends Component {
     } catch (error) {
       console.log("Error deleting review: ", error);
     }
+  }
+
+  goBack() {
+    this.setState({ oldPassword: "" });
+    this.setState({ newPassword: "" });
+    this.setState({ newPasswordConfirmed: "" });
+    this.setState({ errorMessage: "" });
+    this.setState({ showPasswordModal: false });
   }
 
   getRating = score => {
@@ -371,9 +388,7 @@ export default class Profile extends Component {
                 }
               ]}
             >
-              <TouchableOpacity
-                onPress={() => this.setState({ modalItem: null })}
-              >
+              <TouchableOpacity onPress={() => this.setState({ modalItem: null })}>
                 <Icon name={"chevron-left"} size={40} />
               </TouchableOpacity>
               <View style={{ flexDirection: "row" }}>
@@ -633,6 +648,11 @@ export default class Profile extends Component {
                     <View style={[styles.line, { marginTop: 5 }]} />
                   </View>
                 </KeyboardAwareScrollView>
+                <Text
+                  style={[Typography.FONT_REGULAR_THIN, { color: Colors.PINK }]}
+                >
+                  {this.state.emailError}
+                </Text>
                 <TouchableOpacity
                   style={[
                     styles.saveButton,
@@ -642,7 +662,7 @@ export default class Profile extends Component {
                         : Colors.GRAY_MEDIUM
                     }
                   ]}
-                  onPress={() => this.updateUserInfo(this.state.token)}
+                  onPress={() => this.checkValidEmail()}
                 >
                   <Text
                     style={[Typography.FONT_H4_WHITE, { textAlign: "center" }]}
@@ -677,7 +697,7 @@ export default class Profile extends Component {
                   >
                     <TouchableOpacity
                       onPress={() =>
-                        this.setState({ showPasswordModal: false })
+                        this.goBack()
                       }
                     >
                       <Icon name={"chevron-left"} size={40} />
@@ -718,7 +738,12 @@ export default class Profile extends Component {
                           this.setState({ newPasswordConfirmed: value })
                         }
                       />
-                      <Text style={Typography.FONT_REGULAR_THIN}>
+                      <Text
+                        style={[
+                          Typography.FONT_REGULAR_THIN,
+                          { color: Colors.PINK }
+                        ]}
+                      >
                         {this.state.errorMessage}
                       </Text>
                       <TouchableOpacity
@@ -849,7 +874,7 @@ const styles = StyleSheet.create({
     height: 34,
     borderRadius: 50,
     justifyContent: "center",
-    marginTop: 20,
+    marginTop: 25,
     marginBottom: 20,
     alignSelf: "center"
   },
