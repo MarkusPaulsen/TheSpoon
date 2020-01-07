@@ -1,7 +1,6 @@
 const jwt = require('jsonwebtoken');
 const config = require('config');
 
-//NOTE: not tested yet
 module.exports = (req, res, next) => {
     //the token is supposed to be in x-auth-token header, the first thing to be done is checking if it's there
     const token = req.header('x-auth-token');
