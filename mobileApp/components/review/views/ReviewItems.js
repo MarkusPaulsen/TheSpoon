@@ -99,70 +99,76 @@ export default class ReviewItems extends Component {
       }
       if (this.state.loggedIn) {
         return (
-            <KeyboardAwareScrollView>
-          <View style={styles.container}>
-            <View>
-              <View style={styles.header}>
-                <Text style={Typography.FONT_H3_BLACK}>Write review</Text>
+          <KeyboardAwareScrollView>
+            <View style={styles.container}>
+              <View>
+                <View style={styles.header}>
+                  <Text style={Typography.FONT_H3_BLACK}>Write review</Text>
+                </View>
+                <BackButton navigation={this.props.navigation} />
               </View>
-              <BackButton navigation={this.props.navigation} />
-            </View>
-            <FlatList
-              data={this.state.menuItems}
-              renderItem={({ item }) => (
-                <View style={styles.reviewContainer}>
-                  <View style={{ flexDirection: "row", marginBottom: 15 }}>
-                    <Text
-                      style={[Typography.FONT_MED_BLACK, { textAlign: "left" }]}
-                    >
-                      Item:{" "}
-                    </Text>
-                    <Text
-                      style={[Typography.FONT_MED_PINK, { textAlign: "right" }]}
-                    >
-                      {item.menuItemName}
-                    </Text>
-                  </View>
-                  <AirbnbRating
-                    showRating={false}
-                    defaultRating={0}
-                    size={30}
-                    selectedColor={Colors.PINK}
-                    onFinishRating={rating =>
-                      this.setRatingCount(rating, item, item.menuItemID)
-                    }
-                  />
-                  <View style={styles.textBox}>
-                    <TextInput
-                      style={styles.textInput}
-                      maxLength={200}
-                      multiline={true}
-                      placeholder={"Review"}
-                      textAlignVertical={"top"}
-                      onChangeText={text =>
-                        this.onChangeText(text, item, item.menuItemID)
+              <FlatList
+                data={this.state.menuItems}
+                renderItem={({ item }) => (
+                  <View style={styles.reviewContainer}>
+                    <View style={{ flexDirection: "row", marginBottom: 15 }}>
+                      <Text
+                        style={[
+                          Typography.FONT_MED_BLACK,
+                          { textAlign: "left" }
+                        ]}
+                      >
+                        Item:{" "}
+                      </Text>
+                      <Text
+                        style={[
+                          Typography.FONT_MED_PINK,
+                          { textAlign: "right" }
+                        ]}
+                      >
+                        {item.menuItemName}
+                      </Text>
+                    </View>
+                    <AirbnbRating
+                      showRating={false}
+                      defaultRating={0}
+                      size={30}
+                      selectedColor={Colors.PINK}
+                      onFinishRating={rating =>
+                        this.setRatingCount(rating, item, item.menuItemID)
                       }
                     />
+                    <View style={styles.textBox}>
+                      <TextInput
+                        style={styles.textInput}
+                        maxLength={200}
+                        multiline={true}
+                        placeholder={"Review"}
+                        textAlignVertical={"top"}
+                        onChangeText={text =>
+                          this.onChangeText(text, item, item.menuItemID)
+                        }
+                      />
+                    </View>
                   </View>
-                </View>
-              )}
-              keyExtractor={item => item.menuItemID}
-            />
-            <ContinueButton
-              disableButton={this.state.disableButton}
-              navigation={this.props}
-              menuItemReviews={this.state.menuItems}
-              imageID={this.state.imageID}
-              menuID={this.state.menuID}
-              menuName={this.state.menuName}
-              restaurant={this.state.restaurant}
-              token={this.state.token}
-              view={"ReviewOverall"}
-              text={"CONTINUE"}
-              colorIndex={this.state.colorIndex}
-            />
-          </View>
-            </KeyboardAwareScrollView>
+                )}
+                keyExtractor={item => item.menuItemID}
+              />
+              <ContinueButton
+                disableButton={this.state.disableButton}
+                navigation={this.props}
+                menuItemReviews={this.state.menuItems}
+                imageID={this.state.imageID}
+                menuID={this.state.menuID}
+                menuName={this.state.menuName}
+                restaurant={this.state.restaurant}
+                token={this.state.token}
+                view={"ReviewOverall"}
+                text={"CONTINUE"}
+                colorIndex={this.state.colorIndex}
+              />
+            </View>
+          </KeyboardAwareScrollView>
         );
       }
     }
