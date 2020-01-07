@@ -11,7 +11,8 @@ import {
   Keyboard,
   Dimensions,
   Modal,
-  Alert
+  Alert,
+  AsyncStorage
 } from "react-native";
 import Validate from "./searchvalidation.js";
 import { TouchableWithoutFeedback } from "react-native-web";
@@ -119,14 +120,30 @@ export default class Search extends Component {
       selectedSorting: "",
       latitude: "",
       longitude: "",
-      locationPermission: false
+      locationPermission: false,
+      loggedIn: false,
+      isLoaded: false,
+      token: null
     };
     this.validateSearch = this.validateSearch.bind(this);
   }
 
   componentDidMount = async () => {
-    this.findCoordinates();
+    this.focusListener = this.props.navigation.addListener("didFocus", () => {
+      AsyncStorage.getItem("userToken").then(async token => {
+        const loggedIn = token !== null;
+        this.setState({ loggedIn });
+        this.findCoordinates();
+        if (loggedIn) {
+          this.setState({ token: token });
+        }
+        this.setState({ isLoaded: true });
+      });
+    });
   };
+  componentWillUnmount() {
+    this.focusListener.remove();
+  }
 
   findCoordinates = () => {
     navigator.geolocation.getCurrentPosition(
@@ -166,10 +183,18 @@ export default class Search extends Component {
       const searchString = this.state.searchWord;
       const lat = this.state.latitude;
       const long = this.state.longitude;
-      const response = await fetch(Api.SERVER_SEARCH(searchString, lat, long), {
-        method: "GET",
-        accept: "application/json"
-      });
+      const token = this.state.token;
+      const response = await fetch(
+        Api.SERVER_SEARCH(searchString, lat, long),
+        {
+          method: "GET",
+          accept: "application/json",
+          headers: {
+            "X-Auth-Token": token
+          }
+        }
+
+      );
       if (response.ok) {
         const responseJson = await response.json();
         const searchResults = responseJson.map(index => ({
