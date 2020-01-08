@@ -11,6 +11,7 @@ const updateRating = require('../middleware/updateRatingMiddleware.js');
 const Restaurant = require('../models/restaurant.js');
 const Menu = require('../models/menu.js');
 const MenuReview = require('../models/menuReview.js');
+const ItemReview = require('../models/itemReview.js');
 const MenuItem = require('../models/menuItem.js');
 
 
@@ -26,7 +27,7 @@ router.get('/', auth, isOwner, findRestaurant, async (req, res) => {
 //     console.log('In GET /api/user/owner/restaurant/review')
 
     try {
-        const username=req.username;
+        const username = req.username;
 
         const reviews = await MenuReview.findAll({
             where: {
@@ -58,9 +59,9 @@ router.get('/', auth, isOwner, findRestaurant, async (req, res) => {
 //Approve or disapprove pending review
 router.post('/:reviewID', auth, isOwner, findRestaurant, async (req, res) => {
     try {
-        const username=req.username;
-        const reviewID=req.params.reviewID;
-        const status=req.body.isApproved? 'Approved' : 'Disapproved';
+        const username = req.username;
+        const reviewID = req.params.reviewID;
+        const status = req.body.isApproved? 'Approved' : 'Disapproved';
 
         //check if the review is regarding to logged in owner's restaurant
         const ownerReviewCheck= await MenuReview.findOne({
@@ -78,8 +79,8 @@ router.post('/:reviewID', auth, isOwner, findRestaurant, async (req, res) => {
 
         if(!ownerReviewCheck) res.status(404).send('Review with given reviewID not found');
 
-        const reviewRestaurantOwner=ownerReviewCheck.Menu.Restaurant.Owner;
-        if(reviewRestaurantOwner!=username) res.status(403).send('Forbidden request');
+        const reviewRestaurantOwner = ownerReviewCheck.Menu.Restaurant.Owner;
+        if(reviewRestaurantOwner != username) res.status(403).send('Forbidden request');
 
         await MenuReview.update({
                 Status: status},
@@ -88,13 +89,32 @@ router.post('/:reviewID', auth, isOwner, findRestaurant, async (req, res) => {
                     Review_ID: reviewID
                 }
             });
-        /*
-        if (status === APPROVED) {
-            // const menuID = {Menu_ID: ownerReviewCheck.Menu_ID}
-             // Also find every itemReview associated to the current menuReview
-            // await updateRating(itemReviews, menuID)
+
+        let itemReviews = await ItemReview.findAll({
+            attributes: ['MI_ID', 'Review_ID'],
+            where: {
+                MenuReview_ID: ownerReviewCheck.Review_ID
+            }
+        });
+        console.log('itemreviews[0]: ' + itemReviews[0]);
+        for (let i = 0; i < itemReviews.length; i++) {
+            await ItemReview.update({
+                Status: status
+            },
+                {
+                    where: {
+                        Review_ID: itemReviews[i].Review_ID
+                    }
+                })
         }
-        */
+        itemReviews = await itemReviews.map(async r => {
+            return {menuItemID: r.MI_ID}
+        });
+
+        if (status === APPROVED) {
+            const menuID = {Menu_ID: ownerReviewCheck.Menu_ID}
+            await updateRating(itemReviews, menuID)
+        }
 
         //get pending reviews
         const reviews = await MenuReview.findAll({
@@ -113,14 +133,14 @@ router.post('/:reviewID', auth, isOwner, findRestaurant, async (req, res) => {
                         model: MenuItem
                     }]
             }]
-        })
+        });
 
         //build response
         let response = formatReviews(reviews);
 
         res.status(201).send(response);
     }catch (error) {
-        res.status(500).send('Internal server error');
+        res.status(500).send(error);
     }
 });
 

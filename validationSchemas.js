@@ -60,7 +60,7 @@ const schemas = {
     }),
     //Change the password of the owner
     changeOwnerPassword: Joi.object().keys({
-        oldPassword: Joi.strin().required(),
+        oldPassword: Joi.string().required(),
         newPassword: Joi.string().min(5).required(),
     })
 

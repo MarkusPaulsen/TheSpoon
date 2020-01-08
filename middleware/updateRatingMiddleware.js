@@ -3,6 +3,9 @@ const MenuItem = require('../models/menuItem.js');
 const ItemReview = require('../models/itemReview.js');
 const MenuReview = require('../models/menuReview.js');
 
+const Sequelize = require('sequelize');
+const Op = Sequelize.Op;
+
 // Input is:
 // List of menuItems that have a new review, or have had a review deleted.
 // The menu that is modified.
@@ -14,17 +17,16 @@ module.exports = async (menuItems, menu) => {
         menuItems = await Promise.all(menuItems);
 
         menuItems = await menuItems.map(async mi => {
-            // TODO: This should only return ItemReviews with status "Approved"
-            // [Op.and]: [{MI_ID: mi.menuItemID}, {Status: 'Approved'}]
 
+            //This should only return ItemReviews with status "Approved"
             const reviews = await ItemReview.findAll({
                 attributes: ['ItemRating'],
                 where: {
-                    MI_ID: mi.menuItemID
+                    [Op.and]: [{MI_ID: mi.menuItemID}, {Status: 'Approved'}]
                 }
             });
             let rating = await averageRating(reviews, 'ItemRating');
-            //Update Rating-attribute for MenuItem.
+            //Update Rating-attribute for MenuItem
             await MenuItem.update({
                     Rating: rating
                 },
@@ -35,7 +37,7 @@ module.exports = async (menuItems, menu) => {
                 });
             return reviews;
         });
-        console.log('Finished with updating modified Items.');
+        //Finished with updating modified Items
 
         let menuItemRatings = await MenuItem.findAll({
             attributes: ['Rating'],
@@ -52,15 +54,17 @@ module.exports = async (menuItems, menu) => {
         }
 
         let menuItemsRating = await averageRating(mir, 'Rating');
+
+
         // Find the new ratings of the Menu
         // TODO: This should only return approved reviews.
-        // [Op.and]: [{Menu_ID: menu.Menu_ID}, {Status: 'Approved'}]
         let menuReviews = await MenuReview.findAll({
             attributes: ['ServiceRating', 'QualityRating'],
             where: {
-                Menu_ID: menu.Menu_ID
+                [Op.and]: [{Menu_ID: menu.Menu_ID}, {Status: 'Approved'}]
             }
         });
+
         let serviceRating = averageRating(menuReviews, 'ServiceRating');
         let qualityRating = averageRating(menuReviews, 'QualityRating');
         let menuRating = await computeMenuRating(qualityRating, serviceRating, menuItemsRating, menuReviews.length, menuItems.length);

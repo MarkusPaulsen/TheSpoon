@@ -8,17 +8,29 @@ const MenuItem = require('../models/menuItem.js');
 const Restaurant = require('../models/restaurants.js');
 const TaggedMenu = require('../models/taggedMenu.js');
 const Tag = require('../models/tag.js');
+const Customer = require('../models/customer.js');
+const Search = require('../models/search.js');
+
+
+const jwt = require('jsonwebtoken');
+const config = require('config');
 
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 
 router.get('/', async (req, res) => {
     try {
+        const token = req.header('x-auth-token');
+        let username = null;
+        if (token) {
+            username = jwt.verify(token, config.get('jwtPrivateKey')).username;
+        }
+        const searchWord = req.query.menuItemName;
         let matchingItems;
         matchingItems = await MenuItem.findAll({
             attributes: ['Name', 'Menu_ID'],
             where: {
-                Name: {[Op.iLike]: '%'+ req.query.menuItemName + '%'}
+                Name: {[Op.iLike]: '%'+ searchWord+ '%'}
             }
         });
         if (matchingItems.length < 1) {
@@ -63,14 +75,45 @@ router.get('/', async (req, res) => {
                 };
             return menuInfo;
             });
+        // Update the statistics
+        await storeSearch(username, searchWord);
 
         const result = await Promise.all(promises);
+
+
 
         res.status(200).send(result);
     } catch (error) {
         res.status(500).send('Internal server error.');
     }
 });
+
+const storeSearch = async (username, searchWord) => {
+    const searchedFor = await Search.findOne({
+        where: {
+            [Op.and]: [{SearchedWord: searchWord}, {Username: username}]
+        }
+    });
+
+    if (searchedFor == null) {
+        const search = await Search.create({
+            Username: username,
+            SearchedWord: searchWord,
+            NumberOfSearches: 1
+        })
+    } else {
+        let count = searchedFor.NumberOfSearches + 1;
+        const search = await Search.update ({
+            NumberOfSearches: count
+        },
+            {
+                where: {
+                    [Op.and]: [{SearchedWord: searchWord}, {Username: username}]
+                }
+            }
+        )
+    }
+};
 
 const formatTags = (arr) => {
     for (let i = 0; i < arr.length; i++){

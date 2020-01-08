@@ -11,7 +11,7 @@ const isCustomer = require('../middleware/checkIfCustomerMiddleware.js');
 const Customer = require('../models/customer.js');
 
 //These are needed for checking the the nationality of a customer.
-const {getNames} = require('country-list');
+const {getNames,  getCode} = require('country-list');
 nationalities = getNames();
 
 
@@ -87,12 +87,17 @@ router.put('/', auth, isCustomer, async (req, res) => {
                 Username: req.username
             }
         });
+        let nationalityName = customerModified[0].dataValues.Nationality;
+        let nationalityCode = getCode(nationalityName);
 
         res.status(200).send({
             email: customerModified[0].dataValues.Email,
             gender: customerModified[0].dataValues.Gender,
             ageRange: customerModified[0].dataValues.AgeRange,
-            nationality: customerModified[0].dataValues.Nationality
+            nationality: {
+                nationalityName,
+                nationalityCode
+            }
         });
     } catch (error) {
         console.log(error);
