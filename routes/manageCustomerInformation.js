@@ -25,13 +25,20 @@ router.get('/', auth, isCustomer, async (req, res) => {
                 Username: username
             }
         });
+        let nationalityCode = getCode(customer.Nationality);
 
+        if (nationalityCode === undefined) {
+            nationalityCode = "";
+        }
         const customerInfo = {
             username: customer.Username,
             email: customer.Email,
             gender: customer.Gender,
             ageRange: customer.AgeRange,
-            nationality: customer.Nationality
+            nationality:  {
+                nationalityName: customer.Nationality,
+                nationalityCode
+            }
         };
 
         res.status(200).send(customerInfo);
