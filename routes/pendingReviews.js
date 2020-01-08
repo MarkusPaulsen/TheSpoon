@@ -140,7 +140,7 @@ router.post('/:reviewID', auth, isOwner, findRestaurant, async (req, res) => {
 
         res.status(201).send(response);
     }catch (error) {
-        res.status(500).send(error);
+        res.status(500).send('Internal server error');
     }
 });
 
