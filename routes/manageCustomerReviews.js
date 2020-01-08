@@ -75,8 +75,6 @@ router.get('/', auth, isCustomer , async (req, res) => {
 // Delete a specific menuReview of a customer, with all its associated itemReviews
 router.delete('/:reviewID', auth, isCustomer, async (req, res) => {
     try {
-        //TODO: Validate input
-        //check if the review with given reviewID exist
         const reviewFound = await MenuReview.findOne({
             where: {
                 Review_ID: req.params.reviewID
