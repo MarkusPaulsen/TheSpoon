@@ -24,6 +24,9 @@ const ItemReview = db.define('ItemReview', {
     },
     MenuReview_ID: {
         type: Sequelize.INTEGER
+    },
+    Status: {
+        type: Sequelize.STRING
     }
 },
     {

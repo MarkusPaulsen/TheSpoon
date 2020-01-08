@@ -59,7 +59,7 @@ class ReviewItem extends Component {
                         case "InternalError":
                         case "AjaxError":
                             if (error.status === 0 && error.response === "") {
-                                thisTemp.setState({serverMessage: "No connection to the server."});
+                                thisTemp.setState({serverMessage: "There is no connection to the server."});
                             } else {
                                 thisTemp.setState({serverMessage: error.response});
                             }
@@ -101,7 +101,7 @@ class ReviewItem extends Component {
                         case "InternalError":
                         case "AjaxError":
                             if (error.status === 0 && error.response === "") {
-                                thisTemp.setState({serverMessage: "No connection to the server."});
+                                thisTemp.setState({serverMessage: "There is no connection to the server."});
                             } else {
                                 thisTemp.setState({serverMessage: error.response});
                             }
