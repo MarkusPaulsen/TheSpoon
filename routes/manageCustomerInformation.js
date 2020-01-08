@@ -60,11 +60,19 @@ router.put('/', auth, isCustomer, async (req, res) => {
 
         // Check if the nationality is valid.
         let found = false;
+        let nationalityName = "";
+        let nationalityCode = "";
         for (let i = 0; i < nationalities.length; i++) {
             if (nationalities[i] === req.body.nationality) {
                 found = true;
+                nationalityName = req.body.nationality;
+                nationalityCode = getCode(nationalityName);
+                break;
+            } else if ( req.body.nationality === "") {
+                found= true;
                 break;
             }
+
         }
         if (!found) return res.status(400).send('Invalid nationality.');
 
@@ -87,8 +95,6 @@ router.put('/', auth, isCustomer, async (req, res) => {
                 Username: req.username
             }
         });
-        let nationalityName = customerModified[0].dataValues.Nationality;
-        let nationalityCode = getCode(nationalityName);
 
         res.status(200).send({
             email: customerModified[0].dataValues.Email,
@@ -158,7 +164,7 @@ router.put('/password', auth, isCustomer, async (req, res) => {
 
 
 // Valid inputs for ageRange and Gender
-ageRanges = ["< 18", "18-24", "24-34", "35-49", "50-64", "65+"];
-genders = ['Male', 'Female', 'Other'];
+ageRanges = ["< 18", "18-24", "24-34", "35-49", "50-64", "65+", ""];
+genders = ['Male', 'Female', 'Other', ''];
 
 module.exports = router;
