@@ -35,10 +35,7 @@ router.get('/', auth, isCustomer, async (req, res) => {
             email: customer.Email,
             gender: customer.Gender,
             ageRange: customer.AgeRange,
-            nationality:  {
-                nationalityName: customer.Nationality,
-                nationalityCode
-            }
+            nationality: nationalityCode
         };
         res.status(200).send(customerInfo);
 
