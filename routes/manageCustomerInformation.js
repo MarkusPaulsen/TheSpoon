@@ -40,7 +40,6 @@ router.get('/', auth, isCustomer, async (req, res) => {
                 nationalityCode
             }
         };
-
         res.status(200).send(customerInfo);
 
     } catch (error) {
