@@ -40,7 +40,6 @@ export default class Profile extends Component {
       newPassword: "",
       newPasswordConfirmed: "",
       showPasswordModal: false,
-      cca2: "FR",
       errorMessage: ""
     };
   }
@@ -96,7 +95,7 @@ export default class Profile extends Component {
         email: this.state.updatedUserInfo.email,
         gender: this.state.updatedUserInfo.gender,
         ageRange: this.state.updatedUserInfo.ageRange,
-        nationality: this.state.updatedUserInfo.nationality
+        nationality: this.state.updatedUserInfo.nationality.nationalityName
       });
       const response = await fetch(Api.SERVER_PROFILE_UPDATEUSERINFO, {
         method: "PUT",
@@ -110,8 +109,10 @@ export default class Profile extends Component {
       if (response.ok) {
         Alert.alert("Profile information updated");
         this.setState({ saveButton: false });
+        this.getUserInfo(this.state.token);
       }
       if (!response.ok) {
+        console.log(response);
         Alert.alert("Could not update profile information");
       }
     } catch (error) {
@@ -130,15 +131,26 @@ export default class Profile extends Component {
       });
       if (response.ok) {
         const responseJson = await response.json();
+        const ageRange =
+          responseJson.ageRange === null ? "" : responseJson.ageRange;
+        const gender = responseJson.gender === null ? "" : responseJson.gender;
         const userInfo = {
           username: responseJson.username,
           email: responseJson.email,
-          ageRange: responseJson.ageRange,
+          ageRange: ageRange,
           nationality: responseJson.nationality,
-          gender: responseJson.gender
+          gender: gender
         };
         this.setState({ userInfo });
-        this.setState({ updatedUserInfo: userInfo });
+        if(this.state.userInfo.nationality === null){
+          this.setState({userInfo: {
+              ...this.state.userInfo,
+              nationality: {
+                nationalityName: "",
+                nationalityCode: ""
+              }}})
+        }
+        this.setState({ updatedUserInfo: this.state.userInfo });
       }
       if (!response.ok) {
         console.log("Fetching profileData failed");
@@ -368,7 +380,9 @@ export default class Profile extends Component {
                 }
               ]}
             >
-              <TouchableOpacity onPress={() => this.setState({ modalItem: null })}>
+              <TouchableOpacity
+                onPress={() => this.setState({ modalItem: null })}
+              >
                 <Icon name={"chevron-left"} size={40} />
               </TouchableOpacity>
               <View style={{ flexDirection: "row" }}>
@@ -591,15 +605,20 @@ export default class Profile extends Component {
                             this.setState({
                               updatedUserInfo: {
                                 ...this.state.updatedUserInfo,
-                                nationality: value.name
+                                nationality: {
+                                  nationalityName: value.name,
+                                  nationalityCode: value.cca2
+                                }
                               }
                             });
-                            this.setState({ cca2: value.cca2 });
                             if (!this.state.saveButton) {
                               this.setState({ saveButton: true });
                             }
                           }}
-                          countryCode={this.state.cca2}
+                          countryCode={
+                            this.state.updatedUserInfo.nationality
+                              .nationalityCode
+                          }
                           withCountryNameButton={true}
                         />
                       </View>
@@ -670,11 +689,7 @@ export default class Profile extends Component {
                       marginTop: 20
                     }}
                   >
-                    <TouchableOpacity
-                      onPress={() =>
-                        this.goBack()
-                      }
-                    >
+                    <TouchableOpacity onPress={() => this.goBack()}>
                       <Icon name={"chevron-left"} size={40} />
                     </TouchableOpacity>
                     <View>
