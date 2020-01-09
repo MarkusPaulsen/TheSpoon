@@ -93,8 +93,13 @@ router.put('/password', auth, inputValidator(validationSchema.changeOwnerPasswor
         const hashed = await bcrypt.hash(req.body.newPassword, salt);
         //update the password in the database
         await Owner.update({
-            Password: hashed
-        });
+                Password: hashed,
+            },
+            {
+                where: {
+                    Username: req.username
+                }
+            });
 
         res.status(200).send();
     } catch (error) {
