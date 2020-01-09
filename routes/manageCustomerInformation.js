@@ -30,17 +30,17 @@ router.get('/', auth, isCustomer, async (req, res) => {
         if (nationalityCode === undefined) {
             nationalityCode = "";
         }
+
+        console.log(typeof nationalityCode);
+        nationalityCode = nationalityCode.toString();
+        console.log(typeof nationalityCode);
         const customerInfo = {
             username: customer.Username,
             email: customer.Email,
             gender: customer.Gender,
             ageRange: customer.AgeRange,
-            nationality:  {
-                nationalityName: customer.Nationality,
-                nationalityCode
-            }
+            nationality: nationalityCode
         };
-
         res.status(200).send(customerInfo);
 
     } catch (error) {
