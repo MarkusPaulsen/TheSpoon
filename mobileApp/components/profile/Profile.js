@@ -33,6 +33,7 @@ export default class Profile extends Component {
       isLoaded: false,
       token: null,
       userInfo: "",
+      nationalityName:"",
       updatedUserInfo: "",
       reviews: [],
       saveButton: false,
@@ -95,7 +96,7 @@ export default class Profile extends Component {
         email: this.state.updatedUserInfo.email,
         gender: this.state.updatedUserInfo.gender,
         ageRange: this.state.updatedUserInfo.ageRange,
-        nationality: this.state.updatedUserInfo.nationality.nationalityName
+        nationality: this.state.nationalityName
       });
       const response = await fetch(Api.SERVER_PROFILE_UPDATEUSERINFO, {
         method: "PUT",
@@ -131,26 +132,15 @@ export default class Profile extends Component {
       });
       if (response.ok) {
         const responseJson = await response.json();
-        const ageRange =
-          responseJson.ageRange === null ? "" : responseJson.ageRange;
-        const gender = responseJson.gender === null ? "" : responseJson.gender;
         const userInfo = {
           username: responseJson.username,
           email: responseJson.email,
-          ageRange: ageRange,
+          ageRange: responseJson.ageRange,
           nationality: responseJson.nationality,
-          gender: gender
+          gender: responseJson.gender
         };
         this.setState({ userInfo });
-        if(this.state.userInfo.nationality === null){
-          this.setState({userInfo: {
-              ...this.state.userInfo,
-              nationality: {
-                nationalityName: "",
-                nationalityCode: ""
-              }}})
-        }
-        this.setState({ updatedUserInfo: this.state.userInfo });
+        this.setState({ updatedUserInfo: userInfo });
       }
       if (!response.ok) {
         console.log("Fetching profileData failed");
@@ -603,21 +593,18 @@ export default class Profile extends Component {
                           withAlphaFilter={true}
                           onSelect={value => {
                             this.setState({
-                              updatedUserInfo: {
-                                ...this.state.updatedUserInfo,
-                                nationality: {
-                                  nationalityName: value.name,
-                                  nationalityCode: value.cca2
-                                }
-                              }
+                              nationalityName : value.name
                             });
+                            this.setState({updatedUserInfo: {
+                                ...this.state.updatedUserInfo,
+                                nationality: value.cca2
+                              }});
                             if (!this.state.saveButton) {
                               this.setState({ saveButton: true });
                             }
                           }}
                           countryCode={
                             this.state.updatedUserInfo.nationality
-                              .nationalityCode
                           }
                           withCountryNameButton={true}
                         />
