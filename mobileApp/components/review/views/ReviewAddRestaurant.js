@@ -6,7 +6,8 @@ import {
   FlatList,
   TouchableOpacity,
   SafeAreaView,
-  TextInput
+  TextInput, AsyncStorage,
+    ActivityIndicator
 } from "react-native";
 import * as Typography from "../../../styles/typography";
 import * as Colors from "../../../styles/colors";
@@ -14,6 +15,7 @@ import * as Api from "../../../services/api";
 import ContinueButton from "../components/continueButton";
 import BackButton from "../components/backButton";
 import Icon from "react-native-vector-icons/MaterialIcons";
+import {NavigationActions, StackActions} from "react-navigation";
 
 export default class ReviewAddRestaurant extends Component {
   constructor(props) {
@@ -28,17 +30,32 @@ export default class ReviewAddRestaurant extends Component {
       searchWord: "",
       searchResult: null,
       imageID: null,
-      token: null
+      token: null,
+      loggedIn:false,
+      isLoaded:false
     };
   }
   componentDidMount = async () => {
-    const imageID = this.props.navigation.getParam("imageID", "0");
-    const token = this.props.navigation.getParam("token", "0");
-    this.setState({ imageID, token });
-    await this.getAllMenus(token);
+    this.focusListener = this.props.navigation.addListener("didFocus", () => {
+      AsyncStorage.getItem("userToken").then(async token => {
+        this.setState({
+          loggedIn: token !== null,
+          isLoaded: true
+        });
+        if (this.state.loggedIn) {
+          const imageID = this.props.navigation.getParam("imageID", "0");
+          this.setState({ imageID, token });
+          await this.getAllRestaurants(token);
+        }
+      });
+    });
   };
 
-  async getAllMenus(token) {
+  componentWillUnmount() {
+    this.focusListener.remove();
+  }
+
+  async getAllRestaurants(token) {
     try {
       const response = await fetch(Api.SERVER_GET_RESTAURANTS, {
         method: "GET",
@@ -104,79 +121,102 @@ export default class ReviewAddRestaurant extends Component {
   }
 
   render() {
-    return (
-      <View style={styles.container}>
-        <View>
-          <View style={styles.header}>
-            <Text style={Typography.FONT_H3_BLACK}>Choose Restaurant</Text>
-          </View>
-          <BackButton navigation={this.props.navigation} />
-        </View>
-        <View style={{ alignItems: "center" }}>
-          <View style={[styles.searchBar, { marginTop: 20 }]}>
-            <TouchableOpacity value={this.state.searchWord}>
-              <Icon name={"search"} size={22} color={Colors.PINK} />
-            </TouchableOpacity>
-            <TextInput
-              style={[Typography.FONT_INPUT, styles.textInput]}
-              placeholder="Search..."
-              placeholderTextColor={Colors.GRAY_MEDIUM}
-              onChangeText={this.updateSearchText}
-              value={this.state.searchWord}
-              onSubmitEditing={() => this.getSearchResult()}
-            />
-          </View>
-        </View>
-        <View style={styles.resultList}>
-          <SafeAreaView>
-            <FlatList
-              data={
-                this.state.searchResult
-                  ? this.state.searchResult
-                  : this.state.restaurants
-              }
-              extraData={this.state}
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  activeOpacity={0.5}
-                  onPress={() => this.setSelected(item.restaurantID, item.name)}
-                  style={{
-                    backgroundColor:
-                      this.state.selected === item.restaurantID
-                        ? Colors.TURQUOISE
-                        : Colors.WHITE
-                  }}
-                >
-                  <Text
-                    style={[
-                      Typography.FONT_H4_BLACK,
-                      {
-                        marginVertical: 10,
-                        marginLeft: 50
+    const resetStack = () => {
+      this.props.navigation.dispatch(
+          StackActions.reset({
+            index: 0,
+            actions: [
+              NavigationActions.navigate({
+                routeName: "ReviewAddImage"
+              })
+            ]
+          })
+      );
+    };
+    if(!this.state.isLoaded){
+      return <ActivityIndicator/>
+    }
+    if(this.state.isLoaded) {
+      if (!this.state.loggedIn){
+        resetStack();
+        return null
+      }
+      if (this.state.loggedIn) {
+        return (
+            <View style={styles.container}>
+              <View>
+                <View style={styles.header}>
+                  <Text style={Typography.FONT_H3_BLACK}>Choose Restaurant</Text>
+                </View>
+                <BackButton navigation={this.props.navigation}/>
+              </View>
+              <View style={{alignItems: "center"}}>
+                <View style={[styles.searchBar, {marginTop: 20}]}>
+                  <TouchableOpacity value={this.state.searchWord}>
+                    <Icon name={"search"} size={22} color={Colors.PINK}/>
+                  </TouchableOpacity>
+                  <TextInput
+                      style={[Typography.FONT_INPUT, styles.textInput]}
+                      placeholder="Search..."
+                      placeholderTextColor={Colors.GRAY_MEDIUM}
+                      onChangeText={this.updateSearchText}
+                      value={this.state.searchWord}
+                      onSubmitEditing={() => this.getSearchResult()}
+                  />
+                </View>
+              </View>
+              <View style={styles.resultList}>
+                <SafeAreaView>
+                  <FlatList
+                      data={
+                        this.state.searchResult
+                            ? this.state.searchResult
+                            : this.state.restaurants
                       }
-                    ]}
-                  >
-                    {item.name}
-                  </Text>
-                </TouchableOpacity>
-              )}
-              keyExtractor={item => item.restaurantID}
-            />
-          </SafeAreaView>
-        </View>
-        <ContinueButton
-          disableButton={this.state.disableButton}
-          navigation={this.props}
-          id={this.state.selected}
-          imageID={this.state.imageID}
-          restaurant={this.state.restaurant}
-          token={this.state.token}
-          view={"ReviewAddMenu"}
-          text={"CONTINUE"}
-          colorIndex={this.state.colorIndex}
-        />
-      </View>
-    );
+                      extraData={this.state}
+                      renderItem={({item}) => (
+                          <TouchableOpacity
+                              activeOpacity={0.5}
+                              onPress={() => this.setSelected(item.restaurantID, item.name)}
+                              style={{
+                                backgroundColor:
+                                    this.state.selected === item.restaurantID
+                                        ? Colors.TURQUOISE
+                                        : Colors.WHITE
+                              }}
+                          >
+                            <Text
+                                style={[
+                                  Typography.FONT_H4_BLACK,
+                                  {
+                                    marginVertical: 10,
+                                    marginLeft: 50
+                                  }
+                                ]}
+                            >
+                              {item.name}
+                            </Text>
+                          </TouchableOpacity>
+                      )}
+                      keyExtractor={item => item.restaurantID}
+                  />
+                </SafeAreaView>
+              </View>
+              <ContinueButton
+                  disableButton={this.state.disableButton}
+                  navigation={this.props}
+                  id={this.state.selected}
+                  imageID={this.state.imageID}
+                  restaurant={this.state.restaurant}
+                  token={this.state.token}
+                  view={"ReviewAddMenu"}
+                  text={"CONTINUE"}
+                  colorIndex={this.state.colorIndex}
+              />
+            </View>
+        );
+      }
+    }
   }
 }
 

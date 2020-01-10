@@ -34,17 +34,18 @@ describe("Review Overall Component", () => {
     const navigation = {
       navigate: jest.fn(),
       getParam: (param, defaultValue) =>
-        param === "menuItemReviews" ? menuItems : defaultValue
+        param === "menuItemReviews" ? menuItems : defaultValue,
+      addListener: (param, func) => func()
     };
-    component = setUp({ navigation });
     await storage.setItem("userToken", userToken);
+    component = setUp({ navigation });
     fetch.resetMocks();
     jest.useFakeTimers();
   });
 
   it("ComponentDidMount", async () => {
     await component.instance().componentDidMount();
-    component.update();
+    await component.update();
 
     expect(component.state().token).toEqual(userToken);
     expect(component.state().menuID).toBe("00");

@@ -56,14 +56,14 @@ export default class ItemReview extends Component {
           }
         }
       );
-      const responseJson = await response.json();
-      this.setState({ reviews: responseJson });
       if (response.ok) {
-        console.log("Success");
+        const responseJson = await response.json();
+        this.setState({ reviews: responseJson });
+        console.log("Success fetching reviews on the menuItem");
         this.setState({ isLoading: false });
       }
       if (!response.ok) {
-        console.log("Failed");
+        console.log("Failed fetching reviews on the menuItem");
       }
     } catch (e) {
       console.log(e);

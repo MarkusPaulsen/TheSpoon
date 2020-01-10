@@ -109,6 +109,13 @@ export const FONT_SMALL_BLACK = {
   color: Colors.BLACK
 };
 
+export const FONT_SMALL_GRAY = {
+  fontFamily: FONT_FAMILY_MEDIUM,
+  fontWeight: FONT_WEIGHT_MEDIUM,
+  fontSize: FONT_SIZE_12,
+  color: Colors.GRAY_MEDIUM
+};
+
 export const FONT_SMALL_PINK = {
   fontFamily: FONT_FAMILY_MEDIUM,
   fontWeight: FONT_WEIGHT_MEDIUM,

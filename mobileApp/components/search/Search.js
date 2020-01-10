@@ -11,7 +11,8 @@ import {
   Keyboard,
   Dimensions,
   Modal,
-  Alert
+  Alert,
+  AsyncStorage
 } from "react-native";
 import Validate from "./searchvalidation.js";
 import { TouchableWithoutFeedback } from "react-native-web";
@@ -115,20 +116,40 @@ export default class Search extends Component {
       searchResults: null,
       searched: false,
       modalVisible: false,
-      filters: ["Price (high-low)", "Price (low-high)", "Review", "Distance"],
-      selectedFilter: "",
+      sorting: ["Price (high-low)", "Price (low-high)", "Review", "Distance"],
+      selectedSorting: "",
       latitude: "",
       longitude: "",
-      locationPermission: false
+      locationPermission: false,
+      loggedIn: false,
+      isLoaded: false,
+      token: null
     };
     this.validateSearch = this.validateSearch.bind(this);
   }
 
   componentDidMount = async () => {
-    await this.findCoordinates();
-  };
+    this.focusListener = this.props.navigation.addListener("didFocus", () => {
+      AsyncStorage.getItem("userToken").then(async token => {
+        const loggedIn = token !== null;
+        this.setState({ loggedIn });
+        if (loggedIn) {
+          this.setState({ token: token });
+        }
+        if (!loggedIn) {
+          this.setState({ token: null });
+        }
+        this.findCoordinates();
 
-  findCoordinates = () => {
+        this.setState({ isLoaded: true });
+      });
+    });
+  };
+  componentWillUnmount() {
+    this.focusListener.remove();
+  }
+
+  findCoordinates() {
     navigator.geolocation.getCurrentPosition(
       position => {
         this.setState({ locationPermission: true });
@@ -143,7 +164,7 @@ export default class Search extends Component {
       },
       { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
     );
-  };
+  }
 
   updateSearchText = searchWord => {
     this.setState({ searchWord, searched: false });
@@ -166,12 +187,25 @@ export default class Search extends Component {
       const searchString = this.state.searchWord;
       const lat = this.state.latitude;
       const long = this.state.longitude;
-      const response = await fetch(Api.SERVER_SEARCH(searchString, lat, long), {
-        method: "GET",
-        accept: "application/json"
-      });
-      const responseJson = await response.json();
+      const token = this.state.token;
+      const initObject = this.state.loggedIn
+        ? {
+            method: "GET",
+            accept: "application/json",
+            headers: {
+              "X-Auth-Token": token
+            }
+          }
+        : {
+            method: "GET",
+            accept: "application/json"
+          };
+      const response = await fetch(
+        Api.SERVER_SEARCH(searchString, lat, long),
+        initObject
+      );
       if (response.ok) {
+        const responseJson = await response.json();
         const searchResults = responseJson.map(index => ({
           id: index.menu.menuID.toString(),
           menuName: index.menu.name,
@@ -186,7 +220,6 @@ export default class Search extends Component {
       }
       if (!response.ok) {
         this.setState({ searchResults: null });
-        // TODO: Add error message
       }
     } catch (e) {
       console.error(e);
@@ -197,10 +230,11 @@ export default class Search extends Component {
     this.setState({ modalVisible: !this.state.modalVisible });
   }
 
-  setFilter(item) {
-    if (this.state.selectedFilter === item) {
-      this.setState({ selectedFilter: "" });
+  setSorting(item) {
+    if (this.state.selectedSorting === item) {
+      this.setState({ selectedSorting: "" });
     } else {
+      //this.setState({ selectedSorting: item });
       if (item === "Distance" && this.state.locationPermission === false) {
         navigator.geolocation.getCurrentPosition(
           position => {
@@ -209,7 +243,7 @@ export default class Search extends Component {
             const longitude = JSON.stringify(position.coords.longitude);
             this.setState({ latitude: latitude });
             this.setState({ longitude: longitude });
-            this.setState({ selectedFilter: "Distance" });
+            this.setState({ selectedSorting: "Distance" });
             this.getResults();
           },
           error => {
@@ -219,66 +253,38 @@ export default class Search extends Component {
           { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
         );
       } else {
-        this.setState({ selectedFilter: item });
+        this.setState({ selectedSorting: item });
       }
     }
   }
 
-  applyFilter() {
+  applySorting() {
     this.setModalVisible();
     const sorted = this.state.searchResults;
-    if (this.state.selectedFilter === "Price (low-high)") {
-      sorted.sort((a, b) =>
-        a.price > b.price
-          ? 1
-          : a.price === b.price
-          ? a.menuName > b.menuName
-            ? 1
-            : -1
-          : -1
-      );
+    if (this.state.selectedSorting === "Price (low-high)") {
+      sorted.sort((a, b) => a.price - b.price);
       this.setState({ searchResults: sorted });
-    } else if (this.state.selectedFilter === "Price (high-low)") {
-      sorted.sort((a, b) =>
-        a.price > b.price
-          ? -1
-          : a.price === b.price
-          ? a.menuName > b.menuName
-            ? 1
-            : -1
-          : 1
-      );
+    } else if (this.state.selectedSorting === "Price (high-low)") {
+      sorted.sort((a, b) => b.price - a.price);
       this.setState({ searchResults: sorted });
-    } else if (this.state.selectedFilter === "Review") {
-      sorted.sort((a, b) =>
-        a.score > b.score
-          ? -1
-          : a.score === b.score
-          ? a.menuName > b.menuName
-            ? 1
-            : -1
-          : 1
-      );
+    } else if (this.state.selectedSorting === "Review") {
+      sorted.sort((a, b) => b.score - a.score);
       this.setState({ searchResults: sorted });
-    } else {
+    } else if (this.state.selectedSorting === "Distance") {
       if (this.state.locationPermission === true) {
         const sorted = this.state.searchResults;
-        sorted.sort((a, b) =>
-          a.distance > b.distance
-            ? 1
-            : a.distance === b.distance
-            ? a.menuName > b.menuName
-              ? 1
-              : -1
-            : -1
-        );
+        sorted.sort((a, b) => a.distance - b.distance);
         this.setState({ searchResults: sorted });
       } else {
         this.findCoordinates();
-        this.applyFilter();
+        this.applySorting();
       }
     }
   }
+
+  scrollToTop = () => {
+    this.flatListRef.scrollToIndex({ animated: true, index: 0 });
+  };
 
   render() {
     const screenWidth = Math.round(Dimensions.get("window").width);
@@ -303,7 +309,7 @@ export default class Search extends Component {
             {this.state.searchResults !== null && this.state.searched ? (
               <TouchableOpacity
                 testID="sortButton"
-                style={styles.filterButton}
+                style={styles.sortingButton}
                 onPress={() => this.setModalVisible()}
               >
                 <Icon name={"filter-list"} size={30} color={Colors.WHITE} />
@@ -328,16 +334,16 @@ export default class Search extends Component {
                   Sort By
                 </Text>
                 <FlatList
-                  data={this.state.filters}
+                  data={this.state.sorting}
                   extraData={this.state}
                   renderItem={({ item }) => (
                     <TouchableOpacity
-                      onPress={() => this.setFilter(item)}
+                      onPress={() => this.setSorting(item)}
                       style={{
                         justifyContent: "center",
                         height: 40,
                         backgroundColor:
-                          this.state.selectedFilter === item
+                          this.state.selectedSorting === item
                             ? Colors.TURQUOISE
                             : Colors.WHITE
                       }}
@@ -358,10 +364,13 @@ export default class Search extends Component {
                   keyExtractor={item => item}
                   style={{ marginVertical: 30 }}
                 />
-                {this.state.selectedFilter ? (
+                {this.state.selectedSorting ? (
                   <TouchableOpacity
                     style={styles.applyButton}
-                    onPress={() => this.applyFilter()}
+                    onPress={() => {
+                      this.applySorting();
+                      this.scrollToTop();
+                    }}
                   >
                     <Text
                       style={[
@@ -427,6 +436,9 @@ export default class Search extends Component {
             {this.state.searchResults && this.state.searched ? (
               <SafeAreaView style={styles.containerResults}>
                 <FlatList
+                  ref={ref => {
+                    this.flatListRef = ref;
+                  }}
                   data={this.state.searchResults}
                   extraData={this.state}
                   renderItem={({ item }) => (
@@ -490,7 +502,8 @@ const styles = StyleSheet.create({
   },
   containerResults: {
     backgroundColor: Colors.WHITE,
-    alignItems: "center"
+    alignItems: "center",
+    marginBottom: 10
   },
   text: {
     flex: 1,
@@ -544,7 +557,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 20,
     overflow: "hidden"
   },
-  filterButton: {
+  sortingButton: {
     width: 40,
     height: 40,
     borderRadius: 20,
