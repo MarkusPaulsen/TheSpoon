@@ -103,7 +103,7 @@ class EditMenuItemModal extends Component {
             //<editor-fold desc="Menu Item States">
             name: this.props._menuItem.name,
             description: this.props._menuItem.description,
-            priceEuros: this.props._menuItem.priceEuros,
+            priceEuros:  parseFloat(this.props._menuItem.priceEuros).toFixed(2),
             type: this.props._menuItem.type,
             selectedFile: null,
             selectedFileData: null,
