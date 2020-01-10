@@ -54,7 +54,7 @@ The project has been developed with the following technologies:
 | Emilio     | Imperiali | POLIMI     | Backend + API docs manager |
 | Frikk      | Andersen  | POLIMI     | Backend                    |
 | Marin      | Milina    | FER        | Backend                    |
-| Markus     | Paulsen   | FER        | Web app                    |
+| Markus     | Paulsen   | FER        | Web app + Product Owner    |
 | Lora       | Žuliček   | FER        | Web app                    |
 | André      | Aing      | POLIMI     | Web app                    |
-| Matej      | Lazić     | FER        | Web app                    |
+| Matej      | Lazić     | FER        | Web app + SCRUM Master     |
