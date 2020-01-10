@@ -1,7 +1,7 @@
 swagger: "2.0"
 info:
   description: "This is the API reference of The Spoon project.\n \n VERSIONING: The version number works in this way: it's composed of two numbers separated by a point. The first number identifies the Sprint, so for example the version 2.1 of the API reference is related to the Sprint number 2. The second number starts from 0 and has to be increased by one each time the file is modified. The person who modifies this document is responsible for increasing the number.\n \n GROUPING OF ENDPOINTS: The endpoints are grouped by dividing them into customers' operations and owners' operations. All the endpoints that are not strictly related to customers nor owners remain inside the default group.\n \n AUTHENTICATION/AUTHORIZATION: The json web token returned when the login is performed is supposed to be put into x-auth-token header in the endpoints that require authorization"
-  version: "8.0"
+  version: "8.1"
   title: "The Spoon API reference"
 tags:
   - name: "customer"
@@ -411,7 +411,7 @@ paths:
         - "customer"
         - "Frikk"
       summary: "Search by menu item"
-      description: "Returns all the menus with given menu item (dish/drink) with menuID. It also returns the names of the associated restaurants with restaurantID.\n The menu items inside every menu are not returned. It will be needed to access the endpoint /api/user/customer/menu/{menuID} to get the menu items of a specific menu (the menuID passed can be obtained from the response of this endpoint, since it returns the menuID of every menu)."
+      description: "Returns all the menus with given menu item (dish/drink) with menuID. It also returns the names of the associated restaurants with restaurantID.\n The menu items inside every menu are not returned. It will be needed to access the endpoint /api/user/customer/menu/{menuID} to get the menu items of a specific menu (the menuID passed can be obtained from the response of this endpoint, since it returns the menuID of every menu).\n The customer can be not logged in, if that is the case then the authentication token must be sent with a null value. The authentication in this endpoint is necessary to collect the search done by the customer and use it to collect statistics."
       operationId: "searchByMenuItem"
       produces:
         - "application/json"
@@ -443,6 +443,15 @@ paths:
           schema:
             type: "string"
             example: "Internal server error."
+        401:
+          description: "Access denied"
+          schema:
+            type: "string"
+            example: "Access denied."
+      security:
+        - Bearer: []
+      x-security-scopes:
+        - "customer"
   /api/user/customer/menu/{menuID}:
     get:
       tags:
@@ -1842,6 +1851,17 @@ definitions:
             type: "number"
           longitude:
             type: "number"
+          openingHours:
+            type: "array"
+            items:
+              type: "object"
+              properties:
+                day:
+                  type: "string"
+                openTime:
+                  type: "string"
+                closeTime:
+                  type: "string"
       menuName:
         type: "string"
       description:
@@ -1857,7 +1877,7 @@ definitions:
         items:
           $ref: "#/definitions/MenuItemWithID"
     example:
-      restaurant: {"restaurantName": "Emilio's Pizza", "address": "Piazzale Susa", "city": "Milan", "country": "Italy", "latitude": 45.4688346, "longitude": 9.2234114}
+      restaurant: {"restaurantName": "Emilio's Pizza", "address": "Piazzale Susa", "city": "Milan", "country": "Italy", "latitude": 45.4688346, "longitude": 9.2234114, "openingHours": [{"day": "Wednesday", "openTime": "12.30", "closeTime": "14.30"}, {"day": "Saturday", "openTime": "12.00", "closeTime": "15.00"}]}
       menuName: "Emilio's menu of the day"
       description: "Our special menu of today"
       tags: [{"name": "Italian", "color": "#FFBC8C"}, {"name": "Mediterranean", "color": "#FFBC8C"}]

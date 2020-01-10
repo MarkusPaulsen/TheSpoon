@@ -272,9 +272,13 @@ class EditMenuModal extends Component {
                     thisTemp.setState({serverMessage: "Menu is edited"});
                     return ajax({
                         url: paths["restApi"]["menu"] + "/"
+<<<<<<< HEAD
                             + thisTemp.props._menu.menuID,
+=======
+                            + thisTemp.props.menu.menuID,
+>>>>>>> dev
                         method: "PUT",
-                        headers: {"Content-Type": "application/json", "X-Auth-Token": this.state.token},
+                        headers: {"Content-Type": "application/json", "X-Auth-Token": thisTemp.state.token},
                         body: {
                             name: thisTemp.state.name,
                             description: thisTemp.state.description,
@@ -327,9 +331,13 @@ class EditMenuModal extends Component {
             .pipe(exhaustMap(() => {
                 return ajax({
                     url: paths["restApi"]["menu"] + "/"
+<<<<<<< HEAD
                         + thisTemp.props._menu.menuID,
+=======
+                        + thisTemp.props.currentMenu.menuID,
+>>>>>>> dev
                     method: "DELETE",
-                    headers: {"Content-Type": "application/json", "X-Auth-Token": this.state.token},
+                    headers: {"Content-Type": "application/json", "X-Auth-Token": thisTemp.state.token},
                 })
             }), catchError((error) => {
                 return throwError(error);
@@ -347,7 +355,7 @@ class EditMenuModal extends Component {
                         case "InternalError":
                         case "AjaxError":
                             if (error.status === 0 && error.response === "") {
-                                thisTemp.setState({serverMessage: "No connection to the server."});
+                                thisTemp.setState({serverMessage: "There is no connection to the server."});
                             } else {
                                 thisTemp.setState({serverMessage: error.response});
                             }

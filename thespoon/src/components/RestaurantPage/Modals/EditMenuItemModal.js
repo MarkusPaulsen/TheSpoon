@@ -4,8 +4,13 @@ import React, {Component} from "react";
 //<editor-fold desc="RxJs">
 import {bindCallback, fromEvent, of, throwError} from "rxjs";
 import {ajax} from "rxjs/ajax";
+<<<<<<< HEAD
 import {bufferTime, catchError, distinctUntilChanged, exhaustMap, map, take, filter} from "rxjs/operators";
 import {readFileURL} from "../Tools/FileReader"
+=======
+import {catchError, exhaustMap, map, take, bufferTime, filter, distinctUntilChanged} from "rxjs/operators";
+import {readFileURL} from "../Tools/FileReader";
+>>>>>>> dev
 //</editor-fold>
 //<editor-fold desc="Redux">
 import {connect} from "react-redux";
@@ -14,6 +19,7 @@ import {connect} from "react-redux";
 import {Modal} from "react-bootstrap";
 //</editor-fold>
 //<editor-fold desc="Validator">
+import validator from "validator";
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import Button from "react-validation/build/button";
@@ -27,6 +33,11 @@ import {timeouts} from "../../../constants/Timeouts";
 //</editor-fold>
 //<editor-fold desc="Icons">
 import {IconExit} from "../../Icons";
+<<<<<<< HEAD
+=======
+//</editor-fold>
+//<editor-fold desc="Items">
+>>>>>>> dev
 import TagItem from "../Items/TagItem";
 
 //</editor-fold>
@@ -44,15 +55,17 @@ class EditMenuItemModal extends Component {
             method: "isEmpty",
             validWhen: false,
             message: "Name is required."
-        }, /*{
-            field: "name",
-            method: "isAlphanumeric",
-            validWhen: true,
-            message: "Name is required to be alphanumeric."
-        },*/ {
+        }, {
             field: "name",
             method: (name) => {
-                return name.length >= 1
+                return validator.isAlphanumeric(name);
+            },
+            validWhen: true,
+            message: "Name is required to be alphanumeric."
+        }, {
+            field: "name",
+            method: (name) => {
+                return name.length >= 1;
             },
             validWhen: true,
             message: "Name is required to be longer or equal 1 characters."
@@ -61,15 +74,17 @@ class EditMenuItemModal extends Component {
             method: "isEmpty",
             validWhen: false,
             message: "Description name is required."
-        }, /*{
-            field: "description",
-            method: "isAlphanumeric",
-            validWhen: true,
-            message: "Description is required to be alphanumeric."
-        },*/ {
+        }, {
             field: "description",
             method: (description) => {
-                return description.length >= 1
+                return validator.isAlphanumeric(description);
+            },
+            validWhen: true,
+            message: "Description is required to be alphanumeric."
+        }, {
+            field: "description",
+            method: (description) => {
+                return description.length >= 1;
             },
             validWhen: true,
             message: "Description is required to be longer or equal 1 characters."
@@ -81,43 +96,17 @@ class EditMenuItemModal extends Component {
         }, {
             field: "priceEuros",
             method: (priceEuros) => {
-                return !isNaN(priceEuros)
+                return !isNaN(priceEuros);
             },
             validWhen: true,
             message: "PriceEuros needs to be a number."
         }, {
             field: "priceEuros",
             method: (priceEuros) => {
-                return priceEuros >= 0
+                return priceEuros >= 0;
             },
             validWhen: true,
             message: "PriceEuros needs to be positive."
-        }, {
-            field: "tags",
-            method: "isEmpty",
-            validWhen: false,
-            message: "Tags are required."
-        }, /*{
-            field: "tags",
-            method: "isAlphanumeric (plus comma)",
-            validWhen: true,
-            message: "Tags are required to be alphanumeric."
-        },*/ {
-            field: "tags",
-            method: (tags) => {
-                return tags.split(",")
-                    .map((tag) => {
-                        return tag.trim()
-                    })
-                    .map((tag) => {
-                        return tag.length >= 1
-                    })
-                    .reduce((total, minLength) => {
-                        return total && minLength
-                    }, true)
-            },
-            validWhen: true,
-            message: "Each tag is required to be longer or equal 1 characters."
         }]);
 
         //</editor-fold>
@@ -127,6 +116,7 @@ class EditMenuItemModal extends Component {
         this.handleFileDelete = this.handleFileDelete.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleDelete = this.handleDelete.bind(this);
+        this.update = this.update.bind(this);
 
         //</editor-fold>
 
@@ -148,9 +138,15 @@ class EditMenuItemModal extends Component {
             serverMessageFinishedLoadingAvailableTags: "",
             finishedLoadingAvailableTags: false,
             autocompleteTags: [],
+<<<<<<< HEAD
             chosenTags: this.props._menuItem.tags ? this.props._menuItem.tags.map((tag) => {
                 return tag.name
             }) : [],
+=======
+            chosenTags: this.props.menu.tags.map((tag) => {
+                return tag.name
+            }),
+>>>>>>> dev
             tagsMessage: ""
 
             //</editor-fold>
@@ -168,7 +164,11 @@ class EditMenuItemModal extends Component {
             url: paths["restApi"]["tag"],
             method: "GET",
             headers: {"X-Auth-Token": thisTemp.state.token},
+<<<<<<< HEAD
             timeout: timeouts,
+=======
+            timeout: timeout,
+>>>>>>> dev
             responseType: "text"
         })
             .pipe(
@@ -283,6 +283,10 @@ class EditMenuItemModal extends Component {
     //</editor-fold>
 
     //<editor-fold desc="Bussiness Logic">
+    update = () => {
+        window.location.reload();
+    };
+
     handleFileSubmit = (event) => {
         const fileTemp = event.target.files[0];
         event.preventDefault();
@@ -294,7 +298,7 @@ class EditMenuItemModal extends Component {
                     selectedFile: fileTemp
                 });
             }), catchError((error) => {
-                return error;
+                return throwError(error);
             }))
             .pipe(exhaustMap(() => {
                 if (["image/png", "image/jpeg"].includes(fileTemp.type)) {
@@ -307,21 +311,21 @@ class EditMenuItemModal extends Component {
                     });
                 }
             }), catchError((error) => {
-                return error;
+                return throwError(error);
             }))
             .pipe(exhaustMap((fileData) => {
                 return bindCallback(thisTemp.setState).call(thisTemp, {
                     selectedFileData: fileData
                 });
             }), catchError((error) => {
-                return error;
+                return throwError(error);
             }))
             .pipe(map(() => {
                 let formData = new FormData();
                 formData.append("image", fileTemp);
                 return formData;
             }), catchError((error) => {
-                return error;
+                return throwError(error);
             }))
             .pipe(exhaustMap((formData) => {
                 return ajax({
@@ -333,7 +337,7 @@ class EditMenuItemModal extends Component {
                     responseType: "text"
                 })
             }), catchError((error) => {
-                return error;
+                return throwError(error);
             }))
             .pipe(take(1))
             .subscribe(
@@ -393,7 +397,7 @@ class EditMenuItemModal extends Component {
                     selectedFileData: null
                 });
             }), catchError((error) => {
-                return error;
+                return throwError(error);
             }))
             .pipe(take(1))
             .subscribe(
@@ -418,16 +422,20 @@ class EditMenuItemModal extends Component {
             .pipe(map(() => {
                 return thisTemp.form.getValues();
             }), catchError((error) => {
-                return error;
+                return throwError(error);
             }))
             .pipe(exhaustMap((values) => {
                 return bindCallback(thisTemp.setState).call(thisTemp, {
                     name: values.name,
                     description: values.description,
+<<<<<<< HEAD
                     priceEuros: parseFloat(values.priceEuros)
+=======
+                    priceEuros: parseInt(values.priceEuros)
+>>>>>>> dev
                 });
             }), catchError((error) => {
-                return error;
+                return throwError(error);
             }))
             .pipe(exhaustMap(() => {
                 return bindCallback(thisTemp.setState).call(thisTemp, {
@@ -436,7 +444,7 @@ class EditMenuItemModal extends Component {
                     serverMessage: ""
                 });
             }), catchError((error) => {
-                return error;
+                return throwError(error);
             }))
             .pipe(exhaustMap(() => {
                 if (thisTemp.state.validation.isValid) {
@@ -467,7 +475,7 @@ class EditMenuItemModal extends Component {
                     });
                 }
             }), catchError((error) => {
-                return error;
+                return throwError(error);
             }))
             .pipe(take(1))
             .subscribe(
@@ -507,10 +515,10 @@ class EditMenuItemModal extends Component {
                         + "menuItem" + "/"
                         + thisTemp.props._menuItem.menuItemID,
                     method: "DELETE",
-                    headers: {"Content-Type": "application/json", "X-Auth-Token": this.state.token},
+                    headers: {"Content-Type": "application/json", "X-Auth-Token": thisTemp.state.token},
                 })
             }), catchError((error) => {
-                return error;
+                return throwError(error);
             }))
             .pipe(take(1))
             .subscribe(
@@ -544,7 +552,11 @@ class EditMenuItemModal extends Component {
     //<editor-fold desc="Render">
     render() {
         let validation = this.submitted ? this.validator.validate(this.state) : this.state.validation;
+<<<<<<< HEAD
         if (this.props._backgroundPage == null) {
+=======
+        if (this.props.backgroundPage == null) {
+>>>>>>> dev
             return (<p>Something went wrong.</p>);
         } else if (this.state.token == null || this.state.token === "null") {
             return (<p>Something went wrong.</p>);
@@ -665,6 +677,7 @@ class EditMenuItemModal extends Component {
                                 </small>
                             </div>
                             <div className="input-field">
+<<<<<<< HEAD
                                 <label>
                                     Available Tags
                                 </label>
@@ -683,10 +696,18 @@ class EditMenuItemModal extends Component {
                                                 added={false}
                                             />
                                             );
+=======
+                                <label>Available Tags</label>
+                                <input id="tagInput" type="text" name="tags" placeholder="Search"/>
+                                <ul>
+                                    {this.state.autocompleteTags.map((tag) => {
+                                        return (<TagItem tag={tag} modal={this} added={false}/>);
+>>>>>>> dev
                                     })}
                                 </ul>
                             </div>
                             <div className="input-field">
+<<<<<<< HEAD
                                 <label>
                                     Chosen Tags
                                 </label>
@@ -699,13 +720,23 @@ class EditMenuItemModal extends Component {
                                                 added={true}
                                             />
                                             );
+=======
+                                <label>Chosen Tags</label>
+                                <ul>
+                                    {this.state.chosenTags.map((tag) => {
+                                        return (<TagItem tag={tag} modal={this} added={true}/>);
+>>>>>>> dev
                                     })}
                                 </ul>
                             </div>
                             <div className="error-block">
+<<<<<<< HEAD
                                 <small>
                                     {this.state.tagsMessage}
                                 </small>
+=======
+                                <small>{this.state.tagsMessage}</small>
+>>>>>>> dev
                             </div>
                             <Button
                                 type="submit"
