@@ -539,7 +539,7 @@ class EditMenuItemModal extends Component {
                             <div className="account-type">
                                 <h4>
                                     <span className="role">
-                                        Dish
+                                        Item
                                     </span>
                                 </h4>
                             </div>
@@ -685,7 +685,7 @@ class EditMenuItemModal extends Component {
                                 className="delete-button"
                                 onClick={this.handleDelete}
                             >
-                                DeleteDish
+                                Delete Item
                             </Button>
                             <div className="error-block">
                                 <small>
