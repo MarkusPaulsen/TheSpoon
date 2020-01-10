@@ -452,7 +452,7 @@ class EditRestaurantModal extends Component {
             }))
             .pipe(exhaustMap((osmData) => {
                 if (Array.isArray(osmData.response) && osmData.response.length > 0) {
-                    thisTemp.setState({serverMessage: "Restaurant information publication is processed"});
+                    thisTemp.setState({serverMessage: "Restaurant is edited"});
                     return ajax({
                         url: paths["restApi"]["restaurant"],
                         method: "PUT",

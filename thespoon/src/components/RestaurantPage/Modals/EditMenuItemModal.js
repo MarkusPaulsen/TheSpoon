@@ -310,7 +310,7 @@ class EditMenuItemModal extends Component {
             }))
             .pipe(exhaustMap(() => {
                 if (thisTemp.state.validation.isValid) {
-                    thisTemp.setState({serverMessage: "New dish is edited"});
+                    thisTemp.setState({serverMessage: "Item is edited"});
                     return ajax({
                         url: paths["restApi"]["menu"] + "/"
                             + thisTemp.props.currentMenu.menuID + "/"

@@ -310,7 +310,7 @@ class AddMenuItemModal extends Component {
             }))
             .pipe(exhaustMap(() => {
                 if (thisTemp.state.validation.isValid) {
-                    thisTemp.setState({serverMessage: "New dish is added"});
+                    thisTemp.setState({serverMessage: "Item is added"});
                     return ajax({
                         url: paths["restApi"]["menu"] + "/"
                             + thisTemp.props.currentMenu.menuID + "/"

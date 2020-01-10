@@ -53,21 +53,6 @@ class YourProfilePage extends Component {
             validWhen: true,
             message: "Email is required to be valid."
         }, {
-            field: "username",
-            method: "isEmpty",
-            validWhen: false,
-            message: "Username is required."
-        },/*{
-            field: "username",
-            method: "isAlphanumeric",
-            validWhen: true,
-            message: "Username is required to be alphanumeric."
-        },*/ {
-            field: "username",
-            method: (username) => {return username.length >= 5},
-            validWhen: true,
-            message: "Username is required to be longer or equal 5 characters."
-        }, {
             field: "name",
             method: "isEmpty",
             validWhen: false,
@@ -237,7 +222,6 @@ class YourProfilePage extends Component {
             .pipe(exhaustMap((values) => {
                 return bindCallback(thisTemp.setState).call(thisTemp, {
                     email: values.email,
-                    username: values.username,
                     name: values.name,
                     surname: values.surname
                 });
@@ -255,14 +239,13 @@ class YourProfilePage extends Component {
             }))
             .pipe(exhaustMap(() => {
                 if (thisTemp.state.validation.isValid) {
-                    thisTemp.setState({serverMessage: "Menu is edited"});
+                    thisTemp.setState({serverMessage: "Profile is edited"});
                     return ajax({
                         url: paths["restApi"]["restaurantOwner"],
                         method: "PUT",
                         headers: {"Content-Type": "application/json", "X-Auth-Token": this.state.token},
                         body: {
                             email: thisTemp.state.email,
-                            username: thisTemp.state.username,
                             name: thisTemp.state.name,
                             surname: thisTemp.state.surname
                         },
@@ -348,7 +331,7 @@ class YourProfilePage extends Component {
 
     update = () => {
         window.location.reload();
-    }
+    };
 
     //</editor-fold>
 
@@ -386,7 +369,7 @@ class YourProfilePage extends Component {
                                 <div className="container">
                                     <div className="row">
                                         <div className="col-sm-8">
-                                            <h3 className="title">Your Profile</h3>
+                                            <h3 className="title">Your Profile: {this.state.username}</h3>
                                             <div className="no-menus">
                                                 <Form ref={(c) => {
                                                     this.form = c;
@@ -398,15 +381,6 @@ class YourProfilePage extends Component {
                                                     <div className="error-block">
                                                         <small>{validation.email.message}</small>
                                                     </div>
-
-                                                    <div className="input-field">
-                                                        <IconName/>
-                                                        <Input type="text" name="username" placeholder="Username" value={this.state.username}/>
-                                                    </div>
-                                                    <div className="error-block">
-                                                        <small>{validation.username.message}</small>
-                                                    </div>
-
                                                     <div className="input-field name">
                                                         <IconName/>
                                                         <Input type="text" name="name" placeholder="First name" value={this.state.name}/>
@@ -416,7 +390,6 @@ class YourProfilePage extends Component {
                                                         <small>{validation.name.message}</small>
                                                         <small>{validation.surname.message}</small>
                                                     </div>
-
                                                     <Button type="submit" className="normal">Update</Button>
                                                     <Button type="button" className="delete-button" onClick={this.handleDelete}>Change Password</Button>
                                                     <div className="error-block">

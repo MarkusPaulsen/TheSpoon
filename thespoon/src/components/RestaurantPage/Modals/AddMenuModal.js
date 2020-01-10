@@ -265,7 +265,7 @@ class AddMenuModal extends Component {
             }))
             .pipe(exhaustMap(() => {
                 if (thisTemp.state.validation.isValid) {
-                    thisTemp.setState({serverMessage: "Menu is created"});
+                    thisTemp.setState({serverMessage: "Menu is added"});
                     return ajax({
                         url: paths["restApi"]["menu"],
                         method: "POST",
