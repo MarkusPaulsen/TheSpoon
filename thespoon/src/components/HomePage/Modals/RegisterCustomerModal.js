@@ -13,7 +13,6 @@ import {connect} from "react-redux";
 import {Modal} from "react-bootstrap";
 //</editor-fold>
 //<editor-fold desc="Validator">
-import validator from "validator";
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import Button from "react-validation/build/button";
@@ -66,13 +65,6 @@ class RegisterCustomerModal extends Component {
         }, {
             field: "username",
             method: (username) => {
-                return validator.isAlphanumeric(username);
-            },
-            validWhen: true,
-            message: "Username is required to be alphanumeric."
-        }, {
-            field: "username",
-            method: (username) => {
                 return username.length >= 5
             },
             validWhen: true,
@@ -85,13 +77,6 @@ class RegisterCustomerModal extends Component {
         }, {
             field: "password",
             method: (password) => {
-                return validator.isAlphanumeric(password);
-            },
-            validWhen: true,
-            message: "Password is required to be alphanumeric."
-        }, {
-            field: "password",
-            method: (password) => {
                 return password.length >= 5
             },
             validWhen: true,
@@ -101,13 +86,6 @@ class RegisterCustomerModal extends Component {
             method: "isEmpty",
             validWhen: false,
             message: "Password confirmation is required."
-        }, {
-            field: "confirmPassword",
-            method: (confirmPassword) => {
-                return validator.isAlphanumeric(confirmPassword);
-            },
-            validWhen: true,
-            message: "Password confirmation is required to be alphanumeric."
         }, {
             field: "confirmPassword",
             method: (confirmPassword) => {

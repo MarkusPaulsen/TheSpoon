@@ -14,7 +14,6 @@ import {connect} from "react-redux";
 import {Modal} from "react-bootstrap";
 //</editor-fold>
 //<editor-fold desc="Validator">
-import validator from "validator";
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import Button from "react-validation/build/button";
@@ -49,13 +48,6 @@ class AddMenuItemModal extends Component {
         }, {
             field: "name",
             method: (name) => {
-                return validator.isAlphanumeric(name);
-            },
-            validWhen: true,
-            message: "Name is required to be alphanumeric."
-        }, {
-            field: "name",
-            method: (name) => {
                 return name.length >= 1;
             },
             validWhen: true,
@@ -65,13 +57,6 @@ class AddMenuItemModal extends Component {
             method: "isEmpty",
             validWhen: false,
             message: "Description name is required."
-        }, {
-            field: "description",
-            method: (description) => {
-                return validator.isAlphanumeric(description);
-            },
-            validWhen: true,
-            message: "Description is required to be alphanumeric."
         }, {
             field: "description",
             method: (description) => {

@@ -13,7 +13,6 @@ import {connect} from "react-redux";
 import {Modal} from "react-bootstrap";
 //</editor-fold>
 //<editor-fold desc="Validator">
-import validator from "validator";
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import Button from "react-validation/build/button";
@@ -66,13 +65,6 @@ class RegisterRestaurantOwnerModal extends Component {
         }, {
             field: "username",
             method: (username) => {
-                return validator.isAlphanumeric(username);
-            },
-            validWhen: true,
-            message: "Username is required to be alphanumeric."
-        }, {
-            field: "username",
-            method: (username) => {
                 return username.length >= 5
             },
             validWhen: true,
@@ -82,13 +74,6 @@ class RegisterRestaurantOwnerModal extends Component {
             method: "isEmpty",
             validWhen: false,
             message: "Name is required."
-        }, {
-            field: "name",
-            method: (name) => {
-                return validator.isAlphanumeric(name);
-            },
-            validWhen: true,
-            message: "Name is required to be alphanumeric."
         }, {
             field: "name",
             method: (name) => {
@@ -104,13 +89,6 @@ class RegisterRestaurantOwnerModal extends Component {
         }, {
             field: "surname",
             method: (surname) => {
-                return validator.isAlphanumeric(surname);
-            },
-            validWhen: true,
-            message: "Surname is required to be alphanumeric."
-        }, {
-            field: "surname",
-            method: (surname) => {
                 return surname.length >= 1
             },
             validWhen: true,
@@ -123,13 +101,6 @@ class RegisterRestaurantOwnerModal extends Component {
         }, {
             field: "password",
             method: (password) => {
-                return validator.isAlphanumeric(password);
-            },
-            validWhen: true,
-            message: "Password is required to be alphanumeric."
-        }, {
-            field: "password",
-            method: (password) => {
                 return password.length >= 5
             },
             validWhen: true,
@@ -139,13 +110,6 @@ class RegisterRestaurantOwnerModal extends Component {
             method: "isEmpty",
             validWhen: false,
             message: "Password confirmation is required."
-        }, {
-            field: "confirmPassword",
-            method: (confirmPassword) => {
-                return validator.isAlphanumeric(confirmPassword);
-            },
-            validWhen: true,
-            message: "Password confirmation is required to be alphanumeric."
         }, {
             field: "confirmPassword",
             method: (confirmPassword) => {
