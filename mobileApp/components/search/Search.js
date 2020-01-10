@@ -133,10 +133,14 @@ export default class Search extends Component {
       AsyncStorage.getItem("userToken").then(async token => {
         const loggedIn = token !== null;
         this.setState({ loggedIn });
-        this.findCoordinates();
         if (loggedIn) {
           this.setState({ token: token });
         }
+        if (!loggedIn) {
+          this.setState({ token: null });
+        }
+        this.findCoordinates();
+
         this.setState({ isLoaded: true });
       });
     });
@@ -145,7 +149,7 @@ export default class Search extends Component {
     this.focusListener.remove();
   }
 
-  findCoordinates () {
+  findCoordinates() {
     navigator.geolocation.getCurrentPosition(
       position => {
         this.setState({ locationPermission: true });
@@ -160,7 +164,7 @@ export default class Search extends Component {
       },
       { enableHighAccuracy: true, timeout: 20000, maximumAge: 1000 }
     );
-  };
+  }
 
   updateSearchText = searchWord => {
     this.setState({ searchWord, searched: false });
@@ -184,13 +188,22 @@ export default class Search extends Component {
       const lat = this.state.latitude;
       const long = this.state.longitude;
       const token = this.state.token;
-      const response = await fetch(Api.SERVER_SEARCH(searchString, lat, long), {
-        method: "GET",
-        accept: "application/json",
-        headers: {
-          "X-Auth-Token": token
-        }
-      });
+      const initObject = this.state.loggedIn
+        ? {
+            method: "GET",
+            accept: "application/json",
+            headers: {
+              "X-Auth-Token": token
+            }
+          }
+        : {
+            method: "GET",
+            accept: "application/json"
+          };
+      const response = await fetch(
+        Api.SERVER_SEARCH(searchString, lat, long),
+        initObject
+      );
       if (response.ok) {
         const responseJson = await response.json();
         const searchResults = responseJson.map(index => ({
@@ -255,14 +268,12 @@ export default class Search extends Component {
       sorted.sort((a, b) => b.price - a.price);
       this.setState({ searchResults: sorted });
     } else if (this.state.selectedSorting === "Review") {
-      sorted.sort((a, b) => b.score - a.score
-      );
+      sorted.sort((a, b) => b.score - a.score);
       this.setState({ searchResults: sorted });
     } else if (this.state.selectedSorting === "Distance") {
       if (this.state.locationPermission === true) {
         const sorted = this.state.searchResults;
-        sorted.sort((a, b) => a.distance - b.distance
-        );
+        sorted.sort((a, b) => a.distance - b.distance);
         this.setState({ searchResults: sorted });
       } else {
         this.findCoordinates();
