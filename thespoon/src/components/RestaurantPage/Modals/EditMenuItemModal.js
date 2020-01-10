@@ -107,7 +107,7 @@ class EditMenuItemModal extends Component {
             type: this.props._menuItem.type,
             selectedFile: null,
             selectedFileData: null,
-            imageID: this.props._menuItem.imageID,
+            imageID: 0,
             imageMessage: "",
             availableTags: [],
             serverMessageFinishedLoadingAvailableTags: "",

@@ -129,7 +129,7 @@ class EditRestaurantModal extends Component {
             selectedCloseTime: null,
             selectedFile: null,
             selectedFileData: null,
-            imageID: this.props._restaurantInfo.imageID,
+            imageID: 0,
             imageMessage: ""
 
             //</editor-fold>
