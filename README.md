@@ -17,6 +17,7 @@ This repository refers to the 2019-2020 edition of the course, and the project a
 - A web application used by the restaurant owners and the consultants
 - A mobile app used bu the customers
 - a backend that offers REST API endpoints to both the web application and the mobile app, with a Postgres database
+
 The 10 members of the team were then divided among 3 subteams: web application subteam (4 people), mobile app subteam (3 people), backend subteam (3 people).
 
 ## Run the application
