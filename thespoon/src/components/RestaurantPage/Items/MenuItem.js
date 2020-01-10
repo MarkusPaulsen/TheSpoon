@@ -44,7 +44,7 @@ class MenuItem extends Component {
                         })}
                     </div>
                 </div>
-                <div className="price">{this.props.priceEuros}€</div>
+                <div className="price">{parseFloat(this.props.priceEuros).toFixed(2)}€</div>
                 <div className="edit-button">
                     <FilterLink
                         modal={this.props.type === "dish"
