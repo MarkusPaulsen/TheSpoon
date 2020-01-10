@@ -27,7 +27,6 @@ class Menu extends Component {
 
     //<editor-fold desc="Render">
     render() {
-        console.log(this.props)
         return (
             <div className="menu">
                 <h4 className="title">Lunch menu: {this.props.name}</h4>
@@ -91,7 +90,7 @@ class Menu extends Component {
                                   priceEuros={drinkItem.priceEuros} tags={drinkItem.tags}
                                   imageLink={drinkItem.imageLink} type={drinkItem.type}
                                   rating={drinkItem.rating} menuItemReviews={drinkItem.menuItemReviews}
-                                  currentMenu={this.props} menuItemID={drinkItem.menuItemID}/>
+                                  menu={this.props} menuItemID={drinkItem.menuItemID}/>
                     );
                 })}
                 <div className="modal-button">

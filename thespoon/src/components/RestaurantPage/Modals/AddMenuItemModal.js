@@ -4,13 +4,8 @@ import React, {Component} from "react";
 //<editor-fold desc="RxJs">
 import {bindCallback, fromEvent, of, throwError} from "rxjs";
 import {ajax} from "rxjs/ajax";
-<<<<<<< HEAD
 import {bufferTime, catchError, distinctUntilChanged, exhaustMap, map, take, filter} from "rxjs/operators";
 import {readFileURL} from "../Tools/FileReader"
-=======
-import {catchError, exhaustMap, map, take, bufferTime, filter, distinctUntilChanged} from "rxjs/operators";
-import {readFileURL} from "../Tools/FileReader";
->>>>>>> dev
 //</editor-fold>
 //<editor-fold desc="Redux">
 import {connect} from "react-redux";
@@ -34,11 +29,6 @@ import {timeouts} from "../../../constants/Timeouts";
 //</editor-fold>
 //<editor-fold desc="Icons">
 import {IconExit} from "../../Icons";
-<<<<<<< HEAD
-=======
-//</editor-fold>
-//<editor-fold desc="Items">
->>>>>>> dev
 import TagItem from "../Items/TagItem";
 
 //</editor-fold>
@@ -156,11 +146,7 @@ class AddMenuItemModal extends Component {
             url: paths["restApi"]["tag"],
             method: "GET",
             headers: {"X-Auth-Token": thisTemp.state.token},
-<<<<<<< HEAD
             timeout: timeouts,
-=======
-            timeout: timeout,
->>>>>>> dev
             responseType: "text"
         })
             .pipe(
@@ -544,7 +530,6 @@ class AddMenuItemModal extends Component {
                                 </small>
                             </div>
                             <div className="input-field">
-<<<<<<< HEAD
                                 <label>
                                     Description
                                 </label>
@@ -553,10 +538,6 @@ class AddMenuItemModal extends Component {
                                     placeholder="Description"
                                     required
                                 />
-=======
-                                <label>Description</label>
-                                <Textarea name="description" placeholder="Description"/>
->>>>>>> dev
                             </div>
                             <div className="error-block">
                                 <small>
@@ -618,7 +599,6 @@ class AddMenuItemModal extends Component {
                                 </small>
                             </div>
                             <div className="input-field">
-<<<<<<< HEAD
                                 <label>
                                     Available Tags
                                 </label>
@@ -637,18 +617,10 @@ class AddMenuItemModal extends Component {
                                                 added={false}
                                             />
                                             );
-=======
-                                <label>Available Tags</label>
-                                <input id="tagInput" type="text" name="tags" placeholder="Search"/>
-                                <ul>
-                                    {this.state.autocompleteTags.map((tag) => {
-                                        return (<TagItem tag={tag} modal={this} added={false}/>);
->>>>>>> dev
                                     })}
                                 </ul>
                             </div>
                             <div className="input-field">
-<<<<<<< HEAD
                                 <label>
                                     Chosen Tags
                                 </label>
@@ -661,23 +633,13 @@ class AddMenuItemModal extends Component {
                                                 added={true}
                                             />
                                             );
-=======
-                                <label>Chosen Tags</label>
-                                <ul>
-                                    {this.state.chosenTags.map((tag) => {
-                                        return (<TagItem tag={tag} modal={this} added={true}/>);
->>>>>>> dev
                                     })}
                                 </ul>
                             </div>
                             <div className="error-block">
-<<<<<<< HEAD
                                 <small>
                                     {this.state.tagsMessage}
                                 </small>
-=======
-                                <small>{this.state.tagsMessage}</small>
->>>>>>> dev
                             </div>
                             <Button
                                 type="submit"

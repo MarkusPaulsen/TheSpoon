@@ -272,11 +272,7 @@ class EditMenuModal extends Component {
                     thisTemp.setState({serverMessage: "Menu is edited"});
                     return ajax({
                         url: paths["restApi"]["menu"] + "/"
-<<<<<<< HEAD
                             + thisTemp.props._menu.menuID,
-=======
-                            + thisTemp.props.menu.menuID,
->>>>>>> dev
                         method: "PUT",
                         headers: {"Content-Type": "application/json", "X-Auth-Token": thisTemp.state.token},
                         body: {
@@ -331,11 +327,7 @@ class EditMenuModal extends Component {
             .pipe(exhaustMap(() => {
                 return ajax({
                     url: paths["restApi"]["menu"] + "/"
-<<<<<<< HEAD
                         + thisTemp.props._menu.menuID,
-=======
-                        + thisTemp.props.currentMenu.menuID,
->>>>>>> dev
                     method: "DELETE",
                     headers: {"Content-Type": "application/json", "X-Auth-Token": thisTemp.state.token},
                 })
