@@ -322,16 +322,6 @@ class RegisterCustomerModal extends Component {
                             </div>
 
                         </Form>
-                        <div className="link-wrapper">
-                            <small>
-                                Already have an account?
-                                <FilterLink
-                                    modal={modals.SHOW_LOGIN}
-                                >
-                                    Log in
-                                </FilterLink>
-                            </small>
-                        </div>
                     </div>
                 </Modal.Body>
             );
