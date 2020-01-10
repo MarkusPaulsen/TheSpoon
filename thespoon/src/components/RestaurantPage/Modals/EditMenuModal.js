@@ -397,8 +397,6 @@ class EditMenuModal extends Component {
                                 <label>Name</label>
                                 <Input
                                     type="text"
-                                    pattern="[a-zA-Z0-9 _]{1,}"
-                                    title="Name must be alphanumeric and must contain at least 1 letter."
                                     name="name"
                                     placeholder="Name"
                                     value={this.state.name}

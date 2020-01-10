@@ -559,8 +559,6 @@ class EditRestaurantModal extends Component {
                                 </label>
                                 <Input
                                     type="text"
-                                    pattern="[a-zA-Z0-9 _]{1,}"
-                                    title="Name must be alphanumeric and must contain at least 1 letter."
                                     name="name"
                                     placeholder="Restaurant name"
                                     value={this.state.name}
@@ -619,8 +617,6 @@ class EditRestaurantModal extends Component {
                                 </label>
                                 <Input
                                     type="text"
-                                    pattern="[a-zA-Z0-9 _]{1,}"
-                                    title="Address must be alphanumeric and must contain at least 1 letter."
                                     name="address"
                                     placeholder="Address"
                                     value={this.state.address}
@@ -638,8 +634,6 @@ class EditRestaurantModal extends Component {
                                 </label>
                                 <Input
                                     type="text"
-                                    pattern="[a-zA-Z0-9 _]{1,}"
-                                    title="City must be alphanumeric and must contain at least 1 letter."
                                     name="city"
                                     placeholder="City"
                                     value={this.state.city}
@@ -657,8 +651,6 @@ class EditRestaurantModal extends Component {
                                 </label>
                                 <Input
                                     type="text"
-                                    pattern="[a-zA-Z0-9 _]{1,}"
-                                    title="Country must be alphanumeric and must contain at least 1 letter."
                                     name="country"
                                     placeholder="Country"
                                     value={this.state.country}

@@ -325,8 +325,8 @@ class RegisterRestaurantOwnerModal extends Component {
                                 <IconName/>
                                 <Input
                                     type="text"
-                                    pattern="[a-zA-Z0-9 _]{5,}"
-                                    title="Username must be alphanumeric and must contain at least 5 letters."
+                                    pattern=".{5,}"
+                                    title="Username must contain at least 5 letters."
                                     name="username"
                                     placeholder="Username"
                                     required
@@ -342,16 +342,12 @@ class RegisterRestaurantOwnerModal extends Component {
                                 <IconName/>
                                 <Input
                                     type="text"
-                                    pattern="[a-zA-Z0-9 _]{1,}"
-                                    title="First Name must be alphanumeric and must contain at least 1 letter."
                                     name="name"
                                     placeholder="First name"
                                     required
                                 />
                                 <Input
                                     type="text"
-                                    pattern="[a-zA-Z0-9 _]{1,}"
-                                    title="Surname must be alphanumeric and must contain at least 1 letter."
                                     name="surname"
                                     placeholder="Surname"
                                     required
@@ -370,8 +366,8 @@ class RegisterRestaurantOwnerModal extends Component {
                                 <IconPassword/>
                                 <Input
                                     type="password"
-                                    pattern="[a-zA-Z0-9 _]{5,}"
-                                    title="Password must be alphanumeric and must contain at least 5 letters."
+                                    pattern=".{5,}"
+                                    title="Password must contain at least 5 letters."
                                     name="password"
                                     placeholder="Password"
                                     required
@@ -387,8 +383,8 @@ class RegisterRestaurantOwnerModal extends Component {
                                 <IconPassword/>
                                 <Input
                                     type="password"
-                                    pattern="[a-zA-Z0-9 _]{5,}"
-                                    title="Confirm Password must be alphanumeric and must contain at least 5 letters."
+                                    pattern=".{5,}"
+                                    title="Confirm Password must contain at least 5 letters."
                                     id="confirm-password"
                                     name="confirmPassword"
                                     placeholder="Confirm password"
