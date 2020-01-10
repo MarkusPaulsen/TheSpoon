@@ -107,7 +107,7 @@ class EditMenuItemModal extends Component {
             type: this.props._menuItem.type,
             selectedFile: null,
             selectedFileData: null,
-            imageID: 0,
+            imageID: (this.props._menuItem.imageLink).split("/")[3],
             imageMessage: "",
             availableTags: [],
             serverMessageFinishedLoadingAvailableTags: "",
@@ -467,7 +467,6 @@ class EditMenuItemModal extends Component {
 
     handleDelete = (event) => {
         event.preventDefault();
-        console.log(this.props)
         const thisTemp = this;
         of(1)
             .pipe(exhaustMap(() => {
