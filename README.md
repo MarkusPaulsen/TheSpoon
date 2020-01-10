@@ -37,7 +37,7 @@ The project has been developed with the following technologies:
 - API reference: Swagger
 - Database: Postgres
 - Frontend web: React
-- Frontend mobile: React native with expo
+- Frontend mobile: React Native with Expo
 - Testing tool used to test backend, web and mobile: Jest
 - Continuous integration: Travis CI
 - Textual communication: Slack
