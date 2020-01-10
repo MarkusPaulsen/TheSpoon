@@ -5,7 +5,7 @@ class Layout extends Component {
     render() {
         return (
             <div className="site-wrapper">
-                <Header />
+                <Header/>
                 {this.props.children}
             </div>
         );

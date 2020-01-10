@@ -11,8 +11,9 @@ import Button from "react-validation/build/button";
 //</editor-fold>
 
 //<editor-fold desc="Constants">
-import {paths} from "../../../constants/paths";
-import {timeout} from "../../../constants/timeout";
+import {paths} from "../../../constants/Paths";
+import {timeouts} from "../../../constants/Timeouts";
+
 //</editor-fold>
 
 
@@ -28,6 +29,7 @@ class ReviewItem extends Component {
             token: window.localStorage.getItem("token")
         };
     }
+
     //</editor-fold>
 
     //<editor-fold desc="Bussiness Logic">
@@ -43,7 +45,7 @@ class ReviewItem extends Component {
                     body: {
                         isApproved: false
                     },
-                    timeout: timeout,
+                    timeout: timeouts,
                     responseType: "text"
                 })
             }))
@@ -85,7 +87,7 @@ class ReviewItem extends Component {
                     body: {
                         isApproved: true
                     },
-                    timeout: timeout,
+                    timeout: timeouts,
                     responseType: "text"
                 })
             }))
@@ -117,7 +119,7 @@ class ReviewItem extends Component {
     //</editor-fold>
 
     //<editor-fold desc="Render">
-    render () {
+    render() {
         return (
             <div className="reviewItem">
                 <div className="receipt-photo">
@@ -142,13 +144,15 @@ class ReviewItem extends Component {
                         </div>
                     )}
                     <div className="review-validation">
-                        <Button type="button" className="review-button decline" color="grey" onClick={this.handleDecline}>decline</Button>
+                        <Button type="button" className="review-button decline" color="grey"
+                                onClick={this.handleDecline}>decline</Button>
                         <Button type="button" className="review-button" onClick={this.handleAccept}>accept</Button>
                     </div>
                 </div>
             </div>
         )
     }
+
     //</editor-fold>
 }
 

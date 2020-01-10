@@ -1,15 +1,19 @@
-import * as backgroundPageActions from "../actions/BackgroundPageAction";
-import {initialStateBackgroundPageReducer} from "./InitialStateBackgroundPageReducer";
+//<editor-fold desc="Initial State">
+import {_initialStateBackgroundPageReducer} from "../initialStates/InitialStateBackgroundPageReducer";
+//</editor-fold>
+//<editor-fold desc="Actions">
+import {_SET_BACKGROUND_PAGE} from "../actions/BackgroundPageAction";
+//</editor-fold>
 
-const backgroundPageReducer = (state = initialStateBackgroundPageReducer, action) => {
+const _backgroundPageReducer = (state = _initialStateBackgroundPageReducer, action) => {
     switch (action.type) {
-        case backgroundPageActions.SET_BACKGROUND_PAGE:
+        case _SET_BACKGROUND_PAGE:
             return Object.assign({}, state, {
-                backgroundPage: action.backgroundPage
+                _backgroundPage: action._backgroundPage
             });
         default:
             return Object.assign({}, state, {});
     }
 };
 
-export default backgroundPageReducer;
+export default _backgroundPageReducer;

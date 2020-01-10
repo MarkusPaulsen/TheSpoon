@@ -3,15 +3,15 @@ import React, {Component} from "react";
 //</editor-fold>
 //<editor-fold desc="Redux">
 import {connect} from "react-redux";
-import {setModalVisibilityFilterAction} from "../actionCreators/modalVisibilityFilterActionCreators";
-import {setCurrentMenu} from "../actionCreators/CurrentMenuActionCreators";
+import {_setModal} from "../actionCreators/ModalActionCreators";
+import {_setMenu} from "../actionCreators/MenuActionCreators";
 //</editor-fold>
 //<editor-fold desc="Bootstrap">
 import {Modal} from "react-bootstrap";
 //</editor-fold>
 
 //<editor-fold desc="Constants">
-import {modalVisibilityFilters} from "../constants/modalVisibiltyFilters";
+import {modals} from "../constants/Modals";
 //</editor-fold>
 //<editor-fold desc="Modals">
 import LogInModal from "../components/HomePage/Modals/LogInModal";
@@ -31,66 +31,66 @@ import PendingReviewModal from "../components/RestaurantPage/Modals/PendingRevie
 class CustomModal extends Component {
 
     //<editor-fold desc="Business Logic">
-    getVisibleModal = (filter, item) => {
+    getVisibleModal = (filter) => {
         switch (filter) {
-            case modalVisibilityFilters.SHOW_LOGIN:
+            case modals.SHOW_LOGIN:
                 return (
-                    <LogInModal onHide={() => this.props.handleClose()} />
+                    <LogInModal onHide={() => this.props._handleClose()} />
                 );
 
-            case modalVisibilityFilters.SHOW_LOGOUT:
+            case modals.SHOW_LOGOUT:
                 return (
-                    <LogOutModal onHide={() => this.props.handleClose()} />
+                    <LogOutModal onHide={() => this.props._handleClose()} />
                 );
 
-            case modalVisibilityFilters.SHOW_CHOOSE_ROLE:
+            case modals.SHOW_CHOOSE_ROLE:
                 return (
-                    <ChooseRoleModal onHide={() => this.props.handleClose()} />
+                    <ChooseRoleModal onHide={() => this.props._handleClose()} />
                 );
 
-            case modalVisibilityFilters.SHOW_REGISTER_RESTAURANT_OWNER:
+            case modals.SHOW_REGISTER_RESTAURANT_OWNER:
                 return (
-                    <RegisterRestaurantowner onHide={() => this.props.handleClose()}/>
+                    <RegisterRestaurantowner onHide={() => this.props._handleClose()}/>
                 );
 
-            case modalVisibilityFilters.SHOW_REGISTER_CUSTOMER:
+            case modals.SHOW_REGISTER_CUSTOMER:
                 return (
-                    <RegisterCustomer onHide={() => this.props.handleClose()}/>
+                    <RegisterCustomer onHide={() => this.props._handleClose()}/>
                 );
 
-            case modalVisibilityFilters.SHOW_ADD_RESTAURANT:
+            case modals.SHOW_ADD_RESTAURANT:
                 return (
-                    <AddRestaurantModal onHide={() => this.props.handleClose()}/>
+                    <AddRestaurantModal onHide={() => this.props._handleClose()}/>
                 );
-            case modalVisibilityFilters.SHOW_EDIT_RESTAURANT:
+            case modals.SHOW_EDIT_RESTAURANT:
                 return (
-                    <EditRestaurantModal onHide={() => this.props.handleClose()} restaurant={item}/>
+                    <EditRestaurantModal onHide={() => this.props._handleClose()}/>
                 );
-            case modalVisibilityFilters.SHOW_ADD_MENU:
+            case modals.SHOW_ADD_MENU:
                 return (
-                    <AddMenuModal onHide={() => this.props.handleClose()}/>
+                    <AddMenuModal onHide={() => this.props._handleClose()}/>
                 );
-            case modalVisibilityFilters.SHOW_EDIT_MENU:
+            case modals.SHOW_EDIT_MENU:
                 return (
-                    <EditMenuModal onHide={() => this.props.handleClose()} menu={item}/>
+                    <EditMenuModal onHide={() => this.props._handleClose()}/>
                 );
 
-            case modalVisibilityFilters.SHOW_PENDING_REVIEW:
+            case modals.SHOW_PENDING_REVIEW:
                 return (
                     <PendingReviewModal
-                        onHide={() => this.props.handleClose()}/>
+                        onHide={() => this.props._handleClose()}/>
                 );
 
-            case modalVisibilityFilters.SHOW_ADD_DISH:
-            case modalVisibilityFilters.SHOW_ADD_DRINK:
+            case modals.SHOW_ADD_DISH:
+            case modals.SHOW_ADD_DRINK:
                 return (
-                    <AddMenuItemModal onHide={() => this.props.handleClose()}/>
+                    <AddMenuItemModal onHide={() => this.props._handleClose()}/>
                 );
 
-            case modalVisibilityFilters.SHOW_EDIT_DISH:
-            case modalVisibilityFilters.SHOW_EDIT_DRINK:
+            case modals.SHOW_EDIT_DISH:
+            case modals.SHOW_EDIT_DRINK:
                 return (
-                    <EditMenuItemModal onHide={() => this.props.handleClose()} menuItem={item}/>
+                    <EditMenuItemModal onHide={() => this.props._handleClose()}/>
                 );
             default:
                 return null;
@@ -100,10 +100,10 @@ class CustomModal extends Component {
 
     //<editor-fold desc="Render">
     render() {
-        if(this.props.modalVisibilityFilter !== modalVisibilityFilters.HIDE_ALL) {
+        if(this.props._modal !== modals.HIDE_ALL) {
             return(
-                <Modal show={true} onHide={() => this.props.handleClose()} backdrop="static" centered>
-                    {this.getVisibleModal(this.props.modalVisibilityFilter, this.props.currentMenu)}
+                <Modal show={true} onHide={() => this.props._handleClose()} backdrop="static" centered>
+                    {this.getVisibleModal(this.props._modal)}
                 </Modal>
             );
         }
@@ -114,20 +114,20 @@ class CustomModal extends Component {
     //</editor-fold>
 }
 
-//<editor-fold desc="Redux">
+//<editor-fold desc="Redux">x
 const mapStateToProps = (state) => {
     return {
-        modalVisibilityFilter: state.modalVisibiltyFilterReducer.modalVisibilityFilter,
-        currentMenu: state.currentMenuReducer.currentMenu,
-        currentRestaurantInformation: state.restaurantReducer.currentRestaurantInformation
+        _modal: state._modalReducer._modal,
+        _menu: state._menuReducer._menu,
+        _restaurantInfo: state._restaurantReducer._restaurantInfo
     }
 };
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        handleClose: () => {
-            dispatch(setModalVisibilityFilterAction(modalVisibilityFilters.HIDE_ALL));
-            dispatch(setCurrentMenu(null));
+        _handleClose: () => {
+            dispatch(_setModal(modals.HIDE_ALL));
+            dispatch(_setMenu(null));
         }
     }
 };

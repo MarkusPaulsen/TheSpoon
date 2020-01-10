@@ -1,5 +1,6 @@
 //<editor-fold desc="Validator">
 import validator from "validator";
+
 //</editor-fold>
 
 class FormValidator {
@@ -12,6 +13,7 @@ class FormValidator {
         // validations is an array of validation rules specific to a form
         this.validations = validations;
     }
+
     //</editor-fold>
 
     //<editor-fold desc="Business Logic">
@@ -38,7 +40,7 @@ class FormValidator {
                 // argument.  If the result doesn"t match the rule.validWhen property,
                 // then modify the validation object for the field and set the isValid
                 // field to false
-                if(validation_method(field_value, ...args, state) !== rule.validWhen) {
+                if (validation_method(field_value, ...args, state) !== rule.validWhen) {
                     validation[rule.field] = {isInvalid: true, message: rule.message};
                     validation.isValid = false;
                 }
@@ -57,6 +59,7 @@ class FormValidator {
 
         return {isValid: true, ...validation};
     }
+
     //</editor-fold>
 }
 

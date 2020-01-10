@@ -20,15 +20,15 @@ import FormValidator from "../../../validation/FormValidator";
 //</editor-fold>
 
 //<editor-fold desc="Constants">
-import {paths} from "../../../constants/paths";
-import {modalVisibilityFilters} from "../../../constants/modalVisibiltyFilters";
+import {paths} from "../../../constants/Paths";
+import {modals} from "../../../constants/Modals";
 //</editor-fold>
 //<editor-fold desc="Containers">
 import FilterLink from "../../../containers/FilterModalLink";
 //</editor-fold>
 //<editor-fold desc="Icons">
 import {IconName, IconEmail, IconPassword, IconExit, IconBack} from "../../Icons";
-import {timeout} from "../../../constants/timeout";
+import {timeouts} from "../../../constants/Timeouts";
 
 //</editor-fold>
 
@@ -47,7 +47,9 @@ class RegisterRestaurantOwnerModal extends Component {
             message: "E-mail is required."
         }, {
             field: "email",
-            method: (email) => {return email.length >= 6},
+            method: (email) => {
+                return email.length >= 6
+            },
             validWhen: true,
             message: "Email is required to be longer or equal 6 characters."
         }, {
@@ -60,14 +62,11 @@ class RegisterRestaurantOwnerModal extends Component {
             method: "isEmpty",
             validWhen: false,
             message: "Username is required."
-        },/*{
+        }, {
             field: "username",
-            method: "isAlphanumeric",
-            validWhen: true,
-            message: "Username is required to be alphanumeric."
-        },*/ {
-            field: "username",
-            method: (username) => {return username.length >= 5},
+            method: (username) => {
+                return username.length >= 5
+            },
             validWhen: true,
             message: "Username is required to be longer or equal 5 characters."
         }, {
@@ -75,44 +74,35 @@ class RegisterRestaurantOwnerModal extends Component {
             method: "isEmpty",
             validWhen: false,
             message: "Name is required."
-        },/*{
+        }, {
             field: "name",
-            method: "isAlpha",
-            validWhen: true,
-            message: "Name is required to be alphabetic."
-        },*/ {
-            field: "name",
-            method: (name) => {return name.length >= 1},
+            method: (name) => {
+                return name.length >= 1
+            },
             validWhen: true,
             message: "Name is required to be longer or equal 1 characters."
-        },  {
+        }, {
             field: "surname",
             method: "isEmpty",
             validWhen: false,
             message: "Surname is required."
-        },/*{
+        }, {
             field: "surname",
-            method: "isAlpha",
-            validWhen: true,
-            message: "Surname is required to be alphabetic."
-        },*/ {
-            field: "surname",
-            method: (surname) => {return surname.length >= 1},
+            method: (surname) => {
+                return surname.length >= 1
+            },
             validWhen: true,
             message: "Surname is required to be longer or equal 1 characters."
-        },  {
+        }, {
             field: "password",
             method: "isEmpty",
             validWhen: false,
             message: "Password is required."
-        },/*{
+        }, {
             field: "password",
-            method: "isAlphanumeric",
-            validWhen: true,
-            message: "Password is required to be alphanumeric."
-        },*/ {
-            field: "password",
-            method: (password) => {return password.length >= 5},
+            method: (password) => {
+                return password.length >= 5
+            },
             validWhen: true,
             message: "Password is required to be longer or equal 5 characters."
         }, {
@@ -120,19 +110,18 @@ class RegisterRestaurantOwnerModal extends Component {
             method: "isEmpty",
             validWhen: false,
             message: "Password confirmation is required."
-        },/*{
+        }, {
             field: "confirmPassword",
-            method: "isAlphanumeric",
-            validWhen: true,
-            message: "Password confirmation is required to be alphanumeric."
-        },*/ {
-            field: "confirmPassword",
-            method: (confirmPassword) => {return confirmPassword.length >= 5},
+            method: (confirmPassword) => {
+                return confirmPassword.length >= 5
+            },
             validWhen: true,
             message: "Password confirmation is required to be longer or equal 5 characters."
         }, {
             field: "confirmPassword",
-            method: (confirmPassword, state) => {return confirmPassword === state.password},
+            method: (confirmPassword, state) => {
+                return confirmPassword === state.password
+            },
             validWhen: true,
             message: "Password confirmation has to be identical to the password."
         }]);
@@ -204,7 +193,7 @@ class RegisterRestaurantOwnerModal extends Component {
                             email: thisTemp.state.email,
                             password: thisTemp.state.password
                         },
-                        timeout: timeout,
+                        timeout: timeouts,
                         responseType: "text"
                     });
                 } else {
@@ -221,7 +210,7 @@ class RegisterRestaurantOwnerModal extends Component {
                     let response = JSON.parse(next.response);
                     window.localStorage.setItem("token", response.token);
                     window.localStorage.setItem("user", "Restaurant Owner");
-                    thisTemp.props.backgroundPage.update();
+                    thisTemp.props._backgroundPage.update();
                 }, (error) => {
                     switch (error.name) {
                         case "AjaxTimeoutError":
@@ -248,83 +237,159 @@ class RegisterRestaurantOwnerModal extends Component {
     //<editor-fold desc="Render">
     render() {
         let validation = this.submitted ? this.validator.validate(this.state) : this.state.validation;
-        if(this.props.backgroundPage == null) {
-            return(<p>Something went wrong.</p>);
-        } else if(this.state.token == null || this.state.token === "null" ) {
+        if (this.props._backgroundPage == null) {
+            return (<p>Something went wrong.</p>);
+        } else if (this.state.token == null || this.state.token === "null") {
             //<editor-fold desc="Render Token">
             return (
                 <Modal.Body>
-                <span className="back"><FilterLink
-                    filter={modalVisibilityFilters.SHOW_CHOOSE_ROLE}><IconBack/></FilterLink></span>
-                    <button className="exit" onClick={this.props.onHide}><IconExit/></button>
+                    <span className="back">
+                        <FilterLink
+                            modal={modals.SHOW_CHOOSE_ROLE}
+                        >
+                            <IconBack/>
+                        </FilterLink>
+                    </span>
+                    <button
+                        className="exit"
+                        onClick={this.props.onHide}
+                    >
+                        <IconExit/>
+                    </button>
                     <div className="modal-wrapper ">
-                        <Form ref={(c) => {
-                            this.form = c;
-                        }} onSubmit={this.handleSubmit}>
-                            <h2>Sign up</h2>
+                        <Form
+                            ref={(c) => {
+                                this.form = c;
+                            }}
+                            onSubmit={this.handleSubmit}
+                        >
+                            <h2>
+                                Sign up
+                            </h2>
                             <div className="account-type">
                                 <h4>as a <span className="role">Restaurant Owner</span></h4>
                             </div>
 
                             <div className="input-field">
                                 <IconEmail/>
-                                <Input type="email" name="email" placeholder="E-mail"/>
+                                <Input
+                                    type="email"
+                                    name="email"
+                                    placeholder="E-mail"
+                                    required
+                                />
                             </div>
                             <div className="error-block">
-                                <small>{validation.email.message}</small>
+                                <small>
+                                    {validation.email.message}
+                                </small>
                             </div>
 
                             <div className="input-field">
                                 <IconName/>
-                                <Input type="text" name="username" placeholder="Username"/>
+                                <Input
+                                    type="text"
+                                    pattern=".{5,}"
+                                    title="Username must contain at least 5 letters."
+                                    name="username"
+                                    placeholder="Username"
+                                    required
+                                />
                             </div>
                             <div className="error-block">
-                                <small>{validation.username.message}</small>
+                                <small>
+                                    {validation.username.message}
+                                </small>
                             </div>
 
                             <div className="input-field name">
                                 <IconName/>
-                                <Input type="text" name="name" placeholder="First name"/>
-                                <Input type="text" name="surname" placeholder="Surname"/>
+                                <Input
+                                    type="text"
+                                    name="name"
+                                    placeholder="First name"
+                                    required
+                                />
+                                <Input
+                                    type="text"
+                                    name="surname"
+                                    placeholder="Surname"
+                                    required
+                                />
                             </div>
                             <div className="error-block">
-                                <small>{validation.name.message}</small>
-                                <small>{validation.surname.message}</small>
+                                <small>
+                                    {validation.name.message}
+                                </small>
+                                <small>
+                                    {validation.surname.message}
+                                </small>
                             </div>
 
                             <div className="input-field">
                                 <IconPassword/>
-                                <Input type="password" name="password" placeholder="Password"/>
+                                <Input
+                                    type="password"
+                                    pattern=".{5,}"
+                                    title="Password must contain at least 5 letters."
+                                    name="password"
+                                    placeholder="Password"
+                                    required
+                                />
                             </div>
                             <div className="error-block">
-                                <small>{validation.password.message}</small>
+                                <small>
+                                    {validation.password.message}
+                                </small>
                             </div>
 
                             <div className="input-field">
                                 <IconPassword/>
-                                <Input type="password" id="confirm-password" name="confirmPassword"
-                                       placeholder="Confirm password"/>
+                                <Input
+                                    type="password"
+                                    pattern=".{5,}"
+                                    title="Confirm Password must contain at least 5 letters."
+                                    id="confirm-password"
+                                    name="confirmPassword"
+                                    placeholder="Confirm password"
+                                    required
+                                />
                             </div>
                             <div className="error-block">
-                                <small>{validation.confirmPassword.message}</small>
+                                <small>
+                                    {validation.confirmPassword.message}
+                                </small>
                             </div>
 
-                            <Button type="submit" className="normal">Sign up</Button>
+                            <Button
+                                type="submit"
+                                className="normal"
+                            >
+                                Sign up
+                            </Button>
                             <div className="error-block">
-                                <small>{this.state.serverMessage}</small>
+                                <small>
+                                    {this.state.serverMessage}
+                                </small>
                             </div>
 
                         </Form>
                         <div className="link-wrapper">
-                            <small>Already have an account? <FilterLink filter={modalVisibilityFilters.SHOW_LOGIN}>Log
-                                in</FilterLink></small>
+                            <small>
+                                Already have an account?
+                                <FilterLink
+                                    modal={modals.SHOW_LOGIN}
+                                >
+                                    Log in
+                                </FilterLink>
+                            </small>
                         </div>
                     </div>
                 </Modal.Body>
             );
             //</editor-fold>
         } else {
-            return(<p>Something went wrong.</p>);
+            return (<p>Something went wrong.</p>);
         }
     }
 
@@ -334,7 +399,7 @@ class RegisterRestaurantOwnerModal extends Component {
 //<editor-fold desc="Redux">
 const mapStateToProps = (state) => {
     return {
-        backgroundPage: state.backgroundPageReducer.backgroundPage
+        _backgroundPage: state._backgroundPageReducer._backgroundPage
     };
 };
 
