@@ -57,10 +57,6 @@ class CustomerMainPage extends Component {
                 <Redirect to={{pathname: "/YourRestaurant"}}/>
             );
         } else if (this.state.user === "Customer") {
-            return (
-                <Redirect to={{pathname: "/CustomerMain"}}/>
-            );
-        } else if (this.state.user === "Consultant") {
             //<editor-fold desc="Render Customer">
             return (
                 <div className="mainpage-banner">
@@ -76,8 +72,12 @@ class CustomerMainPage extends Component {
                     </div>
                 </div>
             );
-
             //</editor-fold>
+        } else if (this.state.user === "Consultant") {
+            return (
+                <Redirect to={{pathname: "/ConsultantPage"}}/>
+            );
+
         } else {
             return (
                 <Redirect to={{pathname: "/ThisShouldNotHaveHappened"}}/>
