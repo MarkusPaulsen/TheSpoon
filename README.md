@@ -46,15 +46,15 @@ The project has been developed with the following technologies:
 - Meetings: Zoom
 
 ## Group
-| First name | Last Name | University | Subteam         |
-| ---------- | --------- | ---------- | --------------- |
-| Ida Merete | Enholm    | POLIMI     | Mobile app      |
-| Janine     | Stang     | POLIMI     | Mobile app      |
-| Cathrine   | Akre-Aas  | POLIMI     | Mobile app      |
-| Emilio     | Imperiali | POLIMI     | Backend         |
-| Frikk      | Andersen  | POLIMI     | Backend         |
-| Marin      | Milina    | FER        | Backend         |
-| Markus     | Paulsen   | FER        | Web app         |
-| Lora       | Žuliček   | FER        | Web app         |
-| André      | Aing      | POLIMI     | Web app         |
-| Matej      | Lazić     | FER        | Web app         |
+| First name | Last Name | University | Role                       |
+| ---------- | --------- | ---------- | ---------------            |
+| Ida Merete | Enholm    | POLIMI     | Mobile app + UI Design     |
+| Janine     | Stang     | POLIMI     | Mobile app                 |
+| Cathrine   | Akre-Aas  | POLIMI     | Mobile app                 |
+| Emilio     | Imperiali | POLIMI     | Backend + API docs manager |
+| Frikk      | Andersen  | POLIMI     | Backend                    |
+| Marin      | Milina    | FER        | Backend                    |
+| Markus     | Paulsen   | FER        | Web app                    |
+| Lora       | Žuliček   | FER        | Web app                    |
+| André      | Aing      | POLIMI     | Web app                    |
+| Matej      | Lazić     | FER        | Web app                    |
