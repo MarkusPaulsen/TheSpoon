@@ -32,6 +32,7 @@ https://thespoon.herokuapp.com/api/docs/
 The folder of the mobile app is "mobileApp". Inside that there is another README which explains how to run it.
 
 The project has been developed with the following technologies:
+- Server hosting: Heroku
 - Backend: NodeJS
 - API reference: Swagger
 - Database: Postgres
