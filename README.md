@@ -15,7 +15,7 @@ This course aims at assessing the students' ability to design and implement a co
 
 This repository refers to the 2019-2020 edition of the course, and the project assigned is "TheSpoon": an application that lets restaurant owners to register with their restaurant data and its menus, while customers can search specific food they want to eat and rate the restaurants. Another type of user, the consultant, can access the statistics of the application and monetize them by helping the restaurant owners improving their activity. More precisily, the project included:
 - A web application used by the restaurant owners and the consultants
-- A mobile app used bu the customers
+- A mobile app used by the customers
 - a backend that offers REST API endpoints to both the web application and the mobile app, with a Postgres database
 
 The 10 members of the team were then divided among 3 subteams: web application subteam (4 people), mobile app subteam (3 people), backend subteam (3 people).
