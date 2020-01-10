@@ -29,8 +29,8 @@ class Menu extends Component {
     render() {
         return (
             <div className="menu">
-                <h4 className="title">Lunch menu: {this.props.name}</h4>
-                <div className="description">This is a short description of the menu: {this.props.description}</div>
+                <h4 className="title">{this.props.name}</h4>
+                <div className="description">{this.props.description}</div>
                 <div className="tags">
                     {this.props.tags && this.props.tags.map(tag => {
                         return (
