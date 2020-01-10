@@ -504,19 +504,31 @@ class EditRestaurantModal extends Component {
                 }, (error) => {
                     switch (error.name) {
                         case "AjaxTimeoutError":
-                            thisTemp.setState({serverMessage: "The request timed out."});
+                            thisTemp.setState({
+                                serverMessage: "The request timed out."
+                            });
                             break;
                         case "InternalError":
                         case "AjaxError":
                             if (error.status === 0 && error.response === "") {
-                                thisTemp.setState({serverMessage: "There is no connection to the server."});
+                                thisTemp.setState({
+                                    serverMessage: "There is no connection to the server."
+                                });
+                            } else if (error.status === 400) {
+                                thisTemp.setState({
+                                    serverMessage: ""
+                                });
                             } else {
-                                thisTemp.setState({serverMessage: error.response});
+                                thisTemp.setState({
+                                    serverMessage: error.response
+                                });
                             }
                             break;
                         default:
                             console.log(error);
-                            thisTemp.setState({serverMessage: "Something is not like it is supposed to be."});
+                            thisTemp.setState({
+                                serverMessageFinishedLoadingAvailableTags: "Something is not like it is supposed to be."
+                            });
                             break;
                     }
                 }
