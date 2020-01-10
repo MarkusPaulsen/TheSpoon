@@ -34,11 +34,13 @@ The folder of the mobile app is "mobileApp". Inside that there is another README
 The project has been developed with the following technologies:
 - Server hosting: Heroku
 - Backend: NodeJS
+- Testing the backend: Jest
 - API reference: Swagger
 - Database: Postgres
 - Frontend web: React
+- Testing the web app: Jest
 - Frontend mobile: React Native with Expo
-- Testing tool used to test backend, web and mobile: Jest
+- Testing the mobile app: Jest, Enzyme
 - Continuous integration: Travis CI
 - Textual communication: Slack
 - Meetings: Zoom
