@@ -51,6 +51,9 @@ export const STUB_DELETE_REVIEW = reviewID => {
 export const SERVER_DELETE_REVIEW = reviewID => {
   return `https://thespoon.herokuapp.com/api/user/customer/review/${reviewID}`;
 };
+export const SERVER_PROFILE_UPDATEUSERINFO = `https://thespoon.herokuapp.com/api/user/customer/`;
+export const SERVER_PROFILE_CHANGEPASSWORD = `https://thespoon.herokuapp.com/api/user/customer/password/`;
+
 //ReviewAddImage
 export const STUB_POST_IMAGE = `http://192.168.1.110:8080/api/image/`;
 export const SERVER_POST_IMAGE = `https://thespoon.herokuapp.com/api/image/`;

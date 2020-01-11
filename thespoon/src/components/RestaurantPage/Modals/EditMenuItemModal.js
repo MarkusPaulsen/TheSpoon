@@ -1,20 +1,19 @@
 //<editor-fold desc="React">
 import React, {Component} from "react";
 //</editor-fold>
-//<editor-fold desc="Redux">
-import {connect} from "react-redux";
-//</editor-fold>
 //<editor-fold desc="RxJs">
 import {bindCallback, fromEvent, of, throwError} from "rxjs";
 import {ajax} from "rxjs/ajax";
-import {catchError, exhaustMap, map, take, bufferTime, filter, distinctUntilChanged} from "rxjs/operators";
-import {readFileURL} from "../Tools/FileReader";
+import {bufferTime, catchError, distinctUntilChanged, exhaustMap, map, take, filter} from "rxjs/operators";
+import {readFileURL} from "../Tools/FileReader"
+//</editor-fold>
+//<editor-fold desc="Redux">
+import {connect} from "react-redux";
 //</editor-fold>
 //<editor-fold desc="Bootstrap">
 import {Modal} from "react-bootstrap";
 //</editor-fold>
 //<editor-fold desc="Validator">
-import validator from "validator";
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import Button from "react-validation/build/button";
@@ -23,13 +22,11 @@ import FormValidator from "../../../validation/FormValidator";
 //</editor-fold>
 
 //<editor-fold desc="Constants">
-import {paths} from "../../../constants/paths";
-import {timeout} from "../../../constants/timeout";
+import {paths} from "../../../constants/Paths";
+import {timeouts} from "../../../constants/Timeouts";
 //</editor-fold>
 //<editor-fold desc="Icons">
 import {IconExit} from "../../Icons";
-//</editor-fold>
-//<editor-fold desc="Items">
 import TagItem from "../Items/TagItem";
 
 //</editor-fold>
@@ -50,13 +47,6 @@ class EditMenuItemModal extends Component {
         }, {
             field: "name",
             method: (name) => {
-                return validator.isAlphanumeric(name);
-            },
-            validWhen: true,
-            message: "Name is required to be alphanumeric."
-        }, {
-            field: "name",
-            method: (name) => {
                 return name.length >= 1;
             },
             validWhen: true,
@@ -66,13 +56,6 @@ class EditMenuItemModal extends Component {
             method: "isEmpty",
             validWhen: false,
             message: "Description name is required."
-        }, {
-            field: "description",
-            method: (description) => {
-                return validator.isAlphanumeric(description);
-            },
-            validWhen: true,
-            message: "Description is required to be alphanumeric."
         }, {
             field: "description",
             method: (description) => {
@@ -117,22 +100,22 @@ class EditMenuItemModal extends Component {
             validation: this.validator.valid(),
             serverMessage: "",
             submitted: false,
-            //<editor-fold desc="Restaurant states">
-            name: this.props.currentMenuItem.name,
-            description: this.props.currentMenuItem.description,
-            priceEuros: this.props.currentMenuItem.priceEuros,
-            type: this.props.currentMenuItem.type,
+            //<editor-fold desc="Menu Item States">
+            name: this.props._menuItem.name,
+            description: this.props._menuItem.description,
+            priceEuros:  parseFloat(this.props._menuItem.priceEuros).toFixed(2),
+            type: this.props._menuItem.type,
             selectedFile: null,
             selectedFileData: null,
-            imageID: this.props.currentMenuItem.imageID,
+            imageID: (this.props._menuItem.imageLink).split("/")[3],
             imageMessage: "",
             availableTags: [],
             serverMessageFinishedLoadingAvailableTags: "",
             finishedLoadingAvailableTags: false,
             autocompleteTags: [],
-            chosenTags: this.props.menu.tags.map((tag) => {
+            chosenTags: this.props._menuItem.tags ? this.props._menuItem.tags.map((tag) => {
                 return tag.name
-            }),
+            }) : [],
             tagsMessage: ""
 
             //</editor-fold>
@@ -150,7 +133,7 @@ class EditMenuItemModal extends Component {
             url: paths["restApi"]["tag"],
             method: "GET",
             headers: {"X-Auth-Token": thisTemp.state.token},
-            timeout: timeout,
+            timeout: timeouts,
             responseType: "text"
         })
             .pipe(
@@ -315,7 +298,7 @@ class EditMenuItemModal extends Component {
                     method: "POST",
                     headers: {"X-Auth-Token": thisTemp.state.token},
                     body: formData,
-                    timeout: timeout,
+                    timeout: timeouts,
                     responseType: "text"
                 })
             }), catchError((error) => {
@@ -332,7 +315,8 @@ class EditMenuItemModal extends Component {
                             thisTemp.setState({
                                 imageMessage: "Image could not be uploaded, as the request timed out.",
                                 serverMessage: "",
-                                selectedFile: null
+                                selectedFile: null,
+                                selectedFileData: null
                             });
                             break;
                         case "InternalError":
@@ -341,13 +325,15 @@ class EditMenuItemModal extends Component {
                                 thisTemp.setState({
                                     imageMessage: "Image could not be uploaded, as there is no connection to the server.",
                                     serverMessage: "",
-                                    selectedFile: null
+                                    selectedFile: null,
+                                    selectedFileData: null
                                 });
                             } else {
                                 thisTemp.setState({
                                     imageMessage: "Image could not be uploaded, as " + error.response,
                                     serverMessage: "",
-                                    selectedFile: null
+                                    selectedFile: null,
+                                    selectedFileData: null
                                 });
                             }
                             break;
@@ -356,7 +342,8 @@ class EditMenuItemModal extends Component {
                             thisTemp.setState({
                                 imageMessage: "Something is not like it is supposed to be.",
                                 serverMessage: "",
-                                selectedFile: null
+                                selectedFile: null,
+                                selectedFileData: null
                             });
                             break;
                     }
@@ -406,7 +393,7 @@ class EditMenuItemModal extends Component {
                 return bindCallback(thisTemp.setState).call(thisTemp, {
                     name: values.name,
                     description: values.description,
-                    priceEuros: parseInt(values.priceEuros)
+                    priceEuros: parseFloat(values.priceEuros)
                 });
             }), catchError((error) => {
                 return throwError(error);
@@ -425,9 +412,9 @@ class EditMenuItemModal extends Component {
                     thisTemp.setState({serverMessage: "New dish is edited"});
                     return ajax({
                         url: paths["restApi"]["menu"] + "/"
-                            + thisTemp.props.currentMenu.menuID + "/"
+                            + thisTemp.props._menu.menuID + "/"
                             + "menuItem" + "/"
-                            + thisTemp.props.currentMenuItem.menuItemID,
+                            + thisTemp.props._menuItem.menuItemID,
                         method: "PUT",
                         headers: {"Content-Type": "application/json", "X-Auth-Token": thisTemp.state.token},
                         body: {
@@ -438,7 +425,7 @@ class EditMenuItemModal extends Component {
                             imageID: thisTemp.state.imageID,
                             tags: thisTemp.state.chosenTags
                         },
-                        timeout: timeout,
+                        timeout: timeouts,
                         responseType: "text"
                     })
                 } else {
@@ -454,7 +441,7 @@ class EditMenuItemModal extends Component {
             .pipe(take(1))
             .subscribe(
                 () => {
-                    thisTemp.props.backgroundPage.update();
+                    thisTemp.props._backgroundPage.update();
                     thisTemp.props.onHide();
                 }, (error) => {
                     switch (error.name) {
@@ -485,9 +472,9 @@ class EditMenuItemModal extends Component {
             .pipe(exhaustMap(() => {
                 return ajax({
                     url: paths["restApi"]["menu"] + "/"
-                        + thisTemp.props.currentMenu.menuID + "/"
+                        + thisTemp.props._menu.menuID + "/"
                         + "menuItem" + "/"
-                        + thisTemp.props.currentMenuItem.menuItemID,
+                        + thisTemp.props._menuItem.menuItemID,
                     method: "DELETE",
                     headers: {"Content-Type": "application/json", "X-Auth-Token": thisTemp.state.token},
                 })
@@ -497,7 +484,7 @@ class EditMenuItemModal extends Component {
             .pipe(take(1))
             .subscribe(
                 () => {
-                    thisTemp.props.backgroundPage.update();
+                    thisTemp.props._backgroundPage.update();
                     thisTemp.props.onHide();
                 }, (error) => {
                     switch (error.name) {
@@ -526,7 +513,7 @@ class EditMenuItemModal extends Component {
     //<editor-fold desc="Render">
     render() {
         let validation = this.submitted ? this.validator.validate(this.state) : this.state.validation;
-        if (this.props.backgroundPage == null) {
+        if (this.props._backgroundPage == null) {
             return (<p>Something went wrong.</p>);
         } else if (this.state.token == null || this.state.token === "null") {
             return (<p>Something went wrong.</p>);
@@ -534,41 +521,93 @@ class EditMenuItemModal extends Component {
             //<editor-fold desc="Render Token">
             return (
                 <Modal.Body>
-                    <button className="exit" onClick={this.props.onHide}><IconExit/></button>
+                    <button
+                        className="exit"
+                        onClick={this.props.onHide}
+                    >
+                        <IconExit/>
+                    </button>
                     <div className="modal-wrapper restaurant-info">
-                        <Form ref={(c) => {
-                            this.form = c;
-                        }} onSubmit={(e) => this.handleSubmit(e)}>
-                            <h2>Edit</h2>
+                        <Form
+                            ref={(c) => {this.form = c;}}
+                            onSubmit={(e) => this.handleSubmit(e)}
+                            autocomplete="on"
+                        >
+                            <h2>
+                                Edit
+                            </h2>
                             <div className="account-type">
-                                <h4><span className="role">Dish</span></h4>
+                                <h4>
+                                    <span className="role">
+                                        Item
+                                    </span>
+                                </h4>
                             </div>
                             <div className="input-field">
-                                <label>Dish name</label>
-                                <Input type="text" name="name" value={this.state.name}/>
+                                <label>
+                                    Name
+                                </label>
+                                <Input
+                                    type="text"
+                                    name="name"
+                                    value={this.state.name}
+                                    required
+                                />
                             </div>
                             <div className="error-block">
-                                <small>{validation.name.message}</small>
+                                <small>
+                                    {validation.name.message}
+                                </small>
                             </div>
                             <div className="input-field">
-                                <label>Description</label>
-                                <Textarea name="description" value={this.state.description}/>
+                                <label>
+                                    Description
+                                </label>
+                                <Textarea
+                                    name="description"
+                                    value={this.state.description}
+                                    required
+                                />
                             </div>
                             <div className="error-block">
-                                <small>{validation.description.message}</small>
+                                <small>
+                                    {validation.description.message}
+                                </small>
                             </div>
                             <div className="input-field">
-                                <label>Price in Euro (€)</label>
-                                <Input name="priceEuros" placeholder="Price" value={this.state.priceEuros}/>
+                                <label>
+                                    Price in Euro (€)
+                                </label>
+                                <Input
+                                    type="number"
+                                    min="0"
+                                    step="0.01"
+                                    name="priceEuros"
+                                    placeholder="Price"
+                                    value={this.state.priceEuros}
+                                    required
+                                />
                             </div>
                             <div className="error-block">
-                                <small>{validation.priceEuros.message}</small>
+                                <small>
+                                    {validation.priceEuros.message}
+                                </small>
                             </div>
                             <div className="input-field image">
-                                <label>Image</label>
-                                <input type="file" name="file" id="file" className="inputfile"
-                                       onChange={this.handleFileSubmit}/>
-                                <label htmlFor="file">+ Upload image</label>
+                                <label>
+                                    Image
+                                </label>
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    name="file"
+                                    id="file"
+                                    className="inputfile"
+                                    onChange={this.handleFileSubmit}
+                                />
+                                <label htmlFor="file">
+                                    + Upload image
+                                </label>
                                 {this.state.selectedFile &&
                                 <label className="selected-file">
                                     <span
@@ -582,37 +621,76 @@ class EditMenuItemModal extends Component {
                                 </label>
                                 }
                                 {this.state.selectedFileData &&
-                                <img src={this.state.selectedFileData} alt={this.state.selectedFile.name}/>
+                                <div className="image-wrapper">
+                                    <div className="image" style={{backgroundImage: `url(${this.state.selectedFileData})`}}/>
+                                </div>
                                 }
                             </div>
                             <div className="error-block">
-                                <small>{this.state.imageMessage}</small>
+                                <small>
+                                    {this.state.imageMessage}
+                                </small>
                             </div>
                             <div className="input-field">
-                                <label>Available Tags</label>
-                                <input id="tagInput" type="text" name="tags" placeholder="Search"/>
+                                <label>
+                                    Available Tags
+                                </label>
+                                <input
+                                    id="tagInput"
+                                    type="text"
+                                    name="tags"
+                                    placeholder="Search"
+                                />
                                 <ul>
                                     {this.state.autocompleteTags.map((tag) => {
-                                        return (<TagItem tag={tag} modal={this} added={false}/>);
+                                        return (
+                                            <TagItem
+                                                tag={tag}
+                                                modal={this}
+                                                added={false}
+                                            />
+                                            );
                                     })}
                                 </ul>
                             </div>
                             <div className="input-field">
-                                <label>Chosen Tags</label>
+                                <label>
+                                    Chosen Tags
+                                </label>
                                 <ul>
                                     {this.state.chosenTags.map((tag) => {
-                                        return (<TagItem tag={tag} modal={this} added={true}/>);
+                                        return (
+                                            <TagItem
+                                                tag={tag}
+                                                modal={this}
+                                                added={true}
+                                            />
+                                            );
                                     })}
                                 </ul>
                             </div>
                             <div className="error-block">
-                                <small>{this.state.tagsMessage}</small>
+                                <small>
+                                    {this.state.tagsMessage}
+                                </small>
                             </div>
-                            <Button type="submit" className="normal">Save</Button>
-                            <Button type="button" className="delete-button" onClick={this.handleDelete}>Delete
-                                Dish</Button>
+                            <Button
+                                type="submit"
+                                className="normal"
+                            >
+                                Save
+                            </Button>
+                            <Button
+                                type="button"
+                                className="delete-button"
+                                onClick={this.handleDelete}
+                            >
+                                Delete Item
+                            </Button>
                             <div className="error-block">
-                                <small>{this.state.serverMessage}</small>
+                                <small>
+                                    {this.state.serverMessage}
+                                </small>
                             </div>
                         </Form>
                     </div>
@@ -630,10 +708,9 @@ class EditMenuItemModal extends Component {
 //<editor-fold desc="Redux">
 const mapStateToProps = (state) => {
     return {
-        backgroundPage: state.backgroundPageReducer.backgroundPage,
-        modalVisibilityFilter: state.modalVisibiltyFilterReducer.modalVisibilityFilter,
-        currentMenu: state.currentMenuReducer.currentMenu,
-        currentMenuItem: state.currentMenuReducer.currentMenuItem
+        _backgroundPage: state._backgroundPageReducer._backgroundPage,
+        _menu: state._menuReducer._menu,
+        _menuItem: state._menuReducer._menuItem
     };
 };
 

@@ -13,7 +13,6 @@ import {catchError, exhaustMap, map, take, bufferTime, filter, distinctUntilChan
 import {Modal} from "react-bootstrap";
 //</editor-fold>
 //<editor-fold desc="Validator">
-import validator from "validator";
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import Button from "react-validation/build/button";
@@ -22,8 +21,8 @@ import FormValidator from "../../../validation/FormValidator";
 //</editor-fold>
 
 //<editor-fold desc="Constants">
-import {paths} from "../../../constants/paths";
-import {timeout} from "../../../constants/timeout";
+import {paths} from "../../../constants/Paths";
+import {timeouts} from "../../../constants/Timeouts";
 //</editor-fold>
 //<editor-fold desc="Icons">
 import {IconExit} from "../../Icons";
@@ -49,13 +48,6 @@ class AddMenuModal extends Component {
         }, {
             field: "name",
             method: (name) => {
-                return validator.isAlphanumeric(name);
-            },
-            validWhen: true,
-            message: "Name is required to be alphanumeric."
-        }, {
-            field: "name",
-            method: (name) => {
                 return name.length >= 1;
             },
             validWhen: true,
@@ -65,13 +57,6 @@ class AddMenuModal extends Component {
             method: "isEmpty",
             validWhen: false,
             message: "Description name is required."
-        }, {
-            field: "description",
-            method: (description) => {
-                return validator.isAlphanumeric(description);
-            },
-            validWhen: true,
-            message: "Description is required to be alphanumeric."
         }, {
             field: "description",
             method: (description) => {
@@ -118,7 +103,7 @@ class AddMenuModal extends Component {
             url: paths["restApi"]["tag"],
             method: "GET",
             headers: {"X-Auth-Token": thisTemp.state.token},
-            timeout: timeout,
+            timeout: timeouts,
             responseType: "text"
         })
             .pipe(
@@ -275,7 +260,7 @@ class AddMenuModal extends Component {
                             description: thisTemp.state.description,
                             tags: thisTemp.state.chosenTags
                         },
-                        timeout: timeout,
+                        timeout: timeouts,
                         responseType: "text"
                     })
                 } else {
@@ -291,7 +276,7 @@ class AddMenuModal extends Component {
             .pipe(take(1))
             .subscribe(
                 () => {
-                    thisTemp.props.backgroundPage.update();
+                    thisTemp.props._backgroundPage.update();
                     thisTemp.props.onHide();
                 }, (error) => {
                     switch (error.name) {
@@ -320,7 +305,7 @@ class AddMenuModal extends Component {
     //<editor-fold desc="Render">
     render() {
         let validation = this.submitted ? this.validator.validate(this.state) : this.state.validation;
-        if (this.props.backgroundPage == null) {
+        if (this.props._backgroundPage == null) {
             return (<p>Something went wrong.</p>);
         } else if (this.state.token == null || this.state.token === "null") {
             return (<p>Something went wrong.</p>);
@@ -328,49 +313,107 @@ class AddMenuModal extends Component {
             //<editor-fold desc="Render Token">
             return (
                 <Modal.Body>
-                    <button className="exit" onClick={this.props.onHide}><IconExit/></button>
+                    <button
+                        className="exit"
+                        onClick={this.props.onHide}
+                    >
+                        <IconExit/>
+                    </button>
                     <div className="modal-wrapper add-menu">
-                        <Form ref={(c) => {
-                            this.form = c;
-                        }} onSubmit={(e) => this.handleSubmit(e)}>
-                            <h2 className="title">Create menu</h2>
+                        <Form
+                            ref={(c) => {
+                                this.form = c;
+                            }}
+                            onSubmit={(e) => {
+                                this.handleSubmit(e)
+                            }}
+                            autocomplete="on"
+                        >
+                            <h2 className="title">
+                                Create menu
+                            </h2>
                             <div className="input-field">
                                 <label>Name</label>
-                                <Input type="text" name="name" placeholder="Name"/>
+                                <Input
+                                    type="text"
+                                    name="name"
+                                    placeholder="Name"
+                                    required
+                                />
                             </div>
                             <div className="error-block">
-                                <small>{validation.name.message}</small>
+                                <small>
+                                    {validation.name.message}
+                                </small>
                             </div>
                             <div className="input-field">
-                                <label>Description</label>
-                                <Textarea name="description" placeholder="Description"/>
+                                <label>
+                                    Description
+                                </label>
+                                <Textarea
+                                    name="description"
+                                    placeholder="Description"
+                                    required
+                                />
                             </div>
                             <div className="error-block">
-                                <small>{validation.description.message}</small>
+                                <small>
+                                    {validation.description.message}
+                                </small>
                             </div>
                             <div className="input-field">
-                                <label>Available Tags</label>
-                                <input id="tagInput" type="text" name="tags" placeholder="Search"/>
+                                <label>
+                                    Available Tags
+                                </label>
+                                <input
+                                    id="tagInput"
+                                    type="text"
+                                    name="tags"
+                                    placeholder="Search"
+                                />
                                 <ul>
                                     {this.state.autocompleteTags.map((tag) => {
-                                        return (<TagItem tag={tag} modal={this} added={false}/>);
+                                        return (
+                                            <TagItem
+                                                tag={tag}
+                                                modal={this}
+                                                added={false}
+                                            />
+                                        );
                                     })}
                                 </ul>
                             </div>
                             <div className="input-field">
-                                <label>Chosen Tags</label>
+                                <label>
+                                    Chosen Tags
+                                </label>
                                 <ul>
                                     {this.state.chosenTags.map((tag) => {
-                                        return (<TagItem tag={tag} modal={this} added={true}/>);
+                                        return (
+                                            <TagItem
+                                                tag={tag}
+                                                modal={this}
+                                                added={true}
+                                            />
+                                        );
                                     })}
                                 </ul>
                             </div>
                             <div className="error-block">
-                                <small>{this.state.tagsMessage}</small>
+                                <small>
+                                    {this.state.tagsMessage}
+                                </small>
                             </div>
-                            <Button type="submit" className="normal">Create</Button>
+                            <Button
+                                type="submit"
+                                className="normal"
+                            >
+                                Create
+                            </Button>
                             <div className="error-block">
-                                <small>{this.state.serverMessage}</small>
+                                <small>
+                                    {this.state.serverMessage}
+                                </small>
                             </div>
                         </Form>
                     </div>
@@ -387,7 +430,7 @@ class AddMenuModal extends Component {
 //<editor-fold desc="Redux">
 const mapStateToProps = (state) => {
     return {
-        backgroundPage: state.backgroundPageReducer.backgroundPage
+        _backgroundPage: state._backgroundPageReducer._backgroundPage
     };
 };
 

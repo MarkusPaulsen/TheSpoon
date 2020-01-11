@@ -4,9 +4,14 @@ import {Link, Redirect} from "react-router-dom";
 //</editor-fold>
 //<editor-fold desc="Redux">
 import {connect} from "react-redux";
-import {setBackgroundPage} from "../../actionCreators/BackgroundPageActionCreator";
-import MainLayout from "../Layout/MainLayout";
+import {_setBackgroundPage} from "../../actionCreators/BackgroundPageActionCreator";
 //</editor-fold>
+
+//<editor-fold desc="Layout">
+import MainLayout from "../Layout/MainLayout";
+
+//</editor-fold>
+
 
 class FailPage extends Component {
 
@@ -26,15 +31,11 @@ class FailPage extends Component {
 
     //<editor-fold desc="Component Lifecycle">
     componentDidMount() {
-        this.props.setBackgroundPageHere(this);
-        this.state = {
+        this.props._setBackgroundPage(this);
+        this.setState({
             token: window.localStorage.getItem("token"),
             user: window.localStorage.getItem("user")
-        };
-    }
-
-    componentWillUnmount() {
-        this.props.setBackgroundPageHere(null);
+        });
     }
 
     //</editor-fold>
@@ -42,7 +43,7 @@ class FailPage extends Component {
     //<editor-fold desc="Business Logic">
     update = () => {
         window.location.reload();
-    }
+    };
 
     //</editor-fold>
 
@@ -137,8 +138,8 @@ class FailPage extends Component {
 //<editor-fold desc="Redux">
 const mapDispatchToProps = (dispatch) => {
     return {
-        setBackgroundPageHere: (backgroundPage) => {
-            dispatch(setBackgroundPage(backgroundPage));
+        _setBackgroundPage: (backgroundPage) => {
+            dispatch(_setBackgroundPage(backgroundPage));
         }
     };
 };

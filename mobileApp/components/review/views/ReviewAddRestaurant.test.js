@@ -1,10 +1,14 @@
 import React from "react";
 import { mount } from "enzyme";
 import ReviewAddRestaurant from "./ReviewAddRestaurant";
+import { AsyncStorage as storage } from "react-native";
 
 const setUp = (props = {}) => {
   return mount(<ReviewAddRestaurant {...props} />);
 };
+
+const userToken =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOjI5LCJpYXQiOjE1NjE5OTg2NjB9.SWYMJXTTM8pe6NQw1QwS-d8Btt6Isuzzk5JtH775uV0";
 
 const restaurants = [
   { restaurantID: "1", name: "Pizzeria Auum" },
@@ -15,17 +19,20 @@ const restaurants = [
 describe("Review Add Restaurant Component", () => {
   let component;
 
-  beforeEach(() => {
+  beforeEach(async() => {
     const navigation = {
       navigate: jest.fn(),
       getParam: (param, defaultValue) => {
         return defaultValue;
-      }
+      },
+      addListener: (param, func) => func()
     };
+
+    await storage.setItem("userToken", userToken);
 
     // Mock the functions called in componentDidMount
     jest
-      .spyOn(ReviewAddRestaurant.prototype, "getAllMenus")
+      .spyOn(ReviewAddRestaurant.prototype, "getAllRestaurants")
       .mockImplementationOnce(() => Promise.resolve());
 
     component = setUp({ navigation });
@@ -54,10 +61,10 @@ describe("Review Add Restaurant Component", () => {
 
     const instance = component.instance();
     await instance.componentDidMount();
-    component.update();
+    await component.update();
 
     expect(component.state().imageID).toBe("0");
-    expect(component.state().token).toBe("0");
+    expect(component.state().token).toBe(userToken);
 
     expect(component.state().restaurants).toEqual([
       { restaurantID: "1", name: "name1" },
@@ -74,7 +81,7 @@ describe("Review Add Restaurant Component", () => {
     component.update();
 
     expect(component.state().imageID).toBe("0");
-    expect(component.state().token).toBe("0");
+    expect(component.state().token).toBe(userToken);
 
     expect(component.state().restaurants).toBe("");
   });

@@ -1,8 +1,12 @@
-import * as backgroundPageActions from "../actions/BackgroundPageAction";
+//<editor-fold desc="Actions">
+import {_SET_BACKGROUND_PAGE} from "../actions/BackgroundPageAction";
+//</editor-fold>
 
-export const setBackgroundPage = (backgroundPage) => {
+//<editor-fold desc="Creators">
+export const _setBackgroundPage = (_backgroundPage) => {
     return {
-        type: backgroundPageActions.SET_BACKGROUND_PAGE,
-        backgroundPage: backgroundPage,
+        type: _SET_BACKGROUND_PAGE,
+        _backgroundPage: _backgroundPage,
     };
 };
+//</editor-fold>

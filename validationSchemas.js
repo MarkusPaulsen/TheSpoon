@@ -6,36 +6,36 @@ const schemas = {
         isRestaurantOwner: Joi.boolean()
     }),
     registrationCustomerValidation: Joi.object().keys({
-        username: Joi.string().regex(/^[a-zA-Z0-9]/).min(5).required(),
+        username: Joi.string().min(5).required(),
         email: Joi.string().trim().email({minDomainAtoms: 1}).required(),
         password: Joi.string().min(5).required(),
     }),
     registrationOwnerValidation: Joi.object().keys({
-        username: Joi.string().regex(/^[a-zA-Z0-9]/).min(5).required(),
-        name: Joi.string().regex(/^[a-zA-Z0-9]/).min(1).required(),
-        surname: Joi.string().regex(/^[a-zA-Z0-9]/).min(1).required(),
+        username: Joi.string().min(5).required(),
+        name: Joi.string().min(1).required(),
+        surname: Joi.string().min(1).required(),
         email: Joi.string().trim().email({minDomainAtoms: 1}).required(),
         password: Joi.string().min(5).required(),
     }),
     registrationConsultantValidation: Joi.object().keys({
-        username: Joi.string().regex(/^[a-zA-Z0-9]/).min(5).required(),
+        username: Joi.string().min(5).required(),
         password: Joi.string().min(5).required(),
-        name: Joi.string().regex(/^[a-zA-Z0-9]/).min(1).required(),
-        surname: Joi.string().regex(/^[a-zA-Z0-9]/).min(1).required(),
+        name: Joi.string().min(1).required(),
+        surname: Joi.string().min(1).required(),
         email: Joi.string().trim().email({minDomainAtoms: 1}).required(),
         companySecret: Joi.string().min(5).required()
     }),
     //Add an empty menu to a restaurant
     addMenuValidation: Joi.object().keys({
-        name: Joi.string().regex(/^[a-zA-Z0-9]/).min(1).required(),
-        description: Joi.string().regex(/^[a-zA-Z0-9]/).min(1).required(),
-        tags: Joi.array().items(Joi.string().regex(/^[a-zA-Z0-9]/))
+        name: Joi.string().min(1).required(),
+        description: Joi.string().min(1).required(),
+        tags: Joi.array().items(Joi.string())
     }),
     //Edit a menu's information (not its items)
     editMenuValidation: Joi.object().keys({
-        name: Joi.string().regex(/^[a-zA-Z0-9]/).min(1).required(),
-        description: Joi.string().regex(/^[a-zA-Z0-9]/).min(1).required(),
-        tags: Joi.array().items(Joi.string().regex(/^[a-zA-Z0-9]/))
+        name: Joi.string().min(1).required(),
+        description: Joi.string().min(1).required(),
+        tags: Joi.array().items(Joi.string())
     }),
     //Edit restaurant's information
     configureDataOfRestaurantValidation: Joi.object().keys({
@@ -55,8 +55,8 @@ const schemas = {
     //Edit profile data of the owner
     editOwnerProfileValidation: Joi.object().keys({
         email: Joi.string().trim().email({minDomainAtoms: 1}).required(),
-        name: Joi.string().regex(/^[a-zA-Z0-9]/).min(1).required(),
-        surname: Joi.string().regex(/^[a-zA-Z0-9]/).min(1).required(),
+        name: Joi.string().min(1).required(),
+        surname: Joi.string().min(1).required(),
     }),
     //Change the password of the owner
     changeOwnerPassword: Joi.object().keys({

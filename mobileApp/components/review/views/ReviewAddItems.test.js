@@ -1,21 +1,28 @@
 import React from "react";
 import { mount } from "enzyme";
 import ReviewAddItems from "./ReviewAddItems";
+import { AsyncStorage as storage } from "react-native";
 
 const setUp = (props = {}) => {
   return mount(<ReviewAddItems {...props} />);
 };
 
+const userToken =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOjI5LCJpYXQiOjE1NjE5OTg2NjB9.SWYMJXTTM8pe6NQw1QwS-d8Btt6Isuzzk5JtH775uV0";
+
 describe("Logged in - ReviewAddItems component", () => {
   let component;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     const navigation = {
       navigate: jest.fn(),
       getParam: (param, defaultValue) => {
         return defaultValue;
-      }
+      },
+      addListener: (param, func) => func()
     };
+
+    await storage.setItem("userToken", userToken);
 
     // Mock the functions called in componentDidMount
     jest
@@ -47,9 +54,9 @@ describe("Logged in - ReviewAddItems component", () => {
     );
     const instance = component.instance();
     await instance.componentDidMount();
-    component.update();
+    await component.update();
 
-    expect(component.state().token).toBe("0");
+    expect(component.state().token).toBe(userToken);
     expect(component.state().menuID).toBe("000");
     expect(component.state().menuName).toBe("no-menu");
     expect(component.state().imageID).toBe("0");

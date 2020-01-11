@@ -16,14 +16,15 @@ import FormValidator from "../../../validation/FormValidator";
 //</editor-fold>
 
 //<editor-fold desc="Constants">
-import {paths} from "../../../constants/paths";
-import {timeout} from "../../../constants/timeout";
+import {paths} from "../../../constants/Paths";
+import {timeouts} from "../../../constants/Timeouts";
 //</editor-fold>
 //<editor-fold desc="Icons">
 import {IconExit} from "../../Icons";
 //</editor-fold>
 //<editor-fold desc="Items">
 import ReviewItem from "../Items/ReviewItem";
+
 //</editor-fold>
 
 class PendingReviewModal extends Component {
@@ -58,7 +59,7 @@ class PendingReviewModal extends Component {
             url: paths["restApi"]["review"],
             method: "GET",
             headers: {"X-Auth-Token": thisTemp.state.token},
-            timeout: timeout,
+            timeout: timeouts,
             responseType: "text"
         })
             .subscribe(
@@ -122,38 +123,56 @@ class PendingReviewModal extends Component {
     //<editor-fold desc="Business Logic">
     update = () => {
         window.location.reload();
-    }
+    };
 
     //</editor-fold>
 
 
-
     //<editor-fold desc="Render">
     render() {
-        let validation = this.submitted ? this.validator.validate(this.state) : this.state.validation;
-        if(this.props.backgroundPage == null) {
-            return(<p>Something went wrong.</p>);
-        } else if(this.state.token == null || this.state.token === "null" ) {
-            return(<p>Something went wrong.</p>);
+        if (this.props._backgroundPage == null) {
+            return (<p>Something went wrong.</p>);
+        } else if (this.state.token == null || this.state.token === "null") {
+            return (<p>Something went wrong.</p>);
         } else {
             //<editor-fold desc="Render Token">
-            if(this.state.reviews == null) {
+            if (this.state.reviews == null) {
                 return (
                     <Modal.Body>
-                        <button className="exit" onClick={this.props.onHide}><IconExit /></button>
+                        <button
+                            className="exit"
+                            onClick={this.props.onHide}
+                        >
+                            <IconExit/>
+                        </button>
                         <p>Loading...</p>
                     </Modal.Body>
                 );
             } else {
                 return (
                     <Modal.Body>
-                        <button className="exit" onClick={this.props.onHide}><IconExit /></button>
+                        <button
+                            className="exit"
+                            onClick={this.props.onHide}
+                        >
+                            <IconExit/>
+                        </button>
                         <div className="error-block">
-                            <small>{this.state.serverMessage}</small>
+                            <small>
+                                {this.state.serverMessage}
+                            </small>
                         </div>
                         <div className="modal-wrapper add-menu">
-                            <Form ref={(c) => {this.form = c;}} onSubmit={(e) => this.handleSubmit(e)}>
-                                <h2>Pending Reviews</h2>
+                            <Form
+                                ref={(c) => {
+                                    this.form = c;
+                                }}
+                                onSubmit={(e) => this.handleSubmit(e)}
+                                autocomplete="on"
+                            >
+                                <h2>
+                                    Pending Reviews
+                                </h2>
                                 {this.state.reviews != null &&
                                 this.state.reviews.length >= 1 ? (
                                     this.state.reviews.map(review => {
@@ -182,13 +201,14 @@ class PendingReviewModal extends Component {
             //</editor-fold>
         }
     }
+
     //</editor-fold>
 }
 
 //<editor-fold desc="Redux">
 const mapStateToProps = (state) => {
     return {
-        backgroundPage: state.backgroundPageReducer.backgroundPage
+        _backgroundPage: state._backgroundPageReducer._backgroundPage
     };
 };
 

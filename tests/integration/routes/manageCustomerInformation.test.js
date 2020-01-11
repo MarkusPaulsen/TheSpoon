@@ -49,7 +49,8 @@ describe('/api/user/customer', () => {
             await Customer.create({
                 Username: "manageCustomerInformation",
                 Email: "manageCustomerInformation@mail.com",
-                Password: hashed
+                Password: hashed,
+                Nationality: "Italy"
             });
 
             //then login to get the token
