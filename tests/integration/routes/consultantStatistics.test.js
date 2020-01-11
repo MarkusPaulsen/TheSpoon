@@ -6,6 +6,7 @@ let token;
 
 const http = require('http');
 const db = require('../../../sequelizeSettings.js');
+const config=require('config');
 
 const bcrypt = require('bcrypt');
 const Customer = require('../../../models/customer.js');
@@ -156,7 +157,7 @@ async function setDatabase() {
         Surname: "Milina",
         Email: "consultant_consultantStatistics@mail.com",
         Nationality: "Croatia",
-        CompanySecret: "OurCompanyRocks",
+        CompanySecret: config.get('companySecret'),
         Password: hashed
     });
 }

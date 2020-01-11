@@ -5,6 +5,7 @@ let app;
 
 const http = require('http');
 const db = require('../../../sequelizeSettings.js');
+const config=require('config');
 
 const bcrypt = require('bcrypt');
 const Consultant = require('../../../models/consultant.js');
@@ -42,7 +43,7 @@ describe('/api/consultant/login', () => {
                 Name: "Emilio",
                 Surname: "Imperiali",
                 Email: "consultant@mail.com",
-                CompanySecret: "OurCompanyRocks",
+                CompanySecret: config.get('companySecret'),
                 Password: hashed
             });
 
