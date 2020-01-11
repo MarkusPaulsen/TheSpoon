@@ -1,7 +1,7 @@
 swagger: "2.0"
 info:
   description: "This is the API reference of The Spoon project.\n \n VERSIONING: The version number works in this way: it's composed of two numbers separated by a point. The first number identifies the Sprint, so for example the version 2.1 of the API reference is related to the Sprint number 2. The second number starts from 0 and has to be increased by one each time the file is modified. The person who modifies this document is responsible for increasing the number.\n \n GROUPING OF ENDPOINTS: The endpoints are grouped by dividing them into customers' operations and owners' operations. All the endpoints that are not strictly related to customers nor owners remain inside the default group.\n \n AUTHENTICATION/AUTHORIZATION: The json web token returned when the login is performed is supposed to be put into x-auth-token header in the endpoints that require authorization"
-  version: "8.1"
+  version: "8.2"
   title: "The Spoon API reference"
 tags:
   - name: "customer"
@@ -959,7 +959,7 @@ paths:
         - "customer"
         - "Frikk"
       summary: "Edit profile data of the customer"
-      description: "Edit profile data of the logged in customer. All the customer data must be sent with this endpoint, even if it's not changed (in that case the fields must contain the current values). The password can't be changed through this endpoint, but the dedicated one should be used instead.\n Valid values for Gender are 'Male/Female/Other'.\n The username, the name and the surname can't be changed.\n The age is a range, for example '26-30'."
+      description: "Edit profile data of the logged in customer. All the customer data must be sent with this endpoint, even if it's not changed (in that case the fields must contain the current values). The password can't be changed through this endpoint, but the dedicated one should be used instead.\n Valid values for Gender are 'Male/Female/Other'.\n The username, the name and the surname can't be changed.\n The age is a range, for example '24-34'."
       consumes:
         - "application/json"
       parameters:
@@ -2120,8 +2120,8 @@ definitions:
     example:
       email: "emilioimperiali@mail.it"
       gender: "Male"
-      ageRange: "26-30"
-      nationality: "Italian"
+      ageRange: "24-34"
+      nationality: "Italy"
   OwnerEditData:
     type: "object"
     properties:
@@ -2152,8 +2152,8 @@ definitions:
       username: "emilio_imperiali"
       email: "emilioimperiali@mail.it"
       gender: "Male"
-      ageRange: "26-30"
-      nationality: "Italian"
+      ageRange: "24-34"
+      nationality: "Italy"
   OwnerData:
     type: "object"
     properties:
@@ -2239,7 +2239,7 @@ definitions:
           $ref: "#/definitions/MenuForStatistics"
     example:
       totalRegisteredCustomers: 120
-      customersPerNationality: [{"nationality": "Italian", "numberOfCustomers": 10}, {"nationality": "French", "numberOfCustomers": 8}, {"nationality": "Croatian", "numberOfCustomers": 11}]
+      customersPerNationality: [{"nationality": "Italy", "numberOfCustomers": 10}, {"nationality": "French", "numberOfCustomers": 8}, {"nationality": "Croatian", "numberOfCustomers": 11}]
       customersPerGender: [{"gender": "Male", "numberOfCustomers": 10}, {"gender": "Female", "numberOfCustomers": 8}, {"gender": "Other", "numberOfCustomers": 3}]
       customersPerAgeRange: [{"ageRange": "18-25", "numberOfCustomers": 34}, {"ageRange": "25-35", "numberOfCustomers": 28}, {"ageRange": "35-50", "numberOfCustomers": 15}]
       numberOfSearchesPerWord: [{"word": "Pasta", "numberOfSearches": 51}, {"word": "Pizza", "numberOfSearches": 83}, {"word": "Spaghetti", "numberOfSearches": 31}]
@@ -2296,13 +2296,8 @@ definitions:
         type: "array"
         items:
           $ref: "#/definitions/NumberOfSearchesPerWord"
-      menusWithRatings:
-        type: "array"
-        items:
-          $ref: "#/definitions/MenuForStatistics"
     example:
       totalRegisteredCustomers: 120
       customersPerGender: [{"gender": "Male", "numberOfCustomers": 10}, {"gender": "Female", "numberOfCustomers": 8}, {"gender": "Other", "numberOfCustomers": 3}]
       customersPerAgeRange: [{"ageRange": "18-25", "numberOfCustomers": 34}, {"ageRange": "25-35", "numberOfCustomers": 28}, {"ageRange": "35-50", "numberOfCustomers": 15}]
       numberOfSearchesPerWord: [{"word": "Pasta", "numberOfSearches": 51}, {"word": "Pizza", "numberOfSearches": 83}, {"word": "Spaghetti", "numberOfSearches": 31}]
-      menusWithRatings: [{"menuName": "New menu", "rating": 3.4}, {"menuName": "Dinner menu", "rating": 4.2}, {"menuName": "Menu of the day", "rating": 5}, {"menuName": "Launch menu", "rating": 2}, {"menuName": "Exotic menu", "rating": 3.9}]
