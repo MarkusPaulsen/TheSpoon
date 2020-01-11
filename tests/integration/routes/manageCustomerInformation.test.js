@@ -68,7 +68,6 @@ describe('/api/user/customer', () => {
                     Username: "manageCustomerInformation"
                 }
             });
-        //    console.log(res);
 
             expect(res.status).toBe(200);
 
@@ -155,7 +154,6 @@ describe('/api/user/customer', () => {
                     Username: "manageCustomerInformation"
                 }
             });
-             //   console.log(res);
 
             expect(res.status).toBe(200);
 
@@ -235,7 +233,6 @@ describe('/api/user/customer', () => {
                     Username: "manageCustomerInformation"
                 }
             });
-            //   console.log(res);
 
             expect(res.status).toBe(200);
 
@@ -319,7 +316,6 @@ describe('/api/user/customer', () => {
                     Username: "manageCustomerInformation"
                 }
             });
-            //   console.log(res);
 
             expect(res.status).toBe(200);
 
