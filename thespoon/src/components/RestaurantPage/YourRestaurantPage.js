@@ -7,15 +7,15 @@ import {ajax} from "rxjs/ajax";
 //</editor-fold>
 //<editor-fold desc="Redux">
 import {connect} from "react-redux";
-import {setBackgroundPage} from "../../actionCreators/BackgroundPageActionCreator";
-import {setModalVisibilityFilterAction} from "../../actionCreators/modalVisibilityFilterActionCreators";
-import {setCurrentRestaurantInformation} from "../../actionCreators/restaurantActionCreators";
+import {_setBackgroundPage} from "../../actionCreators/BackgroundPageActionCreator";
+import {_setModal} from "../../actionCreators/ModalActionCreators";
+import {_setRestaurantInfo} from "../../actionCreators/RestaurantActionCreators";
 //</editor-fold>
 
 //<editor-fold desc="Constants">
-import {modalVisibilityFilters} from "../../constants/modalVisibiltyFilters";
-import {paths} from "../../constants/paths";
-import {timeout} from "../../constants/timeout"
+import {modals} from "../../constants/Modals";
+import {paths} from "../../constants/Paths";
+import {timeouts} from "../../constants/Timeouts"
 //</editor-fold>
 //<editor-fold desc="Containers">
 import FilterLink from "../../containers/FilterModalLink";
@@ -56,7 +56,7 @@ class YourRestaurantPage extends Component {
 
     //<editor-fold desc="Component Lifecycle">
     componentDidMount() {
-        this.props.setBackgroundPageHere(this);
+        this.props._setBackgroundPageHere(this);
         this.setState({
             token: window.localStorage.getItem("token"),
             user: window.localStorage.getItem("user")
@@ -195,7 +195,7 @@ class YourRestaurantPage extends Component {
     //<editor-fold desc="Business Logic">
     update = () => {
         window.location.reload();
-    }
+    };
 
     //</editor-fold>
 
@@ -251,7 +251,7 @@ class YourRestaurantPage extends Component {
                                         <div className="no-menus">
                                             <h4>Your menu has pending reviews...</h4>
                                             <button className="wide">
-                                                <FilterLink filter={modalVisibilityFilters.SHOW_PENDING_REVIEW}>
+                                                <FilterLink modal={modals.SHOW_PENDING_REVIEW}>
                                                     See Reviews
                                                 </FilterLink>
                                             </button>
@@ -307,15 +307,15 @@ class YourRestaurantPage extends Component {
 //<editor-fold desc="Redux">
 const mapDispatchToProps = (dispatch) => {
     return {
-        setBackgroundPageHere: (backgroundPage) => {
-            dispatch(setBackgroundPage(backgroundPage));
+        _setBackgroundPage: (_backgroundPage) => {
+            dispatch(_setBackgroundPage(_backgroundPage));
         },
         //<editor-fold desc="Redux Restaurant">
-        setRestaurantHere: (currentRestaurantInformation) => {
-            dispatch(setCurrentRestaurantInformation(currentRestaurantInformation));
+        _setRestaurantInfo: (_restaurantInformation) => {
+            dispatch(_setRestaurantInfo(_restaurantInformation));
         },
-        openAddRestaurantModal: () => {
-            dispatch(setModalVisibilityFilterAction(modalVisibilityFilters.SHOW_ADD_RESTAURANT));
+        _openAddRestaurantModal: () => {
+            dispatch(_setModal(modals.SHOW_ADD_RESTAURANT));
         }
         //</editor-fold>
     };

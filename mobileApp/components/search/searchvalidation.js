@@ -8,7 +8,7 @@ export default function Validate(fieldName, value) {
         maximum: 40
         //message: "^Search text must be between 1 and 40 characters"
       },
-      format: { pattern: "^[A-Za-z]+$" }
+      format: { pattern: "^[A-Za-z ]+$" }
     }
   };
 

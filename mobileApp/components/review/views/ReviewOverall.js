@@ -5,7 +5,9 @@ import {
   StyleSheet,
   AsyncStorage,
   Alert,
-  TouchableOpacity
+  TouchableOpacity,
+  SafeAreaView,
+  ActivityIndicator
 } from "react-native";
 import * as Typography from "../../../styles/typography";
 import * as Colors from "../../../styles/colors";
@@ -27,20 +29,35 @@ export default class ReviewOverall extends Component {
       reviewedScores: [],
       menuID: null,
       menuName: null,
-      restaurant: null
+      restaurant: null,
+      token: null,
+      loggedIn: false,
+      isLoaded: false
     };
   }
   componentDidMount = async () => {
-    AsyncStorage.getItem("userToken").then(token => {
-      this.setState({ token });
-      const { navigation } = this.props;
-      const menuID = navigation.getParam("menuID", "00");
-      const imageID = navigation.getParam("imageID", "0");
-      const menuName = navigation.getParam("menuName", "no-menu");
-      const restaurant = navigation.getParam("restaurant", "no-restaurant");
-      this.setState({ imageID, menuID, menuName, restaurant });
+    this.focusListener = this.props.navigation.addListener("didFocus", () => {
+      AsyncStorage.getItem("userToken").then(async token => {
+        this.setState({
+          loggedIn: token !== null,
+          isLoaded: true
+        });
+        if (this.state.loggedIn) {
+          this.setState({ token });
+          const { navigation } = this.props;
+          const menuID = navigation.getParam("menuID", "00");
+          const imageID = navigation.getParam("imageID", "0");
+          const menuName = navigation.getParam("menuName", "no-menu");
+          const restaurant = navigation.getParam("restaurant", "no-restaurant");
+          this.setState({ imageID, menuID, menuName, restaurant });
+        }
+      });
     });
   };
+
+  componentWillUnmount() {
+    this.focusListener.remove();
+  }
 
   async postReview(menuID) {
     const date = new Date().toISOString().slice(0, 10);
@@ -70,13 +87,12 @@ export default class ReviewOverall extends Component {
         },
         body: data
       });
-      const responseText = await response.text();
       if (response.ok) {
         console.log("Review was posted successfully!");
         Alert.alert("Review success!");
       }
       if (!response.ok) {
-        console.log("Review failed", responseText);
+        console.log("Review failed");
         Alert.alert("Submitting review failed!");
       }
     } catch (e) {
@@ -115,89 +131,109 @@ export default class ReviewOverall extends Component {
         })
       );
     };
-    return (
-      <View style={styles.container}>
-        <View>
-          <View style={styles.header}>
-            <Text style={[Typography.FONT_H3_BLACK, { textAlign: "center" }]}>
-              What's your overall{"\n"}impression?
-            </Text>
-          </View>
-          <BackButton navigation={this.props.navigation} />
-        </View>
-        <View style={{ alignItems: "center", flex: 5 }}>
-          <Text
-            style={[
-              Typography.FONT_H4_BLACK,
-              { marginTop: 80, marginBottom: 10 }
-            ]}
-          >
-            Service
-          </Text>
-          <AirbnbRating
-            showRating={false}
-            defaultRating={0}
-            size={30}
-            selectedColor={Colors.PINK}
-            onFinishRating={rating => this.setServiceScore(rating)}
-          />
-          <Text
-            style={[
-              Typography.FONT_H4_BLACK,
-              { marginTop: 40, marginBottom: 10 }
-            ]}
-          >
-            Quality
-          </Text>
-          <AirbnbRating
-            showRating={false}
-            defaultRating={0}
-            size={30}
-            selectedColor={Colors.PINK}
-            onFinishRating={rating => this.setQualityScore(rating)}
-          />
-        </View>
-        {this.state.disableButton ? (
-          <View
-            style={{
-              flexDirection: "column",
-              alignItems: "center",
-              marginBottom: 20
-            }}
-          >
-            <View
-              style={[styles.button, { backgroundColor: Colors.GRAY_MEDIUM }]}
-            >
-              <Text style={[Typography.FONT_H4_WHITE, { textAlign: "center" }]}>
-                SUBMIT REVIEW
-              </Text>
+    if (!this.state.isLoaded) {
+      return <ActivityIndicator />;
+    }
+    if (this.state.isLoaded) {
+      if (!this.state.loggedIn) {
+        resetStack();
+        return null;
+      }
+      if (this.state.loggedIn) {
+        return (
+          <SafeAreaView style={styles.container}>
+            <View>
+              <BackButton navigation={this.props.navigation} />
+              <View style={styles.header}>
+                <Text
+                  style={[Typography.FONT_H3_BLACK, { textAlign: "center" }]}
+                >
+                  What's your overall impression?
+                </Text>
+              </View>
             </View>
-            <Circles colorIndex={this.state.colorIndex} />
-          </View>
-        ) : (
-          <View
-            style={{
-              flexDirection: "column",
-              alignItems: "center",
-              marginBottom: 20
-            }}
-          >
-            <TouchableOpacity
-              onPress={() => {
-                this.postReview(this.state.menuID);
-                resetStack();
-              }}
-              style={[styles.button, { backgroundColor: Colors.PINK }]}
-            >
-              <Text style={[Typography.FONT_H4_WHITE, { textAlign: "center" }]}>
-                SUBMIT REVIEW
+            <View style={{ alignItems: "center", flex: 5 }}>
+              <Text
+                style={[
+                  Typography.FONT_H4_BLACK,
+                  { marginTop: 80, marginBottom: 10 }
+                ]}
+              >
+                Service
               </Text>
-            </TouchableOpacity>
-            <Circles colorIndex={this.state.colorIndex} />
-          </View>
-        )}
-      </View>
-    );
+              <AirbnbRating
+                showRating={false}
+                defaultRating={0}
+                size={30}
+                selectedColor={Colors.PINK}
+                onFinishRating={rating => this.setServiceScore(rating)}
+              />
+              <Text
+                style={[
+                  Typography.FONT_H4_BLACK,
+                  { marginTop: 40, marginBottom: 10 }
+                ]}
+              >
+                Quality
+              </Text>
+              <AirbnbRating
+                showRating={false}
+                defaultRating={0}
+                size={30}
+                selectedColor={Colors.PINK}
+                onFinishRating={rating => this.setQualityScore(rating)}
+              />
+            </View>
+            {this.state.disableButton ? (
+              <View
+                style={{
+                  flexDirection: "column",
+                  alignItems: "center",
+                  marginBottom: 20
+                }}
+              >
+                <View
+                  style={[
+                    styles.button,
+                    { backgroundColor: Colors.GRAY_MEDIUM }
+                  ]}
+                >
+                  <Text
+                    style={[Typography.FONT_H4_WHITE, { textAlign: "center" }]}
+                  >
+                    SUBMIT REVIEW
+                  </Text>
+                </View>
+                <Circles colorIndex={this.state.colorIndex} />
+              </View>
+            ) : (
+              <View
+                style={{
+                  flexDirection: "column",
+                  alignItems: "center",
+                  marginBottom: 20
+                }}
+              >
+                <TouchableOpacity
+                  onPress={() => {
+                    this.postReview(this.state.menuID);
+                    resetStack();
+                  }}
+                  style={[styles.button, { backgroundColor: Colors.PINK }]}
+                >
+                  <Text
+                    style={[Typography.FONT_H4_WHITE, { textAlign: "center" }]}
+                  >
+                    SUBMIT REVIEW
+                  </Text>
+                </TouchableOpacity>
+                <Circles colorIndex={this.state.colorIndex} />
+              </View>
+            )}
+          </SafeAreaView>
+        );
+      }
+    }
   }
 }
 
@@ -207,11 +243,7 @@ const styles = StyleSheet.create({
     marginTop: 50
   },
   header: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
+    top: 20,
     justifyContent: "center",
     alignItems: "center"
   },

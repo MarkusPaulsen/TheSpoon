@@ -4,7 +4,7 @@ import {Link} from "react-router-dom";
 //</editor-fold>
 
 //<editor-fold desc="Constants">
-import {modalVisibilityFilters} from "../../constants/modalVisibiltyFilters";
+import {modals} from "../../constants/Modals";
 //</editor-fold>
 //<editor-fold desc="Containers">
 import FilterLink from "../../containers/FilterModalLink";
@@ -16,18 +16,26 @@ const Header = () => {
             <div className="container">
                 <nav>
                     <Link to="/" className="logo">
-                        <img className="site-logo" src="/images/thespoon_logo_white.png" alt="logo" />
+                        <img className="site-logo" src="/images/thespoon_logo_white.png" alt="logo"/>
                     </Link>
                     <ul>
                         <li>
-                            <FilterLink filter={modalVisibilityFilters.SHOW_LOGIN}>Log in</FilterLink>
+                            <FilterLink
+                                modal={modals.SHOW_LOGIN}
+                            >
+                                Log in
+                            </FilterLink>
                         </li>
                         <li>
-                            <FilterLink filter={modalVisibilityFilters.SHOW_CHOOSE_ROLE}>Sign up</FilterLink>
+                            <FilterLink
+                                modal={modals.SHOW_CHOOSE_ROLE}
+                            >
+                                Sign up
+                            </FilterLink>
                         </li>
                     </ul>
-                </nav> 
-            </div>  
+                </nav>
+            </div>
         </header>
     );
 };

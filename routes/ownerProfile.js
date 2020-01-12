@@ -6,6 +6,8 @@ const bcrypt = require('bcrypt');
 
 const Owner = require('../models/owner.js');
 
+const inputValidator = require('../middleware/inputValidationMiddleware.js');
+const validationSchema = require('../validationSchemas.js');
 const auth = require('../middleware/authorizationMiddleware.js');
 const isOwner = require('../middleware/checkIfOwnerMiddleware.js');
 
@@ -21,7 +23,7 @@ router.get('/', auth, isOwner, async (req, res) => {
 });
 
 //Edit profile data of the owner
-router.put('/', auth, isOwner, async (req, res) => {
+router.put('/', auth, inputValidator(validationSchema.editOwnerProfileValidation), isOwner, async (req, res) => {
     try {
         //check if the the email is already taken (it must be unique)
         const owners = await Owner.findAll({
@@ -73,7 +75,7 @@ router.delete('/', auth, isOwner, async (req, res) => {
 });
 
 //Change password of the owner
-router.put('/password', auth, isOwner, async (req, res) => {
+router.put('/password', auth, inputValidator(validationSchema.changeOwnerPassword), isOwner, async (req, res) => {
     try {
         //check if the old password sent is correct
         const oldPassword = await Owner.findAll({
@@ -91,8 +93,13 @@ router.put('/password', auth, isOwner, async (req, res) => {
         const hashed = await bcrypt.hash(req.body.newPassword, salt);
         //update the password in the database
         await Owner.update({
-            Password: hashed
-        });
+                Password: hashed,
+            },
+            {
+                where: {
+                    Username: req.username
+                }
+            });
 
         res.status(200).send();
     } catch (error) {

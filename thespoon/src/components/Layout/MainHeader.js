@@ -2,7 +2,7 @@ import React, {Component} from "react";
 import {Link} from "react-router-dom";
 import {IconNameDark, IconDashboard, IconYourRestaurant} from "../Icons.js";
 import FilterLink from "../../containers/FilterModalLink";
-import {modalVisibilityFilters} from "../../constants/modalVisibiltyFilters";
+import {modals} from "../../constants/Modals";
 import $ from "jquery";
 
 
@@ -24,16 +24,13 @@ class MainHeader extends Component {
                         </Link>
                         <ul>
                             <li>
-                                <Link to="/Dashboard"><IconDashboard/>Dashboard</Link>
-                            </li>
-                            <li>
                                 <Link to="/YourRestaurant"><IconYourRestaurant/>Your Restaurant</Link>
                             </li>
                             <li>
                                 <Link to="/Profile"><IconNameDark/>Your Profile</Link>
                             </li>
                             <li>
-                                <FilterLink filter={modalVisibilityFilters.SHOW_LOGOUT}>Log out</FilterLink>
+                                <FilterLink modal={modals.SHOW_LOGOUT}>Log out</FilterLink>
                             </li>
                         </ul>
                         <a id="mainnav-toggle" href="#">

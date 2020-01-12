@@ -20,9 +20,9 @@ import FormValidator from "../../../validation/FormValidator";
 //</editor-fold>
 
 //<editor-fold desc="Constants">
-import {paths} from "../../../constants/paths";
-import {modalVisibilityFilters} from "../../../constants/modalVisibiltyFilters";
-import {timeout} from "../../../constants/timeout"
+import {paths} from "../../../constants/Paths";
+import {modals} from "../../../constants/Modals";
+import {timeouts} from "../../../constants/Timeouts"
 //</editor-fold>
 //<editor-fold desc="Containers">
 import FilterLink from "../../../containers/FilterModalLink";
@@ -45,32 +45,12 @@ class LogInModal extends Component {
             method: "isEmpty",
             validWhen: false,
             message: "Username is required."
-        }, /*{
-            field: "username",
-            method: "isAlphanumeric",
-            validWhen: true,
-            message: "Username is required to be alphanumeric."
-        },*/ {
-            field: "username",
-            method: (username) => {return username.length >= 5},
-            validWhen: true,
-            message: "Username is required to be longer or equal 5 characters."
         }, {
             field: "password",
             method: "isEmpty",
             validWhen: false,
             message: "Password is required."
-        }, /*{
-            field: "password",
-            method: "isAlphanumeric",
-            validWhen: true,
-            message: "Password is required to be alphanumeric."
-        },*/ {
-            field: "password",
-            method: (password) => {return password.length >= 5},
-            validWhen: true,
-            message: "Password is required to be longer or equal 5 characters."
-        } ]);
+        }]);
 
         //</editor-fold>
 
@@ -134,7 +114,7 @@ class LogInModal extends Component {
                             password: thisTemp.state.password,
                             isRestaurantOwner: true,
                         },
-                        timeout: timeout,
+                        timeout: timeouts,
                         responseType: "text"
                     })
                 } else {
@@ -153,7 +133,7 @@ class LogInModal extends Component {
                     let response = JSON.parse(next.response);
                     window.localStorage.setItem("token", response.token);
                     window.localStorage.setItem("user", "Restaurant Owner");
-                    thisTemp.props.backgroundPage.update();
+                    thisTemp.props._backgroundPage.update();
                     thisTemp.props.onHide();
                 }, (error) => {
                     switch (error.name) {
@@ -181,9 +161,9 @@ class LogInModal extends Component {
     //<editor-fold desc="Render">
     render() {
         let validation = this.submitted ? this.validator.validate(this.state) : this.state.validation;
-        if(this.props.backgroundPage == null) {
-            return(<p>Something went wrong.</p>);
-        } else if(this.state.token == null || this.state.token === "null" ) {
+        if (this.props._backgroundPage == null) {
+            return (<p>Something went wrong.</p>);
+        } else if (this.state.token == null || this.state.token === "null") {
             //<editor-fold desc="Render No Token">
             return (
                 <Modal.Body>
@@ -192,34 +172,62 @@ class LogInModal extends Component {
                         <Form ref={(c) => {
                             this.form = c;
                         }} onSubmit={this.handleSubmit}>
-                            <h2 className="title">Log in</h2>
+                            <h2 className="title">
+                                Log in
+                            </h2>
 
                             <div className="input-field">
                                 <IconName/>
-                                <Input type="text" name="username" placeholder="Username" id="loginFormUsername"/>
+                                <Input
+                                    type="text"
+                                    name="username"
+                                    placeholder="Username"
+                                    id="loginFormUsername"
+                                    required
+                                />
                             </div>
                             <div className="error-block">
-                                <small>{validation.username.message}</small>
+                                <small>
+                                    {validation.username.message}
+                                </small>
                             </div>
 
                             <div className="input-field">
                                 <IconPassword/>
-                                <Input type="password" name="password" placeholder="Password" id="loginFormPassword"/>
+                                <Input
+                                    type="password"
+                                    name="password"
+                                    placeholder="Password"
+                                    id="loginFormPassword"
+                                    required
+                                />
                             </div>
                             <div className="error-block">
                                 <small>{validation.password.message}</small>
                             </div>
 
-                            <Button type="submit" className="normal">Log in</Button>
+                            <Button
+                                type="submit"
+                                className="normal"
+                            >
+                                Log in
+                            </Button>
                             <div className="error-block">
-                                <small>{this.state.serverMessage}</small>
+                                <small>
+                                    {this.state.serverMessage}
+                                </small>
                             </div>
                         </Form>
 
                         <div className="link-wrapper">
-                            <small>Don't have an account? <FilterLink
-                                filter={modalVisibilityFilters.SHOW_REGISTER_RESTAURANT_OWNER}>Register
-                                now</FilterLink></small>
+                            <small>
+                                Don't have an account?
+                                <FilterLink
+                                    modal={modals.SHOW_REGISTER_RESTAURANT_OWNER}
+                                >
+                                    Register now
+                                </FilterLink>
+                            </small>
                         </div>
                     </div>
                 </Modal.Body>
@@ -227,7 +235,7 @@ class LogInModal extends Component {
 
             //</editor-fold>
         } else {
-            return(<p>Something went wrong.</p>);
+            return (<p>Something went wrong.</p>);
         }
     }
 
@@ -238,7 +246,7 @@ class LogInModal extends Component {
 //<editor-fold desc="Redux">
 const mapStateToProps = (state) => {
     return {
-        backgroundPage: state.backgroundPageReducer.backgroundPage
+        _backgroundPage: state._backgroundPageReducer._backgroundPage
     };
 };
 

@@ -103,7 +103,9 @@ describe("Review Add Image Component", () => {
       });
       blob.name = "image";
 
-      fetch.mockResponseOnce(JSON.stringify({ imageID: "t4iogsne" }));
+      const imageID = "t4iogsne";
+
+      fetch.mockResponseOnce(JSON.stringify({ imageID: imageID }));
 
       await comp.instance().onChooseLibraryPress();
 
@@ -111,8 +113,7 @@ describe("Review Add Image Component", () => {
 
       expect(comp.state().imageUrl).toEqual(imgResult.uri);
       expect(comp.state().disableButton).toBeFalsy();
-
-      // TODO: test postImage correctly, something is wrong with response in the test
+      expect(comp.state().imageID).toEqual(imageID);
     });
   });
 });

@@ -3,9 +3,9 @@ import React from "react";
 //</editor-fold>
 //<editor-fold desc="Redux">
 import {connect} from "react-redux";
-import {setModalVisibilityFilterAction} from "../actionCreators/modalVisibilityFilterActionCreators";
-import {setCurrentMenu, setCurrentMenuItem} from "../actionCreators/CurrentMenuActionCreators";
-import {setCurrentRestaurantInformation} from "../actionCreators/restaurantActionCreators";
+import {_setModal} from "../actionCreators/ModalActionCreators";
+import {_setMenu, _setMenuItem} from "../actionCreators/MenuActionCreators";
+import {_setRestaurantInfo} from "../actionCreators/RestaurantActionCreators";
 //</editor-fold>
 
 //<editor-fold desc="Business Logic">
@@ -16,21 +16,21 @@ const FilterModalLink = ({children, onClick}) => {
 
 //<editor-fold desc="Redux">
 const mapStateToProps = (state, ownProps) => {
-    return{
-        active: ownProps.filter === state.modalVisibilityFilter
+    return {
+        active: ownProps.filter === state._modal
     }
 };
 
 const mapDispatchToProps = (dispatch, ownProps) => {
     return {
         onClick: () => {
-            dispatch(setModalVisibilityFilterAction(ownProps.filter));
-            ownProps.currentMenu &&
-            dispatch(setCurrentMenu(ownProps.currentMenu));
-            ownProps.currentMenuItem &&
-            dispatch(setCurrentMenuItem(ownProps.currentMenuItem));
-            ownProps.currentRestaurantInformation &&
-            dispatch(setCurrentRestaurantInformation(ownProps.currentRestaurantInformation));
+            dispatch(_setModal(ownProps.modal));
+            ownProps.menu &&
+            dispatch(_setMenu(ownProps.menu));
+            ownProps.menuItem &&
+            dispatch(_setMenuItem(ownProps.menuItem));
+            ownProps.restaurantInfo &&
+            dispatch(_setRestaurantInfo(ownProps.restaurantInfo));
         }
     };
 };

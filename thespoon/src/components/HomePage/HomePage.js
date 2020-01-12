@@ -4,11 +4,11 @@ import {Redirect} from "react-router-dom";
 //</editor-fold>
 //<editor-fold desc="Redux">
 import {connect} from "react-redux";
-import {setBackgroundPage} from "../../actionCreators/BackgroundPageActionCreator";
+import {_setBackgroundPage} from "../../actionCreators/BackgroundPageActionCreator";
 //</editor-fold>
 
 //<editor-fold desc="Constants">
-import {modalVisibilityFilters} from "../../constants/modalVisibiltyFilters";
+import {modals} from "../../constants/Modals";
 //</editor-fold>
 //<editor-fold desc="Containers">
 import FilterLink from "../../containers/FilterModalLink";
@@ -37,14 +37,11 @@ class HomePage extends Component {
 
     //<editor-fold desc="Component Lifecycle">
     componentDidMount() {
-        this.props.setBackgroundPageHere(this);
+        this.props._setBackgroundPage(this);
         this.setState({
-                token: window.localStorage.getItem("token"),
-                user: window.localStorage.getItem("user")
-            },
-            (error) => {
-            }
-        );
+            token: window.localStorage.getItem("token"),
+            user: window.localStorage.getItem("user")
+        });
     }
 
     //</editor-fold>
@@ -52,7 +49,7 @@ class HomePage extends Component {
     //<editor-fold desc="Business Logic">
     update = () => {
         window.location.reload();
-    }
+    };
 
     //</editor-fold>
 
@@ -71,8 +68,12 @@ class HomePage extends Component {
                                 <div className="row">
                                     <div className="col-sm-8">
                                         <h1 className="title">Share your menus</h1>
-                                        <button className="normal"><FilterLink
-                                            filter={modalVisibilityFilters.SHOW_CHOOSE_ROLE}>Get started</FilterLink>
+                                        <button className="normal">
+                                            <FilterLink
+                                                modal={modals.SHOW_CHOOSE_ROLE}
+                                            >
+                                                Get started
+                                            </FilterLink>
                                         </button>
                                     </div>
                                 </div>
@@ -108,8 +109,8 @@ class HomePage extends Component {
 //<editor-fold desc="Redux">
 const mapDispatchToProps = (dispatch) => {
     return {
-        setBackgroundPageHere: (backgroundPage) => {
-            dispatch(setBackgroundPage(backgroundPage));
+        _setBackgroundPage: (_backgroundPage) => {
+            dispatch(_setBackgroundPage(_backgroundPage));
         }
     };
 };

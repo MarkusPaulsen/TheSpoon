@@ -9,18 +9,23 @@ const isOwner = require('../middleware/checkIfOwnerMiddleware.js');
 
 //Return all the available tags
 router.get('/', auth, isOwner, async (req, res) => {
-    const tagsFound = await Tag.findAll();
-    const numberOfTagsFound = tagsFound.length;
+    try {
+        const tagsFound = await Tag.findAll();
+        const numberOfTagsFound = tagsFound.length;
 
-    //initialize empty response
-    let tags = [];
+        //initialize empty response
+        let tags = [];
 
-    //format the response
-    for (let i=0; i < numberOfTagsFound; i++){
-        tags[i] = tagsFound[i].dataValues.Name;
+        //format the response
+        for (let i=0; i < numberOfTagsFound; i++){
+            tags[i] = tagsFound[i].dataValues.Name;
+        }
+
+        res.status(200).send(tags);
+    } catch (error) {
+        res.status(500).send('Internal server error.');
     }
 
-    res.status(200).send(tags);
 });
 
 

@@ -159,5 +159,113 @@ describe("Profile Component", () => {
 
       expect(Alert.alert).toHaveBeenCalledWith("Review deleted");
     });
+
+    it("Should fail to delete review", async () => {
+      fetch.mockResponseOnce(JSON.stringify({}), { status: 404 });
+
+      await component.instance().deleteReview();
+      component.update();
+
+      expect(Alert.alert).toHaveBeenCalledWith("Deletion failed");
+    });
+
+    it("Should update email", () => {
+      const instance = component.instance();
+      const email = "test@test.com";
+      instance.updateEmail(email);
+      expect(component.state().updatedUserInfo.email).toEqual(email);
+      expect(component.state().saveButton).toBeTruthy();
+    });
+
+    it("Should update ageRange", () => {
+      const instance = component.instance();
+      const ageRange = "18-24";
+      instance.updateAgeRange(ageRange);
+      expect(component.state().updatedUserInfo.ageRange).toEqual(ageRange);
+      expect(component.state().saveButton).toBeTruthy();
+    });
+
+    it("Should update new password", async () => {
+      const oldPassword = "password";
+      const newPassword = "newpassword";
+      component.setState({oldPassword, newPassword, newPasswordConfirmed: newPassword});
+      await component.update();
+
+      fetch.mockResponseOnce(JSON.stringify({}), { status: 201, ok: true });
+
+      await component.instance().passwordValidation();
+
+      expect(component.state().errorMessage).toEqual("");
+      expect(component.state().showPasswordModal).toBeFalsy();
+    });
+
+    it("Should give error - password not filled out", async () => {
+      const oldPassword = "password";
+      const newPassword = "newpassword";
+
+      component.setState({oldPassword, newPassword, newPasswordConfirmed: ""});
+      await component.update();
+      await component.instance().passwordValidation();
+
+      expect(component.state().errorMessage).toEqual("All fields must be filled out");
+    });
+    it("Should give error - too short password", async () => {
+      const oldPassword = "password";
+      const newPassword = "new";
+
+      component.setState({oldPassword, newPassword, newPasswordConfirmed: newPassword});
+      await component.update();
+      await component.instance().passwordValidation();
+
+      expect(component.state().errorMessage).toEqual("New password must be at least 5 characters");
+    });
+
+    it("Should give error - not equal passwords", async () => {
+      const oldPassword = "password";
+      const newPassword = "newpassword";
+
+      component.setState({oldPassword, newPassword, newPasswordConfirmed: "thisisapassword"});
+      await component.update();
+      await component.instance().passwordValidation();
+
+      expect(component.state().errorMessage).toEqual("The fields for new password must be identical");
+    });
+
+    it("Should give error - old new equal passwords", async () => {
+      const oldPassword = "password";
+      const newPassword = "password";
+
+      component.setState({oldPassword, newPassword, newPasswordConfirmed: newPassword});
+      await component.update();
+      await component.instance().passwordValidation();
+
+      expect(component.state().errorMessage).toEqual("New password cannot be the same as old password");
+    });
+
+    it("Should reset state", async() => {
+      await component.instance().goBack();
+      expect(component.state().oldPassword).toEqual("");
+      expect(component.state().newPassword).toEqual("");
+      expect(component.state().newPasswordConfirmed).toEqual("");
+      expect(component.state().errorMessage).toEqual("");
+      expect(component.state().showPasswordModal).toBeFalsy();
+    });
+
+    it("Should successfully update userInfo", async () => {
+
+      fetch.mockResponseOnce(JSON.stringify({}), { status: 201, ok: true });
+
+      await component.instance().updateUserInfo(userToken);
+      await component.update();
+
+      expect(component.state().saveButton).toBeFalsy();
+    });
+
+    it("Should call logout successfully", async() => {
+      await component.instance().logout();
+      await component.update();
+
+      expect(Alert.alert).toHaveBeenCalled();
+    });
   });
 });

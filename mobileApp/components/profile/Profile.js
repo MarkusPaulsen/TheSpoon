@@ -12,13 +12,18 @@ import {
   SafeAreaView,
   ScrollView,
   Modal,
-  Dimensions
+  Dimensions,
+  TextInput,
+  StatusBar
 } from "react-native";
 import * as Typography from "../../styles/typography";
 import * as Colors from "../../styles/colors";
 import * as Api from "../../services/api";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { AirbnbRating } from "react-native-ratings";
+import PickerSelect from "react-native-picker-select";
+import CountryPicker from "react-native-country-picker-modal";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 export default class Profile extends Component {
   constructor(props) {
@@ -28,7 +33,15 @@ export default class Profile extends Component {
       isLoaded: false,
       token: null,
       userInfo: "",
-      reviews: []
+      nationalityName:"",
+      updatedUserInfo: "",
+      reviews: [],
+      saveButton: false,
+      oldPassword: "",
+      newPassword: "",
+      newPasswordConfirmed: "",
+      showPasswordModal: false,
+      errorMessage: ""
     };
   }
 
@@ -77,6 +90,37 @@ export default class Profile extends Component {
     );
   }
 
+  async updateUserInfo(token) {
+    try {
+      const userData = JSON.stringify({
+        email: this.state.updatedUserInfo.email,
+        gender: this.state.updatedUserInfo.gender,
+        ageRange: this.state.updatedUserInfo.ageRange,
+        nationality: this.state.nationalityName
+      });
+      const response = await fetch(Api.SERVER_PROFILE_UPDATEUSERINFO, {
+        method: "PUT",
+        headers: {
+          Accept: "application/json",
+          "x-auth-token": token,
+          "Content-Type": "application/json"
+        },
+        body: userData
+      });
+      if (response.ok) {
+        Alert.alert("Profile information updated");
+        this.setState({ saveButton: false });
+        this.getUserInfo(this.state.token);
+      }
+      if (!response.ok) {
+        console.log(response);
+        Alert.alert("Could not update profile information");
+      }
+    } catch (error) {
+      console.log("Error fetching user info: ", error);
+    }
+  }
+
   async getUserInfo(token) {
     try {
       const response = await fetch(Api.SERVER_PROFILE_USERINFO, {
@@ -90,10 +134,13 @@ export default class Profile extends Component {
         const responseJson = await response.json();
         const userInfo = {
           username: responseJson.username,
-          email: responseJson.email
+          email: responseJson.email,
+          ageRange: responseJson.ageRange,
+          nationality: responseJson.nationality,
+          gender: responseJson.gender
         };
         this.setState({ userInfo });
-        console.log("Success fetching profileData");
+        this.setState({ updatedUserInfo: userInfo });
       }
       if (!response.ok) {
         console.log("Fetching profileData failed");
@@ -112,25 +159,25 @@ export default class Profile extends Component {
           "x-auth-token": token
         }
       });
-      const responseJson = await response.json();
-      const reviews = responseJson.map(index => ({
-        menuReviewID: index.menuReviewID.toString(),
-        menuID: index.menuID,
-        menuName: index.menuName,
-        restaurantName: index.restaurantName,
-        serviceRating: index.serviceRating,
-        qualityOverPriceRating: index.qualityOverPriceRating,
-        date: index.date,
-        receiptImageID: index.receiptImageID,
-        status: index.status,
-        menuItemsReviews: index.menuItemsReviews
-      }));
       if (response.ok) {
+        const responseJson = await response.json();
+        const reviews = responseJson.map(index => ({
+          menuReviewID: index.menuReviewID.toString(),
+          menuID: index.menuID,
+          menuName: index.menuName,
+          restaurantName: index.restaurantName,
+          serviceRating: index.serviceRating,
+          qualityOverPriceRating: index.qualityOverPriceRating,
+          date: index.date,
+          receiptImageID: index.receiptImageID,
+          status: index.status,
+          menuItemsReviews: index.menuItemsReviews
+        }));
         this.setState({ reviews });
         console.log("Success fetching reviews");
       }
       if (!response.ok) {
-        console.log("Fetching reviews failed");
+        console.log("Failed fetching reviews");
       }
     } catch (error) {
       console.log("Error fetching reviews: ", error);
@@ -146,18 +193,25 @@ export default class Profile extends Component {
           "x-auth-token": token
         }
       });
-      const responseJson = await response.json();
       if (response.ok) {
-        console.log("Deletion success, ", responseJson);
+        console.log("Deletion success, ");
         Alert.alert("Review deleted");
       }
       if (!response.ok) {
-        console.log("Deletion failed, ", responseJson);
+        console.log("Deletion failed, ");
         Alert.alert("Deletion failed");
       }
     } catch (error) {
       console.log("Error deleting review: ", error);
     }
+  }
+
+  goBack() {
+    this.setState({ oldPassword: "" });
+    this.setState({ newPassword: "" });
+    this.setState({ newPasswordConfirmed: "" });
+    this.setState({ errorMessage: "" });
+    this.setState({ showPasswordModal: false });
   }
 
   getRating = score => {
@@ -171,6 +225,79 @@ export default class Profile extends Component {
       />
     );
   };
+
+  updateEmail = email => {
+    this.setState({
+      updatedUserInfo: { ...this.state.updatedUserInfo, email: email }
+    });
+    if (!this.state.saveButton) {
+      this.setState({ saveButton: true });
+    }
+  };
+
+  updateAgeRange = ageRange => {
+    this.setState({
+      updatedUserInfo: { ...this.state.updatedUserInfo, ageRange: ageRange }
+    });
+    if (!this.state.saveButton) {
+      this.setState({ saveButton: true });
+    }
+  };
+
+  async passwordValidation() {
+    if (
+      this.state.oldPassword === "" ||
+      this.state.newPassword === "" ||
+      this.state.newPasswordConfirmed === ""
+    ) {
+      this.setState({ errorMessage: "All fields must be filled out" });
+    } else if (this.state.oldPassword === this.state.newPassword) {
+      this.setState({
+        errorMessage: "New password cannot be the same as old password"
+      });
+    } else if (this.state.newPassword.length < 5) {
+      this.setState({
+        errorMessage: "New password must be at least 5 characters"
+      });
+    } else if (this.state.newPassword !== this.state.newPasswordConfirmed) {
+      this.setState({
+        errorMessage: "The fields for new password must be identical"
+      });
+    } else {
+      this.setState({ errorMessage: "" });
+      await this.changePassword(this.state.token);
+    }
+  }
+
+  async changePassword(token) {
+    try {
+      const passwords = JSON.stringify({
+        oldPassword: this.state.oldPassword,
+        newPassword: this.state.newPassword
+      });
+      const response = await fetch(Api.SERVER_PROFILE_CHANGEPASSWORD, {
+        method: "PUT",
+        headers: {
+          Accept: "application/json",
+          "x-auth-token": token,
+          "Content-Type": "application/json"
+        },
+        body: passwords
+      });
+      if (response.ok) {
+        this.setState({ showPasswordModal: false });
+        Alert.alert("Password changed");
+      }
+      if (!response.ok) {
+        Alert.alert("Password could not be changed");
+      }
+    } catch (error) {
+      console.log("Error changing password: ", error);
+    }
+    this.setState({ oldPassword: "" });
+    this.setState({ newPassword: "" });
+    this.setState({ newPasswordConfirmed: "" });
+  }
 
   render() {
     const screenWidth = Math.round(Dimensions.get("window").width);
@@ -238,14 +365,15 @@ export default class Profile extends Component {
                 styles.modalContainer,
                 {
                   width: screenWidth * 0.85,
-                  marginLeft: (screenWidth * 0.15) / 2
+                  marginLeft: (screenWidth * 0.15) / 2,
+                  marginTop: 20
                 }
               ]}
             >
               <TouchableOpacity
                 onPress={() => this.setState({ modalItem: null })}
               >
-                <Icon name={"chevron-left"} size={40} style={styles.button} />
+                <Icon name={"chevron-left"} size={40} />
               </TouchableOpacity>
               <View style={{ flexDirection: "row" }}>
                 <Text style={Typography.FONT_H2_BLACK}>Your </Text>
@@ -255,7 +383,7 @@ export default class Profile extends Component {
                 <Text style={Typography.FONT_MED_GRAY}>Status: </Text>
                 <Text style={Typography.FONT_MED_GRAY}>{review.status}</Text>
               </View>
-              <Text
+              <View
                 style={{
                   width: 120,
                   height: 120,
@@ -273,7 +401,7 @@ export default class Profile extends Component {
                       review.receiptImageID
                   }}
                 />
-              </Text>
+              </View>
               <View style={[styles.field, { marginVertical: 30 }]}>
                 <Text style={Typography.FONT_H4_BLACK}>Restaurant </Text>
                 <Text style={Typography.FONT_H4_PINK}>
@@ -375,83 +503,283 @@ export default class Profile extends Component {
       return props.navigation.navigate("Login", { parent: "Profile" });
     };
     if (!this.state.isLoaded) {
-      return <ActivityIndicator style={{ alignSelf: "center", marginTop: 150 }} />;
+      return (
+        <ActivityIndicator style={{ alignSelf: "center", marginTop: 150 }} />
+      );
     }
     if (this.state.isLoaded) {
       if (this.state.loggedIn) {
         return (
-          <View
-            style={[
-              styles.container,
-              {
-                width: screenWidth * 0.85,
-                marginLeft: (screenWidth * 0.15) / 2
-              }
-            ]}
-          >
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between"
-              }}
-            >
-              <View style={{ flexDirection: "row", marginBottom: 20 }}>
-                <Text style={Typography.FONT_H2_BLACK}>Your </Text>
-                <Text style={Typography.FONT_H2_PINK}>Profile</Text>
-              </View>
-              <View style={{ flexDirection: "row" }}>
-                <TouchableOpacity
-                  onPress={() => {
-                    this.logout();
+          <SafeAreaView style={styles.paddingStatusBar}>
+            <ScrollView>
+              <View
+                style={[
+                  styles.container,
+                  {
+                    width: screenWidth * 0.85,
+                    marginLeft: (screenWidth * 0.15) / 2
+                  }
+                ]}
+              >
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between"
                   }}
                 >
-                  <Icon
-                    name="power-settings-new"
-                    size={32}
-                    color={Colors.GRAY_DARK}
-                  />
-                </TouchableOpacity>
-              </View>
-            </View>
-            <View style={{ flex: 3 }}>
-              <Text style={Typography.FONT_H4_BLACK}>Username</Text>
-              <Text style={[Typography.FONT_REGULAR_THIN, styles.userInfoText]}>
-                {this.state.userInfo.username}
-              </Text>
-              <View style={styles.line} />
-              <Text style={Typography.FONT_H4_BLACK}>Email</Text>
-              <Text style={[Typography.FONT_REGULAR_THIN, styles.userInfoText]}>
-                {this.state.userInfo.email}
-              </Text>
-              <View style={styles.line} />
-            </View>
-            <View style={{ flexDirection: "row", marginBottom: 10 }}>
-              <Text style={Typography.FONT_H3_BLACK}>Your </Text>
-              <Text style={Typography.FONT_H3_PINK}>Reviews</Text>
-            </View>
-            <View style={{ flex: 6 }}>
-              <SafeAreaView style={styles.reviewsList}>
-                <FlatList
-                  data={this.state.reviews}
-                  extraData={this.state}
-                  contentContainerStyle={{ flex: 1 }}
-                  renderItem={({ item }) => (
-                    <YourReviews
-                      menu={item.menuName}
-                      restaurant={item.restaurantName}
-                      status={item.status}
-                      item={item}
+                  <View style={{ flexDirection: "row", marginBottom: 20 }}>
+                    <Text style={Typography.FONT_H2_BLACK}>Your </Text>
+                    <Text style={Typography.FONT_H2_PINK}>Profile</Text>
+                  </View>
+                  <View style={{ flexDirection: "row" }}>
+                    <TouchableOpacity
+                      onPress={() => {
+                        this.logout();
+                      }}
+                    >
+                      <Icon
+                        name="exit-to-app"
+                        size={32}
+                        color={Colors.GRAY_DARK}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                </View>
+                <KeyboardAwareScrollView>
+                  <View>
+                    <Text style={Typography.FONT_H4_BLACK}>Username</Text>
+                    <Text
+                      style={[
+                        Typography.FONT_REGULAR_THIN,
+                        styles.userInfoText
+                      ]}
+                    >
+                      {this.state.updatedUserInfo.username}
+                    </Text>
+                    <View style={[styles.line, { marginTop: 10 }]} />
+                    <Text style={Typography.FONT_H4_BLACK}>Email</Text>
+                    <TextInput
+                      style={[
+                        Typography.FONT_REGULAR_THIN,
+                        styles.userInfoText
+                      ]}
+                      value={this.state.updatedUserInfo.email}
+                      onChangeText={this.updateEmail}
                     />
-                  )}
-                  keyExtractor={item => item.menuReviewID}
-                />
-              </SafeAreaView>
-              <FullReviewModal
-                review={this.state.modalItem}
-                visible={this.state.modalItem != null}
-              />
-            </View>
-          </View>
+                    <View style={[styles.line, { marginTop: 10 }]} />
+                    <Text style={Typography.FONT_H4_BLACK}>Age</Text>
+                    <PickerSelect
+                      value={this.state.updatedUserInfo.ageRange}
+                      onValueChange={value => this.updateAgeRange(value)}
+                      items={[
+                        { label: "< 18", value: "< 18" },
+                        { label: "18-24", value: "18-24" },
+                        { label: "25-34", value: "24-34" },
+                        { label: "35-49", value: "35-49" },
+                        { label: "50-64", value: "50-64" },
+                        { label: "65+", value: "65+" }
+                      ]}
+                    />
+                    <View style={[styles.line, { marginTop: 5 }]} />
+                    <Text style={Typography.FONT_H4_BLACK}>Nationality</Text>
+                    <View
+                      style={{
+                        flexDirection: "row"
+                      }}
+                    >
+                      <View style={{ marginTop: 10 }}>
+                        <CountryPicker
+                          withFilter={true}
+                          withAlphaFilter={true}
+                          onSelect={value => {
+                            this.setState({
+                              nationalityName : value.name
+                            });
+                            this.setState({updatedUserInfo: {
+                                ...this.state.updatedUserInfo,
+                                nationality: value.cca2
+                              }});
+                            if (!this.state.saveButton) {
+                              this.setState({ saveButton: true });
+                            }
+                          }}
+                          countryCode={
+                            this.state.updatedUserInfo.nationality
+                          }
+                          withCountryNameButton={true}
+                        />
+                      </View>
+                    </View>
+                    <View style={[styles.line, { marginTop: 10 }]} />
+                    <Text style={Typography.FONT_H4_BLACK}>Gender</Text>
+                    <PickerSelect
+                      value={this.state.updatedUserInfo.gender}
+                      onValueChange={value => {
+                        this.setState({
+                          updatedUserInfo: {
+                            ...this.state.updatedUserInfo,
+                            gender: value
+                          }
+                        });
+                        if (!this.state.saveButton) {
+                          this.setState({ saveButton: true });
+                        }
+                      }}
+                      items={[
+                        { label: "Male", value: "Male" },
+                        { label: "Female", value: "Female" },
+                        { label: "Other", value: "Other" }
+                      ]}
+                    />
+                    <View style={[styles.line, { marginTop: 5 }]} />
+                  </View>
+                </KeyboardAwareScrollView>
+                <TouchableOpacity
+                  style={[
+                    styles.saveButton,
+                    {
+                      backgroundColor: this.state.saveButton
+                        ? Colors.PINK
+                        : Colors.GRAY_MEDIUM
+                    }
+                  ]}
+                  onPress={() => this.updateUserInfo(this.state.token)}
+                >
+                  <Text
+                    style={[Typography.FONT_H4_WHITE, { textAlign: "center" }]}
+                  >
+                    SAVE
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => this.setState({ showPasswordModal: true })}
+                  style={{ alignSelf: "center" }}
+                >
+                  <Text
+                    style={[
+                      Typography.FONT_REGULAR_THIN,
+                      { textDecorationLine: "underline" }
+                    ]}
+                  >
+                    Change password
+                  </Text>
+                </TouchableOpacity>
+                <Modal
+                  animationType="slide"
+                  transparent={false}
+                  visible={this.state.showPasswordModal}
+                >
+                  <SafeAreaView
+                    style={{
+                      width: screenWidth * 0.85,
+                      marginLeft: (screenWidth * 0.15) / 2,
+                      marginTop: 20
+                    }}
+                  >
+                    <TouchableOpacity onPress={() => this.goBack()}>
+                      <Icon name={"chevron-left"} size={40} />
+                    </TouchableOpacity>
+                    <View>
+                      <Text
+                        style={[
+                          Typography.FONT_H3_BLACK,
+                          { alignSelf: "center" }
+                        ]}
+                      >
+                        Change password
+                      </Text>
+                      <TextInput
+                        placeholder={"Current password"}
+                        secureTextEntry={true}
+                        style={styles.passwordField}
+                        value={this.state.oldPassword}
+                        onChangeText={value =>
+                          this.setState({ oldPassword: value })
+                        }
+                      />
+                      <TextInput
+                        placeholder={"New password"}
+                        secureTextEntry={true}
+                        style={styles.passwordField}
+                        value={this.state.newPassword}
+                        onChangeText={value =>
+                          this.setState({ newPassword: value })
+                        }
+                      />
+                      <TextInput
+                        placeholder={"Repeat new password"}
+                        secureTextEntry={true}
+                        style={styles.passwordField}
+                        value={this.state.newPasswordConfirmed}
+                        onChangeText={value =>
+                          this.setState({ newPasswordConfirmed: value })
+                        }
+                      />
+                      <Text
+                        style={[
+                          Typography.FONT_REGULAR_THIN,
+                          { color: Colors.PINK }
+                        ]}
+                      >
+                        {this.state.errorMessage}
+                      </Text>
+                      <TouchableOpacity
+                        style={[
+                          styles.saveButton,
+                          {
+                            backgroundColor: Colors.PINK
+                          }
+                        ]}
+                        onPress={() => this.passwordValidation()}
+                      >
+                        <Text
+                          style={[
+                            Typography.FONT_H4_WHITE,
+                            { textAlign: "center" }
+                          ]}
+                        >
+                          SAVE
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                  </SafeAreaView>
+                </Modal>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    marginBottom: 10,
+                    marginTop: 30
+                  }}
+                >
+                  <Text style={Typography.FONT_H3_BLACK}>Your </Text>
+                  <Text style={Typography.FONT_H3_PINK}>Reviews</Text>
+                </View>
+                <View style={{ flex: 6 }}>
+                  <SafeAreaView style={styles.reviewsList}>
+                    <FlatList
+                      style={{ marginBottom: 20 }}
+                      data={this.state.reviews}
+                      extraData={this.state}
+                      contentContainerStyle={{ flex: 1 }}
+                      renderItem={({ item }) => (
+                        <YourReviews
+                          menu={item.menuName}
+                          restaurant={item.restaurantName}
+                          status={item.status}
+                          item={item}
+                        />
+                      )}
+                      keyExtractor={item => item.menuReviewID}
+                    />
+                  </SafeAreaView>
+                  <FullReviewModal
+                    review={this.state.modalItem}
+                    visible={this.state.modalItem != null}
+                  />
+                </View>
+              </View>
+            </ScrollView>
+          </SafeAreaView>
         );
       }
       if (!this.state.loggedIn) {
@@ -463,8 +791,8 @@ export default class Profile extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    marginTop: 60
+    flexGrow: 1,
+    marginTop: 40
   },
   logout_icon: {
     marginTop: 60
@@ -473,7 +801,7 @@ const styles = StyleSheet.create({
     marginTop: 10
   },
   line: {
-    marginVertical: 5,
+    marginBottom: 5,
     borderBottomWidth: 1,
     borderBottomColor: Colors.GRAY_LIGHT
   },
@@ -517,5 +845,22 @@ const styles = StyleSheet.create({
   field: {
     flexDirection: "row",
     justifyContent: "space-between"
+  },
+  saveButton: {
+    width: 155,
+    height: 34,
+    borderRadius: 50,
+    justifyContent: "center",
+    marginTop: 25,
+    marginBottom: 20,
+    alignSelf: "center"
+  },
+  passwordField: {
+    borderBottomColor: Colors.GRAY_LIGHT,
+    borderBottomWidth: 1.5,
+    marginVertical: 15
+  },
+  paddingStatusBar: {
+    paddingTop: StatusBar.currentHeight
   }
 });

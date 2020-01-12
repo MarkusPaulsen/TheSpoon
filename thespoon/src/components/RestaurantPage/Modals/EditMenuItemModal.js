@@ -1,14 +1,14 @@
 //<editor-fold desc="React">
 import React, {Component} from "react";
 //</editor-fold>
+//<editor-fold desc="RxJs">
+import {bindCallback, fromEvent, of, throwError} from "rxjs";
+import {ajax} from "rxjs/ajax";
+import {bufferTime, catchError, distinctUntilChanged, exhaustMap, map, take, filter} from "rxjs/operators";
+import {readFileURL} from "../Tools/FileReader"
+//</editor-fold>
 //<editor-fold desc="Redux">
 import {connect} from "react-redux";
-//</editor-fold>
-//<editor-fold desc="RxJs">
-import {bindCallback, of, throwError} from "rxjs";
-import {ajax} from "rxjs/ajax";
-import {catchError, exhaustMap, map, take} from "rxjs/operators";
-import {readFileURL} from "../Tools/FileReader"
 //</editor-fold>
 //<editor-fold desc="Bootstrap">
 import {Modal} from "react-bootstrap";
@@ -22,11 +22,12 @@ import FormValidator from "../../../validation/FormValidator";
 //</editor-fold>
 
 //<editor-fold desc="Constants">
-import {paths} from "../../../constants/paths";
-import {timeout} from "../../../constants/timeout";
+import {paths} from "../../../constants/Paths";
+import {timeouts} from "../../../constants/Timeouts";
 //</editor-fold>
 //<editor-fold desc="Icons">
 import {IconExit} from "../../Icons";
+import TagItem from "../Items/TagItem";
 
 //</editor-fold>
 
@@ -43,15 +44,10 @@ class EditMenuItemModal extends Component {
             method: "isEmpty",
             validWhen: false,
             message: "Name is required."
-        }, /*{
-            field: "name",
-            method: "isAlphanumeric",
-            validWhen: true,
-            message: "Name is required to be alphanumeric."
-        },*/ {
+        }, {
             field: "name",
             method: (name) => {
-                return name.length >= 1
+                return name.length >= 1;
             },
             validWhen: true,
             message: "Name is required to be longer or equal 1 characters."
@@ -60,15 +56,10 @@ class EditMenuItemModal extends Component {
             method: "isEmpty",
             validWhen: false,
             message: "Description name is required."
-        }, /*{
-            field: "description",
-            method: "isAlphanumeric",
-            validWhen: true,
-            message: "Description is required to be alphanumeric."
-        },*/ {
+        }, {
             field: "description",
             method: (description) => {
-                return description.length >= 1
+                return description.length >= 1;
             },
             validWhen: true,
             message: "Description is required to be longer or equal 1 characters."
@@ -80,43 +71,17 @@ class EditMenuItemModal extends Component {
         }, {
             field: "priceEuros",
             method: (priceEuros) => {
-                return !isNaN(priceEuros)
+                return !isNaN(priceEuros);
             },
             validWhen: true,
             message: "PriceEuros needs to be a number."
         }, {
             field: "priceEuros",
             method: (priceEuros) => {
-                return priceEuros >= 0
+                return priceEuros >= 0;
             },
             validWhen: true,
             message: "PriceEuros needs to be positive."
-        }, {
-            field: "tags",
-            method: "isEmpty",
-            validWhen: false,
-            message: "Tags are required."
-        }, /*{
-            field: "tags",
-            method: "isAlphanumeric (plus comma)",
-            validWhen: true,
-            message: "Tags are required to be alphanumeric."
-        },*/ {
-            field: "tags",
-            method: (tags) => {
-                return tags.split(",")
-                    .map((tag) => {
-                        return tag.trim()
-                    })
-                    .map((tag) => {
-                        return tag.length >= 1
-                    })
-                    .reduce((total, minLength) => {
-                        return total && minLength
-                    }, true)
-            },
-            validWhen: true,
-            message: "Each tag is required to be longer or equal 1 characters."
         }]);
 
         //</editor-fold>
@@ -126,6 +91,7 @@ class EditMenuItemModal extends Component {
         this.handleFileDelete = this.handleFileDelete.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleDelete = this.handleDelete.bind(this);
+        this.update = this.update.bind(this);
 
         //</editor-fold>
 
@@ -134,20 +100,23 @@ class EditMenuItemModal extends Component {
             validation: this.validator.valid(),
             serverMessage: "",
             submitted: false,
-            //<editor-fold desc="Restaurant states">
-            name: this.props.currentMenuItem.name,
-            description: this.props.currentMenuItem.description,
-            priceEuros: this.props.currentMenuItem.priceEuros,
-            type: this.props.currentMenuItem.type,
+            //<editor-fold desc="Menu Item States">
+            name: this.props._menuItem.name,
+            description: this.props._menuItem.description,
+            priceEuros:  parseFloat(this.props._menuItem.priceEuros).toFixed(2),
+            type: this.props._menuItem.type,
             selectedFile: null,
             selectedFileData: null,
-            imageID: this.props.currentMenuItem.imageID,
+            imageID: (this.props._menuItem.imageLink).split("/")[3],
             imageMessage: "",
-            tags: this.props.currentMenuItem.tags.map((tag) => {
-                return tag.name + ","
-            }).reduce((total, tagName) => {
-                return total + tagName
-            }, "").slice(0, -1)
+            availableTags: [],
+            serverMessageFinishedLoadingAvailableTags: "",
+            finishedLoadingAvailableTags: false,
+            autocompleteTags: [],
+            chosenTags: this.props._menuItem.tags ? this.props._menuItem.tags.map((tag) => {
+                return tag.name
+            }) : [],
+            tagsMessage: ""
 
             //</editor-fold>
         };
@@ -155,7 +124,134 @@ class EditMenuItemModal extends Component {
 
     //</editor-fold>
 
+    //<editor-fold desc="Component Lifecycle Model">
+    componentDidMount() {
+        const thisTemp = this;
+
+        //<editor-fold desc="Mount Available Tags Observable">
+        this.$availableTags = ajax({
+            url: paths["restApi"]["tag"],
+            method: "GET",
+            headers: {"X-Auth-Token": thisTemp.state.token},
+            timeout: timeouts,
+            responseType: "text"
+        })
+            .pipe(
+                exhaustMap((next) => {
+                    let response = JSON.parse(next.response);
+                    return bindCallback(thisTemp.setState).call(thisTemp, {
+                        availableTags: response
+                    });
+                }),
+                catchError((error) => {
+                    throw error
+                }))
+            .subscribe(
+                () => {
+                    thisTemp.setState({
+                        serverMessageFinishedLoadingAvailableTags: "",
+                        finishedLoadingAvailableTags: true
+                    });
+                }, (error) => {
+                    switch (error.name) {
+                        case "AjaxTimeoutError":
+                            thisTemp.setState({
+                                serverMessageFinishedLoadingAvailableTags: "" + "The request timed out.",
+                                finishedLoadingAvailableTags: true
+                            });
+                            break;
+                        case "InternalError":
+                        case "AjaxError":
+                            if (error.status === 0 && error.response === "") {
+                                thisTemp.setState({
+                                    serverMessageFinishedLoadingAvailableTags: "There is no connection to the server.",
+                                    finishedLoadingAvailableTags: true
+                                });
+                            } else if (error.status === 400) {
+                                thisTemp.setState({
+                                    serverMessageFinishedLoadingAvailableTags: "",
+                                    finishedLoadingAvailableTags: true
+                                });
+                            } else {
+                                thisTemp.setState({
+                                    serverMessageFinishedLoadingAvailableTags: error.response,
+                                    finishedLoadingAvailableTags: true
+                                });
+                            }
+                            break;
+                        default:
+                            console.log(error);
+                            thisTemp.setState({
+                                serverMessageFinishedLoadingAvailableTags: "Something is not like it is supposed to be.",
+                                finishedLoadingAvailableTags: true
+                            });
+                            break;
+                    }
+                }
+            );
+        //</editor-fold>
+
+        //<editor-fold desc="Mount Tags Observable">
+        this.$tags = fromEvent(document.getElementById("tagInput"), "input")
+            .pipe(map((event) => {
+                return event.target.value
+            }))
+            .pipe(bufferTime(1000))
+            .pipe(map((valueArray) => {
+                if (valueArray.length >= 1) {
+                    return valueArray[valueArray.length - 1]
+                } else {
+                    return null
+                }
+            }))
+            .pipe(filter((value) => {
+                return value != null
+            }))
+            .pipe(distinctUntilChanged())
+            .pipe(map((value) => {
+                if (value.length >= 1) {
+                    let searchValue = value[0].toUpperCase() + value.slice(1);
+                    return thisTemp.state.availableTags.filter((availableTag) => {
+                        return availableTag.startsWith(searchValue)
+                    })
+                } else {
+                    return []
+                }
+            }))
+            .subscribe(
+                (next) => {
+                    thisTemp.setState({
+                        autocompleteTags: next,
+                        tagsMessage: ""
+                    });
+                },
+                (error) => {
+                    console.log(error);
+                    thisTemp.setState({
+                        autocompleteTags: [],
+                        tagsMessage: "Something is not like it is supposed to be."
+                    });
+                }
+            );
+        //</editor-fold>
+    }
+
+    componentWillUnmount() {
+        //<editor-fold desc="Unmount Tags Observable">
+        this.$tags.unsubscribe();
+        //</editor-fold>
+        //<editor-fold desc="Unmount Available Tags Observable">
+        this.$availableTags.unsubscribe();
+        //</editor-fold>
+    }
+
+    //</editor-fold>
+
     //<editor-fold desc="Bussiness Logic">
+    update = () => {
+        window.location.reload();
+    };
+
     handleFileSubmit = (event) => {
         const fileTemp = event.target.files[0];
         event.preventDefault();
@@ -202,7 +298,7 @@ class EditMenuItemModal extends Component {
                     method: "POST",
                     headers: {"X-Auth-Token": thisTemp.state.token},
                     body: formData,
-                    timeout: timeout,
+                    timeout: timeouts,
                     responseType: "text"
                 })
             }), catchError((error) => {
@@ -219,7 +315,8 @@ class EditMenuItemModal extends Component {
                             thisTemp.setState({
                                 imageMessage: "Image could not be uploaded, as the request timed out.",
                                 serverMessage: "",
-                                selectedFile: null
+                                selectedFile: null,
+                                selectedFileData: null
                             });
                             break;
                         case "InternalError":
@@ -228,13 +325,15 @@ class EditMenuItemModal extends Component {
                                 thisTemp.setState({
                                     imageMessage: "Image could not be uploaded, as there is no connection to the server.",
                                     serverMessage: "",
-                                    selectedFile: null
+                                    selectedFile: null,
+                                    selectedFileData: null
                                 });
                             } else {
                                 thisTemp.setState({
                                     imageMessage: "Image could not be uploaded, as " + error.response,
                                     serverMessage: "",
-                                    selectedFile: null
+                                    selectedFile: null,
+                                    selectedFileData: null
                                 });
                             }
                             break;
@@ -243,7 +342,8 @@ class EditMenuItemModal extends Component {
                             thisTemp.setState({
                                 imageMessage: "Something is not like it is supposed to be.",
                                 serverMessage: "",
-                                selectedFile: null
+                                selectedFile: null,
+                                selectedFileData: null
                             });
                             break;
                     }
@@ -293,8 +393,7 @@ class EditMenuItemModal extends Component {
                 return bindCallback(thisTemp.setState).call(thisTemp, {
                     name: values.name,
                     description: values.description,
-                    priceEuros: parseInt(values.priceEuros),
-                    tags: values.tags.split(",").map(tag => tag.trim())
+                    priceEuros: parseFloat(values.priceEuros)
                 });
             }), catchError((error) => {
                 return throwError(error);
@@ -313,9 +412,9 @@ class EditMenuItemModal extends Component {
                     thisTemp.setState({serverMessage: "Item is edited"});
                     return ajax({
                         url: paths["restApi"]["menu"] + "/"
-                            + thisTemp.props.currentMenu.menuID + "/"
+                            + thisTemp.props._menu.menuID + "/"
                             + "menuItem" + "/"
-                            + thisTemp.props.currentMenuItem.menuItemID,
+                            + thisTemp.props._menuItem.menuItemID,
                         method: "PUT",
                         headers: {"Content-Type": "application/json", "X-Auth-Token": thisTemp.state.token},
                         body: {
@@ -324,9 +423,9 @@ class EditMenuItemModal extends Component {
                             priceEuros: thisTemp.state.priceEuros,
                             type: thisTemp.state.type,
                             imageID: thisTemp.state.imageID,
-                            tags: thisTemp.state.tags
+                            tags: thisTemp.state.chosenTags
                         },
-                        timeout: timeout,
+                        timeout: timeouts,
                         responseType: "text"
                     })
                 } else {
@@ -342,7 +441,7 @@ class EditMenuItemModal extends Component {
             .pipe(take(1))
             .subscribe(
                 () => {
-                    thisTemp.props.backgroundPage.update();
+                    thisTemp.props._backgroundPage.update();
                     thisTemp.props.onHide();
                 }, (error) => {
                     switch (error.name) {
@@ -373,11 +472,11 @@ class EditMenuItemModal extends Component {
             .pipe(exhaustMap(() => {
                 return ajax({
                     url: paths["restApi"]["menu"] + "/"
-                        + thisTemp.props.currentMenu.menuID + "/"
+                        + thisTemp.props._menu.menuID + "/"
                         + "menuItem" + "/"
-                        + thisTemp.props.currentMenuItem.menuItemID,
+                        + thisTemp.props._menuItem.menuItemID,
                     method: "DELETE",
-                    headers: {"Content-Type": "application/json", "X-Auth-Token": this.state.token},
+                    headers: {"Content-Type": "application/json", "X-Auth-Token": thisTemp.state.token},
                 })
             }), catchError((error) => {
                 return throwError(error);
@@ -385,7 +484,7 @@ class EditMenuItemModal extends Component {
             .pipe(take(1))
             .subscribe(
                 () => {
-                    thisTemp.props.backgroundPage.update();
+                    thisTemp.props._backgroundPage.update();
                     thisTemp.props.onHide();
                 }, (error) => {
                     switch (error.name) {
@@ -414,49 +513,101 @@ class EditMenuItemModal extends Component {
     //<editor-fold desc="Render">
     render() {
         let validation = this.submitted ? this.validator.validate(this.state) : this.state.validation;
-        if(this.props.backgroundPage == null) {
-            return(<p>Something went wrong.</p>);
-        } else if(this.state.token == null || this.state.token === "null" ) {
-            return(<p>Something went wrong.</p>);
+        if (this.props._backgroundPage == null) {
+            return (<p>Something went wrong.</p>);
+        } else if (this.state.token == null || this.state.token === "null") {
+            return (<p>Something went wrong.</p>);
         } else {
             //<editor-fold desc="Render Token">
             return (
                 <Modal.Body>
-                    <button className="exit" onClick={this.props.onHide}><IconExit/></button>
+                    <button
+                        className="exit"
+                        onClick={this.props.onHide}
+                    >
+                        <IconExit/>
+                    </button>
                     <div className="modal-wrapper restaurant-info">
-                        <Form ref={(c) => {
-                            this.form = c;
-                        }} onSubmit={(e) => this.handleSubmit(e)}>
-                            <h2>Edit</h2>
+                        <Form
+                            ref={(c) => {this.form = c;}}
+                            onSubmit={(e) => this.handleSubmit(e)}
+                            autocomplete="on"
+                        >
+                            <h2>
+                                Edit
+                            </h2>
                             <div className="account-type">
-                                <h4><span className="role">Dish</span></h4>
+                                <h4>
+                                    <span className="role">
+                                        Item
+                                    </span>
+                                </h4>
                             </div>
                             <div className="input-field">
-                                <label>Dish name</label>
-                                <Input type="text" name="name" value={this.state.name}/>
+                                <label>
+                                    Name
+                                </label>
+                                <Input
+                                    type="text"
+                                    name="name"
+                                    value={this.state.name}
+                                    required
+                                />
                             </div>
                             <div className="error-block">
-                                <small>{validation.name.message}</small>
+                                <small>
+                                    {validation.name.message}
+                                </small>
                             </div>
                             <div className="input-field">
-                                <label>Description</label>
-                                <Textarea name="description" value={this.state.description}/>
+                                <label>
+                                    Description
+                                </label>
+                                <Textarea
+                                    name="description"
+                                    value={this.state.description}
+                                    required
+                                />
                             </div>
                             <div className="error-block">
-                                <small>{validation.description.message}</small>
+                                <small>
+                                    {validation.description.message}
+                                </small>
                             </div>
                             <div className="input-field">
-                                <label>Price in Euro (€)</label>
-                                <Input name="priceEuros" placeholder="Price" value={this.state.priceEuros}/>
+                                <label>
+                                    Price in Euro (€)
+                                </label>
+                                <Input
+                                    type="number"
+                                    min="0"
+                                    step="0.01"
+                                    name="priceEuros"
+                                    placeholder="Price"
+                                    value={this.state.priceEuros}
+                                    required
+                                />
                             </div>
                             <div className="error-block">
-                                <small>{validation.priceEuros.message}</small>
+                                <small>
+                                    {validation.priceEuros.message}
+                                </small>
                             </div>
                             <div className="input-field image">
-                                <label>Image</label>
-                                <input type="file" name="file" id="file" className="inputfile"
-                                       onChange={this.handleFileSubmit}/>
-                                <label htmlFor="file">+ Upload image</label>
+                                <label>
+                                    Image
+                                </label>
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    name="file"
+                                    id="file"
+                                    className="inputfile"
+                                    onChange={this.handleFileSubmit}
+                                />
+                                <label htmlFor="file">
+                                    + Upload image
+                                </label>
                                 {this.state.selectedFile &&
                                 <label className="selected-file">
                                     <span
@@ -470,24 +621,76 @@ class EditMenuItemModal extends Component {
                                 </label>
                                 }
                                 {this.state.selectedFileData &&
-                                <img src={this.state.selectedFileData} alt={this.state.selectedFile.name}/>
+                                <div className="image-wrapper">
+                                    <div className="image" style={{backgroundImage: `url(${this.state.selectedFileData})`}}/>
+                                </div>
                                 }
                             </div>
                             <div className="error-block">
-                                <small>{this.state.imageMessage}</small>
+                                <small>
+                                    {this.state.imageMessage}
+                                </small>
                             </div>
                             <div className="input-field">
-                                <label>Tags</label>
-                                <Input type="tags" name="tags" value={this.state.tags}/>
+                                <label>
+                                    Available Tags
+                                </label>
+                                <input
+                                    id="tagInput"
+                                    type="text"
+                                    name="tags"
+                                    placeholder="Search"
+                                />
+                                <ul>
+                                    {this.state.autocompleteTags.map((tag) => {
+                                        return (
+                                            <TagItem
+                                                tag={tag}
+                                                modal={this}
+                                                added={false}
+                                            />
+                                            );
+                                    })}
+                                </ul>
+                            </div>
+                            <div className="input-field">
+                                <label>
+                                    Chosen Tags
+                                </label>
+                                <ul>
+                                    {this.state.chosenTags.map((tag) => {
+                                        return (
+                                            <TagItem
+                                                tag={tag}
+                                                modal={this}
+                                                added={true}
+                                            />
+                                            );
+                                    })}
+                                </ul>
                             </div>
                             <div className="error-block">
-                                <small>{validation.tags.message}</small>
+                                <small>
+                                    {this.state.tagsMessage}
+                                </small>
                             </div>
-                            <Button type="submit" className="normal">Save</Button>
-                            <Button type="button" className="delete-button" onClick={this.handleDelete}>Delete
-                                Dish</Button>
+                            <Button
+                                type="submit"
+                                className="normal"
+                            >
+                                Save
+                            </Button>
+                            <Button
+                                type="button"
+                                className="delete-button"
+                                onClick={this.handleDelete}
+                            >
+                                Delete Item
+                            </Button>
                             <div className="error-block">
-                                <small>{this.state.serverMessage}</small>
+                                <small>
+                                    {this.state.serverMessage}
+                                </small>
                             </div>
                         </Form>
                     </div>
@@ -505,10 +708,9 @@ class EditMenuItemModal extends Component {
 //<editor-fold desc="Redux">
 const mapStateToProps = (state) => {
     return {
-        backgroundPage: state.backgroundPageReducer.backgroundPage,
-        modalVisibilityFilter: state.modalVisibiltyFilterReducer.modalVisibilityFilter,
-        currentMenu: state.currentMenuReducer.currentMenu,
-        currentMenuItem: state.currentMenuReducer.currentMenuItem
+        _backgroundPage: state._backgroundPageReducer._backgroundPage,
+        _menu: state._menuReducer._menu,
+        _menuItem: state._menuReducer._menuItem
     };
 };
 
