@@ -1,3 +1,4 @@
+// noinspection JSLint
 export const paths = {
     restApi: {
         restaurantOwner:                "​/api​/user​/owner",

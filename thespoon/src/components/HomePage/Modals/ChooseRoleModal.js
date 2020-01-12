@@ -1,4 +1,3 @@
-//TO REMOVE
 //<editor-fold desc="React">
 import React, {Component} from "react";
 //</editor-fold>
@@ -48,6 +47,7 @@ class ChooseRoleModal extends Component {
     //<editor-fold desc="Render">
     render() {
         if (this.props._backgroundPage == null) {
+            // noinspection JSLint
             return (<p>Something went wrong.</p>);
         } else if (this.state.token == null || this.state.token === "null") {
             //<editor-fold desc="Render No Token">
@@ -55,7 +55,8 @@ class ChooseRoleModal extends Component {
                 <Modal.Body>
                     <button
                         className="exit"
-                        onClick={this.props.onHide}>
+                        onClick={this.props.onHide}
+                    >
                         <IconExit/>
                     </button>
                     <div className="modal-wrapper choose-role">

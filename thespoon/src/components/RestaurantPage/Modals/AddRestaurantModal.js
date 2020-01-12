@@ -2,15 +2,15 @@
 import React, {Component} from "react";
 import Select from "react-select";
 //</editor-fold>
+//<editor-fold desc="RxJs">
+import {of, bindCallback, throwError} from "rxjs";
+import {ajax} from "rxjs/ajax";
+import {map, exhaustMap, take, catchError} from "rxjs/operators";
+import {readFileURL} from "../Tools/FileReader"
+//</editor-fold>
 //<editor-fold desc="Redux">
 import {connect} from "react-redux";
 import {_setRestaurantID} from "../../../actionCreators/RestaurantActionCreators";
-//</editor-fold>
-//<editor-fold desc="RxJs">
-import {bindCallback, of, throwError} from "rxjs";
-import {ajax} from "rxjs/ajax";
-import {catchError, exhaustMap, map, take} from "rxjs/operators";
-import {readFileURL} from "../Tools/FileReader"
 //</editor-fold>
 //<editor-fold desc="Bootstrap">
 import {Modal} from "react-bootstrap";
@@ -238,7 +238,7 @@ class AddRestaurantInfo extends Component {
         of(1)
             .pipe(exhaustMap(() => {
                 return bindCallback(thisTemp.setState).call(thisTemp, {
-                    selectedOpeningHours: this.state.selectedOpeningHours.filter(oH => {
+                    selectedOpeningHours: this.state.selectedOpeningHours.filter((oH) => {
                         return oH !== openingHour
                     }),
                     selectedOpeningHoursMessage: ""
@@ -384,7 +384,7 @@ class AddRestaurantInfo extends Component {
             );
     };
 
-    handleSubmit = event => {
+    handleSubmit = (event) => {
         event.preventDefault();
         const thisTemp = this;
         of(1)
@@ -445,6 +445,7 @@ class AddRestaurantInfo extends Component {
             .pipe(exhaustMap((osmData) => {
                 if (Array.isArray(osmData.response) && osmData.response.length > 0) {
                     thisTemp.setState({serverMessage: "Restaurant information publication is processed"});
+                    // noinspection JSUnresolvedVariable
                     return ajax({
                         url: paths["restApi"]["restaurant"],
                         method: "POST",
@@ -523,6 +524,7 @@ class AddRestaurantInfo extends Component {
     render() {
         let validation = this.submitted ? this.validator.validate(this.state) : this.state.validation;
         if (this.props._backgroundPage == null) {
+            // noinspection JSLint
             return (<p>Something went wrong.</p>);
         } else if (this.state.token == null || this.state.token === "null") {
             return (<p>Something went wrong.</p>);
@@ -586,9 +588,9 @@ class AddRestaurantInfo extends Component {
                                 }
                                 {this.state.selectedFileData &&
                                 <div className="image-wrapper">
-                                    <div
-                                        className="image"
-                                        style={{backgroundImage: `url(${this.state.selectedFileData})`}}
+                                    <img
+                                        src={this.state.selectedFileData}
+                                        alt={this.state.selectedFile.name}
                                     />
                                 </div>
                                 }
@@ -747,7 +749,9 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        _setRestaurantID: (_restaurantID) => dispatch(_setRestaurantID(_restaurantID))
+        _setRestaurantID: (_restaurantID) => {
+            dispatch(_setRestaurantID(_restaurantID))
+        }
     };
 };
 

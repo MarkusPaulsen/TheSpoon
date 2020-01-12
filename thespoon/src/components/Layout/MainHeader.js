@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import {Link} from "react-router-dom";
-import {IconNameDark, IconDashboard, IconYourRestaurant} from "../Icons.js";
+import {IconNameDark, IconYourRestaurant} from "../Icons.js";
 import FilterLink from "../../containers/FilterModalLink";
 import {modals} from "../../constants/Modals";
 import $ from "jquery";
@@ -15,6 +15,7 @@ class MainHeader extends Component {
     }
 
     render() {
+        // noinspection JSLint
         return (
             <header className="main-header">
                 <div className="container">

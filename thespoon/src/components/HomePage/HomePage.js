@@ -59,6 +59,7 @@ class HomePage extends Component {
             || this.state.user == null
             || this.state.user === "null") {
             //<editor-fold desc="Render Null">
+            // noinspection JSLint
             return (
                 <Layout>
                     <div className="homepage-banner">

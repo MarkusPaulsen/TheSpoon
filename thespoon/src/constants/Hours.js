@@ -1,3 +1,4 @@
+// noinspection JSLint
 export const hours = [
     {value: "00", label: "00"},
     {value: "01", label: "01"},

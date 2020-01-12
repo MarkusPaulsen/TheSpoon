@@ -1,13 +1,13 @@
 //<editor-fold desc="React">
 import React, {Component} from "react";
 //</editor-fold>
+//<editor-fold desc="RxJs">
+import {of, bindCallback, throwError, fromEvent} from "rxjs";
+import {ajax} from "rxjs/ajax";
+import {map, exhaustMap, take, bufferTime, catchError, distinctUntilChanged, filter} from "rxjs/operators";
+//</editor-fold>
 //<editor-fold desc="Redux">
 import {connect} from "react-redux";
-//</editor-fold>
-//<editor-fold desc="RxJs">
-import {bindCallback, fromEvent, of, throwError} from "rxjs";
-import {ajax} from "rxjs/ajax";
-import {catchError, exhaustMap, map, take, bufferTime, filter, distinctUntilChanged} from "rxjs/operators";
 //</editor-fold>
 //<editor-fold desc="Bootstrap">
 import {Modal} from "react-bootstrap";
@@ -24,11 +24,11 @@ import FormValidator from "../../../validation/FormValidator";
 import {paths} from "../../../constants/Paths";
 import {timeouts} from "../../../constants/Timeouts";
 //</editor-fold>
+//<editor-fold desc="Containers">
+import TagItem from "../Items/TagItem";
+//</editor-fold>
 //<editor-fold desc="Icons">
 import {IconExit} from "../../Icons";
-//</editor-fold>
-//<editor-fold desc="Items">
-import TagItem from "../Items/TagItem";
 
 //</editor-fold>
 
@@ -306,6 +306,7 @@ class AddMenuModal extends Component {
     render() {
         let validation = this.submitted ? this.validator.validate(this.state) : this.state.validation;
         if (this.props._backgroundPage == null) {
+            // noinspection JSLint
             return (<p>Something went wrong.</p>);
         } else if (this.state.token == null || this.state.token === "null") {
             return (<p>Something went wrong.</p>);

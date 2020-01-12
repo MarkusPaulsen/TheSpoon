@@ -1,3 +1,4 @@
+// noinspection JSLint
 export const days = [
     {value: "Monday",     label: "Monday"     },
     {value: "Tuesday",    label: "Tuesday"    },

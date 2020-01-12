@@ -202,6 +202,7 @@ class YourRestaurantPage extends Component {
             || this.state.token === "null"
             || this.state.user == null
             || this.state.user === "null") {
+            // noinspection JSLint
             return (
                 <Redirect to={{pathname: "/"}}/>
             );

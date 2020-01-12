@@ -22,7 +22,7 @@ class FormValidator {
         let validation = this.valid();
 
         // for each validation rule
-        this.validations.forEach(rule => {
+        this.validations.forEach((rule) => {
 
             // if the field hasn"t already been marked invalid by an earlier rule
             if (!validation[rule.field].isInvalid) {
@@ -53,9 +53,9 @@ class FormValidator {
     valid() {
         const validation = {};
 
-        this.validations.map(rule => (
-            validation[rule.field] = {isInvalid: false, message: ""}
-        ));
+        this.validations.map((rule) => {
+            validation[rule.field] = {isInvalid: false, message: ""};
+        });
 
         return {isValid: true, ...validation};
     }

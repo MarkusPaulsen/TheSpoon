@@ -2,9 +2,11 @@
 import React, {Component} from "react";
 //</editor-fold>
 //<editor-fold desc="RxJs">
-import {bindCallback, of, throwError} from "rxjs";
+
+
+import {of, bindCallback, throwError} from "rxjs";
 import {ajax} from "rxjs/ajax";
-import {catchError, exhaustMap, map, take} from "rxjs/operators";
+import {map, exhaustMap, take, catchError} from "rxjs/operators";
 //</editor-fold>
 //<editor-fold desc="Redux">
 import {connect} from "react-redux";
@@ -162,6 +164,7 @@ class LogInModal extends Component {
     render() {
         let validation = this.submitted ? this.validator.validate(this.state) : this.state.validation;
         if (this.props._backgroundPage == null) {
+            // noinspection JSLint
             return (<p>Something went wrong.</p>);
         } else if (this.state.token == null || this.state.token === "null") {
             //<editor-fold desc="Render No Token">

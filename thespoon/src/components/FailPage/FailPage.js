@@ -54,6 +54,7 @@ class FailPage extends Component {
             || this.state.user == null
             || this.state.user === "null") {
             //<editor-fold desc="Render No Token">
+            // noinspection JSLint
             return (
                 <Redirect to={{pathname: "/"}}/>
             );
@@ -138,8 +139,8 @@ class FailPage extends Component {
 //<editor-fold desc="Redux">
 const mapDispatchToProps = (dispatch) => {
     return {
-        _setBackgroundPage: (backgroundPage) => {
-            dispatch(_setBackgroundPage(backgroundPage));
+        _setBackgroundPage: (_backgroundPage) => {
+            dispatch(_setBackgroundPage(_backgroundPage));
         }
     };
 };

@@ -2,9 +2,9 @@
 import React, {Component} from "react";
 //</editor-fold>
 //<editor-fold desc="RxJs">
-import {bindCallback, fromEvent, of, throwError} from "rxjs";
+import {of, bindCallback, throwError, fromEvent} from "rxjs";
 import {ajax} from "rxjs/ajax";
-import {bufferTime, catchError, distinctUntilChanged, exhaustMap, map, take, filter} from "rxjs/operators";
+import {map, exhaustMap, take, bufferTime, catchError, distinctUntilChanged, filter} from "rxjs/operators";
 import {readFileURL} from "../Tools/FileReader"
 //</editor-fold>
 //<editor-fold desc="Redux">
@@ -25,9 +25,11 @@ import FormValidator from "../../../validation/FormValidator";
 import {paths} from "../../../constants/Paths";
 import {timeouts} from "../../../constants/Timeouts";
 //</editor-fold>
+//<editor-fold desc="Containers">
+import TagItem from "../Items/TagItem";
+//</editor-fold>
 //<editor-fold desc="Icons">
 import {IconExit} from "../../Icons";
-import TagItem from "../Items/TagItem";
 
 //</editor-fold>
 
@@ -103,7 +105,7 @@ class EditMenuItemModal extends Component {
             //<editor-fold desc="Menu Item States">
             name: this.props._menuItem.name,
             description: this.props._menuItem.description,
-            priceEuros:  parseFloat(this.props._menuItem.priceEuros).toFixed(2),
+            priceEuros: parseFloat(this.props._menuItem.priceEuros).toFixed(2),
             type: this.props._menuItem.type,
             selectedFile: null,
             selectedFileData: null,
@@ -514,6 +516,7 @@ class EditMenuItemModal extends Component {
     render() {
         let validation = this.submitted ? this.validator.validate(this.state) : this.state.validation;
         if (this.props._backgroundPage == null) {
+            // noinspection JSLint
             return (<p>Something went wrong.</p>);
         } else if (this.state.token == null || this.state.token === "null") {
             return (<p>Something went wrong.</p>);
@@ -529,8 +532,12 @@ class EditMenuItemModal extends Component {
                     </button>
                     <div className="modal-wrapper restaurant-info">
                         <Form
-                            ref={(c) => {this.form = c;}}
-                            onSubmit={(e) => this.handleSubmit(e)}
+                            ref={(c) => {
+                                this.form = c;
+                            }}
+                            onSubmit={(e) => {
+                                this.handleSubmit(e)
+                            }}
                             autocomplete="on"
                         >
                             <h2>
@@ -539,7 +546,7 @@ class EditMenuItemModal extends Component {
                             <div className="account-type">
                                 <h4>
                                     <span className="role">
-                                        Item
+                                        {this.type}
                                     </span>
                                 </h4>
                             </div>
@@ -550,6 +557,7 @@ class EditMenuItemModal extends Component {
                                 <Input
                                     type="text"
                                     name="name"
+                                    placeholder="Name"
                                     value={this.state.name}
                                     required
                                 />
@@ -565,6 +573,7 @@ class EditMenuItemModal extends Component {
                                 </label>
                                 <Textarea
                                     name="description"
+                                    placeholder="Description"
                                     value={this.state.description}
                                     required
                                 />
@@ -622,7 +631,10 @@ class EditMenuItemModal extends Component {
                                 }
                                 {this.state.selectedFileData &&
                                 <div className="image-wrapper">
-                                    <div className="image" style={{backgroundImage: `url(${this.state.selectedFileData})`}}/>
+                                    <img
+                                        src={this.state.selectedFileData}
+                                        alt={this.state.selectedFile.name}
+                                    />
                                 </div>
                                 }
                             </div>
@@ -649,7 +661,7 @@ class EditMenuItemModal extends Component {
                                                 modal={this}
                                                 added={false}
                                             />
-                                            );
+                                        );
                                     })}
                                 </ul>
                             </div>
@@ -665,7 +677,7 @@ class EditMenuItemModal extends Component {
                                                 modal={this}
                                                 added={true}
                                             />
-                                            );
+                                        );
                                     })}
                                 </ul>
                             </div>
@@ -685,7 +697,7 @@ class EditMenuItemModal extends Component {
                                 className="delete-button"
                                 onClick={this.handleDelete}
                             >
-                                Delete Item
+                                Delete {this.type}
                             </Button>
                             <div className="error-block">
                                 <small>

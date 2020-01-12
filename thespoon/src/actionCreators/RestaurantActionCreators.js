@@ -3,6 +3,7 @@ import {_SET_RESTAURANT_ID, _SET_RESTAURANT_INFO} from "../actions/RestaurantAct
 //</editor-fold>
 
 //<editor-fold desc="Creators">
+// noinspection JSLint
 export const _setRestaurantID = (_restaurantID) => {
     return {
         type: _SET_RESTAURANT_ID,

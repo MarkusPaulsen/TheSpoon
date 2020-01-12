@@ -3,6 +3,7 @@ import Header from "./Header"
 
 class Layout extends Component {
     render() {
+        // noinspection JSLint
         return (
             <div className="site-wrapper">
                 <Header/>

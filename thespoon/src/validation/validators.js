@@ -8,6 +8,7 @@ import validator from "validator";
 //<editor-fold desc="Business Logic">
 export const required = (value) => {
     if (validator.isEmpty(value)) {
+        // noinspection JSLint
         return (
             <span className="error">
                 All fields must be fields out!

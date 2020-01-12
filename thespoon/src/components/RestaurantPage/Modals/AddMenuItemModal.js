@@ -2,9 +2,9 @@
 import React, {Component} from "react";
 //</editor-fold>
 //<editor-fold desc="RxJs">
-import {bindCallback, fromEvent, of, throwError} from "rxjs";
+import {of, bindCallback, throwError, fromEvent} from "rxjs";
 import {ajax} from "rxjs/ajax";
-import {bufferTime, catchError, distinctUntilChanged, exhaustMap, map, take, filter} from "rxjs/operators";
+import {map, exhaustMap, take, bufferTime, catchError, distinctUntilChanged, filter} from "rxjs/operators";
 import {readFileURL} from "../Tools/FileReader"
 //</editor-fold>
 //<editor-fold desc="Redux">
@@ -26,9 +26,11 @@ import {paths} from "../../../constants/Paths";
 import {modals} from "../../../constants/Modals";
 import {timeouts} from "../../../constants/Timeouts";
 //</editor-fold>
+//<editor-fold desc="Containers">
+import TagItem from "../Items/TagItem";
+//</editor-fold>
 //<editor-fold desc="Icons">
 import {IconExit} from "../../Icons";
-import TagItem from "../Items/TagItem";
 
 //</editor-fold>
 
@@ -467,6 +469,7 @@ class AddMenuItemModal extends Component {
     render() {
         let validation = this.submitted ? this.validator.validate(this.state) : this.state.validation;
         if (this.props._backgroundPage == null) {
+            // noinspection JSLint
             return (<p>Something went wrong.</p>);
         } else if (this.state.token == null || this.state.token === "null") {
             return (<p>Something went wrong.</p>);
@@ -482,8 +485,12 @@ class AddMenuItemModal extends Component {
                     </button>
                     <div className="modal-wrapper restaurant-info">
                         <Form
-                            ref={(c) => {this.form = c;}}
-                            onSubmit={(e) => this.handleSubmit(e)}
+                            ref={(c) => {
+                                this.form = c;
+                            }}
+                            onSubmit={(e) => {
+                                this.handleSubmit(e)
+                            }}
                             autocomplete="on"
                         >
                             <h2>
@@ -573,7 +580,12 @@ class AddMenuItemModal extends Component {
                                 </label>
                                 }
                                 {this.state.selectedFileData &&
-                                <img src={this.state.selectedFileData} alt={this.state.selectedFile.name}/>
+                                <div className="image-wrapper">
+                                    <img
+                                        src={this.state.selectedFileData}
+                                        alt={this.state.selectedFile.name}
+                                    />
+                                </div>
                                 }
                             </div>
                             <div className="error-block">
@@ -599,7 +611,7 @@ class AddMenuItemModal extends Component {
                                                 modal={this}
                                                 added={false}
                                             />
-                                            );
+                                        );
                                     })}
                                 </ul>
                             </div>
@@ -615,7 +627,7 @@ class AddMenuItemModal extends Component {
                                                 modal={this}
                                                 added={true}
                                             />
-                                            );
+                                        );
                                     })}
                                 </ul>
                             </div>
