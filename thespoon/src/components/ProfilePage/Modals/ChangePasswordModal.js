@@ -21,14 +21,10 @@ import FormValidator from "../../../validation/FormValidator";
 
 //<editor-fold desc="Constants">
 import {paths} from "../../../constants/paths";
-import {modalVisibilityFilters} from "../../../constants/modalVisibiltyFilters";
-import {timeout} from "../../../constants/timeout"
-//</editor-fold>
-//<editor-fold desc="Containers">
-import FilterLink from "../../../containers/FilterModalLink";
+import {timeouts} from "../../../constants/Timeouts"
 //</editor-fold>
 //<editor-fold desc="Icons">
-import {IconExit, IconName, IconPassword} from "../../Icons";
+import {IconExit, IconPassword} from "../../Icons";
 
 //</editor-fold>
 
@@ -45,14 +41,11 @@ class ChangePasswordModal extends Component {
             method: "isEmpty",
             validWhen: false,
             message: "Old password is required."
-        }, /*{
+        }, {
             field: "oldPassword",
-            method: "isAlphanumeric",
-            validWhen: true,
-            message: "Old password is required to be alphanumeric."
-        },*/ {
-            field: "oldPassword",
-            method: (oldPassword) => {return oldPassword.length >= 5},
+            method: (oldPassword) => {
+                return oldPassword.length >= 5
+            },
             validWhen: true,
             message: "Old password is required to be longer or equal 5 characters."
         }, {
@@ -60,14 +53,11 @@ class ChangePasswordModal extends Component {
             method: "isEmpty",
             validWhen: false,
             message: "New password is required."
-        }, /*{
+        }, {
             field: "newPassword",
-            method: "isAlphanumeric",
-            validWhen: true,
-            message: "New password is required to be alphanumeric."
-        },*/ {
-            field: "newPassword",
-            method: (newPassword) => {return newPassword.length >= 5},
+            method: (newPassword) => {
+                return newPassword.length >= 5
+            },
             validWhen: true,
             message: "New password is required to be longer or equal 5 characters."
         }, {
@@ -75,19 +65,18 @@ class ChangePasswordModal extends Component {
             method: "isEmpty",
             validWhen: false,
             message: "Confirm new password is required."
-        }, /*{
+        }, {
             field: "confirmNewPassword",
-            method: "isAlphanumeric",
-            validWhen: true,
-            message: "Confirm new password is required to be alphanumeric."
-        },*/ {
-            field: "confirmNewPassword",
-            method: (confirmNewPassword) => {return confirmNewPassword.length >= 5},
+            method: (confirmNewPassword) => {
+                return confirmNewPassword.length >= 5
+            },
             validWhen: true,
             message: "Confirm new password is required to be longer or equal 5 characters."
         }, {
-            field: "confirmPassword",
-            method: (confirmPassword, state) => {return confirmPassword === state.newPassword},
+            field: "confirmNewPassword",
+            method: (confirmPassword, state) => {
+                return confirmPassword === state.confirmNewPassword
+            },
             validWhen: true,
             message: "Password confirmation has to be identical to the password."
         }]);
@@ -146,16 +135,16 @@ class ChangePasswordModal extends Component {
             }))
             .pipe(exhaustMap(() => {
                 if (thisTemp.state.validation.isValid) {
-                    thisTemp.setState({serverMessage: "Login is processing"});
+                    thisTemp.setState({serverMessage: "Change password is processing"});
                     return ajax({
-                        url: paths["restApi"]["restaurantOwner"] + "/password",
+                        url: paths["restApi"]["password"],
                         method: "PUT",
-                        headers: {"Content-Type": "application/json"},
+                        headers: {"Content-Type": "application/json", "X-Auth-Token": this.state.token},
                         body: {
                             oldPassword: thisTemp.state.oldPassword,
                             newPassword: thisTemp.state.newPassword
                         },
-                        timeout: timeout,
+                        timeout: timeouts,
                         responseType: "text"
                     })
                 } else {
@@ -170,11 +159,8 @@ class ChangePasswordModal extends Component {
             }))
             .pipe(take(1))
             .subscribe(
-                (next) => {
-                    let response = JSON.parse(next.response);
-                    window.localStorage.setItem("token", response.token);
-                    window.localStorage.setItem("user", "Restaurant Owner");
-                    thisTemp.props.backgroundPage.update();
+                () => {
+                    thisTemp.props._backgroundPage.update();
                     thisTemp.props.onHide();
                 }, (error) => {
                     switch (error.name) {
@@ -202,52 +188,99 @@ class ChangePasswordModal extends Component {
     //<editor-fold desc="Render">
     render() {
         let validation = this.submitted ? this.validator.validate(this.state) : this.state.validation;
-        if(this.props.backgroundPage == null) {
-            return(<p>Something went wrong.</p>);
-        } else if(this.state.token == null || this.state.token === "null" ) {
-            return(<p>Something went wrong.</p>);
+        if (this.props._backgroundPage == null) {
+            return (<p>Something went wrong.</p>);
+        } else if (this.state.token == null || this.state.token === "null") {
+            return (<p>Something went wrong.</p>);
         } else {
             //<editor-fold desc="Render No Token">
             return (
                 <Modal.Body>
-                    <button className="exit" onClick={this.props.onHide}><IconExit/></button>
+                    <button
+                        className="exit"
+                        onClick={this.props.onHide}
+                    >
+                        <IconExit/>
+                    </button>
                     <div className="modal-wrapper ">
-                        <Form ref={(c) => {
-                            this.form = c;
-                        }} onSubmit={this.handleSubmit}>
-                            <h2 className="title">Change Password</h2>
+                        <Form
+                            ref={(c) => {
+                                this.form = c;
+                            }}
+                            onSubmit={this.handleSubmit}
+                        >
+                            <h2 className="title">
+                                Change Password
+                            </h2>
 
-                            <div className="input-field">
-                                <IconPassword/>
-                                <Input type="password" name="oldPassword" placeholder="Old Password" id="oldPassword"/>
-                            </div>
-                            <div className="error-block">
-                                <small>{validation.oldPassword.message}</small>
-                            </div>
-                            <div className="input-field">
-                                <IconPassword/>
-                                <Input type="password" name="newPassword" placeholder="New Password" id="newPassword"/>
-                            </div>
-                            <div className="error-block">
-                                <small>{validation.newPassword.message}</small>
-                            </div>
-                            <div className="input-field">
-                                <IconPassword/>
-                                <Input type="password" name="confirmNewPassword" placeholder="Confirm New Password" id="confirmNewPassword"/>
-                            </div>
-                            <div className="error-block">
-                                <small>{validation.confirmNewPassword.message}</small>
-                            </div>
-                            <Button type="submit" className="normal">Update</Button>
-                            <div className="error-block">
-                                <small>{this.state.serverMessage}</small>
-                            </div>
+                                <div className="input-field">
+                                    <IconPassword/>
+                                    <Input
+                                        type="password"
+                                        pattern=".{5,}"
+                                        title="Old Password must contain at least 5 letters."
+                                        name="oldPassword"
+                                        placeholder="Old Password"
+                                        id="oldPassword"
+                                        required
+                                    />
+                                </div>
+                                <div className="error-block">
+                                    <small>
+                                        {validation.oldPassword.message}
+                                    </small>
+                                </div>
+                                <div className="input-field">
+                                    <IconPassword/>
+                                    <Input
+                                        type="password"
+                                        pattern=".{5,}"
+                                        title="New Password must contain at least 5 letters."
+                                        name="newPassword"
+                                        placeholder="New Password"
+                                        id="newPassword"
+                                        required
+                                    />
+                                </div>
+                                <div className="error-block">
+                                    <small>
+                                        {validation.newPassword.message}
+                                    </small>
+                                </div>
+                                <div className="input-field">
+                                    <IconPassword/>
+                                    <Input
+                                        type="password"
+                                        pattern=".{5,}"
+                                        title="Confirm New Password must contain at least 5 letters."
+                                        name="confirmNewPassword"
+                                        placeholder="Confirm New Password"
+                                        id="confirmNewPassword"
+                                        required
+                                    />
+                                </div>
+                                <div className="error-block">
+                                    <small>
+                                        {validation.confirmNewPassword.message}
+                                    </small>
+                                </div>
+                                <Button
+                                    type="submit"
+                                    className="normal"
+                                >
+                                    Update
+                                </Button>
+                                <div className="error-block">
+                                    <small>
+                                        {this.state.serverMessage}
+                                    </small>
+                                </div>
                         </Form>
                     </div>
                 </Modal.Body>
-            );
+        );
 
-            //</editor-fold>
+        //</editor-fold>
         }
     }
 
@@ -258,10 +291,9 @@ class ChangePasswordModal extends Component {
 //<editor-fold desc="Redux">
 const mapStateToProps = (state) => {
     return {
-        backgroundPage: state.backgroundPageReducer.backgroundPage
+        _backgroundPage: state._backgroundPageReducer._backgroundPage
     };
 };
 
 export default connect(mapStateToProps, null)(ChangePasswordModal);
-
 //</editor-fold>

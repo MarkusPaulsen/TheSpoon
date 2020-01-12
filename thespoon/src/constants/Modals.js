@@ -13,5 +13,6 @@ export const modals = {
     SHOW_EDIT_DISH:                 "SHOW_EDIT_DISH",
     SHOW_ADD_DRINK:                 "SHOW_ADD_DRINK",
     SHOW_EDIT_DRINK:                "SHOW_EDIT_DRINK",
+    SHOW_CHANGE_PASSWORD:           "SHOW_CHANGE_PASSWORD",
     HIDE_ALL:                       "HIDE_ALL"
 };

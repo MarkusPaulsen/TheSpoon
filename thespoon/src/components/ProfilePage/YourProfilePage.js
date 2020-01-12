@@ -23,10 +23,12 @@ import {paths} from "../../constants/paths";
 //</editor-fold>
 //<editor-fold desc="Icons">
 import {IconName, IconEmail} from "../Icons";
-import {timeout} from "../../constants/timeout";
+import {timeouts} from "../../constants/Timeouts";
 //</editor-fold>
 //<editor-fold desc="Layout">
 import MainLayout from "../Layout/MainLayout.js";
+import {modals} from "../../constants/Modals";
+import FilterLink from "../../containers/FilterModalLink";
 
 //</editor-fold>
 
@@ -45,7 +47,9 @@ class YourProfilePage extends Component {
             message: "E-mail is required."
         }, {
             field: "email",
-            method: (email) => {return email.length >= 6},
+            method: (email) => {
+                return email.length >= 6
+            },
             validWhen: true,
             message: "Email is required to be longer or equal 6 characters."
         }, {
@@ -58,29 +62,23 @@ class YourProfilePage extends Component {
             method: "isEmpty",
             validWhen: false,
             message: "Name is required."
-        },/*{
+        }, {
             field: "name",
-            method: "isAlpha",
-            validWhen: true,
-            message: "Name is required to be alphabetic."
-        },*/ {
-            field: "name",
-            method: (name) => {return name.length >= 1},
+            method: (name) => {
+                return name.length >= 1
+            },
             validWhen: true,
             message: "Name is required to be longer or equal 1 characters."
-        },  {
+        }, {
             field: "surname",
             method: "isEmpty",
             validWhen: false,
             message: "Surname is required."
-        },/*{
+        }, {
             field: "surname",
-            method: "isAlpha",
-            validWhen: true,
-            message: "Surname is required to be alphabetic."
-        },*/ {
-            field: "surname",
-            method: (surname) => {return surname.length >= 1},
+            method: (surname) => {
+                return surname.length >= 1
+            },
             validWhen: true,
             message: "Surname is required to be longer or equal 1 characters."
         }]);
@@ -103,7 +101,8 @@ class YourProfilePage extends Component {
             username: "",
             name: "",
             surname: "",
-            finishedLoading: false
+            finishedLoading: false,
+            $restaurantOwnerData: null
             //</editor-fold>
         }
     }
@@ -112,21 +111,19 @@ class YourProfilePage extends Component {
 
     //<editor-fold desc="Component Lifecycle">
     componentDidMount() {
-        this.props._setBackgroundPageHere(this);
+        //<editor-fold desc="Mount Temporary This">
+        const thisTemp = this;
+        //</editor-fold>
+        this.props._setBackgroundPage(this);
         this.setState({
             token: window.localStorage.getItem("token"),
             user: window.localStorage.getItem("user"),
-            finishedLoading: false
-        }, () => {
-            //<editor-fold desc="Mount Temporary This">
-            const thisTemp = this;
-            //</editor-fold>
             //<editor-fold desc="Mount Restaurant Owner Data Observable">
-            this.$restaurantOwnerData = ajax({
+            $restaurantOwnerData: ajax({
                 url: paths["restApi"]["restaurantOwner"],
                 method: "GET",
                 headers: {"X-Auth-Token": thisTemp.state.token},
-                timeout: timeout,
+                timeout: timeouts,
                 responseType: "text"
             })
                 .subscribe(
@@ -197,7 +194,7 @@ class YourProfilePage extends Component {
                                 break;
                         }
                     }
-                );
+                )
             //</editor-fold>
         });
 
@@ -205,13 +202,15 @@ class YourProfilePage extends Component {
 
     componentWillUnmount() {
         //<editor-fold desc="Unmount Restaurant Owner Data Observable">
-        this.$restaurantOwnerData.unsubscribe();
+        if (this.state.$restaurantOwnerData != null) {
+            this.state.$restaurantOwnerData.unsubscribe();
+        }
         //</editor-fold>
     }
 
-    //</editor-fold>
+//</editor-fold>
 
-    //<editor-fold desc="Bussiness Logic">
+//<editor-fold desc="Bussiness Logic">
     handleSubmit = (event) => {
         event.preventDefault();
         const thisTemp = this;
@@ -251,7 +250,7 @@ class YourProfilePage extends Component {
                             name: thisTemp.state.name,
                             surname: thisTemp.state.surname
                         },
-                        timeout: timeout,
+                        timeout: timeouts,
                         responseType: "text"
                     })
                 } else {
@@ -335,9 +334,9 @@ class YourProfilePage extends Component {
         window.location.reload();
     };
 
-    //</editor-fold>
+//</editor-fold>
 
-    //<editor-fold desc="Render">
+//<editor-fold desc="Render">
     render() {
         let validation = this.submitted ? this.validator.validate(this.state) : this.state.validation;
         if (this.state.token == null
@@ -371,33 +370,39 @@ class YourProfilePage extends Component {
                                 <div className="container">
                                     <div className="row">
                                         <div className="col-sm-8">
-                                            <h3 className="title">Your Profile: {this.state.username}</h3>
+                                            <h3 className="title">Your Profile {this.state.username}</h3>
                                             <div className="no-menus">
                                                 <Form ref={(c) => {
                                                     this.form = c;
                                                 }} onSubmit={this.handleSubmit}>
                                                     <div className="input-field">
                                                         <IconEmail/>
-                                                        <Input type="email" name="email" placeholder="E-mail" value={this.state.email}/>
+                                                        <Input type="email" name="email" placeholder="E-mail"
+                                                               value={this.state.email}/>
                                                     </div>
                                                     <div className="error-block">
                                                         <small>{validation.email.message}</small>
                                                     </div>
                                                     <div className="input-field name">
                                                         <IconName/>
-                                                        <Input type="text" name="name" placeholder="First name" value={this.state.name}/>
-                                                        <Input type="text" name="surname" placeholder="Surname" value={this.state.surname}/>
+                                                        <Input type="text" name="name" placeholder="First name"
+                                                               value={this.state.name}/>
+                                                        <Input type="text" name="surname" placeholder="Surname"
+                                                               value={this.state.surname}/>
                                                     </div>
                                                     <div className="error-block">
                                                         <small>{validation.name.message}</small>
                                                         <small>{validation.surname.message}</small>
                                                     </div>
                                                     <Button type="submit" className="normal">Update</Button>
-                                                    <Button type="button" className="delete-button" onClick={this.handleDelete}>Change Password</Button>
+                                                    <Button type="button" className="delete-button"
+                                                            onClick={this.handleDelete}>Delete Account</Button>
                                                     <div className="error-block">
                                                         <small>{this.state.serverMessage}</small>
                                                     </div>
-
+                                                    <FilterLink modal={modals.SHOW_CHANGE_PASSWORD}>
+                                                        Change Password
+                                                    </FilterLink>
                                                 </Form>
                                             </div>
                                         </div>
@@ -425,14 +430,14 @@ class YourProfilePage extends Component {
         }
     }
 
-    //</editor-fold>
+//</editor-fold>
 
 }
 
 //<editor-fold desc="Redux">
 const mapDispatchToProps = (dispatch) => {
     return {
-        _setBackgroundPageHere: (_backgroundPage) => {
+        _setBackgroundPage: (_backgroundPage) => {
             dispatch(_setBackgroundPage(_backgroundPage));
         }
     };

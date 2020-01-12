@@ -26,6 +26,7 @@ import EditMenuItemModal from "../components/RestaurantPage/Modals/EditMenuItemM
 import ChooseRoleModal from "../components/HomePage/Modals/ChooseRoleModal";
 import RegisterCustomer from "../components/HomePage/Modals/RegisterCustomerModal";
 import PendingReviewModal from "../components/RestaurantPage/Modals/PendingReviewModal";
+import ChangePasswordModal from "../components/ProfilePage/Modals/ChangePasswordModal";
 //</editor-fold>
 
 class CustomModal extends Component {
@@ -91,6 +92,11 @@ class CustomModal extends Component {
             case modals.SHOW_EDIT_DRINK:
                 return (
                     <EditMenuItemModal onHide={() => this.props._handleClose()}/>
+                );
+
+            case modals.SHOW_CHANGE_PASSWORD:
+                return (
+                    <ChangePasswordModal onHide={() => this.props._handleClose()}/>
                 );
             default:
                 return null;

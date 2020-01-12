@@ -44,10 +44,12 @@ class YourRestaurantPage extends Component {
             //<editor-fold desc="State Restaurant">
             restaurant: null,
             restaurantMessage: "",
+            $restaurant: null,
             //</editor-fold>
             //<editor-fold desc="State Menu">
             menus: null,
-            menusMessage: ""
+            menusMessage: "",
+            $menu: null
             //</editor-fold>
         };
     }
@@ -56,33 +58,32 @@ class YourRestaurantPage extends Component {
 
     //<editor-fold desc="Component Lifecycle">
     componentDidMount() {
-        this.props._setBackgroundPageHere(this);
+        //<editor-fold desc="Mount Temporary This">
+        const thisTemp = this;
+        //</editor-fold>
+        this.props._setBackgroundPage(this);
         this.setState({
             token: window.localStorage.getItem("token"),
-            user: window.localStorage.getItem("user")
-        }, () => {
-            //<editor-fold desc="Mount Temporary This">
-            const thisTemp = this;
-            //</editor-fold>
-            //<editor-fold desc="Mount Restaurant Observable">
-            this.$restaurant = ajax({
+            user: window.localStorage.getItem("user"),
+            //<editor-fold desc="Mount Restaurant Data Observable">
+            $restaurant: ajax({
                 url: paths["restApi"]["restaurant"],
                 method: "GET",
                 headers: {"X-Auth-Token": thisTemp.state.token},
-                timeout: timeout,
+                timeout: timeouts,
                 responseType: "text"
             })
                 .subscribe(
                     (next) => {
                         let response = JSON.parse(next.response);
-                        thisTemp.props.setRestaurantHere(response);
+                        thisTemp.props._setRestaurantInfo(response);
                         thisTemp.setState({
                             restaurant: response,
                             restaurantMessage: ""
                         });
                     },
                     (error) => {
-                        console.log(error)
+                        console.log(error);
                         switch (error.name) {
                             case "AjaxTimeoutError":
                                 thisTemp.setState({
@@ -104,7 +105,7 @@ class YourRestaurantPage extends Component {
                                     error.status === 404
                                     && error.response === "No restaurant associated to this account found."
                                 ) {
-                                    this.props.openAddRestaurantModal();
+                                    this.props._openAddRestaurantModal();
                                     thisTemp.setState({
                                         restaurant: {},
                                         restaurantMessage: ""
@@ -125,15 +126,14 @@ class YourRestaurantPage extends Component {
                                 break;
                         }
                     }
-                );
-
+                ),
             //</editor-fold>
-            //<editor-fold desc="Mount Menus Observable">
-            this.$menus = ajax({
+            //<editor-fold desc="Mount Menu Data Observable">
+            $menus: ajax({
                 url: paths["restApi"]["menu"],
                 method: "GET",
                 headers: {"X-Auth-Token": thisTemp.state.token},
-                timeout: timeout,
+                timeout: timeouts,
                 responseType: "text"
             })
                 .subscribe(
@@ -175,18 +175,21 @@ class YourRestaurantPage extends Component {
                                 break;
                         }
                     }
-                );
-
+                )
             //</editor-fold>
         });
     };
 
     componentWillUnmount() {
         //<editor-fold desc="Unmount Menus Observable">
-        this.$menus.unsubscribe();
+        if (this.state.$menu != null){
+            this.state.$menu.unsubscribe();
+        }
         //</editor-fold>
         //<editor-fold desc="Unmount Restaurant Observable">
-        this.$restaurant.unsubscribe();
+        if (this.state.$restaurant != null) {
+            this.state.$restaurant.unsubscribe();
+        }
         //</editor-fold>
     }
 
