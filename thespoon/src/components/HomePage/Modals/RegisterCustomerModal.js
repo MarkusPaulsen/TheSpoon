@@ -167,7 +167,7 @@ class RegisterCustomerModal extends Component {
                 } else {
                     return throwError({
                         name: "InternalError",
-                        status: 0,
+                        status: -1,
                         response: null
                     });
                 }

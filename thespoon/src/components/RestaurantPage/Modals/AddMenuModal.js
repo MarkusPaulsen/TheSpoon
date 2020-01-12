@@ -126,7 +126,7 @@ class AddMenuModal extends Component {
                     switch (error.name) {
                         case "AjaxTimeoutError":
                             thisTemp.setState({
-                                serverMessageFinishedLoadingAvailableTags: "" + "The request timed out.",
+                                serverMessageFinishedLoadingAvailableTags: "The request timed out.",
                                 finishedLoadingAvailableTags: true
                             });
                             break;
@@ -137,16 +137,8 @@ class AddMenuModal extends Component {
                                     serverMessageFinishedLoadingAvailableTags: "There is no connection to the server.",
                                     finishedLoadingAvailableTags: true
                                 });
-                            } else if (error.status === 400) {
-                                thisTemp.setState({
-                                    serverMessageFinishedLoadingAvailableTags: "",
-                                    finishedLoadingAvailableTags: true
-                                });
                             } else {
-                                thisTemp.setState({
-                                    serverMessageFinishedLoadingAvailableTags: error.response,
-                                    finishedLoadingAvailableTags: true
-                                });
+                                thisTemp.setState({serverMessageFinishedLoadingAvailableTags: error.response});
                             }
                             break;
                         default:
@@ -242,40 +234,34 @@ class AddMenuModal extends Component {
             .pipe(exhaustMap(() => {
                 return bindCallback(thisTemp.setState).call(thisTemp, {
                     validation: thisTemp.validator.validate(thisTemp.state),
-                    submitted: true,
-                    serverMessage: ""
+                    serverMessage: "",
+                    submitted: true
                 });
             }), catchError((error) => {
                 return throwError(error);
             }))
             .pipe(exhaustMap(() => {
-                if (thisTemp.state.validation.isValid) {
-                    if (thisTemp.state.chosenTags.length > 0) {
-                        thisTemp.setState({serverMessage: "Menu is created"});
-                        return ajax({
-                            url: paths["restApi"]["menu"],
-                            method: "POST",
-                            headers: {"Content-Type": "application/json", "X-Auth-Token": thisTemp.state.token},
-                            body: {
-                                name: thisTemp.state.name,
-                                description: thisTemp.state.description,
-                                tags: thisTemp.state.chosenTags
-                            },
-                            timeout: timeouts,
-                            responseType: "text"
-                        })
-                    } else {
-                        thisTemp.setState({tagsMessage: "Please choose min. 1 Tag."});
-                        return throwError({
-                            name: "InternalError",
-                            status: 0,
-                            response: null
-                        });
-                    }
+                if (thisTemp.state.validation.isValid && thisTemp.state.chosenTags.length > 0) {
+                    thisTemp.setState({serverMessage: "Menu is created"});
+                    return ajax({
+                        url: paths["restApi"]["menu"],
+                        method: "POST",
+                        headers: {"Content-Type": "application/json", "X-Auth-Token": thisTemp.state.token},
+                        body: {
+                            name: thisTemp.state.name,
+                            description: thisTemp.state.description,
+                            tags: thisTemp.state.chosenTags
+                        },
+                        timeout: timeouts,
+                        responseType: "text"
+                    });
                 } else {
+                    if (thisTemp.state.chosenTags.length === 0) {
+                        thisTemp.setState({tagsMessage: "Please choose min. 1 Tag."});
+                    }
                     return throwError({
                         name: "InternalError",
-                        status: 0,
+                        status: -1,
                         response: null
                     });
                 }

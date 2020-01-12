@@ -322,8 +322,8 @@ class AddRestaurantInfo extends Component {
                         case "AjaxTimeoutError":
                             thisTemp.setState({
                                 imageMessage: "Image could not be uploaded, as the request timed out.",
-                                serverMessage: "",
-                                selectedFile: null
+                                selectedFile: null,
+                                selectedFileData: null
                             });
                             break;
                         case "InternalError":
@@ -331,14 +331,14 @@ class AddRestaurantInfo extends Component {
                             if (error.status === 0 && error.response === "") {
                                 thisTemp.setState({
                                     imageMessage: "Image could not be uploaded, as there is no connection to the server.",
-                                    serverMessage: "",
-                                    selectedFile: null
+                                    selectedFile: null,
+                                    selectedFileData: null
                                 });
                             } else {
                                 thisTemp.setState({
                                     imageMessage: "Image could not be uploaded, as " + error.response,
-                                    serverMessage: "",
-                                    selectedFile: null
+                                    selectedFile: null,
+                                    selectedFileData: null
                                 });
                             }
                             break;
@@ -346,8 +346,8 @@ class AddRestaurantInfo extends Component {
                             console.log(error);
                             thisTemp.setState({
                                 imageMessage: "Something is not like it is supposed to be.",
-                                serverMessage: "",
-                                selectedFile: null
+                                selectedFile: null,
+                                selectedFileData: null
                             });
                             break;
                     }
@@ -376,7 +376,6 @@ class AddRestaurantInfo extends Component {
                     console.log(error);
                     thisTemp.setState({
                         imageMessage: "Something is not like it is supposed to be.",
-                        serverMessage: "",
                         selectedFile: null,
                         selectedFileData: null
                     });
@@ -406,10 +405,10 @@ class AddRestaurantInfo extends Component {
             .pipe(exhaustMap(() => {
                 return bindCallback(thisTemp.setState).call(thisTemp, {
                     validation: thisTemp.validator.validate(thisTemp.state),
-                    submitted: true,
                     serverMessage: "",
                     selectedOpeningHoursMessage: "",
                     imageMessage: "",
+                    submitted: true
                 });
             }), catchError((error) => {
                 return throwError(error);
@@ -435,8 +434,11 @@ class AddRestaurantInfo extends Component {
                         thisTemp.setState({imageMessage: "No image uploaded!"});
 
                     }
-                    thisTemp.setState({serverMessage: ""});
-                    return throwError({status: 0});
+                    return throwError({
+                        name: "InternalError",
+                        status: -1,
+                        response: null
+                    });
                 }
 
             }), catchError((error) => {
@@ -494,24 +496,14 @@ class AddRestaurantInfo extends Component {
                         case "InternalError":
                         case "AjaxError":
                             if (error.status === 0 && error.response === "") {
-                                thisTemp.setState({
-                                    serverMessage: "There is no connection to the server."
-                                });
-                            } else if (error.status === 400) {
-                                thisTemp.setState({
-                                    serverMessage: ""
-                                });
+                                thisTemp.setState({serverMessage: "There is no connection to the server."});
                             } else {
-                                thisTemp.setState({
-                                    serverMessage: error.response
-                                });
+                                thisTemp.setState({serverMessage: error.response});
                             }
                             break;
                         default:
                             console.log(error);
-                            thisTemp.setState({
-                                serverMessageFinishedLoadingAvailableTags: "Something is not like it is supposed to be."
-                            });
+                            thisTemp.setState({serverMessage: "Something is not like it is supposed to be."});
                             break;
                     }
                 }

@@ -158,7 +158,7 @@ class EditMenuItemModal extends Component {
                     switch (error.name) {
                         case "AjaxTimeoutError":
                             thisTemp.setState({
-                                serverMessageFinishedLoadingAvailableTags: "" + "The request timed out.",
+                                serverMessageFinishedLoadingAvailableTags: "The request timed out.",
                                 finishedLoadingAvailableTags: true
                             });
                             break;
@@ -169,16 +169,8 @@ class EditMenuItemModal extends Component {
                                     serverMessageFinishedLoadingAvailableTags: "There is no connection to the server.",
                                     finishedLoadingAvailableTags: true
                                 });
-                            } else if (error.status === 400) {
-                                thisTemp.setState({
-                                    serverMessageFinishedLoadingAvailableTags: "",
-                                    finishedLoadingAvailableTags: true
-                                });
                             } else {
-                                thisTemp.setState({
-                                    serverMessageFinishedLoadingAvailableTags: error.response,
-                                    finishedLoadingAvailableTags: true
-                                });
+                                thisTemp.setState({serverMessageFinishedLoadingAvailableTags: error.response});
                             }
                             break;
                         default:
@@ -316,7 +308,6 @@ class EditMenuItemModal extends Component {
                         case "AjaxTimeoutError":
                             thisTemp.setState({
                                 imageMessage: "Image could not be uploaded, as the request timed out.",
-                                serverMessage: "",
                                 selectedFile: null,
                                 selectedFileData: null
                             });
@@ -326,14 +317,12 @@ class EditMenuItemModal extends Component {
                             if (error.status === 0 && error.response === "") {
                                 thisTemp.setState({
                                     imageMessage: "Image could not be uploaded, as there is no connection to the server.",
-                                    serverMessage: "",
                                     selectedFile: null,
                                     selectedFileData: null
                                 });
                             } else {
                                 thisTemp.setState({
                                     imageMessage: "Image could not be uploaded, as " + error.response,
-                                    serverMessage: "",
                                     selectedFile: null,
                                     selectedFileData: null
                                 });
@@ -343,7 +332,6 @@ class EditMenuItemModal extends Component {
                             console.log(error);
                             thisTemp.setState({
                                 imageMessage: "Something is not like it is supposed to be.",
-                                serverMessage: "",
                                 selectedFile: null,
                                 selectedFileData: null
                             });
@@ -374,7 +362,6 @@ class EditMenuItemModal extends Component {
                     console.log(error);
                     thisTemp.setState({
                         imageMessage: "Something is not like it is supposed to be.",
-                        serverMessage: "",
                         selectedFile: null,
                         selectedFileData: null
                     });
@@ -403,46 +390,45 @@ class EditMenuItemModal extends Component {
             .pipe(exhaustMap(() => {
                 return bindCallback(thisTemp.setState).call(thisTemp, {
                     validation: thisTemp.validator.validate(thisTemp.state),
-                    submitted: true,
-                    serverMessage: ""
+                    serverMessage: "",
+                    tagsMessage: "",
+                    imageMessage: "",
+                    submitted: true
                 });
             }), catchError((error) => {
                 return throwError(error);
             }))
             .pipe(exhaustMap(() => {
-                if (thisTemp.state.validation.isValid) {
-                    if (thisTemp.state.chosenTags.length > 0) {
-                        thisTemp.setState({serverMessage: "New dish is edited"});
-                        return ajax({
-                            url: paths["restApi"]["menu"] + "/"
-                                + thisTemp.props._menu.menuID + "/"
-                                + "menuItem" + "/"
-                                + thisTemp.props._menuItem.menuItemID,
-                            method: "PUT",
-                            headers: {"Content-Type": "application/json", "X-Auth-Token": thisTemp.state.token},
-                            body: {
-                                name: thisTemp.state.name,
-                                description: thisTemp.state.description,
-                                priceEuros: thisTemp.state.priceEuros,
-                                type: thisTemp.state.type,
-                                imageID: thisTemp.state.imageID,
-                                tags: thisTemp.state.chosenTags
-                            },
-                            timeout: timeouts,
-                            responseType: "text"
-                        })
-                    } else {
-                        thisTemp.setState({tagsMessage: "Please choose min. 1 Tag."});
-                        return throwError({
-                            name: "InternalError",
-                            status: 0,
-                            response: null
-                        });
-                    }
+                if (thisTemp.state.validation.isValid && thisTemp.state.chosenTags.length > 0 && thisTemp.state.imageID !== 0) {
+                    thisTemp.setState({serverMessage: "New dish is edited"});
+                    return ajax({
+                        url: paths["restApi"]["menu"] + "/"
+                            + thisTemp.props._menu.menuID + "/"
+                            + "menuItem" + "/"
+                            + thisTemp.props._menuItem.menuItemID,
+                        method: "PUT",
+                        headers: {"Content-Type": "application/json", "X-Auth-Token": thisTemp.state.token},
+                        body: {
+                            name: thisTemp.state.name,
+                            description: thisTemp.state.description,
+                            priceEuros: thisTemp.state.priceEuros,
+                            type: thisTemp.state.type,
+                            imageID: thisTemp.state.imageID,
+                            tags: thisTemp.state.chosenTags
+                        },
+                        timeout: timeouts,
+                        responseType: "text"
+                    });
                 } else {
+                    if (thisTemp.state.chosenTags.length === 0) {
+                        thisTemp.setState({tagsMessage: "Please choose min. 1 Tag."});
+                    }
+                    if (thisTemp.state.imageID === 0) {
+                        thisTemp.setState({imageMessage: "Please upload an Image."});
+                    }
                     return throwError({
                         name: "InternalError",
-                        status: 0,
+                        status: -1,
                         response: null
                     });
                 }
@@ -555,7 +541,7 @@ class EditMenuItemModal extends Component {
                             <div className="account-type">
                                 <h4>
                                     <span className="role">
-                                        {this.type}
+                                        {this.state.type}
                                     </span>
                                 </h4>
                             </div>
@@ -706,7 +692,7 @@ class EditMenuItemModal extends Component {
                                 className="delete-button"
                                 onClick={this.handleDelete}
                             >
-                                Delete {this.type}
+                                Delete {this.state.type}
                             </Button>
                             <div className="error-block">
                                 <small>
