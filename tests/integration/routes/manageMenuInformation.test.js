@@ -28,9 +28,8 @@ describe('/api/user/owner/restaurant/menu', () => {
     });
 
     //close the db connection after all the tests
-    afterAll (async done => {
-        await db.close();
-        done();
+    afterAll(() => {
+        db.close();
     });
 
     describe('POST /', () => {
@@ -42,7 +41,7 @@ describe('/api/user/owner/restaurant/menu', () => {
                 .send(body);
         };
 
-        it('should not accept invalid tags', async (done) => {
+        it('should not accept invalid tags', async () => {
             await setDatabase();
             body = {
                 name: "menu's name",
@@ -52,9 +51,8 @@ describe('/api/user/owner/restaurant/menu', () => {
             const res = await exec();
             await destroyEverything();
             expect(res.status).toBe(400);
-            done();
         });
-        it('should create the menu if the tags are valid', async (done) => {
+        it('should create the menu if the tags are valid', async () => {
             await setDatabase();
             body = {
                 name: "menu's name",
@@ -64,7 +62,6 @@ describe('/api/user/owner/restaurant/menu', () => {
             const res = await exec();
             await destroyEverything();
             expect(res.status).toBe(201);
-            done();
         })
     });
     describe('PUT /:menuID', () => {
@@ -76,15 +73,14 @@ describe('/api/user/owner/restaurant/menu', () => {
                 .send(body);
         };
 
-        it('should send 404 if the menu with given menuID is not found', async (done) => {
+        it('should send 404 if the menu with given menuID is not found', async () => {
             await setDatabase();
             //try to edit a menu that doesn't exist
             const res = await exec(568);
             await destroyEverything();
             expect(res.status).toEqual(404);
-            done();
         });
-        it('should not accept invalid tags', async (done) => {
+        it('should not accept invalid tags', async () => {
             await setDatabase();
             //create a menu associated to the restaurant
             const responseAfterCreatingMenu = await request(app)
@@ -105,9 +101,8 @@ describe('/api/user/owner/restaurant/menu', () => {
             const res = await exec(responseAfterCreatingMenu.body.menuID);
             await destroyEverything();
             expect(res.status).toBe(400);
-            done();
         });
-        it('should associate to the menu all and only the new tags sent while editing', async (done) => {
+        it('should associate to the menu all and only the new tags sent while editing', async () => {
             await setDatabase();
             //create a menu associated to the restaurant
             const responseAfterCreatingMenu = await request(app)
@@ -141,7 +136,6 @@ describe('/api/user/owner/restaurant/menu', () => {
             }
             await destroyEverything();
             expect(tagsRetrievedInArray).toEqual(['Italian', 'Pasta']);
-            done();
         })
     });
     describe('DELETE /:menuID', () => {
@@ -152,15 +146,14 @@ describe('/api/user/owner/restaurant/menu', () => {
                 .set('x-auth-token', token)
         };
 
-        it('should send 404 if the menu with given menuID is not found', async (done) => {
+        it('should send 404 if the menu with given menuID is not found', async () => {
             await setDatabase();
             //try to delete a menu that doesn't exist
             const res = await exec(568);
             await destroyEverything();
             expect(res.status).toEqual(404);
-            done();
         });
-        it('should delete exactly the given menu, not another', async (done) => {
+        it('should delete exactly the given menu, not another', async () => {
             await setDatabase();
             //create a menu associated to the restaurant
             const responseAfterCreatingMenu = await request(app)
@@ -174,7 +167,6 @@ describe('/api/user/owner/restaurant/menu', () => {
             const res = await exec(responseAfterCreatingMenu.body.menuID);
             await destroyEverything();
             expect(res.body).toEqual({menuID: responseAfterCreatingMenu.body.menuID.toString()});
-            done();
         })
     })
 });

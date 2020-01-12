@@ -26,9 +26,8 @@ describe('/api/user/owner', () => {
     });
 
     //close the db connection after all the tests
-    afterAll (async done => {
-        await db.close();
-        done();
+    afterAll (() => {
+        db.close();
     });
 
     describe('GET /', () => {
@@ -42,7 +41,7 @@ describe('/api/user/owner', () => {
         };
 
         //it should return a 200 because the data sent are related to a valid owner
-        it('should return a 200', async (done) => {
+        it('should return a 200', async () => {
             //first of all, create the customer in the database
             const salt = await bcrypt.genSalt(10);
             const hashed = await bcrypt.hash("123456", salt);
@@ -72,11 +71,11 @@ describe('/api/user/owner', () => {
             });
 
             expect(res.status).toBe(200);
-            done();
+
         });
 
         //it should return a 400 because the user is a customer, not a owner
-        it('should return a 400', async (done) => {
+        it('should return a 400', async () => {
             //first of all, create the owner in the database
             const salt = await bcrypt.genSalt(10);
             const hashed = await bcrypt.hash("123456", salt);
@@ -106,11 +105,11 @@ describe('/api/user/owner', () => {
             });
 
             expect(res.status).toBe(401);
-            done();
+
         })
 
 
-    });
+    })
 
 
     describe('PUT /', () => {
@@ -129,7 +128,7 @@ describe('/api/user/owner', () => {
         };
 
         //it should return a 200 because the data sent are related to a valid owner
-        it('should return a 200', async (done) => {
+        it('should return a 200', async () => {
             //first of all, create the customer in the database
             const salt = await bcrypt.genSalt(10);
             const hashed = await bcrypt.hash("123456", salt);
@@ -159,11 +158,11 @@ describe('/api/user/owner', () => {
             });
 
             expect(res.status).toBe(200);
-            done();
+
         });
 
         //it should return a 401 because the user is a customer, not a owner
-        it('should return a 401', async (done) => {
+        it('should return a 401', async () => {
             //first of all, create the owner in the database
             const salt = await bcrypt.genSalt(10);
             const hashed = await bcrypt.hash("123456", salt);
@@ -193,11 +192,11 @@ describe('/api/user/owner', () => {
             });
 
             expect(res.status).toBe(401);
-            done();
+
         })
 
 
-    });
+    })
 
     describe('DELETE /', () => {
 
@@ -210,7 +209,7 @@ describe('/api/user/owner', () => {
         };
 
         //it should return a 200 because the data sent are related to a valid owner
-        it('should return a 200', async (done) => {
+        it('should return a 200', async () => {
             //first of all, create the customer in the database
             const salt = await bcrypt.genSalt(10);
             const hashed = await bcrypt.hash("123456", salt);
@@ -240,11 +239,11 @@ describe('/api/user/owner', () => {
             });
 
             expect(res.status).toBe(200);
-            done();
+
         });
 
         //it should return a 401 because the user is a customer, not a owner
-        it('should return a 401', async (done) => {
+        it('should return a 401', async () => {
             //first of all, create the owner in the database
             const salt = await bcrypt.genSalt(10);
             const hashed = await bcrypt.hash("123456", salt);
@@ -274,11 +273,11 @@ describe('/api/user/owner', () => {
             });
 
             expect(res.status).toBe(401);
-            done();
+
         })
 
 
-    });
+    })
 
     describe('PUT /password', () => {
 
@@ -295,7 +294,7 @@ describe('/api/user/owner', () => {
         };
 
         //it should return a 200 because the data sent are related to a valid customer
-        it('should return a 200', async (done) => {
+        it('should return a 200', async () => {
             //first of all, create the customer in the database
             const salt = await bcrypt.genSalt(10);
             const hashed = await bcrypt.hash("123456", salt);
@@ -325,11 +324,11 @@ describe('/api/user/owner', () => {
             });
 
             expect(res.status).toBe(200);
-            done();
+
         });
 
         //it should return a 400 because password is wrong
-        it('should return a 400', async (done) => {
+        it('should return a 400', async () => {
             //first of all, create the owner in the database
             const salt = await bcrypt.genSalt(10);
             const hashed = await bcrypt.hash("1234567", salt);
@@ -359,7 +358,7 @@ describe('/api/user/owner', () => {
             });
 
             expect(res.status).toBe(400);
-            done();
+
         })
 
 

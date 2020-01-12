@@ -25,9 +25,8 @@ describe('api/user/owner/tag', () => {
     });
 
     //close the db connection after all the tests
-    afterAll (async done => {
-        await db.close();
-        done();
+    afterAll (() => {
+        db.close();
     });
 
     describe('GET /', () => {
@@ -40,28 +39,26 @@ describe('api/user/owner/tag', () => {
               .set('x-auth-token', token)
         };
 
-        it('should return 401 if no token is provided', async (done) => {
+        it('should return 401 if no token is provided', async () => {
             token = '';
             const res = await exec();
             expect(res.status).toBe(401);
-            done();
         });
 
-        it('should return 401 if token is invalid', async (done) => {
+        it('should return 401 if token is invalid', async () => {
             token = 'a';
             const res = await exec();
             expect(res.status).toBe(401);
-            done();
         });
 
-        it('should return 401 if the token is valid but the user is a customer', async (done) => {
+        it('should return 401 if the token is valid but the user is a customer', async () => {
 
             //first of all, create the customer in the database
             const salt = await bcrypt.genSalt(10);
             const hashed = await bcrypt.hash("123456", salt);
 
             await Customer.create({
-                Username: "eImperiali_getTags",
+                Username: "eImperiali",
                 Email: "emilioimperiali@mail.com",
                 Password: hashed
             });
@@ -69,7 +66,7 @@ describe('api/user/owner/tag', () => {
             //then login to get the token
             const tokenObject = await request(app)
                 .post('/api/user/login')
-                .send({username: "eImperiali_getTags", password: "123456", isRestaurantOwner: false});
+                .send({username: "eImperiali", password: "123456", isRestaurantOwner: false});
 
             //then try to access the endpoint as a customer
             token = tokenObject.body.token;
@@ -78,32 +75,31 @@ describe('api/user/owner/tag', () => {
             //remove the previously created customer from the database
             await Customer.destroy({
                 where: {
-                    Username: "eImperiali_getTags"
+                    Username: "eImperiali"
                 }
             });
 
             expect(res.status).toBe(401);
-            done();
         });
 
-        it('should return 200 if token is valid and from an owner', async (done) => {
+        it('should return 200 if token is valid and from an owner', async () => {
 
             //first of all, create the owner in the database
             const salt = await bcrypt.genSalt(10);
             const hashed = await bcrypt.hash("123456", salt);
 
             await Owner.create({
-                Username: "xXEmilioXx_getTags",
+                Username: "xXEmilioXx",
                 Name: "Emilio",
                 Surname: "Imperiali",
-                Email: "emilio_getTags@mail.com",
+                Email: "emilio@mail.com",
                 Password: hashed
             });
 
             //then login to get the token
             const tokenObject = await request(app)
                 .post('/api/user/login')
-                .send({username: "xXEmilioXx_getTags", password: "123456", isRestaurantOwner: true});
+                .send({username: "xXEmilioXx", password: "123456", isRestaurantOwner: true});
 
             //then try to access the endpoint as an owner
             token = tokenObject.body.token;
@@ -112,12 +108,11 @@ describe('api/user/owner/tag', () => {
             //remove the previously created owner from the database
             await Owner.destroy({
                 where: {
-                    Username: "xXEmilioXx_getTags"
+                    Username: "xXEmilioXx"
                 }
             });
 
             expect(res.status).toBe(200);
-            done();
         });
     })
 });

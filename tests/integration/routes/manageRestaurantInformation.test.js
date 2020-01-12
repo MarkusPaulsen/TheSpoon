@@ -27,9 +27,8 @@ describe('/api/user/owner/restaurant', () => {
     });
 
     //close the db connection after all the tests
-    afterAll (async done => {
-        await db.close();
-        done();
+    afterAll(() => {
+        db.close();
     });
 
     //test "Get data of own restaurant"
@@ -41,14 +40,13 @@ describe('/api/user/owner/restaurant', () => {
                 .set('x-auth-token', token)
         };
 
-        it('should send 404 if no restaurant is associated to the logged in owner', async (done) => {
+        it('should send 404 if no restaurant is associated to the logged in owner', async () => {
             await setDatabase();
             const res = await exec();
             await destroyEverything();
             expect(res.status).toEqual(404);
-            done();
         });
-        it('should send all and only the correct data about the restaurant of the logged in owner', async (done) => {
+        it('should send all and only the correct data about the restaurant of the logged in owner', async () => {
             await setDatabase();
             //create the restaurant of the owner
             const restaurantCreated = await Restaurant.create({
@@ -92,8 +90,7 @@ describe('/api/user/owner/restaurant', () => {
                     openTime: "19.00",
                     closeTime: "23.59"
                 }]
-            });
-            done();
+            })
         })
     })
 });

@@ -32,9 +32,8 @@ describe('/api/user/owner/restaurant/menu/{menuID}/menuItem', () => {
     });
 
     //close the db connection after all the tests
-    afterAll (async done => {
-        await db.close();
-        done();
+    afterAll (() => {
+        db.close();
     });
 
     //test "create menu item"
@@ -50,7 +49,7 @@ describe('/api/user/owner/restaurant/menu/{menuID}/menuItem', () => {
                 "Something"
             ],
             "imageID": 1573670733122
-        };
+        }
 
         const menuItemValid= {
             "name": "Spaghetti Milanese",
@@ -63,7 +62,7 @@ describe('/api/user/owner/restaurant/menu/{menuID}/menuItem', () => {
                 "Italian"
             ],
             "imageID": 1573670733122
-        };
+        }
 
         const exec = async (menuID, menuItem) => {
             return await request(app)
@@ -73,23 +72,21 @@ describe('/api/user/owner/restaurant/menu/{menuID}/menuItem', () => {
 
         };
 
-        it('should send 400 because tags are invalid', async (done) => {
+        it('should send 400 because tags are invalid', async () => {
             await setDatabase();
 
 
             const res = await exec(568, menuItemInvalid);
             await destroyEverything();
             expect(res.status).toEqual(400);
-            done();
         });
 
-        it('should return 200', async (done) => {
+        it('should return 200', async () => {
             await setDatabase();
 
             const res = await exec(menuIDToGet, menuItemValid);
             await destroyEverything();
             expect(res.status).toBe(200);
-            done();
         })
     });
 
@@ -107,7 +104,7 @@ describe('/api/user/owner/restaurant/menu/{menuID}/menuItem', () => {
                 "Italian"
             ],
             "imageID": 1573670733122
-        };
+        }
 
         const exec = async (menuID, menuItem, menuItemID) => {
             return await request(app)
@@ -117,13 +114,12 @@ describe('/api/user/owner/restaurant/menu/{menuID}/menuItem', () => {
 
         };
 
-        it('should return 200', async (done) => {
+        it('should return 200', async () => {
             await setDatabase();
 
             const res = await exec(menuIDToGet, menuItem, menuItemID1);
             await destroyEverything();
             expect(res.status).toBe(200);
-            done();
         })
     });
 
@@ -137,13 +133,12 @@ describe('/api/user/owner/restaurant/menu/{menuID}/menuItem', () => {
 
         };
 
-        it('should return 200', async (done) => {
+        it('should return 200', async () => {
             await setDatabase();
 
             const res = await exec(menuIDToGet, menuItemID1);
             await destroyEverything();
             expect(res.status).toBe(200);
-            done();
         })
     });
 });

@@ -29,9 +29,8 @@ describe('/api/consultant/statistics', () => {
     });
 
     //close the db connection after all the tests
-    afterAll (async done => {
-        await db.close();
-        done();
+    afterAll(() => {
+        db.close();
     });
 
     describe('GET /', () => {
@@ -42,7 +41,7 @@ describe('/api/consultant/statistics', () => {
                 .set('x-auth-token', token);
         };
 
-        it('should return a valid json about the statistics', async (done) => {
+        it('should return a valid json about the statistics', async () => {
             await setDatabase();
 
             //then login to get the token
@@ -55,10 +54,9 @@ describe('/api/consultant/statistics', () => {
             await destroyEverything();
 
             expect(res.status).toBe(200);
-            done();
         });
 
-        it('should return a 401 access denied because the user is a customer, not a consultant', async (done) => {
+        it('should return a 401 access denied because the user is a customer, not a consultant', async () => {
             await setDatabase();
 
             //then login to get the token
@@ -71,7 +69,6 @@ describe('/api/consultant/statistics', () => {
             await destroyEverything();
 
             expect(res.status).toBe(401);
-            done();
         });
     });
 
@@ -83,7 +80,7 @@ describe('/api/consultant/statistics', () => {
                 .set('x-auth-token', token);
         };
 
-        it('should return a valid json about the statistics', async (done) => {
+        it('should return a valid json about the statistics', async () => {
             await setDatabase();
 
             //then login to get the token
@@ -96,10 +93,9 @@ describe('/api/consultant/statistics', () => {
             await destroyEverything();
 
             expect(res.status).toBe(200);
-            done();
         });
 
-        it('should return a 401 access denied because the user is a customer, not a consultant', async (done) => {
+        it('should return a 401 access denied because the user is a customer, not a consultant', async () => {
             await setDatabase();
 
             //then login to get the token
@@ -112,7 +108,6 @@ describe('/api/consultant/statistics', () => {
             await destroyEverything();
 
             expect(res.status).toBe(401);
-            done();
         });
     });
 });
@@ -136,7 +131,7 @@ async function setDatabase() {
         Username: "emilioImperiali_consultantStatistics",
         SearchedWord: "pizza",
         NumberOfSearches: 2
-    });
+    })
 
     await Customer.create({
         Username: "marinMilina_consultantStatistics",
@@ -152,7 +147,7 @@ async function setDatabase() {
         Username: "marinMilina_consultantStatistics",
         SearchedWord: "pizza",
         NumberOfSearches: 3
-    });
+    })
 
     await Consultant.create({
         Username: "consultant_consultantStatistics",

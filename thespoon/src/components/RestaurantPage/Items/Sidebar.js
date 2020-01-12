@@ -3,6 +3,7 @@ import React, {Component} from "react";
 //</editor-fold>
 //<editor-fold desc="Redux">
 import {connect} from "react-redux";
+import {_setRestaurantInfo} from "../../../actionCreators/RestaurantActionCreators";
 //</editor-fold>
 
 //<editor-fold desc="Constants">
@@ -20,6 +21,13 @@ class Sidebar extends Component {
     //<editor-fold desc="Constructor">
     constructor(props) {
         super(props)
+    }
+
+    //</editor-fold>
+
+    //<editor-fold desc="Component Lifecycle">
+    componentDidMount() {
+        this.props._setRestaurantInfo(this);
     }
 
     //</editor-fold>
@@ -87,5 +95,14 @@ class Sidebar extends Component {
 }
 
 //<editor-fold desc="Redux">
-export default connect(null, null)(Sidebar);
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        _setRestaurantInfo: (restaurantInfo) => {
+            dispatch(_setRestaurantInfo(restaurantInfo));
+        }
+    };
+};
+
+export default connect(null, mapDispatchToProps)(Sidebar);
 //</editor-fold>

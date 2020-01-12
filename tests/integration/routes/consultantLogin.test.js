@@ -25,22 +25,21 @@ describe('/api/consultant/login', () => {
     });
 
     //close the db connection after all the tests
-    afterAll (async done => {
-        await db.close();
-        done();
+    afterAll (() => {
+        db.close();
     });
 
     describe('POST /', () => {
 
         //it should return a 201 because the data sent are related to a valid consultant
-        it('should return a 201', async (done) => {
+        it('should return a 201', async () => {
 
             //first of all, create the consultant in the database
             const salt = await bcrypt.genSalt(10);
             const hashed = await bcrypt.hash("123456", salt);
 
             await Consultant.create({
-                Username: "xXEmilioXx_consultantLogin",
+                Username: "xXEmilioXx",
                 Name: "Emilio",
                 Surname: "Imperiali",
                 Email: "consultant@mail.com",
@@ -52,7 +51,7 @@ describe('/api/consultant/login', () => {
             const exec = async () => {
                 return await request(app)
                     .post('/api/consultant/login')
-                    .send({username: "xXEmilioXx_consultantLogin", password: "123456"})
+                    .send({username: "xXEmilioXx", password: "123456"})
             };
 
             const res = await exec();
@@ -60,26 +59,25 @@ describe('/api/consultant/login', () => {
             //remove the previously created consultant from the database
             await Consultant.destroy({
                 where: {
-                    Username: "xXEmilioXx_consultantLogin"
+                    Username: "xXEmilioXx"
                 }
             });
 
             expect(res.status).toBe(201);
-            done();
-        });
+        })
 
-        it('should return a 400', async (done) => {
+        it('should return a 400', async () => {
 
             const exec = async () => {
                 return await request(app)
                     .post('/api/consultant/login')
-                    .send({username: "xXEmilioXx_consultantLogin", password: "123456"})
+                    .send({username: "xXEmilioXx", password: "123456"})
             };
 
             const res= await exec();
 
             expect(res.status).toBe(400);
-            done();
+
         });
 
 

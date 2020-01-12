@@ -30,9 +30,8 @@ describe('/api/user/customer/menu', () => {
     });
 
     //close the db connection after all the tests
-    afterAll (async done => {
-        await db.close();
-        done();
+    afterAll (() => {
+        db.close();
     });
 
     //test "Return data of a specific menu"
@@ -43,12 +42,11 @@ describe('/api/user/customer/menu', () => {
                 .get('/api/user/customer/menu/' + menuID)
         };
 
-        it('should send 404 if the menu with given menuID does not exist', async (done) => {
+        it('should send 404 if the menu with given menuID does not exist', async () => {
             const res = await exec(568);
             expect(res.status).toEqual(404);
-            done();
         });
-        it('should send exactly the data about the menu with given menuID, not another', async (done) => {
+        it('should send exactly the data about the menu with given menuID, not another', async () => {
             await setDatabase();
             const res = await exec(menuIDToGet);
             await destroyEverything();
@@ -85,8 +83,7 @@ describe('/api/user/customer/menu', () => {
                     imageLink: "link",
                     rating: "3"
                 }]
-            });
-            done();
+            })
         })
 
     });
@@ -99,12 +96,11 @@ describe('/api/user/customer/menu', () => {
                 .get('/api/user/customer/menu/' + menuID + '/menuItem/' + menuItemID + '/review')
         };
 
-        it('should send 404 if the menu item of given menu is not found', async (done) => {
+        it('should send 404 if the menu item of given menu is not found', async () => {
             await setDatabase();
             const res = await exec(menuIDToGet, menuItemID2+100);
             await destroyEverything();
             expect(res.status).toEqual(404);
-            done();
         });
 
     })

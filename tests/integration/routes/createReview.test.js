@@ -29,9 +29,8 @@ describe('/api/user/customer/review/restaurant', () => {
     });
 
     //close the db connection after all the tests
-    afterAll (async done => {
-        await db.close();
-        done();
+    afterAll(() => {
+        db.close();
     });
 
     //test "Return all the restaurants"
@@ -43,15 +42,14 @@ describe('/api/user/customer/review/restaurant', () => {
                 .set('x-auth-token', token)
         };
 
-        it('should return no restaurant if all the restaurant have no menus', async (done) => {
+        it('should return no restaurant if all the restaurant have no menus', async () => {
             await setDatabase();
             const res = await exec();
             await destroyEverything();
             expect(res.body).toEqual([]);
-            done();
         });
 
-        it('should return no restaurant if all the menus have no menu items', async (done) => {
+        it('should return no restaurant if all the menus have no menu items', async () => {
             await setDatabase();
             const restaurantFound1 = await Restaurant.findAll({
                where: {
@@ -94,10 +92,9 @@ describe('/api/user/customer/review/restaurant', () => {
             const res = await exec();
             await destroyEverything();
             expect(res.body).toEqual([]);
-            done();
         });
 
-        it('should return only restaurant with at least one menu with at least one menu item', async (done) => {
+        it('should return only restaurant with at least one menu with at least one menu item', async () => {
             await setDatabase();
             const restaurantFound1 = await Restaurant.findAll({
                 where: {
@@ -150,7 +147,6 @@ describe('/api/user/customer/review/restaurant', () => {
             const res = await exec();
             await destroyEverything();
             expect(res.body).toEqual([{name: "restaurant name 2", restaurantID: restaurantFound1[0].dataValues.Restaurant_ID}]);
-            done();
         })
     });
 
@@ -163,7 +159,7 @@ describe('/api/user/customer/review/restaurant', () => {
                 .set('x-auth-token', token)
         };
 
-        it('should return all the menus of given restaurant, only those that have at lest a menu item', async (done) => {
+        it('should return all the menus of given restaurant, only those that have at lest a menu item', async () => {
             await setDatabase();
             const restaurantFound1 = await Restaurant.findAll({
                 where: {
@@ -216,7 +212,6 @@ describe('/api/user/customer/review/restaurant', () => {
             const res = await exec(restaurantFound1[0].dataValues.Restaurant_ID);
             await destroyEverything();
             expect(res.body).toEqual([{name: "menu name 2", menuID: menuCreated.dataValues.Menu_ID}]);
-            done();
         })
     });
 
@@ -229,15 +224,14 @@ describe('/api/user/customer/review/restaurant', () => {
                 .set('x-auth-token', token)
         };
 
-        it('should return 404 if the menu with given menuID does not exist', async (done) => {
+        it('should return 404 if the menu with given menuID does not exist', async () => {
             await setDatabase();
             //there are no menus in the database, so it should return 404
             const res = await exec(1);
             await destroyEverything();
             expect(res.status).toEqual(404);
-            done();
         });
-        it('should return all and only the menu items of the menu with given menuID', async (done) => {
+        it('should return all and only the menu items of the menu with given menuID', async () => {
             await setDatabase();
             const restaurantFound1 = await Restaurant.findAll({
                 where: {
@@ -302,8 +296,8 @@ describe('/api/user/customer/review/restaurant', () => {
             expect(res.body).toEqual([
                 {"name": "menu item name 1", "menuItemID": menuItemCreated1.dataValues.MI_ID},
                 {"name": "menu item name 2", "menuItemID": menuItemCreated2.dataValues.MI_ID}
-                ]);
-            done();
+                ])
+
         })
 
     })

@@ -26,9 +26,8 @@ describe('/api/user/customer', () => {
     });
 
     //close the db connection after all the tests
-    afterAll (async done => {
-        await db.close();
-        done();
+    afterAll (() => {
+        db.close();
     });
 
     describe('GET /', () => {
@@ -42,14 +41,14 @@ describe('/api/user/customer', () => {
         };
 
         //it should return a 200 because the data sent are related to a valid customer
-        it('should return a 200', async (done) => {
+        it('should return a 200', async () => {
             //first of all, create the customer in the database
             const salt = await bcrypt.genSalt(10);
             const hashed = await bcrypt.hash("123456", salt);
 
             await Customer.create({
-                Username: "customer_manageCustomerInformation",
-                Email: "customer_manageCustomerInformation@mail.com",
+                Username: "manageCustomerInformation",
+                Email: "manageCustomerInformation@mail.com",
                 Password: hashed,
                 Nationality: "Italy"
             });
@@ -57,7 +56,7 @@ describe('/api/user/customer', () => {
             //then login to get the token
             const tokenObject = await request(app)
                 .post('/api/user/login')
-                .send({username: "customer_manageCustomerInformation", password: "123456", isRestaurantOwner: false});
+                .send({username: "manageCustomerInformation", password: "123456", isRestaurantOwner: false});
 
             //then try to access the endpoint as an customer
             token = tokenObject.body.token;
@@ -66,32 +65,32 @@ describe('/api/user/customer', () => {
             //remove the previously created customer from the database
             await Customer.destroy({
                 where: {
-                    Username: "customer_manageCustomerInformation"
+                    Username: "manageCustomerInformation"
                 }
             });
 
             expect(res.status).toBe(200);
-            done();
+
         });
 
         //it should return a 400 because the user is a owner, not a customer
-        it('should return a 400', async (done) => {
+        it('should return a 400', async () => {
             //first of all, create the owner in the database
             const salt = await bcrypt.genSalt(10);
             const hashed = await bcrypt.hash("123456", salt);
 
             await Owner.create({
-                Username: "owner_manageCustomerInformation",
+                Username: "manageCustomerInformation",
                 Name: "Emilio",
                 Surname: "Imperiali",
-                Email: "emilio_manageCustomerInformation@mail.com",
+                Email: "emilio@mail.com",
                 Password: hashed
             });
 
             //then login to get the token
             const tokenObject = await request(app)
                 .post('/api/user/login')
-                .send({username: "owner_manageCustomerInformation", password: "123456", isRestaurantOwner: true});
+                .send({username: "manageCustomerInformation", password: "123456", isRestaurantOwner: true});
 
             //then try to access the endpoint as an owner
             token = tokenObject.body.token;
@@ -100,17 +99,16 @@ describe('/api/user/customer', () => {
             //remove the previously created owner from the database
             await Owner.destroy({
                 where: {
-                    Username: "owner_manageCustomerInformation"
+                    Username: "manageCustomerInformation"
                 }
             });
 
             expect(res.status).toBe(401);
-            done();
 
         })
 
 
-    });
+    })
 
 
     describe('PUT /', () => {
@@ -130,13 +128,13 @@ describe('/api/user/customer', () => {
         };
 
         //it should return a 200 because the data sent are related to a valid customer
-        it('should return a 200', async (done) => {
+        it('should return a 200', async () => {
             //first of all, create the customer in the database
             const salt = await bcrypt.genSalt(10);
             const hashed = await bcrypt.hash("123456", salt);
 
             await Customer.create({
-                Username: "customer_manageCustomerInformation",
+                Username: "manageCustomerInformation",
                 Email: "emilio@mail.com",
                 Password: hashed
             });
@@ -144,7 +142,7 @@ describe('/api/user/customer', () => {
             //then login to get the token
             const tokenObject = await request(app)
                 .post('/api/user/login')
-                .send({username: "customer_manageCustomerInformation", password: "123456", isRestaurantOwner: false});
+                .send({username: "manageCustomerInformation", password: "123456", isRestaurantOwner: false});
 
             //then try to access the endpoint as an customer
             token = tokenObject.body.token;
@@ -153,32 +151,32 @@ describe('/api/user/customer', () => {
             //remove the previously created customer from the database
             await Customer.destroy({
                 where: {
-                    Username: "customer_manageCustomerInformation"
+                    Username: "manageCustomerInformation"
                 }
             });
 
             expect(res.status).toBe(200);
-            done();
+
         });
 
         //it should return a 400 because the user is a owner, not a customer
-        it('should return a 400', async (done) => {
+        it('should return a 400', async () => {
             //first of all, create the owner in the database
             const salt = await bcrypt.genSalt(10);
             const hashed = await bcrypt.hash("123456", salt);
 
             await Owner.create({
-                Username: "owner_manageCustomerInformation",
+                Username: "manageCustomerInformation",
                 Name: "Emilio",
                 Surname: "Imperiali",
-                Email: "owner_manageCustomerInformation@mail.com",
+                Email: "manageCustomerInformation@mail.com",
                 Password: hashed
             });
 
             //then login to get the token
             const tokenObject = await request(app)
                 .post('/api/user/login')
-                .send({username: "owner_manageCustomerInformation", password: "123456", isRestaurantOwner: true});
+                .send({username: "manageCustomerInformation", password: "123456", isRestaurantOwner: true});
 
             //then try to access the endpoint as an owner
             token = tokenObject.body.token;
@@ -187,16 +185,16 @@ describe('/api/user/customer', () => {
             //remove the previously created owner from the database
             await Owner.destroy({
                 where: {
-                    Username: "owner_manageCustomerInformation"
+                    Username: "manageCustomerInformation"
                 }
             });
 
             expect(res.status).toBe(401);
-            done();
+
         })
 
 
-    });
+    })
 
     describe('DELETE /', () => {
 
@@ -209,21 +207,21 @@ describe('/api/user/customer', () => {
         };
 
         //it should return a 200 because the data sent are related to a valid customer
-        it('should return a 200', async (done) => {
+        it('should return a 200', async () => {
             //first of all, create the customer in the database
             const salt = await bcrypt.genSalt(10);
             const hashed = await bcrypt.hash("123456", salt);
 
             await Customer.create({
-                Username: "customer_manageCustomerInformation",
-                Email: "customer_manageCustomerInformation@mail.com",
+                Username: "manageCustomerInformation",
+                Email: "manageCustomerInformation@mail.com",
                 Password: hashed
             });
 
             //then login to get the token
             const tokenObject = await request(app)
                 .post('/api/user/login')
-                .send({username: "customer_manageCustomerInformation", password: "123456", isRestaurantOwner: false});
+                .send({username: "manageCustomerInformation", password: "123456", isRestaurantOwner: false});
 
             //then try to access the endpoint as an customer
             token = tokenObject.body.token;
@@ -232,32 +230,32 @@ describe('/api/user/customer', () => {
             //remove the previously created customer from the database
             await Customer.destroy({
                 where: {
-                    Username: "customer_manageCustomerInformation"
+                    Username: "manageCustomerInformation"
                 }
             });
 
             expect(res.status).toBe(200);
-            done();
+
         });
 
         //it should return a 400 because the user is a owner, not a customer
-        it('should return a 400', async (done) => {
+        it('should return a 400', async () => {
             //first of all, create the owner in the database
             const salt = await bcrypt.genSalt(10);
             const hashed = await bcrypt.hash("123456", salt);
 
             await Owner.create({
-                Username: "owner_manageCustomerInformation",
+                Username: "manageCustomerInformation",
                 Name: "Emilio",
                 Surname: "Imperiali",
-                Email: "owner_manageCustomerInformation@mail.com",
+                Email: "manageCustomerInformation@mail.com",
                 Password: hashed
             });
 
             //then login to get the token
             const tokenObject = await request(app)
                 .post('/api/user/login')
-                .send({username: "owner_manageCustomerInformation", password: "123456", isRestaurantOwner: true});
+                .send({username: "manageCustomerInformation", password: "123456", isRestaurantOwner: true});
 
             //then try to access the endpoint as an owner
             token = tokenObject.body.token;
@@ -266,16 +264,16 @@ describe('/api/user/customer', () => {
             //remove the previously created owner from the database
             await Owner.destroy({
                 where: {
-                    Username: "owner_manageCustomerInformation"
+                    Username: "manageCustomerInformation"
                 }
             });
 
             expect(res.status).toBe(401);
-            done();
+
         })
 
 
-    });
+    })
 
     describe('PUT /password', () => {
 
@@ -292,21 +290,21 @@ describe('/api/user/customer', () => {
         };
 
         //it should return a 200 because the data sent are related to a valid customer
-        it('should return a 200', async (done) => {
+        it('should return a 200', async () => {
             //first of all, create the customer in the database
             const salt = await bcrypt.genSalt(10);
             const hashed = await bcrypt.hash("123456", salt);
 
             await Customer.create({
-                Username: "customer_manageCustomerInformation",
-                Email: "customer_manageCustomerInformation@mail.com",
+                Username: "manageCustomerInformation",
+                Email: "manageCustomerInformation@mail.com",
                 Password: hashed
             });
 
             //then login to get the token
             const tokenObject = await request(app)
                 .post('/api/user/login')
-                .send({username: "customer_manageCustomerInformation", password: "123456", isRestaurantOwner: false});
+                .send({username: "manageCustomerInformation", password: "123456", isRestaurantOwner: false});
 
             //then try to access the endpoint as an customer
             token = tokenObject.body.token;
@@ -315,32 +313,32 @@ describe('/api/user/customer', () => {
             //remove the previously created customer from the database
             await Customer.destroy({
                 where: {
-                    Username: "customer_manageCustomerInformation"
+                    Username: "manageCustomerInformation"
                 }
             });
 
             expect(res.status).toBe(200);
-            done();
+
         });
 
         //it should return a 400 because password is wrong
-        it('should return a 400', async (done) => {
+        it('should return a 400', async () => {
             //first of all, create the owner in the database
             const salt = await bcrypt.genSalt(10);
             const hashed = await bcrypt.hash("1234567", salt);
 
             await Customer.create({
-                Username: "customer_manageCustomerInformation",
+                Username: "manageCustomerInformation",
                 Name: "Emilio",
                 Surname: "Imperiali",
-                Email: "customer_manageCustomerInformation@mail.com",
+                Email: "manageCustomerInformation@mail.com",
                 Password: hashed
             });
 
             //then login to get the token
             const tokenObject = await request(app)
                 .post('/api/user/login')
-                .send({username: "customer_manageCustomerInformation", password: "1234567", isRestaurantOwner: false});
+                .send({username: "manageCustomerInformation", password: "1234567", isRestaurantOwner: false});
 
             //then try to access the endpoint as an owner
             token = tokenObject.body.token;
@@ -349,12 +347,12 @@ describe('/api/user/customer', () => {
             //remove the previously created owner from the database
             await Customer.destroy({
                 where: {
-                    Username: "customer_manageCustomerInformation"
+                    Username: "manageCustomerInformation"
                 }
             });
 
             expect(res.status).toBe(400);
-            done();
+
         })
 
 
