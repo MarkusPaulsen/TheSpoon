@@ -254,20 +254,29 @@ class EditMenuModal extends Component {
             }))
             .pipe(exhaustMap(() => {
                 if (thisTemp.state.validation.isValid) {
-                    thisTemp.setState({serverMessage: "Menu is edited"});
-                    return ajax({
-                        url: paths["restApi"]["menu"] + "/"
-                            + thisTemp.props._menu.menuID,
-                        method: "PUT",
-                        headers: {"Content-Type": "application/json", "X-Auth-Token": thisTemp.state.token},
-                        body: {
-                            name: thisTemp.state.name,
-                            description: thisTemp.state.description,
-                            tags: thisTemp.state.chosenTags
-                        },
-                        timeout: timeouts,
-                        responseType: "text"
-                    })
+                    if (thisTemp.state.chosenTags.length > 0) {
+                        thisTemp.setState({serverMessage: "Menu is edited"});
+                        return ajax({
+                            url: paths["restApi"]["menu"] + "/"
+                                + thisTemp.props._menu.menuID,
+                            method: "PUT",
+                            headers: {"Content-Type": "application/json", "X-Auth-Token": thisTemp.state.token},
+                            body: {
+                                name: thisTemp.state.name,
+                                description: thisTemp.state.description,
+                                tags: thisTemp.state.chosenTags
+                            },
+                            timeout: timeouts,
+                            responseType: "text"
+                        })
+                    } else {
+                        thisTemp.setState({tagsMessage: "Please choose min. 1 Tag."});
+                        return throwError({
+                            name: "InternalError",
+                            status: 0,
+                            response: null
+                        });
+                    }
                 } else {
                     return throwError({
                         name: "InternalError",

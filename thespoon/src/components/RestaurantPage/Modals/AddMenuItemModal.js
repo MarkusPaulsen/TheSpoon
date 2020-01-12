@@ -409,24 +409,33 @@ class AddMenuItemModal extends Component {
             }))
             .pipe(exhaustMap(() => {
                 if (thisTemp.state.validation.isValid) {
-                    thisTemp.setState({serverMessage: "New dish is added"});
-                    return ajax({
-                        url: paths["restApi"]["menu"] + "/"
-                            + thisTemp.props._menu.menuID + "/"
-                            + "menuItem",
-                        method: "POST",
-                        headers: {"Content-Type": "application/json", "X-Auth-Token": thisTemp.state.token},
-                        body: {
-                            name: thisTemp.state.name,
-                            description: thisTemp.state.description,
-                            priceEuros: thisTemp.state.priceEuros,
-                            type: thisTemp.state.type,
-                            imageID: thisTemp.state.imageID,
-                            tags: thisTemp.state.chosenTags
-                        },
-                        timeout: timeouts,
-                        responseType: "text"
-                    })
+                    if (thisTemp.state.chosenTags.length > 0) {
+                        thisTemp.setState({serverMessage: "New dish is added"});
+                        return ajax({
+                            url: paths["restApi"]["menu"] + "/"
+                                + thisTemp.props._menu.menuID + "/"
+                                + "menuItem",
+                            method: "POST",
+                            headers: {"Content-Type": "application/json", "X-Auth-Token": thisTemp.state.token},
+                            body: {
+                                name: thisTemp.state.name,
+                                description: thisTemp.state.description,
+                                priceEuros: thisTemp.state.priceEuros,
+                                type: thisTemp.state.type,
+                                imageID: thisTemp.state.imageID,
+                                tags: thisTemp.state.chosenTags
+                            },
+                            timeout: timeouts,
+                            responseType: "text"
+                        })
+                    } else {
+                        thisTemp.setState({tagsMessage: "Please choose min. 1 Tag."});
+                        return throwError({
+                            name: "InternalError",
+                            status: 0,
+                            response: null
+                        });
+                    }
                 } else {
                     return throwError({
                         name: "InternalError",
