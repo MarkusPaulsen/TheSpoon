@@ -7,7 +7,10 @@ import {connect} from "react-redux";
 import {_setBackgroundPage} from "../../actionCreators/BackgroundPageActionCreator";
 //</editor-fold>
 
-//<editor-fold desc="Layout">
+//<editor-fold desc="Constants">
+import {roles} from "../../constants/Roles";
+//</editor-fold>
+//<editor-fold desc="Containers">
 import MainLayout from "../Layout/MainLayout";
 
 //</editor-fold>
@@ -59,77 +62,79 @@ class FailPage extends Component {
                 <Redirect to={{pathname: "/"}}/>
             );
             //</editor-fold>
-        } else if (this.state.user === "Restaurant Owner") {
-            //<editor-fold desc="Render Restaurant Owner">
-            return (
-                <MainLayout>
-                    <div className="mainpage-banner restaurant">
-                        <div className="container">
-                            <div className="row">
-                                <div className="col-sm-8">
-                                    <h1 className="title">Something went wrong.</h1>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </MainLayout>
-            );
-            //</editor-fold>
-        } else if (this.state.user === "Customer") {
-            //<editor-fold desc="Render Customer">
-            return (
-                <div className="mainpage-banner">
-                    <div className="mainpage-text">
-                        <div className="container">
-                            <div className="row">
-                                <div className="col-sm-8">
-                                    <h1 className="title">Something went wrong.</h1>
-                                    <Link to="/CustomerMain">Go to Customer Main Page</Link>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            );
-
-            //</editor-fold>
-        } else if (this.state.user === "Consultant") {
-            //<editor-fold desc="Render Consultant">
-            return (
-                <div className="mainpage-banner">
-                    <div className="mainpage-text">
-                        <div className="container">
-                            <div className="row">
-                                <div className="col-sm-8">
-                                    <h1 className="title">Something went wrong.</h1>
-                                    <Link to="/">Go to Consultant Main Page</Link>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            );
-
-            //</editor-fold>
         } else {
-            //<editor-fold desc="Render Fail">
-            return (
-                <div className="mainpage-banner">
-                    <div className="mainpage-text">
-                        <div className="container">
-                            <div className="row">
-                                <div className="col-sm-8">
-                                    <h1 className="title">Something went wrong.</h1>
-                                    <Link to="/">Go to Login</Link>
+            switch (this.state.user) {
+                case roles["RESTAURANT_OWNER"]:
+                    //<editor-fold desc="Render Restaurant Owner">
+                    return (
+                        <MainLayout>
+                            <div className="mainpage-banner restaurant">
+                                <div className="container">
+                                    <div className="row">
+                                        <div className="col-sm-8">
+                                            <h1 className="title">Something went wrong.</h1>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </MainLayout>
+                    );
+                //</editor-fold>
+                case roles["CUSTOMER"]:
+                    //<editor-fold desc="Render Customer">
+                    return (
+                        <div className="mainpage-banner">
+                            <div className="mainpage-text">
+                                <div className="container">
+                                    <div className="row">
+                                        <div className="col-sm-8">
+                                            <h1 className="title">Something went wrong.</h1>
+                                            <Link to="/CustomerMain">Go to Customer Main Page</Link>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            );
-            //</editor-fold>
-        }
+                    );
 
+                //</editor-fold>
+                case roles["CONSULTANT"]:
+                    //<editor-fold desc="Render Consultant">
+                    return (
+                        <div className="mainpage-banner">
+                            <div className="mainpage-text">
+                                <div className="container">
+                                    <div className="row">
+                                        <div className="col-sm-8">
+                                            <h1 className="title">Something went wrong.</h1>
+                                            <Link to="/">Go to Consultant Main Page</Link>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    );
+
+                //</editor-fold>
+                default:
+                    //<editor-fold desc="Render Fail">
+                    return (
+                        <div className="mainpage-banner">
+                            <div className="mainpage-text">
+                                <div className="container">
+                                    <div className="row">
+                                        <div className="col-sm-8">
+                                            <h1 className="title">Something went wrong.</h1>
+                                            <Link to="/">Go to Login</Link>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    );
+                //</editor-fold>
+            }
+        }
     }
 
     //</editor-fold>

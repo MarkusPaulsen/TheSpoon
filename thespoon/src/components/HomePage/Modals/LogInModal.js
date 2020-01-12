@@ -22,6 +22,7 @@ import FormValidator from "../../../validation/FormValidator";
 //</editor-fold>
 
 //<editor-fold desc="Constants">
+import {roles} from "../../../constants/Roles"
 import {paths} from "../../../constants/Paths";
 import {modals} from "../../../constants/Modals";
 import {timeouts} from "../../../constants/Timeouts"
@@ -134,7 +135,7 @@ class LogInModal extends Component {
                 (next) => {
                     let response = JSON.parse(next.response);
                     window.localStorage.setItem("token", response.token);
-                    window.localStorage.setItem("user", "Restaurant Owner");
+                    window.localStorage.setItem("user", roles["RESTAURANT_OWNER"]);
                     thisTemp.props._backgroundPage.update();
                     thisTemp.props.onHide();
                 }, (error) => {
