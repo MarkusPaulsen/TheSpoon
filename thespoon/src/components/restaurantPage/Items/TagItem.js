@@ -4,6 +4,7 @@ import React, {Component} from "react";
 //<editor-fold desc="RxJs">
 import {of} from "rxjs";
 import {map} from "rxjs/operators";
+
 //</editor-fold>
 
 class TagItem extends Component {
@@ -13,7 +14,7 @@ class TagItem extends Component {
         this.handleClick = this.handleClick.bind(this);
     }
 
-    handleClick() {
+    handleClick = () => {
         const thisTemp = this;
         const modal = thisTemp.props.modal;
         of(1)
@@ -22,17 +23,16 @@ class TagItem extends Component {
             }))
             .subscribe(
                 (next) => {
-                    if(thisTemp.props.added) {
+                    if (thisTemp.props.added) {
                         modal.setState({
                             chosenTags: modal.state.chosenTags.filter((tag) => {
                                 return tag !== next
                             })
                         })
-                    }
-                    else {
-                        if(modal.state.chosenTags.find((tag) => {
+                    } else {
+                        if (modal.state.chosenTags.find((tag) => {
                             return tag === next
-                        }) == null && modal.state.chosenTags.length < 4){
+                        }) == null && modal.state.chosenTags.length < 4) {
                             modal.setState({
                                 chosenTags: modal.state.chosenTags.concat([next])
                             })
@@ -43,14 +43,18 @@ class TagItem extends Component {
                     console.log(error);
                 }
             );
-    }
+    };
 
     //<editor-fold desc="Render">
     render() {
+        // noinspection JSLint
         return (
-            <li onClick={this.handleClick}>{this.props.tag}</li>
+            <li onClick={this.handleClick}>
+                {this.props.tag}
+            </li>
         );
     }
+
     //</editor-fold>
 }
 
