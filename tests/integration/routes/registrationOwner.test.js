@@ -23,8 +23,9 @@ describe('/api/user/login', () => {
     });
 
     //close the db connection after all the tests
-    afterAll (() => {
-        db.close();
+    afterAll (async done => {
+        await db.close();
+        done();
     });
 
     describe('POST /', () => {
@@ -35,11 +36,11 @@ describe('/api/user/login', () => {
             name: "John",
             surname: "Doe",
             password: "123456"
-        }
+        };
 
 
         //it should return a 201 because the data sent are related to a valid owner
-        it('should return a 201', async () => {
+        it('should return a 201', async (done) => {
 
             const exec = async () => {
                 return await request(app)
@@ -57,10 +58,11 @@ describe('/api/user/login', () => {
             });
 
             expect(res.status).toBe(201);
-        })
+            done();
+        });
 
         //it should return a 400 because the username is already taken
-        it('should return a 400', async () => {
+        it('should return a 400', async (done) => {
 
             const exec = async () => {
                 return await request(app)
@@ -78,6 +80,7 @@ describe('/api/user/login', () => {
                 }
             });
             expect(res.status).toBe(400);
+            done();
         })
     })
 });

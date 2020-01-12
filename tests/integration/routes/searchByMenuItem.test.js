@@ -30,8 +30,9 @@ describe('/api/user/customer/review/restaurant', () => {
     });
 
     //close the db connection after all the tests
-    afterAll(() => {
-        db.close();
+    afterAll (async done => {
+        await db.close();
+        done();
     });
 
     //test "Return all the restaurants"
@@ -43,15 +44,16 @@ describe('/api/user/customer/review/restaurant', () => {
                 .set('x-auth-token', token)
         };
 
-        it('should return 404 no matching items because there is no menu item matching', async () => {
+        it('should return 404 no matching items because there is no menu item matching', async (done) => {
             await setDatabase();
             const menuItemName='something that does not exist';
             const res = await exec(menuItemName);
             await destroyEverything();
             expect(res.status).toBe(404);
+            done();
         });
 
-        it('should return a valid json with search data', async () => {
+        it('should return a valid json with search data', async (done) => {
             await setDatabase();
             const restaurantFound1 = await Restaurant.findAll({
                 where: {
@@ -91,6 +93,7 @@ describe('/api/user/customer/review/restaurant', () => {
             const res = await exec(menuItemName);
             await destroyEverything();
             expect(res.status).toBe(200);
+            done();
         })
     });
 
