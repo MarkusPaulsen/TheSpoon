@@ -52,8 +52,8 @@ class LogOutModal extends Component {
 
     //<editor-fold desc="Render">
     render() {
-        console.log(this.props._backgroundPage)
         if(this.props._backgroundPage == null) {
+            // noinspection JSLint
             return(<p>Something went wrong.</p>);
         } else if(this.state.token == null || this.state.token === "null" ) {
             return(<p>Something went wrong.</p>);

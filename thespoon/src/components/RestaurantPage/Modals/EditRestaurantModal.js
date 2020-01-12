@@ -2,15 +2,15 @@
 import React, {Component} from "react";
 import Select from "react-select";
 //</editor-fold>
+//<editor-fold desc="RxJs">
+import {of, bindCallback, throwError} from "rxjs";
+import {ajax} from "rxjs/ajax";
+import {map, exhaustMap, take, catchError} from "rxjs/operators";
+import {readFileURL} from "../Tools/FileReader"
+//</editor-fold>
 //<editor-fold desc="Redux">
 import {connect} from "react-redux";
 import {_setRestaurantID} from "../../../actionCreators/RestaurantActionCreators";
-//</editor-fold>
-//<editor-fold desc="RxJs">
-import {bindCallback, of, throwError} from "rxjs";
-import {ajax} from "rxjs/ajax";
-import {catchError, exhaustMap, map, take} from "rxjs/operators";
-import {readFileURL} from "../Tools/FileReader"
 //</editor-fold>
 //<editor-fold desc="Bootstrap">
 import {Modal} from "react-bootstrap";
@@ -97,7 +97,7 @@ class EditRestaurantModal extends Component {
             address: this.props._restaurantInfo.address,
             city: this.props._restaurantInfo.city,
             country: this.props._restaurantInfo.country,
-            selectedOpeningHours: this.props._restaurantInfo.openingHours.map(openingHour => {
+            selectedOpeningHours: this.props._restaurantInfo.openingHours.map((openingHour) => {
                 return {
                     day: {
                         value: openingHour.day,
@@ -244,7 +244,7 @@ class EditRestaurantModal extends Component {
         of(1)
             .pipe(exhaustMap(() => {
                 return bindCallback(thisTemp.setState).call(thisTemp, {
-                    selectedOpeningHours: this.state.selectedOpeningHours.filter(oH => {
+                    selectedOpeningHours: this.state.selectedOpeningHours.filter((oH) => {
                         return oH !== openingHour
                     }),
                     selectedOpeningHoursMessage: ""
@@ -328,8 +328,8 @@ class EditRestaurantModal extends Component {
                         case "AjaxTimeoutError":
                             thisTemp.setState({
                                 imageMessage: "Image could not be uploaded, as the request timed out.",
-                                serverMessage: "",
-                                selectedFile: null
+                                selectedFile: null,
+                                selectedFileData: null
                             });
                             break;
                         case "InternalError":
@@ -337,14 +337,14 @@ class EditRestaurantModal extends Component {
                             if (error.status === 0 && error.response === "") {
                                 thisTemp.setState({
                                     imageMessage: "Image could not be uploaded, as there is no connection to the server.",
-                                    serverMessage: "",
-                                    selectedFile: null
+                                    selectedFile: null,
+                                    selectedFileData: null
                                 });
                             } else {
                                 thisTemp.setState({
                                     imageMessage: "Image could not be uploaded, as " + error.response,
-                                    serverMessage: "",
-                                    selectedFile: null
+                                    selectedFile: null,
+                                    selectedFileData: null
                                 });
                             }
                             break;
@@ -352,8 +352,8 @@ class EditRestaurantModal extends Component {
                             console.log(error);
                             thisTemp.setState({
                                 imageMessage: "Something is not like it is supposed to be.",
-                                serverMessage: "",
-                                selectedFile: null
+                                selectedFile: null,
+                                selectedFileData: null
                             });
                             break;
                     }
@@ -382,7 +382,6 @@ class EditRestaurantModal extends Component {
                     console.log(error);
                     thisTemp.setState({
                         imageMessage: "Something is not like it is supposed to be.",
-                        serverMessage: "",
                         selectedFile: null,
                         selectedFileData: null
                     });
@@ -390,7 +389,7 @@ class EditRestaurantModal extends Component {
             );
     };
 
-    handleSubmit = event => {
+    handleSubmit = (event) => {
         event.preventDefault();
         const thisTemp = this;
         of(1)
@@ -412,10 +411,10 @@ class EditRestaurantModal extends Component {
             .pipe(exhaustMap(() => {
                 return bindCallback(thisTemp.setState).call(thisTemp, {
                     validation: thisTemp.validator.validate(thisTemp.state),
-                    submitted: true,
                     serverMessage: "",
                     selectedOpeningHoursMessage: "",
                     imageMessage: "",
+                    submitted: true
                 });
             }), catchError((error) => {
                 return throwError(error);
@@ -441,7 +440,6 @@ class EditRestaurantModal extends Component {
                         thisTemp.setState({imageMessage: "No image uploaded!"});
 
                     }
-                    thisTemp.setState({serverMessage: ""});
                     return throwError({status: 0});
                 }
 
@@ -450,7 +448,8 @@ class EditRestaurantModal extends Component {
             }))
             .pipe(exhaustMap((osmData) => {
                 if (Array.isArray(osmData.response) && osmData.response.length > 0) {
-                    thisTemp.setState({serverMessage: "Restaurant is edited"});
+                    thisTemp.setState({serverMessage: "Restaurant information publication is processed"});
+                    // noinspection JSUnresolvedVariable
                     return ajax({
                         url: paths["restApi"]["restaurant"],
                         method: "PUT",
@@ -494,31 +493,19 @@ class EditRestaurantModal extends Component {
                 }, (error) => {
                     switch (error.name) {
                         case "AjaxTimeoutError":
-                            thisTemp.setState({
-                                serverMessage: "The request timed out."
-                            });
+                            thisTemp.setState({serverMessage: "The request timed out."});
                             break;
                         case "InternalError":
                         case "AjaxError":
                             if (error.status === 0 && error.response === "") {
-                                thisTemp.setState({
-                                    serverMessage: "There is no connection to the server."
-                                });
-                            } else if (error.status === 400) {
-                                thisTemp.setState({
-                                    serverMessage: ""
-                                });
+                                thisTemp.setState({serverMessage: "There is no connection to the server."});
                             } else {
-                                thisTemp.setState({
-                                    serverMessage: error.response
-                                });
+                                thisTemp.setState({serverMessage: error.response});
                             }
                             break;
                         default:
                             console.log(error);
-                            thisTemp.setState({
-                                serverMessageFinishedLoadingAvailableTags: "Something is not like it is supposed to be."
-                            });
+                            thisTemp.setState({serverMessage: "Something is not like it is supposed to be."});
                             break;
                     }
                 }
@@ -531,6 +518,7 @@ class EditRestaurantModal extends Component {
     render() {
         let validation = this.submitted ? this.validator.validate(this.state) : this.state.validation;
         if (this.props._backgroundPage == null) {
+            // noinspection JSLint
             return (<p>Something went wrong.</p>);
         } else if (this.state.token == null || this.state.token === "null") {
             return (<p>Something went wrong.</p>);
@@ -601,9 +589,9 @@ class EditRestaurantModal extends Component {
                                 }
                                 {this.state.selectedFileData &&
                                 <div className="image-wrapper">
-                                    <div
-                                        className="image"
-                                        style={{backgroundImage: `url(${this.state.selectedFileData})`}}
+                                    <img
+                                        src={this.state.selectedFileData}
+                                        alt={this.state.selectedFile.name}
                                     />
                                 </div>
                                 }

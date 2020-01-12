@@ -13,20 +13,16 @@ import {_setRestaurantInfo} from "../../actionCreators/RestaurantActionCreators"
 //</editor-fold>
 
 //<editor-fold desc="Constants">
-import {modals} from "../../constants/Modals";
+import {roles} from "../../constants/Roles";
 import {paths} from "../../constants/Paths";
+import {modals} from "../../constants/Modals";
 import {timeouts} from "../../constants/Timeouts"
 //</editor-fold>
 //<editor-fold desc="Containers">
-import FilterLink from "../../containers/FilterModalLink";
-//</editor-fold>
-//<editor-fold desc="Layout">
 import MainLayout from "../Layout/MainLayout.js";
-//</editor-fold>
-//<editor-fold desc="Components">
+import FilterLink from "../../containers/FilterModalLink";
 import Sidebar from "./Items/Sidebar";
 import Menu from "./Items/Menu";
-
 //</editor-fold>
 
 
@@ -208,98 +204,102 @@ class YourRestaurantPage extends Component {
             || this.state.token === "null"
             || this.state.user == null
             || this.state.user === "null") {
+            // noinspection JSLint
             return (
                 <Redirect to={{pathname: "/"}}/>
             );
-        } else if (this.state.user === "Restaurant Owner") {
-            //<editor-fold desc="Render Restaurant Owner">
-            if (this.state.restaurant == null || this.state.menus == null) {
-                return (
-                    <MainLayout>
-                        <div className="mainpage-banner restaurant">
-                            <div className="container">
-                                <div className="row">
-                                    <div className="col-sm-8">
-                                        <h1>Loading...</h1>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </MainLayout>
-                );
-            } else {
-                return (
-                    <MainLayout>
-                        <div className="mainpage-banner restaurant">
-                            <div className="container">
-                                <div className="row">
-                                    <div className="col-sm-4">
-                                        <Sidebar
-                                            name={this.state.restaurant.name}
-                                            address={this.state.restaurant.address}
-                                            city={this.state.restaurant.city}
-                                            country={this.state.restaurant.country}
-                                            imageLink={this.state.restaurant.imageLink}
-                                            openingHours={this.state.restaurant.openingHours}
-                                        />
-                                    </div>
-                                    <div className="col-sm-8">
-                                        <div className="error-block">
-                                            <small>{this.state.restaurantMessage}</small>
-                                        </div>
-                                        <div className="error-block">
-                                            <small>{this.state.menusMessage}</small>
-                                        </div>
-                                        <h3 className="title">Your menus</h3>
-                                        <div className="no-menus">
-                                            <h4>Your menu has pending reviews...</h4>
-                                            <button className="wide">
-                                                <FilterLink modal={modals.SHOW_PENDING_REVIEW}>
-                                                    See Reviews
-                                                </FilterLink>
-                                            </button>
-                                        </div>
-                                        {typeof this.state.menus !== "undefined" &&
-                                        this.state.menus.length >= 1 ? (
-                                            this.state.menus.map((menu) => {
-                                                return (
-                                                    <Menu
-                                                        key={menu.menuID}
-                                                        menuID={menu.menuID}
-                                                        name={menu.name}
-                                                        tags={menu.tags}
-                                                        description={menu.description}
-                                                        menuItems={menu.menuItems}
-                                                    />
-                                                );
-                                            })
-                                        ) : (
-                                            <div className="no-menus">
-                                                <label>
-                                                    Your restaurant doesnt have any menus yet...
-                                                </label>
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </MainLayout>
-                );
-            }
-            //</editor-fold>
-        } else if (this.state.user === "Customer") {
-            return (
-                <Redirect to={{pathname: "/CustomerMain"}}/>
-            );
-        } else if (this.state.user === "Consultant") {
-            return (
-                <Redirect to={{pathname: "/Consultant"}}/>
-            );
         } else {
-            return (
-                <Redirect to={{pathname: "/ThisShouldNotHaveHappened"}}/>
-            );
+            switch (this.state.user) {
+                case roles["RESTAURANT_OWNER"]:
+                    //<editor-fold desc="Render Restaurant Owner">
+                    if (this.state.restaurant == null || this.state.menus == null) {
+                        return (
+                            <MainLayout>
+                                <div className="mainpage-banner restaurant">
+                                    <div className="container">
+                                        <div className="row">
+                                            <div className="col-sm-8">
+                                                <h1>Loading...</h1>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </MainLayout>
+                        );
+                    } else {
+                        return (
+                            <MainLayout>
+                                <div className="mainpage-banner restaurant">
+                                    <div className="container">
+                                        <div className="row">
+                                            <div className="col-sm-4">
+                                                <Sidebar
+                                                    name={this.state.restaurant.name}
+                                                    address={this.state.restaurant.address}
+                                                    city={this.state.restaurant.city}
+                                                    country={this.state.restaurant.country}
+                                                    imageLink={this.state.restaurant.imageLink}
+                                                    openingHours={this.state.restaurant.openingHours}
+                                                />
+                                            </div>
+                                            <div className="col-sm-8">
+                                                <div className="error-block">
+                                                    <small>{this.state.restaurantMessage}</small>
+                                                </div>
+                                                <div className="error-block">
+                                                    <small>{this.state.menusMessage}</small>
+                                                </div>
+                                                <h3 className="title">Your menus</h3>
+                                                <div className="no-menus">
+                                                    <h4>Your menu has pending reviews...</h4>
+                                                    <button className="wide">
+                                                        <FilterLink modal={modals.SHOW_PENDING_REVIEW}>
+                                                            See Reviews
+                                                        </FilterLink>
+                                                    </button>
+                                                </div>
+                                                {typeof this.state.menus !== "undefined" &&
+                                                this.state.menus.length >= 1 ? (
+                                                    this.state.menus.map((menu) => {
+                                                        return (
+                                                            <Menu
+                                                                key={menu.menuID}
+                                                                menuID={menu.menuID}
+                                                                name={menu.name}
+                                                                tags={menu.tags}
+                                                                description={menu.description}
+                                                                menuItems={menu.menuItems}
+                                                            />
+                                                        );
+                                                    })
+                                                ) : (
+                                                    <div className="no-menus">
+                                                        <label>
+                                                            Your restaurant doesnt have any menus yet...
+                                                        </label>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </MainLayout>
+                        );
+                    }
+                    //</editor-fold>
+                case roles["CUSTOMER"]:
+                    return (
+                        <Redirect to={{pathname: "/CustomerMain"}}/>
+                    );
+                case roles["CONSULTANT"]:
+                    return (
+                        <Redirect to={{pathname: "/Consultant"}}/>
+                    );
+                default:
+                    return (
+                        <Redirect to={{pathname: "/ThisShouldNotHaveHappened"}}/>
+                    );
+            }
         }
     }
 

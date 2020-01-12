@@ -2,9 +2,9 @@
 import React, {Component} from "react";
 //</editor-fold>
 //<editor-fold desc="RxJs">
-import {bindCallback, of, throwError} from "rxjs";
+import {of, bindCallback, throwError} from "rxjs";
 import {ajax} from "rxjs/ajax";
-import {exhaustMap, map, take} from "rxjs/operators";
+import {map, exhaustMap, take} from "rxjs/operators";
 //</editor-fold>
 //<editor-fold desc="Redux">
 import {connect} from "react-redux";
@@ -22,13 +22,13 @@ import FormValidator from "../../../validation/FormValidator";
 //<editor-fold desc="Constants">
 import {paths} from "../../../constants/Paths";
 import {modals} from "../../../constants/Modals";
+import {timeouts} from "../../../constants/Timeouts";
 //</editor-fold>
 //<editor-fold desc="Containers">
 import FilterLink from "../../../containers/FilterModalLink";
 //</editor-fold>
 //<editor-fold desc="Icons">
-import {IconName, IconEmail, IconPassword, IconExit, IconBack} from "../../Icons";
-import {timeouts} from "../../../constants/Timeouts";
+import {IconBack, IconExit, IconName, IconEmail, IconPassword} from "../../Icons";
 
 //</editor-fold>
 
@@ -127,10 +127,8 @@ class RegisterCustomerModal extends Component {
     //</editor-fold>
 
     //<editor-fold desc="Business Logic">
-    handleSubmit = event => {
+    handleSubmit = (event) => {
         event.preventDefault();
-
-        //get the this for RxJs
         const thisTemp = this;
         of(1)
             .pipe(map(() => {
@@ -159,8 +157,8 @@ class RegisterCustomerModal extends Component {
                         method: "POST",
                         headers: {"Content-Type": "application/json"},
                         body: {
-                            username: thisTemp.state.username,
                             email: thisTemp.state.email,
+                            username: thisTemp.state.username,
                             password: thisTemp.state.password
                         },
                         timeout: timeouts,
@@ -169,7 +167,7 @@ class RegisterCustomerModal extends Component {
                 } else {
                     return throwError({
                         name: "InternalError",
-                        status: 0,
+                        status: -1,
                         response: null
                     });
                 }
@@ -210,6 +208,7 @@ class RegisterCustomerModal extends Component {
     render() {
         let validation = this.submitted ? this.validator.validate(this.state) : this.state.validation;
         if (this.props._backgroundPage == null) {
+            // noinspection JSLint
             return (<p>Something went wrong.</p>);
         } else if (this.state.token == null || this.state.token === "null") {
             //<editor-fold desc="Render No Token">

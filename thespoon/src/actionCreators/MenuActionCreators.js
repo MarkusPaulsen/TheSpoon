@@ -3,6 +3,7 @@ import {_SET_MENU, _SET_MENU_ITEM} from "../actions/MenuActions";
 //</editor-fold>
 
 //<editor-fold desc="Creators">
+// noinspection JSLint
 export const _setMenu = (_menu) => {
     return {
         type: _SET_MENU,

@@ -43,12 +43,15 @@ class TagItem extends Component {
                     console.log(error);
                 }
             );
-    }
+    };
 
     //<editor-fold desc="Render">
     render() {
+        // noinspection JSLint
         return (
-            <li onClick={this.handleClick}>{this.props.tag}</li>
+            <li onClick={this.handleClick}>
+                {this.props.tag}
+            </li>
         );
     }
 

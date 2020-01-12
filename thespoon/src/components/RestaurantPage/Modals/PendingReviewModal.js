@@ -19,11 +19,11 @@ import FormValidator from "../../../validation/FormValidator";
 import {paths} from "../../../constants/Paths";
 import {timeouts} from "../../../constants/Timeouts";
 //</editor-fold>
+//<editor-fold desc="Containers">
+import ReviewItem from "../Items/ReviewItem";
+//</editor-fold>
 //<editor-fold desc="Icons">
 import {IconExit} from "../../Icons";
-//</editor-fold>
-//<editor-fold desc="Items">
-import ReviewItem from "../Items/ReviewItem";
 
 //</editor-fold>
 
@@ -131,6 +131,7 @@ class PendingReviewModal extends Component {
     //<editor-fold desc="Render">
     render() {
         if (this.props._backgroundPage == null) {
+            // noinspection JSLint
             return (<p>Something went wrong.</p>);
         } else if (this.state.token == null || this.state.token === "null") {
             return (<p>Something went wrong.</p>);
@@ -167,7 +168,9 @@ class PendingReviewModal extends Component {
                                 ref={(c) => {
                                     this.form = c;
                                 }}
-                                onSubmit={(e) => this.handleSubmit(e)}
+                                onSubmit={(e) => {
+                                    this.handleSubmit(e)
+                                }}
                                 autocomplete="on"
                             >
                                 <h2>
@@ -175,7 +178,7 @@ class PendingReviewModal extends Component {
                                 </h2>
                                 {this.state.reviews != null &&
                                 this.state.reviews.length >= 1 ? (
-                                    this.state.reviews.map(review => {
+                                    this.state.reviews.map((review) => {
                                         return (
                                             <ReviewItem
                                                 reviewID={review.reviewID}

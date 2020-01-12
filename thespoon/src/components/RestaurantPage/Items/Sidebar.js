@@ -26,6 +26,7 @@ class Sidebar extends Component {
 
     //<editor-fold desc="Render">
     render() {
+        // noinspection JSLint
         return (
             <div className="sidebar-hover">
                 <div className="sidebar">

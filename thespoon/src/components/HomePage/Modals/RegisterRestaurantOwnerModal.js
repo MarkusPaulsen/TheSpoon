@@ -2,9 +2,9 @@
 import React, {Component} from "react";
 //</editor-fold>
 //<editor-fold desc="RxJs">
-import {bindCallback, of, throwError} from "rxjs";
+import {of, bindCallback, throwError} from "rxjs";
 import {ajax} from "rxjs/ajax";
-import {exhaustMap, map, take} from "rxjs/operators";
+import {map, exhaustMap, take} from "rxjs/operators";
 //</editor-fold>
 //<editor-fold desc="Redux">
 import {connect} from "react-redux";
@@ -20,15 +20,16 @@ import FormValidator from "../../../validation/FormValidator";
 //</editor-fold>
 
 //<editor-fold desc="Constants">
+import {roles} from "../../../constants/Roles";
 import {paths} from "../../../constants/Paths";
 import {modals} from "../../../constants/Modals";
+import {timeouts} from "../../../constants/Timeouts";
 //</editor-fold>
 //<editor-fold desc="Containers">
 import FilterLink from "../../../containers/FilterModalLink";
 //</editor-fold>
 //<editor-fold desc="Icons">
-import {IconName, IconEmail, IconPassword, IconExit, IconBack} from "../../Icons";
-import {timeouts} from "../../../constants/Timeouts";
+import {IconBack, IconExit, IconName, IconEmail, IconPassword} from "../../Icons";
 
 //</editor-fold>
 
@@ -153,10 +154,8 @@ class RegisterRestaurantOwnerModal extends Component {
     //</editor-fold>
 
     //<editor-fold desc="Business Logic">
-    handleSubmit = event => {
+    handleSubmit = (event) => {
         event.preventDefault();
-
-        //thisTemp is the this of RxJS
         const thisTemp = this;
         of(1)
             .pipe(map(() => {
@@ -187,10 +186,10 @@ class RegisterRestaurantOwnerModal extends Component {
                         method: "POST",
                         headers: {"Content-Type": "application/json"},
                         body: {
+                            email: thisTemp.state.email,
                             username: thisTemp.state.username,
                             name: thisTemp.state.name,
                             surname: thisTemp.state.surname,
-                            email: thisTemp.state.email,
                             password: thisTemp.state.password
                         },
                         timeout: timeouts,
@@ -199,7 +198,7 @@ class RegisterRestaurantOwnerModal extends Component {
                 } else {
                     return throwError({
                         name: "InternalError",
-                        status: 0,
+                        status: -1,
                         response: null
                     });
                 }
@@ -209,7 +208,7 @@ class RegisterRestaurantOwnerModal extends Component {
                 (next) => {
                     let response = JSON.parse(next.response);
                     window.localStorage.setItem("token", response.token);
-                    window.localStorage.setItem("user", "Restaurant Owner");
+                    window.localStorage.setItem("user", roles["RESTAURANT_OWNER"]);
                     thisTemp.props._backgroundPage.update();
                 }, (error) => {
                     switch (error.name) {
@@ -238,9 +237,10 @@ class RegisterRestaurantOwnerModal extends Component {
     render() {
         let validation = this.submitted ? this.validator.validate(this.state) : this.state.validation;
         if (this.props._backgroundPage == null) {
+            // noinspection JSLint
             return (<p>Something went wrong.</p>);
         } else if (this.state.token == null || this.state.token === "null") {
-            //<editor-fold desc="Render Token">
+            //<editor-fold desc="Render No Token">
             return (
                 <Modal.Body>
                     <span className="back">

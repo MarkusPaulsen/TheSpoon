@@ -26,6 +26,9 @@ import {IconName, IconEmail} from "../Icons";
 import {timeouts} from "../../constants/Timeouts";
 //</editor-fold>
 //<editor-fold desc="Layout">
+import {roles} from "../../constants/Roles";
+//</editor-fold>
+//<editor-fold desc="Containers">
 import MainLayout from "../Layout/MainLayout.js";
 import {modals} from "../../constants/Modals";
 import FilterLink from "../../containers/FilterModalLink";
@@ -343,94 +346,97 @@ class YourProfilePage extends Component {
             || this.state.token === "null"
             || this.state.user == null
             || this.state.user === "null") {
+            // noinspection JSLint
             return (
                 <Redirect to={{pathname: "/"}}/>
             );
-        } else if (this.state.user === "Restaurant Owner") {
-            //<editor-fold desc="Render Restaurant Owner">
-            if (!this.state.finishedLoading) {
-                return (
-                    <MainLayout>
-                        <div className="mainpage-banner restaurant">
-                            <div className="container">
-                                <div className="row">
-                                    <div className="col-sm-8">
-                                        <h1>Loading...</h1>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </MainLayout>
-                );
-            } else {
-                return (
-                    <MainLayout>
-                        <div className="mainpage-banner">
-                            <div className="mainpage-text">
-                                <div className="container">
-                                    <div className="row">
-                                        <div className="col-sm-8">
-                                            <h3 className="title">Your Profile {this.state.username}</h3>
-                                            <div className="no-menus">
-                                                <Form ref={(c) => {
-                                                    this.form = c;
-                                                }} onSubmit={this.handleSubmit}>
-                                                    <div className="input-field">
-                                                        <IconEmail/>
-                                                        <Input type="email" name="email" placeholder="E-mail"
-                                                               value={this.state.email}/>
-                                                    </div>
-                                                    <div className="error-block">
-                                                        <small>{validation.email.message}</small>
-                                                    </div>
-                                                    <div className="input-field name">
-                                                        <IconName/>
-                                                        <Input type="text" name="name" placeholder="First name"
-                                                               value={this.state.name}/>
-                                                        <Input type="text" name="surname" placeholder="Surname"
-                                                               value={this.state.surname}/>
-                                                    </div>
-                                                    <div className="error-block">
-                                                        <small>{validation.name.message}</small>
-                                                        <small>{validation.surname.message}</small>
-                                                    </div>
-                                                    <Button type="submit" className="normal">Update</Button>
-                                                    <Button type="button" className="delete-button"
-                                                            onClick={this.handleDelete}>Delete Account</Button>
-                                                    <div className="error-block">
-                                                        <small>{this.state.serverMessage}</small>
-                                                    </div>
-                                                    <FilterLink modal={modals.SHOW_CHANGE_PASSWORD}>
-                                                        Change Password
-                                                    </FilterLink>
-                                                </Form>
+        } else {
+            switch (this.state.user) {
+                case roles["RESTAURANT_OWNER"]:
+                    //<editor-fold desc="Render Restaurant Owner">
+                    if (!this.state.finishedLoading) {
+                        return (
+                            <MainLayout>
+                                <div className="mainpage-banner restaurant">
+                                    <div className="container">
+                                        <div className="row">
+                                            <div className="col-sm-8">
+                                                <h1>Loading...</h1>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                    </MainLayout>
-                );
+                            </MainLayout>
+                        );
+                    } else {
+                        return (
+                            <MainLayout>
+                                <div className="mainpage-banner">
+                                    <div className="mainpage-text">
+                                        <div className="container">
+                                            <div className="row">
+                                                <div className="col-sm-8">
+                                                    <h3 className="title">Your Profile {this.state.username}</h3>
+                                                    <div className="no-menus">
+                                                        <Form ref={(c) => {
+                                                            this.form = c;
+                                                        }} onSubmit={this.handleSubmit}>
+                                                            <div className="input-field">
+                                                                <IconEmail/>
+                                                                <Input type="email" name="email" placeholder="E-mail"
+                                                                       value={this.state.email}/>
+                                                            </div>
+                                                            <div className="error-block">
+                                                                <small>{validation.email.message}</small>
+                                                            </div>
+                                                            <div className="input-field name">
+                                                                <IconName/>
+                                                                <Input type="text" name="name" placeholder="First name"
+                                                                       value={this.state.name}/>
+                                                                <Input type="text" name="surname" placeholder="Surname"
+                                                                       value={this.state.surname}/>
+                                                            </div>
+                                                            <div className="error-block">
+                                                                <small>{validation.name.message}</small>
+                                                                <small>{validation.surname.message}</small>
+                                                            </div>
+                                                            <Button type="submit" className="normal">Update</Button>
+                                                            <Button type="button" className="delete-button"
+                                                                    onClick={this.handleDelete}>Delete Account</Button>
+                                                            <div className="error-block">
+                                                                <small>{this.state.serverMessage}</small>
+                                                            </div>
+                                                            <FilterLink modal={modals.SHOW_CHANGE_PASSWORD}>
+                                                                Change Password
+                                                            </FilterLink>
+                                                        </Form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </MainLayout>
+                        );
+                    }
+                //</editor-fold>
+                case roles["CUSTOMER"]:
+                    return (
+                        <Redirect to={{pathname: "/CustomerMain"}}/>
+                    );
+                case roles["CONSULTANT"]:
+                    return (
+                        <Redirect to={{pathname: "/Consultant"}}/>
+                    );
+                default:
+                    return (
+                        <Redirect to={{pathname: "/ThisShouldNotHaveHappened"}}/>
+                    );
             }
-
-            //</editor-fold>
-        } else if (this.state.user === "Customer") {
-            return (
-                <Redirect to={{pathname: "/CustomerMain"}}/>
-            );
-        } else if (this.state.user === "Consultant") {
-            return (
-                <Redirect to={{pathname: "/Consultant"}}/>
-            );
-        } else {
-            return (
-                <Redirect to={{pathname: "/ThisShouldNotHaveHappened"}}/>
-            );
         }
     }
 
-//</editor-fold>
+    //</editor-fold>
 
 }
 

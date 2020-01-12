@@ -35,63 +35,64 @@ class CustomModal extends Component {
     getVisibleModal = (filter) => {
         switch (filter) {
             case modals.SHOW_LOGIN:
+                // noinspection JSLint
                 return (
-                    <LogInModal onHide={() => this.props._handleClose()} />
+                    <LogInModal onHide={() => {this.props._handleClose()}} />
                 );
 
             case modals.SHOW_LOGOUT:
                 return (
-                    <LogOutModal onHide={() => this.props._handleClose()} />
+                    <LogOutModal onHide={() => {this.props._handleClose()}} />
                 );
 
             case modals.SHOW_CHOOSE_ROLE:
                 return (
-                    <ChooseRoleModal onHide={() => this.props._handleClose()} />
+                    <ChooseRoleModal onHide={() => {this.props._handleClose()}} />
                 );
 
             case modals.SHOW_REGISTER_RESTAURANT_OWNER:
                 return (
-                    <RegisterRestaurantowner onHide={() => this.props._handleClose()}/>
+                    <RegisterRestaurantowner onHide={() => {this.props._handleClose()}}/>
                 );
 
             case modals.SHOW_REGISTER_CUSTOMER:
                 return (
-                    <RegisterCustomer onHide={() => this.props._handleClose()}/>
+                    <RegisterCustomer onHide={() => {this.props._handleClose()}}/>
                 );
 
             case modals.SHOW_ADD_RESTAURANT:
                 return (
-                    <AddRestaurantModal onHide={() => this.props._handleClose()}/>
+                    <AddRestaurantModal onHide={() => {this.props._handleClose()}}/>
                 );
             case modals.SHOW_EDIT_RESTAURANT:
                 return (
-                    <EditRestaurantModal onHide={() => this.props._handleClose()}/>
+                    <EditRestaurantModal onHide={() => {this.props._handleClose()}}/>
                 );
             case modals.SHOW_ADD_MENU:
                 return (
-                    <AddMenuModal onHide={() => this.props._handleClose()}/>
+                    <AddMenuModal onHide={() => {this.props._handleClose()}}/>
                 );
             case modals.SHOW_EDIT_MENU:
                 return (
-                    <EditMenuModal onHide={() => this.props._handleClose()}/>
+                    <EditMenuModal onHide={() => {this.props._handleClose()}}/>
                 );
 
             case modals.SHOW_PENDING_REVIEW:
                 return (
                     <PendingReviewModal
-                        onHide={() => this.props._handleClose()}/>
+                        onHide={() => {this.props._handleClose()}}/>
                 );
 
             case modals.SHOW_ADD_DISH:
             case modals.SHOW_ADD_DRINK:
                 return (
-                    <AddMenuItemModal onHide={() => this.props._handleClose()}/>
+                    <AddMenuItemModal onHide={() => {this.props._handleClose()}}/>
                 );
 
             case modals.SHOW_EDIT_DISH:
             case modals.SHOW_EDIT_DRINK:
                 return (
-                    <EditMenuItemModal onHide={() => this.props._handleClose()}/>
+                    <EditMenuItemModal onHide={() => {this.props._handleClose()}}/>
                 );
 
             case modals.SHOW_CHANGE_PASSWORD:
@@ -108,7 +109,7 @@ class CustomModal extends Component {
     render() {
         if(this.props._modal !== modals.HIDE_ALL) {
             return(
-                <Modal show={true} onHide={() => this.props._handleClose()} backdrop="static" centered>
+                <Modal show={true} onHide={() => {this.props._handleClose()}} backdrop="static" centered>
                     {this.getVisibleModal(this.props._modal)}
                 </Modal>
             );

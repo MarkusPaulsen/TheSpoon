@@ -1,3 +1,4 @@
+// noinspection JSLint
 export const modals = {
     SHOW_LOGIN:                     "SHOW_LOGIN",
     SHOW_LOGOUT:                    "SHOW_LOGOUT",

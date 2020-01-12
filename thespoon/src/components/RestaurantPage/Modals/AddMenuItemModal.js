@@ -2,9 +2,9 @@
 import React, {Component} from "react";
 //</editor-fold>
 //<editor-fold desc="RxJs">
-import {bindCallback, fromEvent, of, throwError} from "rxjs";
+import {of, bindCallback, throwError, fromEvent} from "rxjs";
 import {ajax} from "rxjs/ajax";
-import {bufferTime, catchError, distinctUntilChanged, exhaustMap, map, take, filter} from "rxjs/operators";
+import {map, exhaustMap, take, bufferTime, catchError, distinctUntilChanged, filter} from "rxjs/operators";
 import {readFileURL} from "../Tools/FileReader"
 //</editor-fold>
 //<editor-fold desc="Redux">
@@ -26,9 +26,11 @@ import {paths} from "../../../constants/Paths";
 import {modals} from "../../../constants/Modals";
 import {timeouts} from "../../../constants/Timeouts";
 //</editor-fold>
+//<editor-fold desc="Containers">
+import TagItem from "../Items/TagItem";
+//</editor-fold>
 //<editor-fold desc="Icons">
 import {IconExit} from "../../Icons";
-import TagItem from "../Items/TagItem";
 
 //</editor-fold>
 
@@ -154,7 +156,7 @@ class AddMenuItemModal extends Component {
                     switch (error.name) {
                         case "AjaxTimeoutError":
                             thisTemp.setState({
-                                serverMessageFinishedLoadingAvailableTags: "" + "The request timed out.",
+                                serverMessageFinishedLoadingAvailableTags: "The request timed out.",
                                 finishedLoadingAvailableTags: true
                             });
                             break;
@@ -165,16 +167,8 @@ class AddMenuItemModal extends Component {
                                     serverMessageFinishedLoadingAvailableTags: "There is no connection to the server.",
                                     finishedLoadingAvailableTags: true
                                 });
-                            } else if (error.status === 400) {
-                                thisTemp.setState({
-                                    serverMessageFinishedLoadingAvailableTags: "",
-                                    finishedLoadingAvailableTags: true
-                                });
                             } else {
-                                thisTemp.setState({
-                                    serverMessageFinishedLoadingAvailableTags: error.response,
-                                    finishedLoadingAvailableTags: true
-                                });
+                                thisTemp.setState({serverMessageFinishedLoadingAvailableTags: error.response});
                             }
                             break;
                         default:
@@ -312,7 +306,6 @@ class AddMenuItemModal extends Component {
                         case "AjaxTimeoutError":
                             thisTemp.setState({
                                 imageMessage: "Image could not be uploaded, as the request timed out.",
-                                serverMessage: "",
                                 selectedFile: null,
                                 selectedFileData: null
                             });
@@ -322,14 +315,12 @@ class AddMenuItemModal extends Component {
                             if (error.status === 0 && error.response === "") {
                                 thisTemp.setState({
                                     imageMessage: "Image could not be uploaded, as there is no connection to the server.",
-                                    serverMessage: "",
                                     selectedFile: null,
                                     selectedFileData: null
                                 });
                             } else {
                                 thisTemp.setState({
                                     imageMessage: "Image could not be uploaded, as " + error.response,
-                                    serverMessage: "",
                                     selectedFile: null,
                                     selectedFileData: null
                                 });
@@ -339,7 +330,6 @@ class AddMenuItemModal extends Component {
                             console.log(error);
                             thisTemp.setState({
                                 imageMessage: "Something is not like it is supposed to be.",
-                                serverMessage: "",
                                 selectedFile: null,
                                 selectedFileData: null
                             });
@@ -370,7 +360,6 @@ class AddMenuItemModal extends Component {
                     console.log(error);
                     thisTemp.setState({
                         imageMessage: "Something is not like it is supposed to be.",
-                        serverMessage: "",
                         selectedFile: null,
                         selectedFileData: null
                     });
@@ -399,15 +388,17 @@ class AddMenuItemModal extends Component {
             .pipe(exhaustMap(() => {
                 return bindCallback(thisTemp.setState).call(thisTemp, {
                     validation: thisTemp.validator.validate(thisTemp.state),
-                    submitted: true,
-                    serverMessage: ""
+                    serverMessage: "",
+                    tagsMessage: "",
+                    imageMessage: "",
+                    submitted: true
                 });
             }), catchError((error) => {
                 return throwError(error);
             }))
             .pipe(exhaustMap(() => {
-                if (thisTemp.state.validation.isValid) {
-                    thisTemp.setState({serverMessage: "Item is added"});
+                if (thisTemp.state.validation.isValid && thisTemp.state.chosenTags.length > 0 && thisTemp.state.imageID !== 0) {
+                    thisTemp.setState({serverMessage: "New dish is added"});
                     return ajax({
                         url: paths["restApi"]["menu"] + "/"
                             + thisTemp.props._menu.menuID + "/"
@@ -426,9 +417,15 @@ class AddMenuItemModal extends Component {
                         responseType: "text"
                     })
                 } else {
+                    if (thisTemp.state.chosenTags.length === 0) {
+                        thisTemp.setState({tagsMessage: "Please choose min. 1 Tag."});
+                    }
+                    if (thisTemp.state.imageID === 0) {
+                        thisTemp.setState({imageMessage: "Please upload an Image."});
+                    }
                     return throwError({
                         name: "InternalError",
-                        status: 0,
+                        status: -1,
                         response: null
                     });
                 }
@@ -467,6 +464,7 @@ class AddMenuItemModal extends Component {
     render() {
         let validation = this.submitted ? this.validator.validate(this.state) : this.state.validation;
         if (this.props._backgroundPage == null) {
+            // noinspection JSLint
             return (<p>Something went wrong.</p>);
         } else if (this.state.token == null || this.state.token === "null") {
             return (<p>Something went wrong.</p>);
@@ -482,8 +480,12 @@ class AddMenuItemModal extends Component {
                     </button>
                     <div className="modal-wrapper restaurant-info">
                         <Form
-                            ref={(c) => {this.form = c;}}
-                            onSubmit={(e) => this.handleSubmit(e)}
+                            ref={(c) => {
+                                this.form = c;
+                            }}
+                            onSubmit={(e) => {
+                                this.handleSubmit(e)
+                            }}
                             autocomplete="on"
                         >
                             <h2>
@@ -573,7 +575,12 @@ class AddMenuItemModal extends Component {
                                 </label>
                                 }
                                 {this.state.selectedFileData &&
-                                <img src={this.state.selectedFileData} alt={this.state.selectedFile.name}/>
+                                <div className="image-wrapper">
+                                    <img
+                                        src={this.state.selectedFileData}
+                                        alt={this.state.selectedFile.name}
+                                    />
+                                </div>
                                 }
                             </div>
                             <div className="error-block">
@@ -599,7 +606,7 @@ class AddMenuItemModal extends Component {
                                                 modal={this}
                                                 added={false}
                                             />
-                                            );
+                                        );
                                     })}
                                 </ul>
                             </div>
@@ -615,7 +622,7 @@ class AddMenuItemModal extends Component {
                                                 modal={this}
                                                 added={true}
                                             />
-                                            );
+                                        );
                                     })}
                                 </ul>
                             </div>

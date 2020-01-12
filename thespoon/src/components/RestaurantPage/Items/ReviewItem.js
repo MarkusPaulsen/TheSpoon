@@ -36,6 +36,7 @@ class ReviewItem extends Component {
     handleDecline = (event) => {
         event.preventDefault();
         const thisTemp = this;
+        // noinspection JSCheckFunctionSignatures
         of(1)
             .pipe(exhaustMap(() => {
                 return ajax({
@@ -52,6 +53,7 @@ class ReviewItem extends Component {
             .pipe(take(1))
             .subscribe(
                 () => {
+                    // noinspection JSUnresolvedVariable
                     thisTemp.props.pendingReviewModal.update();
                 }, (error) => {
                     switch (error.name) {
@@ -78,6 +80,7 @@ class ReviewItem extends Component {
     handleAccept = (event) => {
         event.preventDefault();
         const thisTemp = this;
+        // noinspection JSCheckFunctionSignatures
         of(1)
             .pipe(exhaustMap(() => {
                 return ajax({
@@ -94,6 +97,7 @@ class ReviewItem extends Component {
             .pipe(take(1))
             .subscribe(
                 () => {
+                    // noinspection JSUnresolvedVariable
                     thisTemp.props.pendingReviewModal.update();
                 }, (error) => {
                     switch (error.name) {
@@ -120,6 +124,7 @@ class ReviewItem extends Component {
 
     //<editor-fold desc="Render">
     render() {
+        // noinspection JSLint
         return (
             <div className="reviewItem">
                 <div className="receipt-photo">
@@ -131,7 +136,7 @@ class ReviewItem extends Component {
                     <h4 className="menuName">{this.props.menuName}</h4>
                     {typeof this.props.menuItemNames != null &&
                     this.props.menuItemNames.length >= 1 ? (
-                        this.props.menuItemNames.map(menuItemName => {
+                        this.props.menuItemNames.map((menuItemName) => {
                             return (
                                 <div className="itemName">{menuItemName.menuItemName}</div>
                             );

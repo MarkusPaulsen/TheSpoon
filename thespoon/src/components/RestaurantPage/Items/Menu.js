@@ -27,12 +27,13 @@ class Menu extends Component {
 
     //<editor-fold desc="Render">
     render() {
+        // noinspection JSLint
         return (
             <div className="menu">
                 <h4 className="title">{this.props.name}</h4>
                 <div className="description">{this.props.description}</div>
                 <div className="tags">
-                    {this.props.tags && this.props.tags.map(tag => {
+                    {this.props.tags && this.props.tags.map((tag) => {
                         return (
                             <div className="tag" key={tag.color}>
                                 {tag.name}
@@ -58,7 +59,9 @@ class Menu extends Component {
                     </div>
                 </div>
 
-                {this.props.menuItems.filter(menuItem => menuItem.type === "dish").map(dishItem => {
+                {this.props.menuItems.filter((menuItem) => {
+                    return menuItem.type === "dish"
+                }).map((dishItem) => {
                     return (
                         <MenuItem name={dishItem.name} description={dishItem.description}
                                   priceEuros={dishItem.priceEuros} tags={dishItem.tags}
@@ -84,7 +87,9 @@ class Menu extends Component {
                     </div>
                 </div>
 
-                {this.props.menuItems.filter(menuItem => menuItem.type === "drink").map(drinkItem => {
+                {this.props.menuItems.filter((menuItem) => {
+                    return menuItem.type === "drink"
+                }).map((drinkItem) => {
                     return (
                         <MenuItem name={drinkItem.name} description={drinkItem.description}
                                   priceEuros={drinkItem.priceEuros} tags={drinkItem.tags}
