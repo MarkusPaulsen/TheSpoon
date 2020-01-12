@@ -44,7 +44,6 @@ describe('/api/user/customer/register', () => {
             };
 
             const res = await exec();
-            console.log(res.body)
 
             //remove the previously created user from the database
             await Customer.destroy({
@@ -67,7 +66,6 @@ describe('/api/user/customer/register', () => {
 
             await exec();
             const res = await exec();
-            console.log(res.body)
 
             //remove the previously created user from the database
             await Customer.destroy({

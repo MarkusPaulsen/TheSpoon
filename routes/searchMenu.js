@@ -111,8 +111,8 @@ router.get('/:menuID/menuItem/:menuItemID/review', async (req, res) => {
                 MI_ID: req.params.menuItemID
             }
         });
-        if (itemReviews === null) {
-            res.status(404).send('Menu item not found.');
+        if (itemReviews.length <= 0) {
+            return res.status(404).send('Menu item not found.');
         }
         itemReviews = await itemReviews.map( async ir => {
             return {
