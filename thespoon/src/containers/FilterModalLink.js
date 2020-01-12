@@ -9,6 +9,7 @@ import {_setRestaurantInfo} from "../actionCreators/RestaurantActionCreators";
 //</editor-fold>
 
 //<editor-fold desc="Business Logic">
+// noinspection JSLint
 const FilterModalLink = ({children, onClick}) => {
     return <span onClick={onClick}>{children}</span>;
 };

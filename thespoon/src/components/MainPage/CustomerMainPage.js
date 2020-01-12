@@ -5,6 +5,10 @@ import {Redirect} from "react-router-dom";
 //<editor-fold desc="Redux">
 import {connect} from "react-redux";
 import {_setBackgroundPage} from "../../actionCreators/BackgroundPageActionCreator";
+//</editor-fold>
+
+//<editor-fold desc="Constants">
+import {roles} from "../../constants/Roles";
 
 //</editor-fold>
 
@@ -49,39 +53,42 @@ class CustomerMainPage extends Component {
             || this.state.token === "null"
             || this.state.user == null
             || this.state.user === "null") {
+            // noinspection JSLint
             return (
                 <Redirect to={{pathname: "/"}}/>
             );
-        } else if (this.state.user === "Restaurant Owner") {
-            return (
-                <Redirect to={{pathname: "/YourRestaurant"}}/>
-            );
-        } else if (this.state.user === "Customer") {
-            //<editor-fold desc="Render Customer">
-            return (
-                <div className="mainpage-banner">
-                    <div className="mainpage-text">
-                        <div className="container">
-                            <div className="row">
-                                <div className="col-sm-8">
-                                    <h1 className="title">Hello Customer</h1>
-                                    <label>You can now log in on you mobile app.</label>
+        } else {
+            switch (this.state.user) {
+                case roles["RESTAURANT_OWNER"]:
+                    return (
+                        <Redirect to={{pathname: "/YourRestaurant"}}/>
+                    );
+                case roles["CUSTOMER"]:
+                    //<editor-fold desc="Render Customer">
+                    return (
+                        <div className="mainpage-banner">
+                            <div className="mainpage-text">
+                                <div className="container">
+                                    <div className="row">
+                                        <div className="col-sm-8">
+                                            <h1 className="title">Hello Customer</h1>
+                                            <label>You can now log in on you mobile app.</label>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            );
-            //</editor-fold>
-        } else if (this.state.user === "Consultant") {
-            return (
-                <Redirect to={{pathname: "/ConsultantPage"}}/>
-            );
-
-        } else {
-            return (
-                <Redirect to={{pathname: "/ThisShouldNotHaveHappened"}}/>
-            );
+                    );
+                //</editor-fold>
+                case roles["CONSULTANT"]:
+                    return (
+                        <Redirect to={{pathname: "/Consultant"}}/>
+                    );
+                default:
+                    return (
+                        <Redirect to={{pathname: "/ThisShouldNotHaveHappened"}}/>
+                    );
+            }
         }
 
     }

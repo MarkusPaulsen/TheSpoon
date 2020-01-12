@@ -7,7 +7,10 @@ import {connect} from "react-redux";
 import {_setBackgroundPage} from "../../actionCreators/BackgroundPageActionCreator";
 //</editor-fold>
 
-//<editor-fold desc="Layout">
+//<editor-fold desc="Constants">
+import {roles} from "../../constants/Roles";
+//</editor-fold>
+//<editor-fold desc="Containers">
 import MainLayout from "../Layout/MainLayout.js";
 
 //</editor-fold>
@@ -57,53 +60,57 @@ class YourProfilePage extends Component {
             return (
                 <Redirect to={{pathname: "/"}}/>
             );
-        } else if (this.state.user === "Restaurant Owner") {
-            //<editor-fold desc="Render Restaurant Owner">
-            if (false) {
-                return (
-                    <MainLayout>
-                        <div className="mainpage-banner restaurant">
-                            <div className="container">
-                                <div className="row">
-                                    <div className="col-sm-8">
-                                        <h1>Loading...</h1>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </MainLayout>
-                );
-            } else {
-                return (
-                    <MainLayout>
-                        <div className="mainpage-banner">
-                            <div className="mainpage-text">
-                                <div className="container">
-                                    <div className="row">
-                                        <div className="col-sm-8">
-                                            <h1 className="title">This is your profile page {this.props.username}</h1>
+        } else {
+            switch (this.state.user) {
+                case roles["RESTAURANT_OWNER"]:
+                    //<editor-fold desc="Render Restaurant Owner">
+                    if (false) {
+                        return (
+                            <MainLayout>
+                                <div className="mainpage-banner restaurant">
+                                    <div className="container">
+                                        <div className="row">
+                                            <div className="col-sm-8">
+                                                <h1>Loading...</h1>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                    </MainLayout>
-                );
-            }
+                            </MainLayout>
+                        );
+                    } else {
+                        return (
+                            <MainLayout>
+                                <div className="mainpage-banner">
+                                    <div className="mainpage-text">
+                                        <div className="container">
+                                            <div className="row">
+                                                <div className="col-sm-8">
+                                                    <h1 className="title">This is your profile
+                                                        page {this.props.username}</h1>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </MainLayout>
+                        );
+                    }
 
-            //</editor-fold>
-        } else if (this.state.user === "Customer") {
-            return (
-                <Redirect to={{pathname: "/CustomerMain"}}/>
-            );
-        } else if (this.state.user === "Consultant") {
-            return (
-                <Redirect to={{pathname: "/Consultant"}}/>
-            );
-        } else {
-            return (
-                <Redirect to={{pathname: "/ThisShouldNotHaveHappened"}}/>
-            );
+                //</editor-fold>
+                case roles["CUSTOMER"]:
+                    return (
+                        <Redirect to={{pathname: "/CustomerMain"}}/>
+                    );
+                case roles["CONSULTANT"]:
+                    return (
+                        <Redirect to={{pathname: "/Consultant"}}/>
+                    );
+                default:
+                    return (
+                        <Redirect to={{pathname: "/ThisShouldNotHaveHappened"}}/>
+                    );
+            }
         }
     }
 

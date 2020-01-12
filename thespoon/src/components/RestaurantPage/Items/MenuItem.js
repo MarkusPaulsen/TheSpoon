@@ -24,6 +24,7 @@ class MenuItem extends Component {
 
     //<editor-fold desc="Render">
     render() {
+        // noinspection JSLint
         return (
             <div className="foodItem">
                 <div className="image-setup">
@@ -35,7 +36,7 @@ class MenuItem extends Component {
                     <h5 className="foodItemName">{this.props.name}</h5>
                     <div className="description">{this.props.description}</div>
                     <div className="tags">
-                        {this.props.tags && this.props.tags.map(tag => {
+                        {this.props.tags && this.props.tags.map((tag) => {
                             return (
                                 <div className="tag" key={tag.color}>
                                     {tag.name}
@@ -58,7 +59,7 @@ class MenuItem extends Component {
                 </div>
                 <div>
                     <p>{this.props.menuItemReviews.rating}</p>
-                    {this.props.menuItemReviews.reviews.map(review => {
+                    {this.props.menuItemReviews.reviews.map((review) => {
                         return (
                             <div>
                                 <p>{review.username}:</p>

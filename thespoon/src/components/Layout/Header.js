@@ -11,6 +11,7 @@ import FilterLink from "../../containers/FilterModalLink";
 //</editor-fold>
 
 const Header = () => {
+    // noinspection JSLint
     return (
         <header>
             <div className="container">

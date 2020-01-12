@@ -8,13 +8,13 @@ import {_setBackgroundPage} from "../../actionCreators/BackgroundPageActionCreat
 //</editor-fold>
 
 //<editor-fold desc="Constants">
+import {roles} from "../../constants/Roles";
 import {modals} from "../../constants/Modals";
 //</editor-fold>
 //<editor-fold desc="Containers">
-import FilterLink from "../../containers/FilterModalLink";
-//</editor-fold>
-//<editor-fold desc="Layout">
 import Layout from "../Layout/Layout"
+import FilterLink from "../../containers/FilterModalLink";
+
 //</editor-fold>
 
 
@@ -59,6 +59,7 @@ class HomePage extends Component {
             || this.state.user == null
             || this.state.user === "null") {
             //<editor-fold desc="Render Null">
+            // noinspection JSLint
             return (
                 <Layout>
                     <div className="homepage-banner">
@@ -82,22 +83,25 @@ class HomePage extends Component {
                 </Layout>
             );
             //</editor-fold>
-        } else if (this.state.user === "Restaurant Owner") {
-            return (
-                <Redirect to={{pathname: "/YourRestaurant"}}/>
-            );
-        } else if (this.state.user === "Customer") {
-            return (
-                <Redirect to={{pathname: "/CustomerMain"}}/>
-            );
-        } else if (this.state.user === "Consultant") {
-            return (
-                <Redirect to={{pathname: "/Consultant"}}/>
-            );
         } else {
-            return (
-                <Redirect to={{pathname: "/ThisShouldNotHaveHappened"}}/>
-            );
+            switch (this.state.user) {
+                case roles["RESTAURANT_OWNER"]:
+                    return (
+                        <Redirect to={{pathname: "/YourRestaurant"}}/>
+                    );
+                case roles["CUSTOMER"]:
+                    return (
+                        <Redirect to={{pathname: "/CustomerMain"}}/>
+                    );
+                case roles["CONSULTANT"]:
+                    return (
+                        <Redirect to={{pathname: "/Consultant"}}/>
+                    );
+                default:
+                    return (
+                        <Redirect to={{pathname: "/ThisShouldNotHaveHappened"}}/>
+                    );
+            }
         }
     }
 
