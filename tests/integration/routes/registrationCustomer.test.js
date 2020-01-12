@@ -23,8 +23,9 @@ describe('/api/user/customer/register', () => {
     });
 
     //close the db connection after all the tests
-    afterAll (() => {
-        db.close();
+    afterAll (async done => {
+        await db.close();
+        done();
     });
 
     describe('POST /', () => {
@@ -35,7 +36,7 @@ describe('/api/user/customer/register', () => {
         };
 
         //it should return a 201 because the data sent are related to a valid customer
-        it('should return a 201', async () => {
+        it('should return a 201', async (done) => {
 
             const exec = async () => {
                 return await request(app)
@@ -53,10 +54,11 @@ describe('/api/user/customer/register', () => {
             });
 
             expect(res.status).toBe(201);
-        })
+            done();
+        });
 
         //it should return a 400 because the username is already taken
-        it('should return a 400', async () => {
+        it('should return a 400', async (done) => {
 
             const exec = async () => {
                 return await request(app)
@@ -74,6 +76,7 @@ describe('/api/user/customer/register', () => {
                 }
             });
             expect(res.status).toBe(400);
+            done();
         })
     })
 });
