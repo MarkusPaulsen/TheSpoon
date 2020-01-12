@@ -66,7 +66,6 @@ describe('/api/consultant/statistics', () => {
             token = tokenObject.body.token;
 
             const res = await exec();
-            console.log(res)
             await destroyEverything();
 
             expect(res.status).toBe(401);
@@ -106,7 +105,6 @@ describe('/api/consultant/statistics', () => {
             token = tokenObject.body.token;
 
             const res = await exec('Italy');
-            console.log(res)
             await destroyEverything();
 
             expect(res.status).toBe(401);

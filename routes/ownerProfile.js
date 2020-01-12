@@ -11,6 +11,9 @@ const validationSchema = require('../validationSchemas.js');
 const auth = require('../middleware/authorizationMiddleware.js');
 const isOwner = require('../middleware/checkIfOwnerMiddleware.js');
 
+const Sequelize = require('sequelize');
+const Op = Sequelize.Op;
+
 //Return profile data of the owner
 router.get('/', auth, isOwner, async (req, res) => {
     try {
@@ -25,9 +28,10 @@ router.get('/', auth, isOwner, async (req, res) => {
 //Edit profile data of the owner
 router.put('/', auth, inputValidator(validationSchema.editOwnerProfileValidation), isOwner, async (req, res) => {
     try {
-        //check if the the email is already taken (it must be unique)
+        //check if the the email is already taken by another owner (it must be unique)
         const owners = await Owner.findAll({
             where: {
+                Username: {[Op.ne]: req.owner.Username},
                 Email: req.body.email
             }
         });

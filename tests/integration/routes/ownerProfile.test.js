@@ -69,7 +69,6 @@ describe('/api/user/owner', () => {
                     Username: "ownerProfile"
                 }
             });
-            //    console.log(res);
 
             expect(res.status).toBe(200);
 
@@ -157,7 +156,6 @@ describe('/api/user/owner', () => {
                     Username: "ownerProfile"
                 }
             });
-            //   console.log(res);
 
             expect(res.status).toBe(200);
 
@@ -239,7 +237,6 @@ describe('/api/user/owner', () => {
                     Username: "ownerProfile"
                 }
             });
-            //   console.log(res);
 
             expect(res.status).toBe(200);
 
@@ -325,7 +322,6 @@ describe('/api/user/owner', () => {
                     Username: "ownerProfile"
                 }
             });
-            //   console.log(res);
 
             expect(res.status).toBe(200);
 
@@ -361,7 +357,6 @@ describe('/api/user/owner', () => {
                 }
             });
 
-            console.log(res)
             expect(res.status).toBe(400);
 
         })
