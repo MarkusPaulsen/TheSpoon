@@ -453,6 +453,21 @@ header {
   @include media-breakpoint-down(sm) {
     padding-top: 2rem;
   }
+  &.customer {
+    img {
+      width: 300px;
+      display: block;
+    }
+    @include media-breakpoint-down(sm) {
+      text-align: center;
+      h1 {
+        margin-bottom: .5rem;
+      }
+      img {
+        display: inline-block;
+      }
+    }
+  }
 }
 /* < MAINPAGE */
 
