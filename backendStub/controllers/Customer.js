@@ -3,6 +3,16 @@
 var utils = require('../utils/writer.js');
 var Customer = require('../service/CustomerService');
 
+module.exports.apiUserCustomerDELETE = function apiUserCustomerDELETE (req, res, next) {
+  Customer.apiUserCustomerDELETE()
+    .then(function (response) {
+      utils.writeJson(res, response);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
+};
+
 module.exports.apiUserCustomerGET = function apiUserCustomerGET (req, res, next) {
   Customer.apiUserCustomerGET()
     .then(function (response) {
@@ -17,6 +27,28 @@ module.exports.apiUserCustomerMenuMenuIDMenuItemMenuItemIDReviewGET = function a
   var menuID = req.swagger.params['menuID'].value;
   var menuItemID = req.swagger.params['menuItemID'].value;
   Customer.apiUserCustomerMenuMenuIDMenuItemMenuItemIDReviewGET(menuID,menuItemID)
+    .then(function (response) {
+      utils.writeJson(res, response);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
+};
+
+module.exports.apiUserCustomerPUT = function apiUserCustomerPUT (req, res, next) {
+  var body = req.swagger.params['body'].value;
+  Customer.apiUserCustomerPUT(body)
+    .then(function (response) {
+      utils.writeJson(res, response);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
+};
+
+module.exports.apiUserCustomerPasswordPUT = function apiUserCustomerPasswordPUT (req, res, next) {
+  var body = req.swagger.params['body'].value;
+  Customer.apiUserCustomerPasswordPUT(body)
     .then(function (response) {
       utils.writeJson(res, response);
     })

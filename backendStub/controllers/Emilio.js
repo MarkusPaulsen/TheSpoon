@@ -14,6 +14,48 @@ module.exports.addMenu = function addMenu (req, res, next) {
     });
 };
 
+module.exports.apiUserOwnerDELETE = function apiUserOwnerDELETE (req, res, next) {
+  Emilio.apiUserOwnerDELETE()
+    .then(function (response) {
+      utils.writeJson(res, response);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
+};
+
+module.exports.apiUserOwnerGET = function apiUserOwnerGET (req, res, next) {
+  Emilio.apiUserOwnerGET()
+    .then(function (response) {
+      utils.writeJson(res, response);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
+};
+
+module.exports.apiUserOwnerPUT = function apiUserOwnerPUT (req, res, next) {
+  var body = req.swagger.params['body'].value;
+  Emilio.apiUserOwnerPUT(body)
+    .then(function (response) {
+      utils.writeJson(res, response);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
+};
+
+module.exports.apiUserOwnerPasswordPUT = function apiUserOwnerPasswordPUT (req, res, next) {
+  var body = req.swagger.params['body'].value;
+  Emilio.apiUserOwnerPasswordPUT(body)
+    .then(function (response) {
+      utils.writeJson(res, response);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
+};
+
 module.exports.apiUserOwnerTagGET = function apiUserOwnerTagGET (req, res, next) {
   Emilio.apiUserOwnerTagGET()
     .then(function (response) {

@@ -5,7 +5,7 @@
  * Logs user into the system
  * Logs user into the system. This endpoint is used both for restaurant owner and customer login. In order to distinguish them, in the request json there's the flag ''isRestaurantOwner''.  If the login succeeds, returns the json web token that is supposed to be stored on the frontend application (for example in the local storage of the web browser). Each time the frontend application needs to access an endpoint that requires authentication, that token will be put in the header of the request.
  *
- * body UserLogin User that needs to register
+ * body UserLogin User that needs to login
  * returns Token
  **/
 exports.loginUser = function(body) {
