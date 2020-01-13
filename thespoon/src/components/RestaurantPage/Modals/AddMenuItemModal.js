@@ -588,7 +588,7 @@ class AddMenuItemModal extends Component {
                                     {this.state.imageMessage}
                                 </small>
                             </div>
-                            <div className="input-field">
+                            <div className="input-field tags">
                                 <label>
                                     Available Tags
                                 </label>
@@ -599,31 +599,27 @@ class AddMenuItemModal extends Component {
                                     placeholder="Search"
                                 />
                                 <ul>
-                                    {this.state.autocompleteTags.map((tag) => {
-                                        return (
+                                    {this.state.autocompleteTags.map((tag) =>
                                             <TagItem
                                                 tag={tag}
                                                 modal={this}
                                                 added={false}
                                             />
-                                        );
-                                    })}
+                                        )}
                                 </ul>
                             </div>
-                            <div className="input-field">
+                            <div className="input-field tags">
                                 <label>
                                     Chosen Tags
                                 </label>
                                 <ul>
-                                    {this.state.chosenTags.map((tag) => {
-                                        return (
+                                    {this.state.chosenTags.map((tag) =>
                                             <TagItem
                                                 tag={tag}
                                                 modal={this}
                                                 added={true}
                                             />
-                                        );
-                                    })}
+                                        )}
                                 </ul>
                             </div>
                             <div className="error-block">

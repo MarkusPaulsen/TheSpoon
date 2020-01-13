@@ -48,7 +48,7 @@ class TagItem extends Component {
     //<editor-fold desc="Render">
     render() {
         return (
-            <li onClick={this.handleClick}>{this.props.tag}</li>
+            <li onClick={this.handleClick}>{this.props.tag} {this.props.added &&  <span className="remove-button">X</span>}</li>
         );
     }
     //</editor-fold>
