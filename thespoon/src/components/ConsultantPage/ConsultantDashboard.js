@@ -54,10 +54,6 @@ class ConsultantDashboard extends Component {
 
     //<editor-fold desc="Render">
     render() {
-        if (this.state.token == null
-            || this.state.token === "null"
-            || this.state.user == null
-            || this.state.user === "null") {
             //<editor-fold desc="Render Null">
             // noinspection JSLint
             return (
@@ -76,28 +72,7 @@ class ConsultantDashboard extends Component {
                 </Layout>
             );
             //</editor-fold>
-        } else {
-            switch (this.state.user) {
-                case roles["RESTAURANT_OWNER"]:
-                    return (
-                        <Redirect to={{pathname: "/YourRestaurant"}}/>
-                    );
-                case roles["CUSTOMER"]:
-                    return (
-                        <Redirect to={{pathname: "/CustomerMain"}}/>
-                    );
-                case roles["CONSULTANT"]:
-                    return (
-                        <Redirect to={{pathname: "/Consultant"}}/>
-                    );
-                default:
-                    return (
-                        <Redirect to={{pathname: "/ThisShouldNotHaveHappened"}}/>
-                    );
-            }
         }
-    }
-
     //</editor-fold>
 
 }
