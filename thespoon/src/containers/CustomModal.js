@@ -15,8 +15,10 @@ import {modals} from "../constants/Modals";
 //</editor-fold>
 //<editor-fold desc="Modals">
 import LogInModal from "../components/HomePage/Modals/LogInModal";
+import ConsultantLoginModal from "../components/ConsultantPage/ConsultantLoginModal";
 import LogOutModal from "../components/HomePage/Modals/LogOutModal";
 import RegisterRestaurantowner from "../components/HomePage/Modals/RegisterRestaurantOwnerModal";
+import ConsultantRegisterModal from "../components/ConsultantPage/ConsultantRegisterModal";
 import AddRestaurantModal from "../components/RestaurantPage/Modals/AddRestaurantModal"
 import EditRestaurantModal from "../components/RestaurantPage/Modals/EditRestaurantModal";
 import AddMenuModal from "../components/RestaurantPage/Modals/AddMenuModal";
@@ -40,6 +42,12 @@ class CustomModal extends Component {
                     <LogInModal onHide={() => {this.props._handleClose()}} />
                 );
 
+            case modals.SHOW_LOGIN_CONSULTANT:
+                // noinspection JSLint
+                return (
+                    <ConsultantLoginModal onHide={() => {this.props._handleClose()}} />
+                );
+
             case modals.SHOW_LOGOUT:
                 return (
                     <LogOutModal onHide={() => {this.props._handleClose()}} />
@@ -58,6 +66,11 @@ class CustomModal extends Component {
             case modals.SHOW_REGISTER_CUSTOMER:
                 return (
                     <RegisterCustomer onHide={() => {this.props._handleClose()}}/>
+                );
+
+            case modals.SHOW_REGISTER_CONSULTANT:
+                return (
+                    <ConsultantRegisterModal onHide={() => {this.props._handleClose()}}/>
                 );
 
             case modals.SHOW_ADD_RESTAURANT:
