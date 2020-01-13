@@ -53,12 +53,7 @@ class AddRestaurantInfo extends Component {
             method: "isEmpty",
             validWhen: false,
             message: "Restaurant name required"
-        }, /*{
-            field: "imageID",
-            method: > 0,
-            validWhen: true,
-            message: "Only alphabetic countries are allowed."
-        }, */{
+        }, {
             field: "address",
             method: "isEmpty",
             validWhen: false,
@@ -73,14 +68,7 @@ class AddRestaurantInfo extends Component {
             method: "isEmpty",
             validWhen: false,
             message: "Country name required"
-        }, /*{
-            field: "country",
-            method: (description) => {
-                return description.length >= 1
-            },
-            validWhen: true,
-            message: "Country is required to be alphanumeric."
-        }*/]);
+        }]);
 
         //</editor-fold>
 

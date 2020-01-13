@@ -40,10 +40,12 @@ class YourRestaurantPage extends Component {
             //<editor-fold desc="State Restaurant">
             restaurant: null,
             restaurantMessage: "",
+            $restaurant: null,
             //</editor-fold>
             //<editor-fold desc="State Menu">
             menus: null,
-            menusMessage: ""
+            menusMessage: "",
+            $menu: null
             //</editor-fold>
         };
     }
@@ -52,135 +54,139 @@ class YourRestaurantPage extends Component {
 
     //<editor-fold desc="Component Lifecycle">
     componentDidMount() {
+        //<editor-fold desc="Mount Temporary This">
+        const thisTemp = this;
+        //</editor-fold>
         this.props._setBackgroundPage(this);
         this.setState({
             token: window.localStorage.getItem("token"),
-            user: window.localStorage.getItem("user")
+            user: window.localStorage.getItem("user"),
+            //<editor-fold desc="Mount Restaurant Data Observable">
+            $restaurant: ajax({
+                url: paths["restApi"]["restaurant"],
+                method: "GET",
+                headers: {"X-Auth-Token": thisTemp.state.token},
+                timeout: timeouts,
+                responseType: "text"
+            })
+                .subscribe(
+                    (next) => {
+                        let response = JSON.parse(next.response);
+                        thisTemp.props._setRestaurantInfo(response);
+                        thisTemp.setState({
+                            restaurant: response,
+                            restaurantMessage: ""
+                        });
+                    },
+                    (error) => {
+                        console.log(error);
+                        switch (error.name) {
+                            case "AjaxTimeoutError":
+                                thisTemp.setState({
+                                    restaurant: {},
+                                    restaurantMessage: "" + "The request timed out.",
+                                });
+                                break;
+                            case "InternalError":
+                            case "AjaxError":
+                                if (
+                                    error.status === 0
+                                    && error.response === ""
+                                ) {
+                                    thisTemp.setState({
+                                        restaurant: {},
+                                        restaurantMessage: "There is no connection to the server."
+                                    });
+                                } else if (
+                                    error.status === 404
+                                    && error.response === "No restaurant associated to this account found."
+                                ) {
+                                    this.props._openAddRestaurantModal();
+                                    thisTemp.setState({
+                                        restaurant: {},
+                                        restaurantMessage: ""
+                                    });
+                                } else {
+                                    thisTemp.setState({
+                                        restaurant: {},
+                                        restaurantMessage: error.response
+                                    });
+                                }
+                                break;
+                            default:
+                                console.log(error);
+                                thisTemp.setState({
+                                    restaurant: {},
+                                    restaurantMessage: "Something is not like it is supposed to be."
+                                });
+                                break;
+                        }
+                    }
+                ),
+            //</editor-fold>
+            //<editor-fold desc="Mount Menu Data Observable">
+            $menus: ajax({
+                url: paths["restApi"]["menu"],
+                method: "GET",
+                headers: {"X-Auth-Token": thisTemp.state.token},
+                timeout: timeouts,
+                responseType: "text"
+            })
+                .subscribe(
+                    (next) => {
+                        let response = JSON.parse(next.response);
+                        thisTemp.setState({
+                            menus: response,
+                            menusMessage: ""
+                        });
+                    },
+                    (error) => {
+                        switch (error.name) {
+                            case "AjaxTimeoutError":
+                                thisTemp.setState({
+                                    menus: [],
+                                    menusMessage: "The request timed out."
+                                });
+                                break;
+                            case "InternalError":
+                            case "AjaxError":
+                                if (error.status === 0 && error.response === "") {
+                                    thisTemp.setState({
+                                        menus: [],
+                                        menusMessage: "There is no connection to the server."
+                                    });
+                                } else {
+                                    thisTemp.setState({
+                                        menus: [],
+                                        menusMessage: error.response
+                                    });
+                                }
+                                break;
+                            default:
+                                console.log(error);
+                                thisTemp.setState({
+                                    menus: [],
+                                    menusMessage: "Something is not like it is supposed to be."
+                                });
+                                break;
+                        }
+                    }
+                )
+            //</editor-fold>
         });
-        const thisTemp = this;
-        //<editor-fold desc="Mount Restaurant Observable">
-        this.$restaurant = ajax({
-            url: paths["restApi"]["restaurant"],
-            method: "GET",
-            headers: {"X-Auth-Token": thisTemp.state.token},
-            timeout: timeouts,
-            responseType: "text"
-        })
-            .subscribe(
-                (next) => {
-                    let response = JSON.parse(next.response);
-                    thisTemp.props._setRestaurantInfo(response);
-                    thisTemp.setState({
-                        restaurant: response,
-                        restaurantMessage: ""
-                    });
-                },
-                (error) => {
-                    switch (error.name) {
-                        case "AjaxTimeoutError":
-                            thisTemp.setState({
-                                restaurant: {},
-                                restaurantMessage: "" + "The request timed out.",
-                            });
-                            break;
-                        case "InternalError":
-                        case "AjaxError":
-                            if (
-                                error.status === 0
-                                && error.response === ""
-                            ) {
-                                thisTemp.setState({
-                                    restaurant: {},
-                                    restaurantMessage: "There is no connection to the server."
-                                });
-                            } else if (
-                                error.status === 404
-                                && error.response === "No restaurant associated to this account found."
-                            ) {
-                                this.props._openAddRestaurantModal();
-                                thisTemp.setState({
-                                    restaurant: {},
-                                    restaurantMessage: ""
-                                });
-                            } else {
-                                thisTemp.setState({
-                                    restaurant: {},
-                                    restaurantMessage: error.response
-                                });
-                            }
-                            break;
-                        default:
-                            console.log(error);
-                            thisTemp.setState({
-                                restaurant: {},
-                                restaurantMessage: "Something is not like it is supposed to be."
-                            });
-                            break;
-                    }
-                }
-            );
-
-        //</editor-fold>
-        //<editor-fold desc="Mount Menus Observable">
-        this.$menus = ajax({
-            url: paths["restApi"]["menu"],
-            method: "GET",
-            headers: {"X-Auth-Token": thisTemp.state.token},
-            timeout: timeouts,
-            responseType: "text"
-        })
-            .subscribe(
-                (next) => {
-                    let response = JSON.parse(next.response);
-                    thisTemp.setState({
-                        menus: response,
-                        menusMessage: ""
-                    });
-                },
-                (error) => {
-                    switch (error.name) {
-                        case "AjaxTimeoutError":
-                            thisTemp.setState({
-                                menus: [],
-                                menusMessage: "The request timed out."
-                            });
-                            break;
-                        case "InternalError":
-                        case "AjaxError":
-                            if (error.status === 0 && error.response === "") {
-                                thisTemp.setState({
-                                    menus: [],
-                                    menusMessage: "There is no connection to the server."
-                                });
-                            } else {
-                                thisTemp.setState({
-                                    menus: [],
-                                    menusMessage: error.response
-                                });
-                            }
-                            break;
-                        default:
-                            console.log(error);
-                            thisTemp.setState({
-                                menus: [],
-                                menusMessage: "Something is not like it is supposed to be."
-                            });
-                            break;
-                    }
-                }
-            );
-
-        //</editor-fold>
     };
 
     componentWillUnmount() {
         //<editor-fold desc="Unmount Menus Observable">
-        this.$menus.unsubscribe();
+        if (this.state.$menu != null){
+            this.state.$menu.unsubscribe();
+        }
         //</editor-fold>
         //<editor-fold desc="Unmount Restaurant Observable">
-        this.$restaurant.unsubscribe();
+        if (this.state.$restaurant != null) {
+            this.state.$restaurant.unsubscribe();
+        }
         //</editor-fold>
-        this.props._setBackgroundPage(null);
     }
 
     //</editor-fold>
