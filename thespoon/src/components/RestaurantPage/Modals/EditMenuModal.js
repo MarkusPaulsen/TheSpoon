@@ -405,7 +405,7 @@ class EditMenuModal extends Component {
                                     {validation.description.message}
                                 </small>
                             </div>
-                            <div className="input-field">
+                            <div className="input-field tags">
                                 <label>
                                     Available Tags
                                 </label>
@@ -427,7 +427,7 @@ class EditMenuModal extends Component {
                                     })}
                                 </ul>
                             </div>
-                            <div className="input-field">
+                            <div className="input-field tags">
                                 <label>
                                     Chosen Tags
                                 </label>
