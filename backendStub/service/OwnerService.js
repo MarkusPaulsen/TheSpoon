@@ -3,7 +3,7 @@
 
 /**
  * Add an empty menu to a restaurant
- * Add a menu to a restaurant of a restaurant owner, which needs to be logged in. The menuItems are not meant to be added to the menu through this endpoint.
+ * Add a menu to a restaurant of a restaurant owner, which needs to be logged in. The menuItems are not meant to be added to the menu through this endpoint. The tags of the menu must be valid, otherwise a 400 error will be sent. It's needed that the restaurant already exists, otherwise a 404 error will be sent.
  *
  * body MenuWithoutItems Menu data
  * returns MenuID
@@ -25,7 +25,7 @@ exports.addMenu = function(body) {
 
 /**
  * Add a menuItem to a menu
- * Add a menuItem to the menu with given menuID. Authentication required.
+ * Add a menuItem to the menu with given menuID. Authentication required. The tags of the menu item must be valid, otherwise a 400 error will be sent. It's needed that the restaurant already exists, otherwise a 404 error will be sent.
  *
  * menuID Integer ID of the menu
  * body MenuItemWithoutColors Menu data
@@ -88,8 +88,84 @@ exports.addMenuItem = function(menuID,body) {
 
 
 /**
+ * Delete profile of the owner
+ * Delete profile of the logged in owner.
+ *
+ * no response value expected for this operation
+ **/
+exports.apiUserOwnerDELETE = function() {
+  return new Promise(function(resolve, reject) {
+    resolve();
+  });
+}
+
+
+/**
+ * Return profile data of the owner
+ * Return own data of logged in owner. This endpoint should be used when the frontend has to visualize the profile of the owner.
+ *
+ * returns OwnerData
+ **/
+exports.apiUserOwnerGET = function() {
+  return new Promise(function(resolve, reject) {
+    var examples = {};
+    examples['application/json'] = {
+  "email" : "john.doe@gmail.com",
+  "username" : "johndoe",
+  "name" : "John",
+  "surname" : "Doe"
+};
+    if (Object.keys(examples).length > 0) {
+      resolve(examples[Object.keys(examples)[0]]);
+    } else {
+      resolve();
+    }
+  });
+}
+
+
+/**
+ * Edit profile data of the owner
+ * Edit profile data of the logged in owner. The password can't be changed through this endpoint, but the dedicated one should be used instead.  The username can't be changed.
+ *
+ * body OwnerEditData New data of the owner
+ * returns OwnerData
+ **/
+exports.apiUserOwnerPUT = function(body) {
+  return new Promise(function(resolve, reject) {
+    var examples = {};
+    examples['application/json'] = {
+  "email" : "john.doe@gmail.com",
+  "username" : "johndoe",
+  "name" : "John",
+  "surname" : "Doe"
+};
+    if (Object.keys(examples).length > 0) {
+      resolve(examples[Object.keys(examples)[0]]);
+    } else {
+      resolve();
+    }
+  });
+}
+
+
+/**
+ * Change the password of the owner
+ * Change the password of the logged in owner. The current password must be provided, for security reasons. A 400 is sent back if the current password provided doesn't match, and the password change is not performed.
+ *
+ * body PasswordChange New and current passwords
+ * no response value expected for this operation
+ **/
+exports.apiUserOwnerPasswordPUT = function(body) {
+  return new Promise(function(resolve, reject) {
+    resolve();
+  });
+}
+
+
+/**
  * Return pending reviews
- * Return all the pending reviews of the owner's restaurant. Only the image of the receipt is sent (the link to download it from the cloud), together with the name of the reviewed menu and the list of the reviewed menu items.The pending reviews are sent in an array, which will be empty in case there are no pending reviews. With a POST the restaurant owner will approve or disapprove the review.
+ * Return all the pending reviews of the owner's restaurant. Only the image of the receipt is sent (the link to download it from the cloud), together with the name of the reviewed menu and the list of the reviewed menu items.The pending reviews are sent in an array, which will be empty in case there are no pending reviews. With a POST the restaurant owner will approve or disapprove the review.  If there are no pending reviews, an empty array is sent (with code 200, not 404).  It's needed that the restaurant already exists, otherwise a 404 error will be sent.
  *
  * returns List
  **/
@@ -98,6 +174,7 @@ exports.apiUserOwnerRestaurantReviewGET = function() {
     var examples = {};
     examples['application/json'] = [ {
   "reviewID" : 988,
+  "receiptPhotoLink" : "www.cloud.com/receiptPhoto",
   "menuName" : "Sea menu",
   "menuItemNames" : [ {
     "menuItemName" : "Spaghetti allo scoglio"
@@ -106,6 +183,7 @@ exports.apiUserOwnerRestaurantReviewGET = function() {
   } ]
 }, {
   "reviewID" : 989,
+  "receiptPhotoLink" : "www.cloud.com/receiptPhoto",
   "menuName" : "Mountain menu",
   "menuItemNames" : [ {
     "menuItemName" : "Polenta"
@@ -124,7 +202,7 @@ exports.apiUserOwnerRestaurantReviewGET = function() {
 
 /**
  * Approve or disapprove pending review
- * Submit the decision of the restaurant owner about the pending review with given reviewID (approved or disapproved). In case of a successful operation, an array containing all the pending reviews is sent, so that the frontend is able to refresh the list (the array sent is like the array sent with the GET endpoint).
+ * Submit the decision of the restaurant owner about the pending review with given reviewID (approved or disapproved). In case of a successful operation, an array containing all the pending reviews is sent, so that the frontend is able to refresh the list (the array sent is like the array sent with the GET endpoint). It's needed that the restaurant already exists, otherwise a 404 error will be sent.
  *
  * reviewID Integer ID of the pending review
  * body ApprovalStatus Submitted status of pending review (approved or disapproved)
@@ -161,7 +239,7 @@ exports.apiUserOwnerRestaurantReviewReviewIDPOST = function(reviewID,body) {
 
 /**
  * Return all the available tags
- * When a restaurant owner is creating a menu or a menu item, he/she needs to know the list of the available tags.
+ * When a restaurant owner is creating a menu or a menu item, he/she needs to know the list of the available tags. If there are no tags, an empty array is sent (with code 200, not 404).
  *
  * returns List
  **/
@@ -180,7 +258,7 @@ exports.apiUserOwnerTagGET = function() {
 
 /**
  * Configure data of the restaurant
- * Save the data of the restaurant given by the owner. Authentication is needed.  One of the parameter to be passed is the imageID, this is the flow:  1. The restaurant owner is in the page in which he can input the restaurant data. He will upload the photo of the restaurant while he is writing all the fields of the form.  2. The uploading of the photo is done by sending the photo to the /api/image endpoint. While the restaurant owner is still writing the fields of the form, the message to that endpoint is sent and the imageID is received as a response.  3. When the restaurant owner finishes writing the fields of the form and click the send button, the photo was actually already been ent in the point 2 and he doesn't have to wait for the upload (if he was fast compiling the form and the upload isn't finished yet, at least he has to wait less because it was already started). The imageID received as a response by the /api/image endpoint will be sent to this endpoint with the data of the form in a json, because the backend needs it in order to associate the json to the previously uploaded photo.
+ * Save the data of the restaurant given by the owner. Authentication is needed. A 400 will be sent if the owner already sent the data of his restaurant (an owner can't have more than one restaurant).  One of the parameter to be passed is the imageID, this is the flow:  1. The restaurant owner is in the page in which he can input the restaurant data. He will upload the photo of the restaurant while he is writing all the fields of the form.  2. The uploading of the photo is done by sending the photo to the /api/image endpoint. While the restaurant owner is still writing the fields of the form, the message to that endpoint is sent and the imageID is received as a response.  3. When the restaurant owner finishes writing the fields of the form and click the send button, the photo was actually already been ent in the point 2 and he doesn't have to wait for the upload (if he was fast compiling the form and the upload isn't finished yet, at least he has to wait less because it was already started). The imageID received as a response by the /api/image endpoint will be sent to this endpoint with the data of the form in a json, because the backend needs it in order to associate the json to the previously uploaded photo.
  *
  * body Restaurant Restaurant data
  * returns RestaurantID
@@ -225,7 +303,7 @@ exports.createOwner = function(body) {
 
 /**
  * Delete a menu
- * Delete a menu of the restaurant. Authentication is required
+ * Delete a menu of the restaurant. Authentication is required. It's needed that the restaurant already exists, otherwise a 404 error will be sent.
  *
  * menuID Integer ID of the menu to be edited
  * no response value expected for this operation
@@ -239,7 +317,7 @@ exports.deleteMenu = function(menuID) {
 
 /**
  * Delete a menuItem
- * Delete the menuItem with given menuItemID of the menu with given menuID. Authentication required.
+ * Delete the menuItem with given menuItemID of the menu with given menuID. Authentication required. It's needed that the restaurant already exists, otherwise a 404 error will be sent.
  *
  * menuID Integer ID of the menu
  * menuItemID Integer ID of the menuItem
@@ -254,7 +332,7 @@ exports.deleteMenuItem = function(menuID,menuItemID) {
 
 /**
  * Edit a menu's information (not its items)
- * Edit a given menu (but not its menuItems). To identify the menu, the menuID needs to be given. Authentication is required.
+ * Edit a given menu (but not its menuItems). To identify the menu, the menuID needs to be given. Authentication is required. The tags of the menu must be valid, otherwise a 400 error will be sent. It's needed that the restaurant already exists, otherwise a 404 error will be sent.
  *
  * menuID Integer ID of the menu to be edited
  * body MenuWithoutItems Data of the menu to be saved
@@ -277,7 +355,7 @@ exports.editMenu = function(menuID,body) {
 
 /**
  * Edit a menuItem
- * Edit the menuItem with given menuItemID of the menu with given menuID. Authentication required.
+ * Edit the menuItem with given menuItemID of the menu with given menuID. Authentication required. The tags of the menu item must be valid, otherwise a 400 error will be sent. It's needed that the restaurant already exists, otherwise a 404 error will be sent.
  *
  * menuID Integer ID of the menu
  * menuItemID Integer ID of the menuItem
@@ -342,7 +420,7 @@ exports.editMenuItem = function(menuID,menuItemID,body) {
 
 /**
  * Edit restaurant's information
- * Edit the information of the restaurant
+ * Edit the information of the restaurant. It's needed that the restaurant already exists, otherwise a 404 error will be sent. The POST endpoint should be used to create it.
  *
  * body Restaurant Restaurant data
  * returns RestaurantID
@@ -364,7 +442,7 @@ exports.editRestaurant = function(body) {
 
 /**
  * Return all the menus of the restaurant
- * Return all the menus of the restaurant. Since authentication is required, the backend is able to get which restaurant is involved from the authentication token.
+ * Return all the menus of the restaurant. Since authentication is required, the backend is able to get which restaurant is involved from the authentication token. It's needed that the restaurant already exists, otherwise a 404 error will be sent.
  *
  * returns List
  **/

@@ -26,6 +26,48 @@ module.exports.addMenuItem = function addMenuItem (req, res, next) {
     });
 };
 
+module.exports.apiUserOwnerDELETE = function apiUserOwnerDELETE (req, res, next) {
+  Owner.apiUserOwnerDELETE()
+    .then(function (response) {
+      utils.writeJson(res, response);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
+};
+
+module.exports.apiUserOwnerGET = function apiUserOwnerGET (req, res, next) {
+  Owner.apiUserOwnerGET()
+    .then(function (response) {
+      utils.writeJson(res, response);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
+};
+
+module.exports.apiUserOwnerPUT = function apiUserOwnerPUT (req, res, next) {
+  var body = req.swagger.params['body'].value;
+  Owner.apiUserOwnerPUT(body)
+    .then(function (response) {
+      utils.writeJson(res, response);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
+};
+
+module.exports.apiUserOwnerPasswordPUT = function apiUserOwnerPasswordPUT (req, res, next) {
+  var body = req.swagger.params['body'].value;
+  Owner.apiUserOwnerPasswordPUT(body)
+    .then(function (response) {
+      utils.writeJson(res, response);
+    })
+    .catch(function (response) {
+      utils.writeJson(res, response);
+    });
+};
+
 module.exports.apiUserOwnerRestaurantReviewGET = function apiUserOwnerRestaurantReviewGET (req, res, next) {
   Owner.apiUserOwnerRestaurantReviewGET()
     .then(function (response) {
