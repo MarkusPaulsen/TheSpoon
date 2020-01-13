@@ -101,6 +101,7 @@ input {
   font-weight: 500;
   border: none;
   border-bottom: 1px solid var(--pink);
+  padding: .25rem 0;
   &:focus, &:active {
     outline: none;
   }
@@ -472,6 +473,10 @@ header {
     padding: 3rem 1.5rem;
     text-align: center;
 
+    &.restaurant-modal .input-field>div {
+      width: 100%;
+    }
+
     .title {
       margin-bottom: 2rem;
     }
@@ -512,6 +517,9 @@ header {
 
     .input-field {
       margin: 1rem 0 0.5rem;
+      &.old-password {
+        margin-bottom: 2rem;
+      }
 
       i {
         margin-right: 1rem;
@@ -543,10 +551,6 @@ header {
         margin-bottom: .25rem;
         font-weight: bold;
       }
-    }
-
-    .input-field > div {
-      width: 100%;
     }
 
     .inputfile {
@@ -957,6 +961,7 @@ header {
     margin-bottom: 1.25rem;
   }
 }
+
 .no-menus {
   background: var(--white);
   border-radius: 0.8333333333333334rem;
@@ -1042,6 +1047,8 @@ header {
   }
 }
 
+
+
 /* < RESTAURANT PAGE */
 
 /* FOOD ITEMS > */
@@ -1121,6 +1128,74 @@ header {
 }
 /* < FOOD ITEMS */
 
+/* PROFILE */
+
+.profile {
+  padding-bottom: 3rem;
+  .title {
+    margin-bottom: 2rem;
+  }
+
+  .profile-part {
+    padding: 5rem 7rem;
+    text-align: center;
+    background-color: var(--white);
+
+    form {
+      text-align: center;
+    }
+
+    .input-field {
+      margin: 1rem 0 .5rem;
+      i {
+        margin-right: 1rem;
+        width: 22px;
+      }
+
+      > div {
+        width: 80%;
+        display: inline-block;
+
+        input {
+          width: 100%;
+        }
+      }
+
+      &.name {
+        > div {
+          width: calc(40% - .25rem);
+
+          &:first-of-type {
+            margin-right: .5rem;
+          }
+        }
+      }
+    }
+
+    span {
+      display: block;
+      font-size: 14px;
+      font-weight: 500;
+      text-decoration: underline;
+      color: var(--black);
+      margin-top: 2rem;
+      &:hover {
+        cursor: pointer;
+      }
+    }
+
+    button {
+      margin: 3rem 0 0rem;
+    }
+
+    .delete-button {
+      color: #e7040f;
+    }
+  }
+}
+
+/* / PROFILE */
+
 /* REVIEW ITEMS > */
 .reviewItem {
   background: var(--light-grey);
@@ -1188,3 +1263,4 @@ header {
 }
 
 /* < REVIEW ITEMS */
+

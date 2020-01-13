@@ -371,46 +371,44 @@ class YourProfilePage extends Component {
                     } else {
                         return (
                             <MainLayout>
-                                <div className="mainpage-banner">
-                                    <div className="mainpage-text">
-                                        <div className="container">
-                                            <div className="row">
-                                                <div className="col-sm-8">
-                                                    <h3 className="title">Your Profile {this.state.username}</h3>
-                                                    <div className="no-menus">
-                                                        <Form ref={(c) => {
-                                                            this.form = c;
-                                                        }} onSubmit={this.handleSubmit}>
-                                                            <div className="input-field">
-                                                                <IconEmail/>
-                                                                <Input type="email" name="email" placeholder="E-mail"
-                                                                       value={this.state.email}/>
-                                                            </div>
-                                                            <div className="error-block">
-                                                                <small>{validation.email.message}</small>
-                                                            </div>
-                                                            <div className="input-field name">
-                                                                <IconName/>
-                                                                <Input type="text" name="name" placeholder="First name"
-                                                                       value={this.state.name}/>
-                                                                <Input type="text" name="surname" placeholder="Surname"
-                                                                       value={this.state.surname}/>
-                                                            </div>
-                                                            <div className="error-block">
-                                                                <small>{validation.name.message}</small>
-                                                                <small>{validation.surname.message}</small>
-                                                            </div>
-                                                            <Button type="submit" className="normal">Update</Button>
-                                                            <Button type="button" className="delete-button"
-                                                                    onClick={this.handleDelete}>Delete Account</Button>
-                                                            <div className="error-block">
-                                                                <small>{this.state.serverMessage}</small>
-                                                            </div>
-                                                            <FilterLink modal={modals.SHOW_CHANGE_PASSWORD}>
-                                                                Change Password
-                                                            </FilterLink>
-                                                        </Form>
-                                                    </div>
+                                <div className="mainpage-banner profile">
+                                    <div className="container">
+                                        <div className="row">
+                                            <div className="col-sm-8 offset-sm-2">
+                                                <h3 className="title">Your Profile {this.state.username}</h3>
+                                                <div className="profile-part">
+                                                    <Form ref={(c) => {
+                                                        this.form = c;
+                                                    }} onSubmit={this.handleSubmit}>
+                                                        <div className="input-field">
+                                                            <IconEmail/>
+                                                            <Input type="email" name="email" placeholder="E-mail"
+                                                                   value={this.state.email}/>
+                                                        </div>
+                                                        <div className="error-block">
+                                                            <small>{validation.email.message}</small>
+                                                        </div>
+                                                        <div className="input-field name">
+                                                            <IconName/>
+                                                            <Input type="text" name="name" placeholder="First name"
+                                                                   value={this.state.name}/>
+                                                            <Input type="text" name="surname" placeholder="Surname"
+                                                                   value={this.state.surname}/>
+                                                        </div>
+                                                        <div className="error-block">
+                                                            <small>{validation.name.message}</small>
+                                                            <small>{validation.surname.message}</small>
+                                                        </div>
+                                                        <Button type="submit" className="normal">Update</Button>
+                                                        <div className="error-block">
+                                                            <small>{this.state.serverMessage}</small>
+                                                        </div>
+                                                        <FilterLink modal={modals.SHOW_CHANGE_PASSWORD}>
+                                                            Change Password
+                                                        </FilterLink>
+                                                        <Button type="button" className="delete-button"
+                                                                onClick={this.handleDelete}>Delete Account</Button>
+                                                    </Form>
                                                 </div>
                                             </div>
                                         </div>

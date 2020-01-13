@@ -512,7 +512,7 @@ class AddRestaurantInfo extends Component {
             //<editor-fold desc="Render Token">
             return (
                 <Modal.Body>
-                    <div className="modal-wrapper add-restaurant">
+                    <div className="modal-wrapper add-restaurant restaurant-modal">
                         <Form
                             ref={(c) => {
                                 this.form = c;
