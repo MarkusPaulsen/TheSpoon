@@ -165,20 +165,18 @@ class Nationality extends Component {
                 case roles["CONSULTANT"]:
                     return (
                         <ConsultantLayout>
-                            <div className="mainpage-banner customer">
+                            <div className="mainpage-banner consultant">
                                 <div className="container">
                                     <div className="row">
-                                        <div className="col-lg-12"><h3 className="title">Hello Consultant</h3></div>
+                                        <div className="col-lg-12"><h3 className="title">Statistics for {this.state.nationality}</h3></div>
                                     </div>
                                     {this.state.statistics &&
                                     <>
+                                        {this.state.statistics.totalRegisteredCustomers &&
                                         <div className="row">
-                                            {this.state.statistics.totalRegisteredCustomers &&
-                                            <div className="row">
-                                                <div className="col-lg-12"><p className="stat">Total registered customers: {this.state.statistics.totalRegisteredCustomers}</p></div>
-                                            </div>
-                                            }
+                                            <div className="col-lg-12"><p className="stat">Total registered customers: {this.state.statistics.totalRegisteredCustomers}</p></div>
                                         </div>
+                                        }
                                         <div className="row">
                                             {this.state.statistics.customersPerGender &&
                                             <div className="col-lg-4">
