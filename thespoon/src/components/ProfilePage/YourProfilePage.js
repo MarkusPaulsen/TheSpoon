@@ -19,7 +19,7 @@ import FormValidator from "../../validation/FormValidator";
 //</editor-fold>
 
 //<editor-fold desc="Constants">
-import {paths} from "../../constants/paths";
+import {paths} from "../../constants/Paths";
 //</editor-fold>
 //<editor-fold desc="Icons">
 import {IconName, IconEmail} from "../Icons";

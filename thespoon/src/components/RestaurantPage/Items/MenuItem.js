@@ -36,13 +36,11 @@ class MenuItem extends Component {
                     <h5 className="foodItemName">{this.props.name}</h5>
                     <div className="description">{this.props.description}</div>
                     <div className="tags">
-                        {this.props.tags && this.props.tags.map((tag) => {
-                            return (
-                                <div className="tag" key={tag.color}>
-                                    {tag.name}
-                                </div>
-                            );
-                        })}
+                        {this.props.tags && this.props.tags.map((tag) =>
+                            <div className="tag" style={{backgroundColor: tag.color}}>
+                                {tag.name}
+                            </div>
+                        )}
                     </div>
                 </div>
                 <div className="price">{parseFloat(this.props.priceEuros).toFixed(2)}€</div>

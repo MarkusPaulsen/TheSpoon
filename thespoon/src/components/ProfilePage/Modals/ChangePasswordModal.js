@@ -20,7 +20,7 @@ import FormValidator from "../../../validation/FormValidator";
 //</editor-fold>
 
 //<editor-fold desc="Constants">
-import {paths} from "../../../constants/paths";
+import {paths} from "../../../constants/Paths";
 import {timeouts} from "../../../constants/Timeouts"
 //</editor-fold>
 //<editor-fold desc="Icons">
