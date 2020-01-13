@@ -1,6 +1,7 @@
 //<editor-fold desc="React">
 import React, {Component} from "react";
 import {Redirect} from "react-router-dom";
+import { Link } from 'react-router-dom';
 //</editor-fold>
 //<editor-fold desc="Redux">
 import {connect} from "react-redux";
@@ -240,7 +241,7 @@ class ConsultantPage extends Component {
                                                         {this.state.statistics.customersPerNationality.map((stat) =>
                                                             stat.nationality &&
                                                             <tr>
-                                                                <th>{stat.nationality}</th>
+                                                                <th><Link to={{ pathname: `/Consultant/${stat.nationality}`, nationality: stat.nationality }}>{stat.nationality}</Link></th>
                                                                 <th>{stat.numberOfCustomers}</th>
                                                             </tr>
                                                         )
