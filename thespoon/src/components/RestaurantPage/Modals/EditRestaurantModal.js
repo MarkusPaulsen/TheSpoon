@@ -56,7 +56,12 @@ class EditRestaurantModal extends Component {
             method: "isEmpty",
             validWhen: false,
             message: "Restaurant name required"
-        }, {
+        }, /*{
+            field: "imageID",
+            method: > 0,
+            validWhen: true,
+            message: "Only alphabetic countries are allowed."
+        }, */{
             field: "address",
             method: "isEmpty",
             validWhen: false,
@@ -71,7 +76,12 @@ class EditRestaurantModal extends Component {
             method: "isEmpty",
             validWhen: false,
             message: "Country name required"
-        }]);
+        }, /*{
+            field: "country",
+            method: "isAlpha",
+            validWhen: true,
+            message: "Only alphabetic countries are allowed."
+        }*/]);
 
         //</editor-fold>
 

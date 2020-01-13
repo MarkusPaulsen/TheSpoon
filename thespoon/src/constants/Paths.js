@@ -1,7 +1,7 @@
 // noinspection JSLint
 export const paths = {
     restApi: {
-        restaurantOwner:                "/api/user/owner",
+        restaurantOwner:                "​/api​/user​/owner",
         tag:                            "/api/user/owner/tag",
         registrationRestaurantOwner:    "/api/user/owner/register",
         password:                       "/api/user/owner/password",
