@@ -13,6 +13,8 @@ export const paths = {
         login:                          "/api/user/login",
         loginConsultant:                "api/consultant/login",
         image:                          "/api/image"
+        image:                          "/api/image",
+        statistics:                     "/api/consultant/statistics"
     },
     openStreetMap: {
         search:                         "https://nominatim.openstreetmap.org/search"

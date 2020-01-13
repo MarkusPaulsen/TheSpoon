@@ -54,7 +54,7 @@ class HomePage extends Component {
 
     //<editor-fold desc="Render">
     render() {
-        if (this.state.token == null
+        /*if (this.state.token == null
             || this.state.token === "null"
             || this.state.user == null
             || this.state.user === "null") {
@@ -103,7 +103,10 @@ class HomePage extends Component {
                         <Redirect to={{pathname: "/ThisShouldNotHaveHappened"}}/>
                     );
             }
-        }
+        }*/
+        return (
+            <Redirect to={{pathname: "/Consultant"}}/>
+        )
     }
 
     //</editor-fold>
