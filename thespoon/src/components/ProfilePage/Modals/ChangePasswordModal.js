@@ -214,7 +214,7 @@ class ChangePasswordModal extends Component {
                                 Change Password
                             </h2>
 
-                            <div className="input-field">
+                            <div className="input-field old-password">
                                 <IconPassword/>
                                 <Input
                                     type="password"
