@@ -20,6 +20,7 @@ import FormValidator from "../../validation/FormValidator";
 //</editor-fold>
 
 //<editor-fold desc="Constants">
+import {roles} from "../../constants/Roles";
 import {paths} from "../../constants/Paths";
 import {modals} from "../../constants/Modals";
 import {timeouts} from "../../constants/Timeouts";
@@ -70,6 +71,35 @@ class ConsultantRegisterModal extends Component {
             validWhen: true,
             message: "Username is required to be longer or equal 5 characters."
         }, {
+            field: "name",
+            method: "isEmpty",
+            validWhen: false,
+            message: "Name is required."
+        }, {
+            field: "name",
+            method: (name) => {
+                return name.length >= 1
+            },
+            validWhen: true,
+            message: "Name is required to be longer or equal 1 characters."
+        }, {
+            field: "surname",
+            method: "isEmpty",
+            validWhen: false,
+            message: "Surname is required."
+        }, {
+            field: "surname",
+            method: (surname) => {
+                return surname.length >= 1
+            },
+            validWhen: true,
+            message: "Surname is required to be longer or equal 1 characters."
+        }, {
+            field: "companySecret",
+            method: "isEmpty",
+            validWhen: false,
+            message: "Company secret key is required."
+        },{
             field: "password",
             method: "isEmpty",
             validWhen: false,
@@ -117,6 +147,9 @@ class ConsultantRegisterModal extends Component {
             //<editor-fold desc="Register States">
             email: "",
             username: "",
+            name: "",
+            surname: "",
+            companySecret: "",
             password: "",
             confirmPassword: ""
 
@@ -132,12 +165,15 @@ class ConsultantRegisterModal extends Component {
         const thisTemp = this;
         of(1)
             .pipe(map(() => {
-                return thisTemp.form.getValues()
+                return thisTemp.form.getValues();
             }))
             .pipe(exhaustMap((values) => {
                 return bindCallback(thisTemp.setState).call(thisTemp, {
                     email: values.email,
                     username: values.username,
+                    name: values.name,
+                    surname: values.surname,
+                    companySecret: values.companySecret,
                     password: values.password,
                     confirmPassword: values.confirmPassword
                 });
@@ -153,12 +189,15 @@ class ConsultantRegisterModal extends Component {
                 if (thisTemp.state.validation.isValid) {
                     thisTemp.setState({serverMessage: "Registration is processing"});
                     return ajax({
-                        url: paths["restApi"]["registrationCustomer"],
+                        url: paths["restApi"]["registrationConsultant"],
                         method: "POST",
                         headers: {"Content-Type": "application/json"},
                         body: {
-                            email: thisTemp.state.email,
                             username: thisTemp.state.username,
+                            name: thisTemp.state.name,
+                            surname: thisTemp.state.surname,
+                            email: thisTemp.state.email,
+                            companySecret: thisTemp.state.email,
                             password: thisTemp.state.password
                         },
                         timeout: timeouts,
@@ -177,9 +216,8 @@ class ConsultantRegisterModal extends Component {
                 (next) => {
                     let response = JSON.parse(next.response);
                     window.localStorage.setItem("token", response.token);
-                    window.localStorage.setItem("user", "Customer");
+                    window.localStorage.setItem("user", roles["CONSULTANT"]);
                     thisTemp.props._backgroundPage.update();
-                    thisTemp.props.onHide();
                 }, (error) => {
                     switch (error.name) {
                         case "AjaxTimeoutError":
@@ -200,7 +238,6 @@ class ConsultantRegisterModal extends Component {
                     }
                 }
             );
-
     };
     //</editor-fold>
 
@@ -273,6 +310,47 @@ class ConsultantRegisterModal extends Component {
                                 </small>
                             </div>
 
+                            <div className="input-field name">
+                                <IconName/>
+                                <Input
+                                    type="text"
+                                    name="name"
+                                    placeholder="First name"
+                                    required
+                                />
+                                <Input
+                                    type="text"
+                                    name="surname"
+                                    placeholder="Surname"
+                                    required
+                                />
+                            </div>
+                            <div className="error-block">
+                                <small>
+                                    {validation.name.message}
+                                </small>
+                                <small>
+                                    {validation.surname.message}
+                                </small>
+                            </div>
+
+                            <div className="input-field">
+                                <IconPassword/>
+                                <Input
+                                    type="password"
+                                    pattern=".{5,}"
+                                    title="Company secret key must contain at least 5 letters."
+                                    name="companySecret"
+                                    placeholder="Company secret key"
+                                    required
+                                />
+                            </div>
+                            <div className="error-block">
+                                <small>
+                                    {validation.password.message}
+                                </small>
+                            </div>
+
                             <div className="input-field">
                                 <IconPassword/>
                                 <Input
@@ -321,6 +399,16 @@ class ConsultantRegisterModal extends Component {
                             </div>
 
                         </Form>
+                        <div className="link-wrapper">
+                            <small>
+                                Already have an account?
+                                <FilterLink
+                                    modal={modals.SHOW_LOGIN_CONSULTANT}
+                                >
+                                    Log in
+                                </FilterLink>
+                            </small>
+                        </div>
                     </div>
                 </Modal.Body>
             );
@@ -331,7 +419,6 @@ class ConsultantRegisterModal extends Component {
     }
 
     //</editor-fold>
-
 }
 
 //<editor-fold desc="Redux">

@@ -9,7 +9,9 @@ export const paths = {
         menu:                           "/api/user/owner/restaurant/menu",
         review:                         "/api/user/owner/restaurant/review",
         registrationCustomer:           "/api/user/customer/register",
+        registrationConsultant:         "​/api​/consultant​/register",
         login:                          "/api/user/login",
+        loginConsultant:                "/api/consultant/login",
         image:                          "/api/image"
     },
     openStreetMap: {

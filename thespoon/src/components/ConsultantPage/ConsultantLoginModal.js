@@ -36,7 +36,7 @@ import {IconExit, IconName, IconPassword} from "../Icons";
 //</editor-fold>
 
 
-class LogInModal extends Component {
+class ConsultantLoginModal extends Component {
 
     //<editor-fold desc="Constructor">
     constructor(props) {
@@ -109,13 +109,12 @@ class LogInModal extends Component {
                 if (thisTemp.state.validation.isValid) {
                     thisTemp.setState({serverMessage: "Login is processing"});
                     return ajax({
-                        url: paths["restApi"]["login"],
+                        url: paths["restApi"]["loginConsultant"],
                         method: "POST",
                         headers: {"Content-Type": "application/json"},
                         body: {
                             username: thisTemp.state.username,
                             password: thisTemp.state.password,
-                            isRestaurantOwner: true,
                         },
                         timeout: timeouts,
                         responseType: "text"
@@ -135,7 +134,7 @@ class LogInModal extends Component {
                 (next) => {
                     let response = JSON.parse(next.response);
                     window.localStorage.setItem("token", response.token);
-                    window.localStorage.setItem("user", roles["RESTAURANT_OWNER"]);
+                    window.localStorage.setItem("user", roles["CONSULTANT"]);
                     thisTemp.props._backgroundPage.update();
                     thisTemp.props.onHide();
                 }, (error) => {
@@ -230,7 +229,7 @@ class LogInModal extends Component {
                             <small>
                                 Don't have an account?
                                 <FilterLink
-                                    modal={modals.SHOW_REGISTER_RESTAURANT_OWNER}
+                                    modal={modals.SHOW_REGISTER_CONSULTANT}
                                 >
                                     Register now
                                 </FilterLink>
@@ -257,6 +256,6 @@ const mapStateToProps = (state) => {
     };
 };
 
-export default connect(mapStateToProps, null)(LogInModal);
+export default connect(mapStateToProps, null)(ConsultantLoginModal);
 
 //</editor-fold>
