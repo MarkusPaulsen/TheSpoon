@@ -66,16 +66,11 @@ class CustomerMainPage extends Component {
                 case roles["CUSTOMER"]:
                     //<editor-fold desc="Render Customer">
                     return (
-                        <div className="mainpage-banner">
-                            <div className="mainpage-text">
-                                <div className="container">
-                                    <div className="row">
-                                        <div className="col-sm-8">
-                                            <h1 className="title">Hello Customer</h1>
-                                            <label>You can now log in on you mobile app.</label>
-                                        </div>
-                                    </div>
-                                </div>
+                        <div className="mainpage-banner customer">
+                            <div className="container">
+                                <h1 className="title">Hello Customer</h1>
+                                <label>You can now log in on you mobile app.</label>
+                                <img src="/images/qr-code.png"/>
                             </div>
                         </div>
                     );
