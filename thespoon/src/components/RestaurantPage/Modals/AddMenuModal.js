@@ -315,7 +315,7 @@ class AddMenuModal extends Component {
                     >
                         <IconExit/>
                     </button>
-                    <div className="modal-wrapper add-menu">
+                    <div className="modal-wrapper add-menu restaurant-modal">
                         <Form
                             ref={(c) => {
                                 this.form = c;

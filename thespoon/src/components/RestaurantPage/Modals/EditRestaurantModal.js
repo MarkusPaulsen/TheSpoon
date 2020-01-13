@@ -532,7 +532,7 @@ class EditRestaurantModal extends Component {
                     >
                         <IconExit/>
                     </button>
-                    <div className="modal-wrapper edit-restaurant">
+                    <div className="modal-wrapper restaurant-modal">
                         <Form
                             ref={(c) => {
                                 this.form = c;

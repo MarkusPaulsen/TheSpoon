@@ -478,7 +478,7 @@ class AddMenuItemModal extends Component {
                     >
                         <IconExit/>
                     </button>
-                    <div className="modal-wrapper restaurant-info">
+                    <div className="modal-wrapper restaurant-info restaurant-modal">
                         <Form
                             ref={(c) => {
                                 this.form = c;
