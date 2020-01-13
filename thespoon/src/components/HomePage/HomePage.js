@@ -96,7 +96,7 @@ class HomePage extends Component {
                     );
                 case roles["CONSULTANT"]:
                     return (
-                        <Redirect to={{pathname: "/Consultant"}}/>
+                        <Redirect to={{pathname: "/ConsultantDashboard"}}/>
                     );
                 default:
                     return (

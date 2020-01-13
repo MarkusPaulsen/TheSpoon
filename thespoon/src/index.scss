@@ -83,7 +83,7 @@ h1, h2, h3, h4, h5 {
 
 a {
   //color: var(--turquoise);
-  color: #d501ff;// for test
+  color: var(--grey);// for test
   text-decoration: none;
   &:hover  {
     color: var(--turquoise);
