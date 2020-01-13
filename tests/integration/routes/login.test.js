@@ -24,24 +24,25 @@ describe('/api/user/login', () => {
     });
 
     //close the db connection after all the tests
-    afterAll (() => {
-        db.close();
+    afterAll (async done => {
+        await db.close();
+        done();
     });
 
     describe('POST /', () => {
 
         //it should return a 201 because the data sent are related to a valid user
-        it('should return a 201', async () => {
+        it('should return a 201', async (done) => {
 
             //first of all, create the user in the database
             const salt = await bcrypt.genSalt(10);
             const hashed = await bcrypt.hash("123456", salt);
 
             await Owner.create({
-                Username: "xXEmilioXx",
+                Username: "xXEmilioXx_login",
                 Name: "Emilio",
                 Surname: "Imperiali",
-                Email: "emilio@mail.com",
+                Email: "emilio_login@mail.com",
                 Password: hashed
             });
 
@@ -49,7 +50,7 @@ describe('/api/user/login', () => {
             const exec = async () => {
                 return await request(app)
                     .post('/api/user/login')
-                    .send({username: "xXEmilioXx", password: "123456", isRestaurantOwner: true})
+                    .send({username: "xXEmilioXx_login", password: "123456", isRestaurantOwner: true})
             };
 
             const res = await exec();
@@ -57,11 +58,12 @@ describe('/api/user/login', () => {
             //remove the previously created user from the database
             await Owner.destroy({
                 where: {
-                    Username: "xXEmilioXx"
+                    Username: "xXEmilioXx_login"
                 }
             });
 
             expect(res.status).toBe(201);
+            done();
         })
 
 

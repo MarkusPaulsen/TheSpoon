@@ -34,8 +34,9 @@ describe('/api/user/customer/review', () => {
     });
 
     //close the db connection after all the tests
-    afterAll (() => {
-        db.close();
+    afterAll (async done => {
+        await db.close();
+        done();
     });
 
     //test "get all reviews of the customer"
@@ -47,12 +48,13 @@ describe('/api/user/customer/review', () => {
                 .set('x-auth-token', token)
         };
 
-        it('should return 200', async () => {
+        it('should return 200', async (done) => {
             await setDatabase();
 
             const res = await exec();
             await destroyEverything();
             expect(res.status).toBe(200);
+            done();
         })
     });
 
@@ -65,12 +67,13 @@ describe('/api/user/customer/review', () => {
                 .set('x-auth-token', token)
         };
 
-        it('should return 200', async () => {
+        it('should return 200', async (done) => {
             await setDatabase();
 
             const res = await exec(menuReviewID);
             await destroyEverything();
             expect(res.status).toBe(200);
+            done();
         })
     });
 });

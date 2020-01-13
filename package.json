@@ -4,7 +4,7 @@
   "description": "The server application of the project",
   "main": "server.js",
   "scripts": {
-    "test": "jest --verbose --runInBand --detectOpenHandles",
+    "test": "jest --verbose --runInBand",
     "start": "pm2-runtime start ecosystem.config.js --env production",
     "heroku-postbuild": "cd thespoon && npm install --only=dev && npm install && npm run build"
   },
