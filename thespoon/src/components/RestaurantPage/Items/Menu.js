@@ -33,13 +33,11 @@ class Menu extends Component {
                 <h4 className="title">{this.props.name}</h4>
                 <div className="description">{this.props.description}</div>
                 <div className="tags">
-                    {this.props.tags && this.props.tags.map((tag) => {
-                        return (
-                            <div className="tag" key={tag.color}>
-                                {tag.name}
-                            </div>
-                        );
-                    })}
+                    {this.props.tags && this.props.tags.map((tag) =>
+                        <div className="tag" style={{backgroundColor: tag.color}}>
+                            {tag.name}
+                        </div>
+                    )}
                 </div>
                 <div className="modal-button">
                     <FilterLink
