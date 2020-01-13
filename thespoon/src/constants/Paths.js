@@ -10,7 +10,8 @@ export const paths = {
         review:                         "/api/user/owner/restaurant/review",
         registrationCustomer:           "/api/user/customer/register",
         login:                          "/api/user/login",
-        image:                          "/api/image"
+        image:                          "/api/image",
+        statistics:                     "/api/consultant/statistics"
     },
     openStreetMap: {
         search:                         "https://nominatim.openstreetmap.org/search"
