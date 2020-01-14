@@ -83,7 +83,7 @@ h1, h2, h3, h4, h5 {
 
 a {
   //color: var(--turquoise);
-  color: #d501ff;// for test
+  color: var(--grey);// for test
   text-decoration: none;
   &:hover  {
     color: var(--turquoise);
@@ -310,6 +310,12 @@ header {
 
     button {
       font-size: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    p:hover {
+      text-decoration: underline;
+      cursor: pointer;
     }
   }
 
@@ -355,6 +361,9 @@ header {
           transform: translateY(-50%);
         }
       }
+    }
+    #mainnav-toggle {
+      display: none;
     }
   }
   @include media-breakpoint-down(md) {
@@ -1309,6 +1318,31 @@ header {
           cursor: pointer;
         }
       }
+    }
+  }
+}
+
+/* CONSULTANT PAGE */
+
+.consultant {
+  .title {
+    margin-bottom: 3rem;
+  }
+  .stat {
+    font-weight: 500;
+    font-size: .75rem;
+  }
+
+  h5 {
+    margin: 3rem 0 .5rem;
+    font-size: .75rem;
+  }
+
+  table {
+    background: var(--white);
+    th, td {
+      font-size: .65rem;
+      padding: .5rem;
     }
   }
 }

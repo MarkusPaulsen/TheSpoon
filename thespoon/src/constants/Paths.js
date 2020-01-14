@@ -9,8 +9,11 @@ export const paths = {
         menu:                           "/api/user/owner/restaurant/menu",
         review:                         "/api/user/owner/restaurant/review",
         registrationCustomer:           "/api/user/customer/register",
+        registrationConsultant:         "api/consultant/register",
         login:                          "/api/user/login",
-        image:                          "/api/image"
+        loginConsultant:                "api/consultant/login",
+        image:                          "/api/image",
+        statistics:                     "/api/consultant/statistics"
     },
     openStreetMap: {
         search:                         "https://nominatim.openstreetmap.org/search"

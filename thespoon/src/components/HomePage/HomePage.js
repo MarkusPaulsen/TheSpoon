@@ -1,6 +1,6 @@
 //<editor-fold desc="React">
 import React, {Component} from "react";
-import {Redirect} from "react-router-dom";
+import {Redirect, Link} from "react-router-dom";
 //</editor-fold>
 //<editor-fold desc="Redux">
 import {connect} from "react-redux";
@@ -75,6 +75,11 @@ class HomePage extends Component {
                                                 Get started
                                             </FilterLink>
                                         </button>
+                                        <p><FilterLink
+                                            modal={modals.SHOW_CHOOSE_CONSULTANT}
+                                        >
+                                           Are you a consultant?
+                                        </FilterLink></p>
                                     </div>
                                 </div>
                             </div>
