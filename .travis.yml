@@ -1,0 +1,20 @@
+language: node_js
+node_js:
+  - "13"
+cache:
+  directories:
+    - $HOME/node_modules
+env:
+  global:
+    - theSpoon_jwtPrivateKey=mySecureKey
+branches:
+  only:
+    - dev
+    - master
+notifications:
+  slack: dsd2019thespoon:7SFtEzMgqGVWfBxAIPayUXa7
+  on_success: never
+  on_failure: always
+script:
+  - npm test
+  - cd mobileApp && npm install && npm test

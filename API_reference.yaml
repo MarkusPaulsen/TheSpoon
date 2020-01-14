@@ -1,0 +1,2303 @@
+swagger: "2.0"
+info:
+  description: "This is the API reference of The Spoon project.\n \n VERSIONING: The version number works in this way: it's composed of two numbers separated by a point. The first number identifies the Sprint, so for example the version 2.1 of the API reference is related to the Sprint number 2. The second number starts from 0 and has to be increased by one each time the file is modified. The person who modifies this document is responsible for increasing the number.\n \n GROUPING OF ENDPOINTS: The endpoints are grouped by dividing them into customers' operations and owners' operations. All the endpoints that are not strictly related to customers nor owners remain inside the default group.\n \n AUTHENTICATION/AUTHORIZATION: The json web token returned when the login is performed is supposed to be put into x-auth-token header in the endpoints that require authorization"
+  version: "8.2"
+  title: "The Spoon API reference"
+tags:
+  - name: "customer"
+    description: "Operations about customers"
+  - name: "owner"
+    description: "Operations about owners"
+  - name: "consultant"
+    description: "Operations about consultants"
+paths:
+  /api/user/customer/register:
+    post:
+      tags:
+        - "customer"
+      summary: "Creates customer"
+      description: "Creates a new customer profile. This endpoint is used only for customer registration.\n The endpoint, if the registration succeeds, returns the username of the account as a confirmation."
+      operationId: "createCustomer"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Customer that needs to register"
+          required: true
+          schema:
+            $ref: "#/definitions/Customer"
+      responses:
+        201:
+          description: "Customer registered"
+          schema:
+            $ref: "#/definitions/UsernameAndToken"
+        400:
+          description: "A string describing the error. Could be for example 'Username or email already taken.' or 'Invalid input.'"
+          schema:
+            type: "string"
+            example: "Username or email already taken."
+        500:
+          description: "Internal server error"
+          schema:
+            type: "string"
+            example: "Internal server error."
+  /api/user/owner/register:
+    post:
+      tags:
+        - "owner"
+      summary: "Creates restaurant owner"
+      description: "Creates a new restaurant owner profile. This endpoint is used only for restaurant owner registration.\n The endpoint, if the registration succeeds, returns the username of the account as a confirmation."
+      operationId: "createOwner"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Restaurant owner that needs to register"
+          required: true
+          schema:
+            $ref: "#/definitions/Owner"
+      responses:
+        201:
+          description: "Restaurant owner registered"
+          schema:
+            $ref: "#/definitions/UsernameAndToken"
+        400:
+          description: "A string describing the error. Could be for example 'Username or email already taken.' or 'Invalid input.'"
+          schema:
+            type: "string"
+            example: "Username or email already taken."
+        500:
+          description: "Internal server error"
+          schema:
+            type: "string"
+            example: "Internal server error."
+  /api/user/login:
+    post:
+      tags:
+        - "generic user"
+      summary: "Logs user into the system"
+      description: "Logs user into the system. This endpoint is used both for restaurant owner and customer login. In order to distinguish them, in the request json there's the flag ''isRestaurantOwner''.\n If the login succeeds, returns the json web token that is supposed to be stored on the frontend application (for example in the local storage of the web browser). Each time the frontend application needs to access an endpoint that requires authentication, that token will be put in the header of the request."
+      operationId: "loginUser"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "User that needs to login"
+          required: true
+          schema:
+            $ref: "#/definitions/UserLogin"
+      responses:
+        201:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/Token"
+        400:
+          description: "A string describing the error. Could be for example 'Invalid username or password.' or 'Invalid input.'"
+          schema:
+            type: "string"
+            example: "Invalid username or password."
+        500:
+          description: "Internal server error"
+          schema:
+            type: "string"
+            example: "Internal server error."
+  /api/user/owner/restaurant:
+    post:
+      tags:
+        - "owner"
+        - "Matej"
+      summary: "Configure data of the restaurant"
+      description: "Save the data of the restaurant given by the owner. Authentication is needed. A 400 will be sent if the owner already sent the data of his restaurant (an owner can't have more than one restaurant).\n One of the parameter to be passed is the imageID, this is the flow:\n 1. The restaurant owner is in the page in which he can input the restaurant data. He will upload the photo of the restaurant while he is writing all the fields of the form.\n 2. The uploading of the photo is done by sending the photo to the /api/image endpoint. While the restaurant owner is still writing the fields of the form, the message to that endpoint is sent and the imageID is received as a response.\n 3. When the restaurant owner finishes writing the fields of the form and click the send button, the photo was actually already been ent in the point 2 and he doesn't have to wait for the upload (if he was fast compiling the form and the upload isn't finished yet, at least he has to wait less because it was already started). The imageID received as a response by the /api/image endpoint will be sent to this endpoint with the data of the form in a json, because the backend needs it in order to associate the json to the previously uploaded photo."
+      operationId: "configureRestaurant"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Restaurant data"
+          required: true
+          schema:
+            $ref: "#/definitions/Restaurant"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/RestaurantID"
+        400:
+          description: "A string describing the error. Could be for example 'Restaurant already existing.' or 'Invalid input.'"
+          schema:
+            type: "string"
+            example: "Restaurant already existing."
+        500:
+          description: "Internal server error"
+          schema:
+            type: "string"
+            example: "Internal server error."
+        401:
+          description: "Access denied"
+          schema:
+            type: "string"
+            example: "Access denied."
+      security:
+        - Bearer: []
+      x-security-scopes:
+        - "owner"
+    get:
+      tags:
+        - "owner"
+        - "Frikk"
+      summary: "Get data of own restaurant"
+      description: "Get the data of the restaurant of authenticated owner, so that it can be showed in the 'Your Restaurant' page."
+      operationId: "getRestaurant"
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: '#/definitions/RestaurantReceived'
+        500:
+          description: "Internal server error"
+          schema:
+            type: "string"
+            example: "Internal server error."
+        401:
+          description: "Access denied"
+          schema:
+            type: "string"
+            example: "Access denied."
+      security:
+        - Bearer: []
+      x-security-scopes:
+        - "owner"
+    put:
+      tags:
+        - "owner"
+        - "Emilio"
+      summary: "Edit restaurant's information"
+      description: "Edit the information of the restaurant. It's needed that the restaurant already exists, otherwise a 404 error will be sent. The POST endpoint should be used to create it."
+      operationId: "editRestaurant"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Restaurant data"
+          required: true
+          schema:
+            $ref: "#/definitions/Restaurant"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/RestaurantID"
+        404:
+          description: "No restaurant associated to this account found"
+          schema:
+            type: "string"
+            example: "No restaurant associated to this account found."
+        400:
+          description: "A string describing the error. Could be for example 'Invalid input.'"
+          schema:
+            type: "string"
+            example: "Invalid input."
+        500:
+          description: "Internal server error"
+          schema:
+            type: "string"
+            example: "Internal server error."
+        401:
+          description: "Access denied"
+          schema:
+            type: "string"
+            example: "Access denied."
+      security:
+        - Bearer: []
+      x-security-scopes:
+        - "owner"
+  /api/user/owner/restaurant/menu:
+    post:
+      tags:
+        - "owner"
+        - "Emilio"
+      summary: "Add an empty menu to a restaurant"
+      description: "Add a menu to a restaurant of a restaurant owner, which needs to be logged in. The menuItems are not meant to be added to the menu through this endpoint. The tags of the menu must be valid, otherwise a 400 error will be sent. It's needed that the restaurant already exists, otherwise a 404 error will be sent."
+      operationId: "addMenu"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Menu data"
+          required: true
+          schema:
+            $ref: "#/definitions/MenuWithoutItems"
+      responses:
+        201:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/MenuID"
+        404:
+          description: "No restaurant associated to this account found"
+          schema:
+            type: "string"
+            example: "No restaurant associated to this account found."
+        400:
+          description: "A string describing the error. Could be for example 'One or more tags are not valid.' or 'Invalid input.'"
+          schema:
+            type: "string"
+            example: "One or more tags are not valid."
+        500:
+          description: "Internal server error"
+          schema:
+            type: "string"
+            example: "Internal server error."
+        401:
+          description: "Access denied"
+          schema:
+            type: "string"
+            example: "Access denied."
+      security:
+        - Bearer: []
+      x-security-scopes:
+        - "owner"
+    get:
+      tags:
+        - "owner"
+        - "Frikk"
+      summary: "Return all the menus of the restaurant"
+      description: "Return all the menus of the restaurant. Since authentication is required, the backend is able to get which restaurant is involved from the authentication token. It's needed that the restaurant already exists, otherwise a 404 error will be sent."
+      operationId: "getOwnMenus"
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/MenuCompleteWithID"
+        404:
+          description: "No restaurant associated to this account found"
+          schema:
+            type: "string"
+            example: "No restaurant associated to this account found."
+        500:
+          description: "Internal server error"
+          schema:
+            type: "string"
+            example: "Internal server error."
+        401:
+          description: "Access denied"
+          schema:
+            type: "string"
+            example: "Access denied."
+      security:
+        - Bearer: []
+      x-security-scopes:
+        - "owner"
+  /api/user/owner/restaurant/menu/{menuID}:
+    put:
+      tags:
+        - "owner"
+        - "Emilio"
+      summary: "Edit a menu's information (not its items)"
+      description: "Edit a given menu (but not its menuItems). To identify the menu, the menuID needs to be given. Authentication is required. The tags of the menu must be valid, otherwise a 400 error will be sent. It's needed that the restaurant already exists, otherwise a 404 error will be sent."
+      operationId: "editMenu"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "menuID"
+          in: "path"
+          description: "ID of the menu to be edited"
+          required: true
+          type: "integer"
+        - name: "body"
+          in: "body"
+          description: "Data of the menu to be saved"
+          required: true
+          schema:
+            $ref: "#/definitions/MenuWithoutItems"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/MenuID"
+        404:
+          description: "Menu not found/No restaurant associated to this account found"
+          schema:
+            type: "string"
+            example: "Menu not found."
+        400:
+          description: "A string describing the error. Could be for example 'One or more tags are not valid.' or 'Invalid input.'"
+          schema:
+            type: "string"
+            example: "One or more tags are not valid."
+        500:
+          description: "Internal server error"
+          schema:
+            type: "string"
+            example: "Internal server error."
+        401:
+          description: "Access denied"
+          schema:
+            type: "string"
+            example: "Access denied."
+      security:
+        - Bearer: []
+      x-security-scopes:
+        - "owner"
+    delete:
+      tags:
+        - "owner"
+        - "Emilio"
+      summary: "Delete a menu"
+      description: "Delete a menu of the restaurant. Authentication is required. It's needed that the restaurant already exists, otherwise a 404 error will be sent."
+      operationId: "deleteMenu"
+      parameters:
+        - name: "menuID"
+          in: "path"
+          description: "ID of the menu to be edited"
+          required: true
+          type: "integer"
+      responses:
+        200:
+          description: "Successful operation"
+        404:
+          description: "Menu not found/No restaurant associated to this account found"
+          schema:
+            type: "string"
+            example: "Menu not found."
+        400:
+          description: "A string describing the error. Could be for example 'Invalid input.'"
+          schema:
+            type: "string"
+            example: "Invalid input."
+        500:
+          description: "Internal server error"
+          schema:
+            type: "string"
+            example: "Internal server error."
+        401:
+          description: "Access denied"
+          schema:
+            type: "string"
+            example: "Access denied."
+      security:
+        - Bearer: []
+      x-security-scopes:
+        - "owner"
+
+  /api/user/customer/menu/searchByMenuItem:
+    get:
+      tags:
+        - "customer"
+        - "Frikk"
+      summary: "Search by menu item"
+      description: "Returns all the menus with given menu item (dish/drink) with menuID. It also returns the names of the associated restaurants with restaurantID.\n The menu items inside every menu are not returned. It will be needed to access the endpoint /api/user/customer/menu/{menuID} to get the menu items of a specific menu (the menuID passed can be obtained from the response of this endpoint, since it returns the menuID of every menu).\n The customer can be not logged in, if that is the case then the authentication token must be sent with a null value. The authentication in this endpoint is necessary to collect the search done by the customer and use it to collect statistics."
+      operationId: "searchByMenuItem"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "menuItemName"
+          in: "query"
+          description: "Name of the desired menu item"
+          required: true
+          type: "string"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/MenuAndRestaurant"
+        404:
+          description: "No menu item found"
+          schema:
+            type: "string"
+            example: "No matching Menus."
+        400:
+          description: "A string describing the error. Could be for example 'Invalid input.'"
+          schema:
+            type: "string"
+            example: "Invalid input."
+        500:
+          description: "Internal server error"
+          schema:
+            type: "string"
+            example: "Internal server error."
+        401:
+          description: "Access denied"
+          schema:
+            type: "string"
+            example: "Access denied."
+      security:
+        - Bearer: []
+      x-security-scopes:
+        - "customer"
+  /api/user/customer/menu/{menuID}:
+    get:
+      tags:
+        - "customer"
+        - "Frikk"
+      summary: "Return data of a specific menu"
+      description: "Returns all the data about the menu with given menuID, even the menu items inside it. The photos of the menu items are saved in the Amazon s3 storage, so the links to the cloud storage are also returned. The frontend will directly download them from the cloud storage, they won't be sent by the backend with this endpoint."
+      operationId: "getMenuCustomer"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "menuID"
+          in: "path"
+          description: "ID of the menu to be returned"
+          required: true
+          type: "integer"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/MenuRetrievedToCustomer"
+        404:
+          description: "Menu with given menuID not found"
+          schema:
+            type: "string"
+            example: "Menu with given menuID not found."
+        400:
+          description: "A string describing the error. Could be for example 'Invalid input.'"
+          schema:
+            type: "string"
+            example: "Invalid input."
+        500:
+          description: "Internal server error"
+          schema:
+            type: "string"
+            example: "Internal server error."
+  /api/image:
+    post:
+      tags:
+        - "generic user"
+        - "Marin"
+      summary: "Upload an image"
+      description: "This endpoint is used in order to upload EVERY image. For example, when a restaurant owner is registering his restaurant data, he will need to upload an image. Both this endpoint and the dedicated endpoint (POST /api/user/owner/restaurant) will be used. This endpoint to upload the image, the other one to upload all the other textual data (with a json). The images will be stored using Amazon s3. The ID of the image is returned.\n For more information, this is used as a reference:  https://stackoverflow.com/questions/33279153/rest-api-file-ie-images-processing-best-practices \n This endpoint requires authentication: we don't want anyone to update images but only authenticated users."
+      operationId: "uploadImage"
+      consumes:
+        - "image/png"
+        - "image/jpeg"
+      produces:
+        - "application/json"
+      responses:
+        201:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/ImageID"
+        422:
+          description: "Image upload error"
+          schema:
+            type: "string"
+            example: "Image upload error."
+        401:
+          description: "Access denied"
+          schema:
+            type: "string"
+            example: "Access denied."
+      security:
+        - Bearer: []
+      x-security-scopes:
+        - "user"
+  /api/user/owner/restaurant/menu/{menuID}/menuItem:
+    post:
+      tags:
+        - "owner"
+        - "Marin"
+      summary: "Add a menuItem to a menu"
+      description: "Add a menuItem to the menu with given menuID. Authentication required. The tags of the menu item must be valid, otherwise a 400 error will be sent. It's needed that the restaurant already exists, otherwise a 404 error will be sent."
+      operationId: "addMenuItem"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "menuID"
+          in: "path"
+          description: "ID of the menu"
+          required: true
+          type: "integer"
+        - in: "body"
+          name: "body"
+          description: "Menu data"
+          required: true
+          schema:
+            $ref: "#/definitions/MenuItemWithoutColors"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/Menu"
+        404:
+          description: "Menu not found/No restaurant associated to this account found"
+          schema:
+            type: "string"
+            example: "Menu not found."
+        400:
+          description: "A string describing the error. Could be for example 'One or more tags are not valid.' or 'Invalid input.'"
+          schema:
+            type: "string"
+            example: "One or more tags are not valid."
+        500:
+          description: "Internal server error"
+          schema:
+            type: "string"
+            example: "Internal server error."
+        401:
+          description: "Access denied"
+          schema:
+            type: "string"
+            example: "Access denied."
+      security:
+        - Bearer: []
+      x-security-scopes:
+        - "owner"
+  /api/user/owner/restaurant/menu/{menuID}/menuItem/{menuItemID}:
+    put:
+      tags:
+        - "owner"
+        - "Marin"
+      summary: "Edit a menuItem"
+      description: "Edit the menuItem with given menuItemID of the menu with given menuID. Authentication required. The tags of the menu item must be valid, otherwise a 400 error will be sent. It's needed that the restaurant already exists, otherwise a 404 error will be sent."
+      operationId: "editMenuItem"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "menuID"
+          in: "path"
+          description: "ID of the menu"
+          required: true
+          type: "integer"
+        - name: "menuItemID"
+          in: "path"
+          description: "ID of the menuItem"
+          required: true
+          type: "integer"
+        - name: "body"
+          in: "body"
+          description: "Data of the menuItem"
+          required: true
+          schema:
+            $ref: "#/definitions/MenuItemWithoutColors"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/Menu"
+        404:
+          description: "Menu not found/Menu item not found/No restaurant associated to this account found"
+          schema:
+            type: "string"
+            example: "Menu item not found."
+        400:
+          description: "A string describing the error. Could be for example 'One or more tags are not valid.' or 'Invalid input.'"
+          schema:
+            type: "string"
+            example: "One or more tags are not valid."
+        500:
+          description: "Internal server error"
+          schema:
+            type: "string"
+            example: "Internal server error."
+        401:
+          description: "Access denied"
+          schema:
+            type: "string"
+            example: "Access denied."
+      security:
+        - Bearer: []
+      x-security-scopes:
+        - "owner"
+    delete:
+      tags:
+        - "owner"
+        - "Marin"
+      summary: "Delete a menuItem"
+      description: "Delete the menuItem with given menuItemID of the menu with given menuID. Authentication required. It's needed that the restaurant already exists, otherwise a 404 error will be sent."
+      operationId: "deleteMenuItem"
+      parameters:
+        - name: "menuID"
+          in: "path"
+          description: "ID of the menu"
+          required: true
+          type: "integer"
+        - name: "menuItemID"
+          in: "path"
+          description: "ID of the menuItem"
+          required: true
+          type: "integer"
+      responses:
+        200:
+          description: "Successful operation"
+        404:
+          description: "Menu not found/Menu item not found/No restaurant associated to this account found"
+          schema:
+            type: "string"
+            example: "Menu item not found."
+        400:
+          description: "A string describing the error. Could be for example 'Invalid input.'"
+          schema:
+            type: "string"
+            example: "Invalid input."
+        500:
+          description: "Internal server error"
+          schema:
+            type: "string"
+            example: "Internal server error."
+        401:
+          description: "Access denied"
+          schema:
+            type: "string"
+            example: "Access denied."
+      security:
+        - Bearer: []
+      x-security-scopes:
+        - "owner"
+  /api/user/customer/review/restaurant:
+    get:
+      tags:
+        - "customer"
+        - "Emilio"
+      summary: "Return all the restaurants"
+      description: "Return all the names of the restaurants and their restaurantIDs. Only the restaurants that actually contain menus are actually sent, because a menu has to be reviewed, so it wouldn't make sense to send restaurant with no menus. Moreover, at least one menu of the restaurant must have at least one menu item inside.\n In case no restaurant is found, an empty array is sent (with code 200, not 404)."
+      operationId: "getRestaurants"
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/RestaurantIDAndName"
+        500:
+          description: "Internal server error"
+          schema:
+            type: "string"
+            example: "Internal server error."
+        401:
+          description: "Access denied"
+          schema:
+            type: "string"
+            example: "Access denied."
+      security:
+        - Bearer: []
+      x-security-scopes:
+        - "customer"
+  /api/user/customer/review/restaurant/{restaurantID}/menu:
+    get:
+      tags:
+        - "customer"
+        - "Emilio"
+      summary: "Return all the menus of given restaurant"
+      description: "Return all the names of the menus of the restaurant and their menuIDs. Only menus that contain at least one menu item are actually sent.\n In case no menu is found, an empty array is sent (with code 200, not 404). "
+      operationId: "getMenusOfRestaurant"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "restaurantID"
+          in: "path"
+          description: "ID of the restaurant"
+          required: true
+          type: "integer"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/MenuIDAndName"
+        404:
+          description: "Restaurant with given restaurantID not found"
+          schema:
+            type: "string"
+            example: "Restaurant with given restaurantID not found."
+        400:
+          description: "A string describing the error. Could be for example 'Invalid input.'"
+          schema:
+            type: "string"
+            example: "Invalid input."
+        500:
+          description: "Internal server error"
+          schema:
+            type: "string"
+            example: "Internal server error."
+        401:
+          description: "Access denied"
+          schema:
+            type: "string"
+            example: "Access denied."
+      security:
+        - Bearer: []
+      x-security-scopes:
+        - "customer"
+  /api/user/customer/review/restaurant/menu/{menuID}/menuItem:
+    get:
+      tags:
+        - "customer"
+        - "Emilio"
+      summary: "Return all the menu items of given menu"
+      description: "Return all the menu items of given menu.\n In case no menu item is found, an empty array is sent (with code 200, not 404)."
+      operationId: "getItemsOfMenu"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "menuID"
+          in: "path"
+          description: "ID of the menu"
+          required: true
+          type: "integer"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/MenuItemIDAndName"
+        404:
+          description: "Menu with given menuID not found"
+          schema:
+            type: "string"
+            example: "Menu with given menuID not found."
+        400:
+          description: "A string describing the error. Could be for example 'Invalid input.'"
+          schema:
+            type: "string"
+            example: "Invalid input."
+        500:
+          description: "Internal server error"
+          schema:
+            type: "string"
+            example: "Internal server error."
+        401:
+          description: "Access denied"
+          schema:
+            type: "string"
+            example: "Access denied."
+      security:
+        - Bearer: []
+      x-security-scopes:
+        - "customer"
+  /api/user/customer/review/restaurant/menu/{menuID}:
+    post:
+      tags:
+        - "customer"
+        - "Marin"
+      summary: "Submit a review of the menu"
+      description: "Submit a review of the menu with given menuID. The receiptImageID is obtained by the frontend when the photo of the receipt is uploaded through the dedicated endpoint."
+      operationId: "submitReview"
+      consumes:
+        - "application/json"
+      parameters:
+        - name: "menuID"
+          in: "path"
+          description: "ID of the menu"
+          required: true
+          type: "integer"
+        - name: "body"
+          in: "body"
+          description: "Review"
+          required: true
+          schema:
+            $ref: "#/definitions/MenuReview"
+      responses:
+        201:
+          description: "Successful operation"
+        404:
+          description: "Menu with given menuID not found"
+          schema:
+            type: "string"
+            example: "Menu with given menuID not found."
+        400:
+          description: "A string describing the error. Could be for example 'Invalid input.'"
+          schema:
+            type: "string"
+            example: "Invalid input."
+        500:
+          description: "Internal server error"
+          schema:
+            type: "string"
+            example: "Internal server error."
+        401:
+          description: "Access denied"
+          schema:
+            type: "string"
+            example: "Access denied."
+      security:
+        - Bearer: []
+      x-security-scopes:
+        - "customer"
+  /api/user/customer/review:
+    get:
+      tags:
+        - "customer"
+        - "Frikk"
+      summary: "Return all the reviews of the customer"
+      description: "Return all the reviews of the customer, with their reviewIDs and their status (accepted/refused/pending). Returns an empty array if no review is found (with code 200, not 404)."
+      operationId: "getOwnReviews"
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/MenuReviewWithIDAndStatus"
+        500:
+          description: "Internal server error"
+          schema:
+            type: "string"
+            example: "Internal server error."
+        401:
+          description: "Access denied"
+          schema:
+            type: "string"
+            example: "Access denied."
+      security:
+        - Bearer: []
+      x-security-scopes:
+        - "customer"
+  /api/user/customer/review/{reviewID}:
+    delete:
+      tags:
+        - "customer"
+        - "Frikk"
+      summary: "Delete a review"
+      description: "Delete the review with the given reviewID. This will also delete the reviews of the menu items associated to the review with given reviewID. The review must belong to the authenticated customer, otherwise a 403 error will be sent."
+      parameters:
+        - name: "reviewID"
+          in: "path"
+          description: "ID of the review"
+          required: true
+          type: "integer"
+      responses:
+        200:
+          description: "Successful operation"
+        404:
+          description: "Review with given reviewID not found"
+          schema:
+            type: "string"
+            example: "Review with given reviewID not found."
+        400:
+          description: "A string describing the error. Could be for example 'Invalid input.'"
+          schema:
+            type: "string"
+            example: "Invalid input."
+        500:
+          description: "Internal server error"
+          schema:
+            type: "string"
+            example: "Internal server error."
+        403:
+          description: "The review doesn't belong to the authenticated customer, so it can't be deleted"
+          schema:
+            type: "string"
+            example: "Forbidden request."
+        401:
+          description: "Access denied"
+          schema:
+            type: "string"
+            example: "Access denied."
+      security:
+        - Bearer: []
+      x-security-scopes:
+        - "customer"
+  /api/user/customer:
+    get:
+      tags:
+        - "customer"
+        - "Marin"
+      summary: "Return profile data of the customer"
+      description: "Return own data of the logged in customer. This endpoint should be used when the frontend has to visualize the profile of the customer."
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/CustomerData"
+        500:
+          description: "Internal server error"
+          schema:
+            type: "string"
+            example: "Internal server error."
+        401:
+          description: "Access denied"
+          schema:
+            type: "string"
+            example: "Access denied."
+      security:
+        - Bearer: []
+      x-security-scopes:
+        - "customer"
+    put:
+      tags:
+        - "customer"
+        - "Frikk"
+      summary: "Edit profile data of the customer"
+      description: "Edit profile data of the logged in customer. All the customer data must be sent with this endpoint, even if it's not changed (in that case the fields must contain the current values). The password can't be changed through this endpoint, but the dedicated one should be used instead.\n Valid values for Gender are 'Male/Female/Other'.\n The username, the name and the surname can't be changed.\n The age is a range, for example '24-34'."
+      consumes:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "New data of the customer"
+          required: true
+          schema:
+            $ref: "#/definitions/CustomerEditData"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/CustomerData"
+        400:
+          description: "A string describing the error. Could be for example 'Invalid input.'"
+          schema:
+            type: "string"
+            example: "Invalid input."
+        500:
+          description: "Internal server error"
+          schema:
+            type: "string"
+            example: "Internal server error."
+        401:
+          description: "Access denied"
+          schema:
+            type: "string"
+            example: "Access denied."
+      security:
+        - Bearer: []
+      x-security-scopes:
+        - "customer"
+    delete:
+      tags:
+        - "customer"
+        - "Frikk"
+      summary: "Delete profile of the customer"
+      description: "Delete profile of the logged in customer."
+      responses:
+        200:
+          description: "Successful operation"
+        500:
+          description: "Internal server error"
+          schema:
+            type: "string"
+            example: "Internal server error."
+        401:
+          description: "Access denied"
+          schema:
+            type: "string"
+            example: "Access denied."
+      security:
+        - Bearer: []
+      x-security-scopes:
+        - "customer"
+  /api/user/owner/restaurant/review:
+    get:
+      tags:
+        - "owner"
+        - "Marin"
+      summary: "Return pending reviews"
+      description: "Return all the pending reviews of the owner's restaurant. Only the image of the receipt is sent (the link to download it from the cloud), together with the name of the reviewed menu and the list of the reviewed menu items.The pending reviews are sent in an array, which will be empty in case there are no pending reviews. With a POST the restaurant owner will approve or disapprove the review.\n If there are no pending reviews, an empty array is sent (with code 200, not 404).\n It's needed that the restaurant already exists, otherwise a 404 error will be sent."
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/PendingReviewWithPhoto"
+        404:
+          description: "No restaurant associated to this account found"
+          schema:
+            type: "string"
+            example: "No restaurant associated to this account found."
+        500:
+          description: "Internal server error"
+          schema:
+            type: "string"
+            example: "Internal server error."
+        401:
+          description: "Access denied"
+          schema:
+            type: "string"
+            example: "Access denied."
+      security:
+        - Bearer: []
+      x-security-scopes:
+        - "owner"
+  /api/user/owner/restaurant/review/{reviewID}:
+    post:
+      tags:
+        - "owner"
+        - "Marin"
+      summary: "Approve or disapprove pending review"
+      description: "Submit the decision of the restaurant owner about the pending review with given reviewID (approved or disapproved). In case of a successful operation, an array containing all the pending reviews is sent, so that the frontend is able to refresh the list (the array sent is like the array sent with the GET endpoint). It's needed that the restaurant already exists, otherwise a 404 error will be sent."
+      consumes:
+        - "application/json"
+      parameters:
+        - name: "reviewID"
+          in: "path"
+          description: "ID of the pending review"
+          required: true
+          type: "integer"
+        - name: "body"
+          in: "body"
+          description: "Submitted status of pending review (approved or disapproved)"
+          required: true
+          schema:
+            $ref: "#/definitions/ApprovalStatus"
+      responses:
+        201:
+          description: "Successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/PendingReview"
+        404:
+          description: "Review with given reviewID not found/No restaurant associated to this account found"
+          schema:
+            type: "string"
+            example: "Review with given reviewID not found."
+        400:
+          description: "A string describing the error. Could be for example 'Invalid input.'"
+          schema:
+            type: "string"
+            example: "Invalid input."
+        500:
+          description: "Internal server error"
+          schema:
+            type: "string"
+            example: "Internal server error."
+        401:
+          description: "Access denied"
+          schema:
+            type: "string"
+            example: "Access denied."
+      security:
+        - Bearer: []
+      x-security-scopes:
+        - "owner"
+  /api/user/customer/menu/{menuID}/menuItem/{menuItemID}/review:
+    get:
+      tags:
+        - "customer"
+        - "Frikk"
+      summary: "Return all the reviews of the menu item"
+      description: "Return all the reviews of the menu item with given menuItemID contained in the menu with given menuID. If there are no reviews, an empty array is sent (with code 200, not 404)."
+      produces:
+        - "application/json"
+      parameters:
+        - name: "menuID"
+          in: "path"
+          description: "ID of the menu"
+          required: true
+          type: "integer"
+        - name: "menuItemID"
+          in: "path"
+          description: "ID of the menu item"
+          required: true
+          type: "integer"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/ReviewsOfMenuItemWithoutOverall"
+        404:
+          description: "Menu not found/Menu item not found"
+          schema:
+            type: "string"
+            example: "Menu item not found."
+        400:
+          description: "A string describing the error. Could be for example 'Invalid input.'"
+          schema:
+            type: "string"
+            example: "Invalid input."
+        500:
+          description: "Internal server error"
+          schema:
+            type: "string"
+            example: "Internal server error."
+  /api/user/owner/tag:
+    get:
+      tags:
+        - "owner"
+        - "Emilio"
+      summary: "Return all the available tags"
+      description: "When a restaurant owner is creating a menu or a menu item, he/she needs to know the list of the available tags. If there are no tags, an empty array is sent (with code 200, not 404)."
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            type: "array"
+            items:
+              type: "string"
+            example: ["Italian", "Dinner"]
+        500:
+          description: "Internal server error"
+          schema:
+            type: "string"
+            example: "Internal server error."
+        401:
+          description: "Access denied"
+          schema:
+            type: "string"
+            example: "Access denied."
+      security:
+        - Bearer: []
+      x-security-scopes:
+        - "owner"
+  /api/user/owner:
+    get:
+      tags:
+        - "owner"
+        - "Emilio"
+      summary: "Return profile data of the owner"
+      description: "Return own data of logged in owner. This endpoint should be used when the frontend has to visualize the profile of the owner."
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/OwnerData"
+        500:
+          description: "Internal server error"
+          schema:
+            type: "string"
+            example: "Internal server error."
+        401:
+          description: "Access denied"
+          schema:
+            type: "string"
+            example: "Access denied."
+      security:
+        - Bearer: []
+      x-security-scopes:
+        - "owner"
+    put:
+      tags:
+        - "owner"
+        - "Emilio"
+      summary: "Edit profile data of the owner"
+      description: "Edit profile data of the logged in owner. The password can't be changed through this endpoint, but the dedicated one should be used instead.\n The username can't be changed."
+      consumes:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "New data of the owner"
+          required: true
+          schema:
+            $ref: "#/definitions/OwnerEditData"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/OwnerData"
+        400:
+          description: "A string describing the error. Could be for example 'Invalid input.'"
+          schema:
+            type: "string"
+            example: "Invalid input."
+        500:
+          description: "Internal server error"
+          schema:
+            type: "string"
+            example: "Internal server error."
+        401:
+          description: "Access denied"
+          schema:
+            type: "string"
+            example: "Access denied."
+      security:
+        - Bearer: []
+      x-security-scopes:
+        - "owner"
+    delete:
+      tags:
+        - "owner"
+        - "Emilio"
+      summary: "Delete profile of the owner"
+      description: "Delete profile of the logged in owner."
+      responses:
+        200:
+          description: "Successful operation"
+        500:
+          description: "Internal server error"
+          schema:
+            type: "string"
+            example: "Internal server error."
+        401:
+          description: "Access denied"
+          schema:
+            type: "string"
+            example: "Access denied."
+      security:
+        - Bearer: []
+      x-security-scopes:
+        - "owner"
+  /api/user/customer/password:
+    put:
+      tags:
+        - "customer"
+        - "Marin"
+      summary: "Change the password of the customer"
+      description: "Change the password of the logged in customer. The current password must be provided, for security reasons. A 400 is sent back if the current password provided doesn't match, and the password change is not performed."
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "New and current passwords"
+          required: true
+          schema:
+            $ref: "#/definitions/PasswordChange"
+      responses:
+        200:
+          description: "Successful operation"
+        400:
+          description: "A string describing the error. Could be for example 'Old password doesn't match.' or 'Invalid input.'"
+          schema:
+            type: "string"
+            example: "Old password doesn't match."
+        500:
+          description: "Internal server error"
+          schema:
+            type: "string"
+            example: "Internal server error."
+        401:
+          description: "Access denied"
+          schema:
+            type: "string"
+            example: "Access denied."
+      security:
+        - Bearer: []
+      x-security-scopes:
+        - "customer"
+  /api/user/owner/password:
+    put:
+      tags:
+        - "owner"
+        - "Emilio"
+      summary: "Change the password of the owner"
+      description: "Change the password of the logged in owner. The current password must be provided, for security reasons. A 400 is sent back if the current password provided doesn't match, and the password change is not performed."
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "New and current passwords"
+          required: true
+          schema:
+            $ref: "#/definitions/PasswordChange"
+      responses:
+        200:
+          description: "Successful operation"
+        400:
+          description: "A string describing the error. Could be for example 'Old password doesn't match.' or 'Invalid input.'"
+          schema:
+            type: "string"
+            example: "Old password doesn't match."
+        500:
+          description: "Internal server error"
+          schema:
+            type: "string"
+            example: "Internal server error."
+        401:
+          description: "Access denied"
+          schema:
+            type: "string"
+            example: "Access denied."
+      security:
+        - Bearer: []
+      x-security-scopes:
+        - "owner"
+  /api/consultant/register:
+    post:
+      tags:
+        - "consultant"
+        - "Marin"
+      summary: "Creates consultant"
+      description: "Creates a new consultant profile. This endpoint is used only for consultant registration. Since the consultant is a special user, it is required that a secret word of the company is sent in order to register, that secred word is stored in the backend as an environment variable.\n The endpoint, if the registration succeeds, returns the username of the account as a confirmation."
+      operationId: "createConsultant"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Consultant that needs to register"
+          required: true
+          schema:
+            $ref: "#/definitions/Consultant"
+      responses:
+        201:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/UsernameAndToken"
+        400:
+          description: "A string describing the error. Could be for example 'Username or email already taken.' or 'Wrong company secret word.' or 'Invalid input.'"
+          schema:
+            type: "string"
+            example: "Wrong company secret word."
+        500:
+          description: "Internal server error"
+          schema:
+            type: "string"
+            example: "Internal server error."
+  /api/consultant/login:
+    post:
+      tags:
+        - "consultant"
+        - "Marin"
+      summary: "Logs consultant into the system"
+      description: "Logs consultant into the system. If the login succeeds, returns the json web token."
+      operationId: "loginConsultant"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Consultant that needs to login"
+          required: true
+          schema:
+            $ref: "#/definitions/ConsultantLogin"
+      responses:
+        201:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/Token"
+        400:
+          description: "A string describing the error. Could be for example 'Invalid username or password.' or 'Invalid input.'"
+          schema:
+            type: "string"
+            example: "Invalid username or password."
+        500:
+          description: "Internal server error"
+          schema:
+            type: "string"
+            example: "Internal server error."
+  /api/consultant/statistics:
+    get:
+      tags:
+        - "consultant"
+        - "Marin"
+      summary: "Return the global statistics"
+      description: "Return the aggregate statistics of ALL the users/restaurants in the application. The consultant must be logged in to access this endpoint (reserved to him). To be more precise, this is what is sent: \n - The total number of registered customers\n - For each nationality, the number of customers\n - For each gender, the number of customers\n - For each age range, the number of customers\n - For each searched word, the number of customers\n - List of all the menu names with their ratings. It will be frontend's duty to sort them and show the top 10 and the bottom 10"
+      operationId: "getStatistics"
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/Statistics"
+        500:
+          description: "Internal server error"
+          schema:
+            type: "string"
+            example: "Internal server error."
+        401:
+          description: "Access denied"
+          schema:
+            type: "string"
+            example: "Access denied."
+      security:
+        - Bearer: []
+      x-security-scopes:
+        - "consultant"
+  /api/consultant/statistics/{nationalityName}:
+    get:
+      tags:
+        - "consultant"
+        - "Marin"
+      summary: "Return statistics of a specific nationality"
+      description: "Return the statistics of the given nationality. The consultant must be logged in to access this endpoint (reserved to him)."
+      operationId: "getStatisticOfNationality"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "nationalityName"
+          in: "path"
+          description: "Nationality"
+          required: true
+          type: "string"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/StatisticsOfNationality"
+        404:
+          description: "Nationality not found"
+          schema:
+            type: "string"
+            example: "Nationality not found."
+        400:
+          description: "A string describing the error. Could be for example 'Invalid input.'"
+          schema:
+            type: "string"
+            example: "Invalid username or password."
+        500:
+          description: "Internal server error"
+          schema:
+            type: "string"
+            example: "Internal server error."
+        401:
+          description: "Access denied"
+          schema:
+            type: "string"
+            example: "Access denied."
+      security:
+        - Bearer: []
+      x-security-scopes:
+        - "consultant"
+
+securityDefinitions:
+  Bearer:
+    type: "apiKey"
+    name: "x-auth-token"
+    in: "header"
+
+
+definitions:
+  Token:
+    type: "object"
+    properties:
+      token:
+        type: "string"
+    example:
+      token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOjI5LCJpYXQiOjE1NjE5OTg2NjB9.SWYMJXTTM8pe6NQw1QwS-d8Btt6Isuzzk5JtH775uV0"
+  Customer:
+    type: "object"
+    properties:
+      username:
+        type: "string"
+      email:
+        type: "string"
+      password:
+        type: "string"
+    example:
+      username: "xXEmilioXx"
+      email: "user@gmail.com"
+      password: "123456"
+  Owner:
+    type: "object"
+    properties:
+      username:
+        type: "string"
+      name:
+        type: "string"
+      surname:
+        type: "string"
+      email:
+        type: "string"
+      password:
+        type: "string"
+    example:
+      username: "xXEmilioXx"
+      name: "Emilio"
+      surname: "Imperiali"
+      email: "user@gmail.com"
+      password: "123456"
+  UsernameAndToken:
+    type: "object"
+    properties:
+      username:
+        type: "string"
+      token:
+        type: "string"
+    example:
+      username: "xXEmilioXx"
+      token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySUQiOjI5LCJpYXQiOjE1NjE5OTg2NjB9.SWYMJXTTM8pe6NQw1QwS-d8Btt6Isuzzk5JtH775uV0"
+  UserLogin:
+    type: "object"
+    properties:
+      username:
+        type: "string"
+      password:
+        type: "string"
+      isRestaurantOwner:
+        type: "boolean"
+    example:
+      username: "xXEmilioXx"
+      password: "123456"
+      isRestaurantOwner: true
+  Restaurant:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+      address:
+        type: "string"
+      city:
+        type: "string"
+      country:
+        type: "string"
+      latitude:
+        type: "number"
+      longitude:
+        type: "number"
+      imageID:
+        type: "integer"
+      openingHours:
+        type: "array"
+        items:
+          $ref: "#/definitions/OpenInterval"
+    example:
+      name: "Emilio's Pizza"
+      address: "Piazzale Susa"
+      city: "Milan"
+      country: "Italy"
+      latitude: 45.4688346
+      longitude: 9.2234114
+      imageID: 5
+      openingHours: [{"day": "Monday", "openTime": "12.00", "closeTime": "15.00"}, {"day": "Saturday", "openTime": "19.00", "closeTime": "23.59"}]
+  RestaurantID:
+    type: "object"
+    properties:
+      restaurantID:
+        type: "integer"
+    example:
+      restaurantID: 54
+  Menu:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+      description:
+        type: "string"
+      tags:
+        type: "array"
+        items:
+          $ref: "#/definitions/Tag"
+      menuItems:
+        type: "array"
+        items:
+          $ref: "#/definitions/MenuItem"
+    example:
+      name: "Emilio's menu of the day"
+      description: "Our special menu of today"
+      tags: [{"name": "Italian", "color": "#FFBC8C"}, {"name": "Mediterranean", "color": "#FFBC8C"}]
+      menuItems: [{"name": "Spaghetti alla carbonara", "description": "Fantastic italian dish made of spaghetti, pig cheek, eggs, black pepper, pecorino romano", "type": "dish", "priceEuros": 10, "tags": [{"name": "Mediterranean", "color": "#FFBC8C"}, {"name": "Pasta", "color": "#99C99B"}, {"name": "Italian", "color": "#FFBC8C"}], "imageLink": "www.cloudStorage.com/Carbonara"}, {"name": "Polpette al sugo", "description": "Meatballs with tomato sauce", "type": "dish", "priceEuros": 7, "tags": [{"name": "Mediterranean", "color": "#FFBC8C"}, {"name": "Meat", "color": "#FFBC8C"}, {"name": "Italian", "color": "#FFBC8C"}], "imageLink": "www.cloudStorage.com/Meatballs"}]
+  MenuItem:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+      description:
+        type: "string"
+      type:
+        type: "string"
+      priceEuros:
+        type: "number"
+      tags:
+        type: "array"
+        items:
+          $ref: "#/definitions/Tag"
+      imageLink:
+        type: "string"
+    example:
+      name: "Spaghetti alla carbonara"
+      description: "Fantastic italian dish made of spaghetti, pig cheek, eggs, black pepper, pecorino romano"
+      type: "dish"
+      priceEuros: 10
+      tags: [{"name": "Mediterranean", "color": "#FFBC8C"}, {"name": "Pasta", "color": "#99C99B"}, {"name": "Italian", "color": "#FFBC8C"}]
+      imageLink: "www.cloudStorage.com/Carbonara"
+  MenuItemWithID:
+    type: "object"
+    properties:
+      menuItemID:
+        type: "integer"
+      name:
+        type: "string"
+      description:
+        type: "string"
+      type:
+        type: "string"
+      priceEuros:
+        type: "number"
+      tags:
+        type: "array"
+        items:
+          $ref: "#/definitions/Tag"
+      imageLink:
+        type: "string"
+      rating:
+        type: "number"
+    example:
+      menuItemID: 8
+      name: "Spaghetti alla carbonara"
+      description: "Fantastic italian dish made of spaghetti, pig cheek, eggs, black pepper, pecorino romano"
+      type: "dish"
+      priceEuros: 10
+      tags: [{"name": "Mediterranean", "color": "#FFBC8C"}, {"name": "Pasta", "color": "#99C99B"}, {"name": "Italian", "color": "#FFBC8C"}]
+      imageLink: "www.cloudStorage.com/Carbonara"
+      rating: 4
+  MenuItemWithoutColors:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+      description:
+        type: "string"
+      type:
+        type: "string"
+      priceEuros:
+        type: "number"
+      tags:
+        type: "array"
+        items:
+          type: "string"
+      imageID:
+        type: "integer"
+    example:
+      name: "Spaghetti alla carbonara"
+      description: "Fantastic italian dish made of spaghetti, pig cheek, eggs, black pepper, pecorino romano"
+      type: "dish"
+      priceEuros: 10
+      tags: ["Mediterranean", "Pasta", "Italian"]
+      imageID: 5
+  MenuID:
+    type: "object"
+    properties:
+      menuID:
+        type: "integer"
+    example:
+      menuID: 2
+  MenuWithRatingAndID:
+    type: "object"
+    properties:
+      menuID:
+        type: "integer"
+      name:
+        type: "string"
+      description:
+        type: "string"
+      averagePrice:
+        type: "number"
+      tags:
+        type: "array"
+        items:
+          $ref: "#/definitions/Tag"
+      rating:
+        type: "number"
+    example:
+      menuID: 2
+      name: "Emilio's menu of the day"
+      description: "Our special menu of today"
+      averagePrice: 9.5
+      tags: [{"name": "Italian", "color": "#FFBC8C"}, {"name": "Mediterranean", "color": "#FFBC8C"}]
+      rating: 5
+  MenuAndRestaurant:
+    type: "object"
+    properties:
+      restaurantData:
+        type: "object"
+        properties:
+          restaurantName:
+            type: "string"
+          restaurantImageLink:
+            type: "string"
+          distance:
+            type: "number"
+      menu:
+        $ref: "#/definitions/MenuWithRatingAndID"
+    example:
+      restaurantData: {"restaurantName": "Emilio's Pizza", "restaurantImageLink": "www.cloudStorage.com/Restaurant", "distance": 10}
+      menu: {"menuID": 2, "name": "Emilio's menu of the day", "description": "Our special menu of today", "averagePrice": 9.5,"tags": [{"name": "Italian", "color": "#FFBC8C"}, {"name": "Mediterranean", "color": "#FFBC8C"}], "rating": 5}
+  ImageID:
+    type: "object"
+    properties:
+      imageID:
+        type: "integer"
+    example:
+      imageID: 5
+  OpenInterval:
+    type: "object"
+    properties:
+      day:
+        type: "string"
+      openTime:
+        type: "string"
+      closeTime:
+        type: "string"
+    example:
+      day: "Monday"
+      openTime: "12.00"
+      closeTime: "15.00"
+  RestaurantReceived:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+      address:
+        type: "string"
+      city:
+        type: "string"
+      country:
+        type: "string"
+      imageLink:
+        type: "string"
+      openingHours:
+        type: "array"
+        items:
+          $ref: "#/definitions/OpenInterval"
+    example:
+      name: "Emilio's Pizza"
+      address: "Piazzale Susa"
+      city: "Milan"
+      country: "Italy"
+      imageLink: "www.cloudStorage.com/Restaurant"
+      openingHours: [{"day": "Monday", "openTime": "12.00", "closeTime": "15.00"}, {"day": "Saturday", "openTime": "19.00", "closeTime": "23.59"}]
+  MenuCompleteWithID:
+    type: "object"
+    properties:
+      menuID:
+        type: "integer"
+      name:
+        type: "string"
+      description:
+        type: "string"
+      tags:
+        type: "array"
+        items:
+          $ref: "#/definitions/Tag"
+      totalScore:
+        type: "integer"
+      serviceScore:
+        type: "integer"
+      qualityOverPriceScore:
+        type: "integer"
+      menuItems:
+        type: "array"
+        items:
+          $ref: "#/definitions/MenuItemWithIDAndReviews"
+    example:
+      menuID: 2
+      name: "Emilio's menu of the day"
+      description: "Our special menu of today"
+      tags: [{"name": "Italian", "color": "#FFBC8C"}, {"name": "Mediterranean", "color": "#FFBC8C"}]
+      totalScore: 4
+      serviceScore: 3.5
+      qualityOverPriceScore: 5
+      menuItems: [{"menuItemID": 20, "name": "Spaghetti alla carbonara", "description": "Fantastic italian dish made of spaghetti, pig cheek, eggs, black pepper, pecorino romano", "type": "dish", "priceEuros": 10, "tags": [{"name": "Mediterranean", "color": "#FFBC8C"}, {"name": "Pasta", "color": "#99C99B"}, {"name": "Italian", "color": "#FFBC8C"}], "imageLink": "www.cloudStorage.com/Carbonara", "rating": 4.5, "menuItemReviews": {"rating": 4.5, "reviews": [{"username": "Janine", "rating": 5, "content": "Best pizza I have tasted in ages!"},{"username": "Emilio", "rating": 4, "content": "Nice pizza!"}]}}, {"menuItemID": 21, "name": "Polpette al sugo", "description": "Meatballs with tomato sauce", "type": "dish", "priceEuros": 7, "tags": [{"name": "Mediterranean", "color": "#FFBC8C"}, {"name": "Meat", "color": "#FFBC8C"}, {"name": "Italian", "color": "#FFBC8C"}], "imageLink": "www.cloudStorage.com/Meatballs", "rating": 4, "menuItemReviews": {"rating": 4.5, "reviews": [{"username": "Janine", "rating": 5, "content": "Best pizza I have tasted in ages!"},{"username": "Emilio", "rating": 4, "content": "Nice pizza!"}]}}]
+  MenuWithoutItems:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+      description:
+        type: "string"
+      tags:
+        type: "array"
+        items:
+          type: "string"
+    example:
+      name: "Emilio's menu of the day"
+      description: "Our special menu of today"
+      tags: ["Italian", "Mediterranean"]
+  MenuRetrievedToCustomer:
+    type: "object"
+    properties:
+      restaurant:
+        type: "object"
+        properties:
+          restaurantName:
+            type: "string"
+          address:
+            type: "string"
+          city:
+            type: "string"
+          country:
+            type: "string"
+          latitude:
+            type: "number"
+          longitude:
+            type: "number"
+          openingHours:
+            type: "array"
+            items:
+              type: "object"
+              properties:
+                day:
+                  type: "string"
+                openTime:
+                  type: "string"
+                closeTime:
+                  type: "string"
+      menuName:
+        type: "string"
+      description:
+        type: "string"
+      tags:
+        type: "array"
+        items:
+          $ref: "#/definitions/Tag"
+      menuRating:
+        type: "number"
+      menuItems:
+        type: "array"
+        items:
+          $ref: "#/definitions/MenuItemWithID"
+    example:
+      restaurant: {"restaurantName": "Emilio's Pizza", "address": "Piazzale Susa", "city": "Milan", "country": "Italy", "latitude": 45.4688346, "longitude": 9.2234114, "openingHours": [{"day": "Wednesday", "openTime": "12.30", "closeTime": "14.30"}, {"day": "Saturday", "openTime": "12.00", "closeTime": "15.00"}]}
+      menuName: "Emilio's menu of the day"
+      description: "Our special menu of today"
+      tags: [{"name": "Italian", "color": "#FFBC8C"}, {"name": "Mediterranean", "color": "#FFBC8C"}]
+      menuRating: 5
+      menuItems: [{"menuItemID": 20, "name": "Spaghetti alla carbonara", "description": "Fantastic italian dish made of spaghetti, pig cheek, eggs, black pepper, pecorino romano", "type": "dish", "priceEuros": 10, "tags": [{"name": "Mediterranean", "color": "#FFBC8C"}, {"name": "Pasta", "color": "#99C99B"}, {"name": "Italian", "color": "#FFBC8C"},{ "name": "Dinner", "color": "#99C99B"}], "imageLink": "www.cloudStorage.com/Carbonara", "rating": 4.5}, {"menuItemID": 21, "name": "Polpette al sugo", "description": "Meatballs with tomato sauce", "type": "dish", "priceEuros": 7, "tags": [{"name": "Mediterranean", "color": "#FFBC8C"}, {"name": "Meat", "color": "#FFBC8C"}, {"name": "Italian", "color": "#FFBC8C"}], "imageLink": "www.cloudStorage.com/Meatballs", "rating": 4}]
+  Tag:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+      color:
+        type: "string"
+    example:
+      name: "Mediterranean"
+      color: "#FFBC8C"
+  RestaurantIDAndName:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+      restaurantID:
+        type: "integer"
+    example:
+      name: "Emilio's Pizza"
+      restaurantID: 520
+  MenuIDAndName:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+      menuID:
+        type: "integer"
+    example:
+      name: "Emilio's menu of the day"
+      menuID: 420
+  MenuItemIDAndName:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+      menuItemID:
+        type: "integer"
+    example:
+      name: "Pasta alla carbonara"
+      menuItemID: 802
+  MenuReview:
+    type: "object"
+    properties:
+      serviceRating:
+        type: "number"
+      qualityOverPriceRating:
+        type: "number"
+      date:
+        type: "string"
+      receiptImageID:
+        type: "integer"
+      menuItemsReviews:
+        type: "array"
+        items:
+          $ref: "#/definitions/MenuItemReview"
+    example:
+      serviceRating: 4.6
+      qualityOverPriceRating: 4.7
+      date: "2019-12-01"
+      receiptImageID: 67
+      menuItemsReviews: [{"menuItemID": 34, "rating": 4.1, "content": "That was delicious!"},{"menuItemID": 58, "rating": 0.5, "content": "It was an insult, I will never eat that trash again in my whole life"}]
+  MenuItemReview:
+    type: "object"
+    properties:
+      menuItemID:
+        type: "integer"
+      rating:
+        type: "number"
+      content:
+        type: "string"
+  MenuItemReviewWithItemName:
+    type: "object"
+    properties:
+      menuItemID:
+        type: "integer"
+      menuItemName:
+        type: "string"
+      rating:
+        type: "number"
+      content:
+        type: "string"
+  MenuReviewWithIDAndStatus:
+    type: "object"
+    properties:
+      menuReviewID:
+        type: "integer"
+      menuID:
+        type: "integer"
+      menuName:
+        type: "string"
+      restaurantName:
+        type: "string"
+      serviceRating:
+        type: "number"
+      qualityOverPriceRating:
+        type: "number"
+      date:
+        type: "string"
+      receiptImageID:
+        type: "integer"
+      status:
+        type: "string"
+      menuItemsReviews:
+        type: "array"
+        items:
+          $ref: "#/definitions/MenuItemReviewWithItemName"
+    example:
+      menuReviewID: 34342
+      menuID: 343
+      menuName: "Fish menu"
+      restaurantName: "Emilio's Restaurant"
+      serviceRating: 4.6
+      qualityOverPriceRating: 4.7
+      date: "2019-12-01"
+      receiptImageID: 67
+      status: "accepted"
+      menuItemsReviews: [{"menuItemID": 34, "menuItemName": "Pizza margherita", "rating": 4.1, "content": "That was delicious!"},{"menuItemID": 58, "menuItemName": "Pasta alla carbonara with cream", "rating": 0.5, "content": "It was an insult, I will never eat that trash again in my whole life"}]
+  PendingReview:
+    type: "object"
+    properties:
+      reviewID:
+        type: "integer"
+      menuName:
+        type: "string"
+      menuItemNames:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            menuItemName:
+              type: "string"
+    example:
+      reviewID: 988
+      menuName: "Sea menu"
+      menuItemNames: [{"menuItemName": "Spaghetti allo scoglio"}, {"menuItemName": "Sashimi"}]
+  PendingReviewWithPhoto:
+    type: "object"
+    properties:
+      reviewID:
+        type: "integer"
+      receiptPhotoLink:
+        type: "string"
+      menuName:
+        type: "string"
+      menuItemNames:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            menuItemName:
+              type: "string"
+    example:
+      reviewID: 988
+      receiptPhotoLink: "www.cloud.com/receiptPhoto"
+      menuName: "Sea menu"
+      menuItemNames: [{"menuItemName": "Spaghetti allo scoglio"}, {"menuItemName": "Sashimi"}]
+  ApprovalStatus:
+    type: "object"
+    properties:
+      isApproved:
+        type: "boolean"
+    example:
+      isApproved: true
+  MenuItemReviewWithUsername:
+    type: "object"
+    properties:
+      username:
+        type: "string"
+      rating:
+        type: "number"
+      content:
+        type: "string"
+  ReviewsOfMenuItem:
+    type: "object"
+    properties:
+      rating:
+        type: "integer"
+      reviews:
+        type: "array"
+        items:
+          $ref: "#/definitions/MenuItemReviewWithUsername"
+    example:
+      rating: 4.5
+      reviews: [{"username": "Janine", "rating": 5, "content": "Best pizza I have tasted in ages!"},{"username": "Emilio", "rating": 4, "content": "Nice pizza!"}]
+  ReviewsOfMenuItemWithoutOverall:
+    type: "object"
+    properties:
+      username:
+        type: "string"
+      rating:
+        type: "number"
+      content:
+        type: "string"
+      date:
+        type: "string"
+    example:
+      username: "Janine"
+      rating: 5
+      content: "Best pizza I have tasted in ages!"
+      date: "2019-12-01"
+  MenuItemWithIDAndReviews:
+    type: "object"
+    properties:
+      menuItemID:
+        type: "integer"
+      name:
+        type: "string"
+      description:
+        type: "string"
+      type:
+        type: "string"
+      priceEuros:
+        type: "number"
+      tags:
+        type: "array"
+        items:
+          $ref: "#/definitions/Tag"
+      imageLink:
+        type: "string"
+      rating:
+        type: "number"
+      menuItemReviews:
+        $ref: "#/definitions/ReviewsOfMenuItem"
+  CustomerEditData:
+    type: "object"
+    properties:
+      email:
+        type: "string"
+      gender:
+        type: "string"
+      ageRange:
+        type: "string"
+      nationality:
+        type: "string"
+    example:
+      email: "emilioimperiali@mail.it"
+      gender: "Male"
+      ageRange: "24-34"
+      nationality: "Italy"
+  OwnerEditData:
+    type: "object"
+    properties:
+      email:
+        type: "string"
+      name:
+        type: "string"
+      surname:
+        type: "string"
+    example:
+      email: "john.doe@gmail.com"
+      name: "John"
+      surname: "Doe"
+  CustomerData:
+    type: "object"
+    properties:
+      username:
+        type: "string"
+      email:
+        type: "string"
+      gender:
+        type: "string"
+      ageRange:
+        type: "string"
+      nationality:
+        type: "string"
+    example:
+      username: "emilio_imperiali"
+      email: "emilioimperiali@mail.it"
+      gender: "Male"
+      ageRange: "24-34"
+      nationality: "Italy"
+  OwnerData:
+    type: "object"
+    properties:
+      email:
+        type: "string"
+      username:
+        type: "string"
+      name:
+        type: "string"
+      surname:
+        type: "string"
+    example:
+      email: "john.doe@gmail.com"
+      username: "johndoe"
+      name: "John"
+      surname: "Doe"
+  PasswordChange:
+    type: "object"
+    properties:
+      oldPassword:
+        type: "string"
+      newPassword:
+        type: "string"
+    example:
+      oldPassword: "123456"
+      newPassword: "654321"
+  Consultant:
+    type: "object"
+    properties:
+      username:
+        type: "string"
+      name:
+        type: "string"
+      surname:
+        type: "string"
+      email:
+        type: "string"
+      companySecret:
+        type: "string"
+      password:
+        type: "string"
+    example:
+      username: "xXEmilioXx"
+      name: "Emilio"
+      surname: "Imperiali"
+      email: "consultant@mail.com"
+      companySecret: "OurCompanyRocks"
+      password: "123456"
+  ConsultantLogin:
+    type: "object"
+    properties:
+      username:
+        type: "string"
+      password:
+        type: "string"
+    example:
+      username: "xXEmilioXx"
+      password: "123456"
+  Statistics:
+    type: "object"
+    properties:
+      totalRegisteredCustomers:
+        type: "integer"
+      customersPerNationality:
+        type: "array"
+        items:
+          $ref: "#/definitions/CustomersPerNationality"
+      customersPerGender:
+        type: "array"
+        items:
+          $ref: "#/definitions/CustomersPerGender"
+      customersPerAgeRange:
+        type: "array"
+        items:
+          $ref: "#/definitions/CustomersPerAgeRange"
+      numberOfSearchesPerWord:
+        type: "array"
+        items:
+          $ref: "#/definitions/NumberOfSearchesPerWord"
+      menusWithRatings:
+        type: "array"
+        items:
+          $ref: "#/definitions/MenuForStatistics"
+    example:
+      totalRegisteredCustomers: 120
+      customersPerNationality: [{"nationality": "Italy", "numberOfCustomers": 10}, {"nationality": "French", "numberOfCustomers": 8}, {"nationality": "Croatian", "numberOfCustomers": 11}]
+      customersPerGender: [{"gender": "Male", "numberOfCustomers": 10}, {"gender": "Female", "numberOfCustomers": 8}, {"gender": "Other", "numberOfCustomers": 3}]
+      customersPerAgeRange: [{"ageRange": "18-25", "numberOfCustomers": 34}, {"ageRange": "25-35", "numberOfCustomers": 28}, {"ageRange": "35-50", "numberOfCustomers": 15}]
+      numberOfSearchesPerWord: [{"word": "Pasta", "numberOfSearches": 51}, {"word": "Pizza", "numberOfSearches": 83}, {"word": "Spaghetti", "numberOfSearches": 31}]
+      menusWithRatings: [{"menuName": "New menu", "rating": 3.4}, {"menuName": "Dinner menu", "rating": 4.2}, {"menuName": "Menu of the day", "rating": 5}, {"menuName": "Launch menu", "rating": 2}, {"menuName": "Exotic menu", "rating": 3.9}]
+  CustomersPerNationality:
+    type: "object"
+    properties:
+      nationality:
+        type: "string"
+      numberOfCustomers:
+        type: "integer"
+  CustomersPerGender:
+    type: "object"
+    properties:
+      gender:
+        type: "string"
+      numberOfCustomers:
+        type: "integer"
+  CustomersPerAgeRange:
+    type: "object"
+    properties:
+      ageRange:
+        type: "string"
+      numberOfCustomers:
+        type: "integer"
+  NumberOfSearchesPerWord:
+    type: "object"
+    properties:
+      word:
+        type: "string"
+      numberOfSearches:
+        type: "integer"
+  MenuForStatistics:
+    type: "object"
+    properties:
+      menuName:
+        type: "string"
+      rating:
+        type: "number"
+  StatisticsOfNationality:
+    type: "object"
+    properties:
+      totalRegisteredCustomers:
+        type: "integer"
+      customersPerGender:
+        type: "array"
+        items:
+          $ref: "#/definitions/CustomersPerGender"
+      customersPerAgeRange:
+        type: "array"
+        items:
+          $ref: "#/definitions/CustomersPerAgeRange"
+      numberOfSearchesPerWord:
+        type: "array"
+        items:
+          $ref: "#/definitions/NumberOfSearchesPerWord"
+    example:
+      totalRegisteredCustomers: 120
+      customersPerGender: [{"gender": "Male", "numberOfCustomers": 10}, {"gender": "Female", "numberOfCustomers": 8}, {"gender": "Other", "numberOfCustomers": 3}]
+      customersPerAgeRange: [{"ageRange": "18-25", "numberOfCustomers": 34}, {"ageRange": "25-35", "numberOfCustomers": 28}, {"ageRange": "35-50", "numberOfCustomers": 15}]
+      numberOfSearchesPerWord: [{"word": "Pasta", "numberOfSearches": 51}, {"word": "Pizza", "numberOfSearches": 83}, {"word": "Spaghetti", "numberOfSearches": 31}]
