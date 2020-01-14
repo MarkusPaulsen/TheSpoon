@@ -1159,9 +1159,13 @@ header {
       border-radius: .8333333333333334rem;
       padding: .5rem;
       text-align: left;
+      margin-top: .5rem;
     }
     &.open {
       display: flex;
+      padding-top: .5rem;
+      margin-top: .5rem;
+      border-top: 1px solid var(--light-grey);
     }
 
     .fa-star {
@@ -1171,11 +1175,21 @@ header {
     h6 {
       font-weight: 500;
       margin-bottom: .4rem;
-      font-size: .65rem;
+      font-size: .75rem;
     }
     p {
       margin-bottom: .4rem;
-      font-size: .65rem;
+      font-size: .75rem;
+    }
+  }
+
+  .total-rating {
+    font-weight: 500;
+    text-align: left;
+    margin-top: .5rem;
+    margin-bottom: 0;
+    .fa-star {
+      color: var(--pink);
     }
   }
 
@@ -1183,13 +1197,13 @@ header {
     color: var(--grey);
     text-align: right;
     position: relative;
-    &:hover {
-      cursor: pointer;
-    }
     span{
       padding-right: .25rem;
-      font-size: 12px;
+      font-size: .65rem;
       font-weight: 500;
+      &:hover {
+        cursor: pointer;
+      }
       i {
         padding-left: .25rem;
       }

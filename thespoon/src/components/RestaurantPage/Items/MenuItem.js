@@ -73,14 +73,13 @@ class MenuItem extends Component {
                 {this.props.menuItemReviews &&
                 <div
                     className="arrow-wrapper"
-                    onClick={this.handleOpen}
-                > {this.state.open ? <span>Hide reviews<i className="fa fa-chevron-up"></i></span> : <span>Show reviews<i
+                > {this.state.open ? <span onClick={this.handleOpen}>Hide reviews<i className="fa fa-chevron-up"></i></span> : <span onClick={this.handleOpen}>Show reviews<i
                     className="fa fa-chevron-down"></i></span>}
                 </div>
                 }
 
                 <div className={"ratings" + (this.state.open ? " open" : " closed")}>
-                    <p>{this.props.menuItemReviews.rating}</p>
+                    {this.props.menuItemReviews.rating > 0 && <p className="total-rating">Total score: <i className="fa fa-star"></i> {this.props.menuItemReviews.rating}</p>}
                     {this.props.menuItemReviews.reviews.map((review) =>
                         <div className="rating">
                             <h6>{review.username}:</h6>
