@@ -28,18 +28,9 @@ class ConsultantPage extends Component {
 
         this.update = this.update.bind(this);
 
-        /*this.state = {
+        this.state = {
             token: window.localStorage.getItem("token"),
             user: window.localStorage.getItem("user"),
-            //<editor-fold desc="State Restaurant">
-            statistics: null,
-            statisticsMessage: ""
-            //</editor-fold>
-        };*/
-
-        this.state = {
-            token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InhYRW1pbGlvWHgiLCJpYXQiOjE1Nzg5NDA0NjIsImV4cCI6MTU3OTExMzI2Mn0.irAKBqiTValqAbvRaO2mlENcdcVV-t3jl_cHDC-FCSI",
-            user: "Consultant",
             //<editor-fold desc="State Restaurant">
             statistics: null,
             statisticsMessage: "",
@@ -56,8 +47,8 @@ class ConsultantPage extends Component {
         //</editor-fold>
         this.props._setBackgroundPage(this);
         this.setState({
-            token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InhYRW1pbGlvWHgiLCJpYXQiOjE1Nzg5NDA0NjIsImV4cCI6MTU3OTExMzI2Mn0.irAKBqiTValqAbvRaO2mlENcdcVV-t3jl_cHDC-FCSI",
-            user: "Consultant",
+            token: window.localStorage.getItem("token"),
+            user: window.localStorage.getItem("user"),
             //<editor-fold desc="Mount Restaurant Data Observable">
             $statistics: ajax({
                 url: paths["restApi"]["statistics"],

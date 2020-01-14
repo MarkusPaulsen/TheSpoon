@@ -243,7 +243,6 @@ class ConsultantRegisterModal extends Component {
 
     //<editor-fold desc="Render">
     render() {
-        console.log(this.state)
         let validation = this.submitted ? this.validator.validate(this.state) : this.state.validation;
         if (this.props._backgroundPage == null) {
             // noinspection JSLint
