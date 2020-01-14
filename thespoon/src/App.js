@@ -9,6 +9,7 @@ import FailPage from "./components/FailPage/FailPage";
 import ConsultantPage from "./components/ConsultantPage/ConsultantPage";
 import Nationality from "./components/ConsultantPage/Nationality";
 
+
 function App() {
     return (
         <BrowserRouter>
@@ -18,9 +19,6 @@ function App() {
                 <Route exact path="/YourRestaurant" component={YourRestaurantPage} />
                 <Route exact path="/Profile" component={Profile} />
                 <Route exact path="/CustomerMain" component={CustomerMainPage} />
-                <Route exact path="/Consultant" component={ConsultantHome} />
-                <Route exact path="/ConsultantDashboard" component={ConsultantDashboard} />
-
                 <Route exact path="/Consultant" component={ConsultantPage} />
                 <Route path="/Consultant/:nationalityName" component={Nationality}></Route>
                 <Route component={FailPage}/>

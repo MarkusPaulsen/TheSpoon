@@ -11,6 +11,7 @@ import {Modal} from "react-bootstrap";
 //<editor-fold desc="Icons">
 import {IconExit} from "../../Icons";
 import FormValidator from "../../../validation/FormValidator";
+import {Redirect} from "react-router";
 //</editor-fold>
 
 class LogOutModal extends Component {

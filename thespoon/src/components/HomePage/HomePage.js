@@ -54,7 +54,7 @@ class HomePage extends Component {
 
     //<editor-fold desc="Render">
     render() {
-        /*if (this.state.token == null
+        if (this.state.token == null
             || this.state.token === "null"
             || this.state.user == null
             || this.state.user === "null") {
@@ -75,7 +75,11 @@ class HomePage extends Component {
                                                 Get started
                                             </FilterLink>
                                         </button>
-                                        <Link to="/Consultant">Are you a consultant?</Link>
+                                        <p><FilterLink
+                                            modal={modals.SHOW_CHOOSE_CONSULTANT}
+                                        >
+                                           Are you a consultant?
+                                        </FilterLink></p>
                                     </div>
                                 </div>
                             </div>
@@ -96,17 +100,14 @@ class HomePage extends Component {
                     );
                 case roles["CONSULTANT"]:
                     return (
-                        <Redirect to={{pathname: "/ConsultantDashboard"}}/>
+                        <Redirect to={{pathname: "/Consultant"}}/>
                     );
                 default:
                     return (
                         <Redirect to={{pathname: "/ThisShouldNotHaveHappened"}}/>
                     );
             }
-        }*/
-        return (
-            <Redirect to={{pathname: "/Consultant"}}/>
-        )
+        }
     }
 
     //</editor-fold>

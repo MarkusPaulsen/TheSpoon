@@ -12,7 +12,6 @@ export const paths = {
         registrationConsultant:         "api/consultant/register",
         login:                          "/api/user/login",
         loginConsultant:                "api/consultant/login",
-        image:                          "/api/image"
         image:                          "/api/image",
         statistics:                     "/api/consultant/statistics"
     },

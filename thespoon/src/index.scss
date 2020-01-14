@@ -310,6 +310,12 @@ header {
 
     button {
       font-size: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    p:hover {
+      text-decoration: underline;
+      cursor: pointer;
     }
   }
 
