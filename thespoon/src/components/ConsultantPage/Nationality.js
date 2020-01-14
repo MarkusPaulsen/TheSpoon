@@ -1,7 +1,6 @@
 //<editor-fold desc="React">
 import React, {Component} from "react";
 import {Redirect} from "react-router-dom";
-import { Link } from 'react-router-dom';
 //</editor-fold>
 //<editor-fold desc="Redux">
 import {connect} from "react-redux";
@@ -14,6 +13,7 @@ import ConsultantLayout from "../Layout/ConsultantLayout";
 import {ajax} from "rxjs/ajax";
 import {paths} from "../../constants/Paths";
 import {timeouts} from "../../constants/Timeouts";
+import Pie from "./Pie";
 
 //</editor-fold>
 
@@ -179,56 +179,51 @@ class Nationality extends Component {
                                         }
                                         <div className="row">
                                             {this.state.statistics.customersPerGender &&
-                                            <div className="col-lg-4">
+                                            <div className="col-lg-6">
                                                 <h5>Customers per Gender</h5>
-                                                <table className="table table-striped">
-                                                    <thead>
-                                                    <tr>
-                                                        <th scope="col">Gender</th>
-                                                        <th scope="col">Number of Customers</th>
-                                                    </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                    {this.state.statistics.customersPerGender && (
-                                                        this.state.statistics.customersPerGender.map((stat) =>
-                                                            stat.gender &&
-                                                            <tr>
-                                                                <th>{stat.gender}</th>
-                                                                <th>{stat.numberOfCustomers}</th>
-                                                            </tr>
-                                                        ))
-                                                    }
-                                                    </tbody>
-                                                </table>
+                                                <Pie
+                                                    theme="light2"
+                                                    dataPoints={this.state.statistics.customersPerGender.map((stat,i) => {
+                                                        {
+                                                            if (stat.numberOfCustomers) {
+                                                                return {
+                                                                    x: i,
+                                                                    y: parseInt(stat.numberOfCustomers),
+                                                                    indexLabel: stat.gender
+                                                                }
+                                                            }
+
+                                                        }
+                                                    })}
+                                                />
                                             </div>
                                             }
                                             {this.state.statistics.customersPerAgeRange &&
-                                            <div className="col-lg-4">
+                                            <div className="col-lg-6">
                                                 <h5>Customers per Age Range</h5>
-                                                <table className="table table-striped">
-                                                    <thead>
-                                                    <tr>
-                                                        <th scope="col">Age Range</th>
-                                                        <th scope="col">Number of Customers</th>
-                                                    </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                    {this.state.statistics.customersPerAgeRange.map((stat) =>
-                                                        stat.ageRange &&
-                                                        <tr>
-                                                            <th>{stat.ageRange}</th>
-                                                            <th>{stat.numberOfCustomers}</th>
-                                                        </tr>
-                                                    )
-                                                    }
-                                                    </tbody>
-                                                </table>
+                                                <Pie
+                                                    theme="light2"
+                                                    dataPoints={this.state.statistics.customersPerAgeRange.map((stat,i) => {
+                                                        {
+                                                            if (stat.numberOfCustomers) {
+                                                                return {
+                                                                    x: i,
+                                                                    y: parseInt(stat.numberOfCustomers),
+                                                                    indexLabel: stat.ageRange
+                                                                }
+                                                            }
+
+                                                        }
+                                                    })}
+                                                />
                                             </div>
                                             }
+                                        </div>
+                                        <div className="row">
                                             {this.state.statistics.numberOfSearchesPerWord &&
-                                            <div className="col-lg-4">
+                                            <div className="col-lg-4 offset-lg-4">
                                                 <h5>Number of Searches per Word</h5>
-                                                <table className="table table-striped">
+                                                <table className="table table-bordered">
                                                     <thead>
                                                     <tr>
                                                         <th scope="col">Word</th>

@@ -182,7 +182,7 @@ class ConsultantPage extends Component {
                                                 <div className="col-lg-6">
                                                     <h5>Customers per Gender</h5>
                                                     <Pie
-                                                        theme="light1"
+                                                        theme="light2"
                                                         dataPoints={this.state.statistics.customersPerGender.map((stat,i) => {
                                                             {
                                                                 if (stat.numberOfCustomers) {
@@ -223,7 +223,7 @@ class ConsultantPage extends Component {
                                                 {this.state.statistics.customersPerNationality &&
                                                 <div className="col-lg-4">
                                                     <h5>Customers per Nationality</h5>
-                                                    <table className="table table-striped">
+                                                    <table className="table table-bordered">
                                                         <thead>
                                                         <tr>
                                                             <th scope="col">Nationality</th>
@@ -246,7 +246,7 @@ class ConsultantPage extends Component {
                                                 {this.state.statistics.numberOfSearchesPerWord &&
                                                 <div className="col-lg-4">
                                                     <h5>Number of Searches per Word</h5>
-                                                    <table className="table table-striped">
+                                                    <table className="table table-bordered">
                                                         <thead>
                                                         <tr>
                                                             <th scope="col">Word</th>
@@ -269,7 +269,7 @@ class ConsultantPage extends Component {
                                                 {this.state.statistics.menusWithRatings &&
                                                 <div className="col-lg-4">
                                                     <h5>Ratings of the Menu</h5>
-                                                    <table className="table table-striped">
+                                                    <table className="table table-bordered">
                                                         <thead>
                                                         <tr>
                                                             <th scope="col">Menu</th>

@@ -1326,9 +1326,23 @@ header {
 
 .consultant {
   .title {
-    margin-bottom: 2rem;
+    margin-bottom: 3rem;
   }
   .stat {
     font-weight: 500;
+    font-size: .75rem;
+  }
+
+  h5 {
+    margin: 3rem 0 .5rem;
+    font-size: .75rem;
+  }
+
+  table {
+    background: var(--white);
+    th, td {
+      font-size: .65rem;
+      padding: .5rem;
+    }
   }
 }
