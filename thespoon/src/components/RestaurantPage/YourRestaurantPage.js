@@ -251,7 +251,6 @@ class YourRestaurantPage extends Component {
                                                 </div>
                                                 <h3 className="title">Your menus</h3>
                                                 <div className="no-menus">
-                                                    <h4>Your menu has pending reviews...</h4>
                                                     <button className="wide">
                                                         <FilterLink modal={modals.SHOW_PENDING_REVIEW}>
                                                             See Reviews
