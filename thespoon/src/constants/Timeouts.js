@@ -1,2 +1,2 @@
 // noinspection JSLint
-export const timeouts = 15000;
+export const timeouts = 1000000;
