@@ -21,6 +21,10 @@ module.exports = () => {
         console.error('FATAL ERROR: companySecret is not defined');
         return false;
     }
+    if (!config.get('sequelize_Database')){
+        console.error('FATAL ERROR: sequelize_Database is not defined');
+        return false;
+    }
     else return true;
 };
 

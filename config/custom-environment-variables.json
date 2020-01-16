@@ -3,5 +3,6 @@
   "jwtExpirationTime": "theSpoon_jwtExpirationTime",
   "AWS_ACCESS_KEY_ID": "theSpoon_AWS_ACCESS_KEY_ID",
   "AWS_SECRET_ACCESS_KEY": "theSpoon_AWS_SECRET_ACCESS_KEY",
-  "companySecret": "theSpoon_companySecret"
+  "companySecret": "theSpoon_companySecret",
+  "sequelize_Database": "theSpoon_sequelize_Database"
 }
