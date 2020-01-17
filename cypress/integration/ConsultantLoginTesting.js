@@ -1,12 +1,12 @@
 describe('TestSiteConnection', function() {
     it('Check if site is running', function() {
-        cy.visit('localhost:5000')
+        cy.visit('localhost:80')
     })
 })
 
 describe('TestLoginFailedWhenWrongPassword', function() {
     it('Test if logging with wrong password fails', function() {
-        cy.visit('localhost:5000')
+        cy.visit('localhost:80')
 
         cy.contains('Are you a consultant').click()
         cy.get('.normal').first().click()
@@ -21,7 +21,7 @@ describe('TestLoginFailedWhenWrongPassword', function() {
 
 describe('LoginFailedWhenMissingPassword', function() {
     it('Test if logging with missing password fails', function() {
-        cy.visit('localhost:5000')
+        cy.visit('localhost:80')
 
         cy.contains('Are you a consultant').click()
         cy.get('.normal').first().click()
@@ -35,7 +35,7 @@ describe('LoginFailedWhenMissingPassword', function() {
 
 describe('TestLoginFailedWhenUsernameDoesNotExits', function() {
     it('Test if logging with non existing username fails', function() {
-        cy.visit('localhost:5000')
+        cy.visit('localhost:80')
 
         cy.contains('Are you a consultant').click()
         cy.get('.normal').first().click()
@@ -50,7 +50,7 @@ describe('TestLoginFailedWhenUsernameDoesNotExits', function() {
 
 describe('LoginFailedWhenMissingUsername', function() {
     it('Test if logging with missing username fails', function() {
-        cy.visit('localhost:5000')
+        cy.visit('localhost:80')
 
         cy.contains('Are you a consultant').click()
         cy.get('.normal').first().click()
@@ -64,7 +64,7 @@ describe('LoginFailedWhenMissingUsername', function() {
 
 describe('TestLogin', function() {
     it('Test if logging with password fails', function() {
-        cy.visit('localhost:5000')
+        cy.visit('localhost:80')
 
         cy.contains('Are you a consultant').click()
         cy.get('.normal').first().click()

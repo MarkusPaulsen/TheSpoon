@@ -1,6 +1,6 @@
 describe('TestLogin', function() {
     it('Test if logging with password fails', function() {
-        cy.visit('localhost:5000')
+        cy.visit('localhost:80')
 
         cy.contains('Log in').click()
 
@@ -9,7 +9,7 @@ describe('TestLogin', function() {
         cy.get('.normal').last().click()
 
         cy.wait(2000)
-        cy.visit('localhost:5000/Profile')
+        cy.visit('localhost:80/Profile')
 
     })
 
@@ -29,7 +29,7 @@ describe('TestChangingMail', function() {
         cy.get('.normal').last().click()
 
         cy.wait(2000)
-        cy.visit('localhost:5000/Profile')
+        cy.visit('localhost:80/Profile')
 
 
         cy.get('input').first().invoke('val').should('include', 'test.test@test.com')

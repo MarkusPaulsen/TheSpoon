@@ -1,6 +1,6 @@
 describe('TestLogin', function() {
     it('Test if logging with password fails', function() {
-        cy.visit('localhost:5000')
+        cy.visit('localhost:80')
 
         cy.contains('Log in').click()
 

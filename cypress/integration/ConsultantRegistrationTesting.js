@@ -1,12 +1,12 @@
 describe('TestSiteConnection', function() {
     it('Check if site is running', function() {
-        cy.visit('localhost:5000')
+        cy.visit('localhost:80')
     })
 })
 
 describe('TestRegisteringAlreadyExistingEmail', function() {
     it('Test if user will be registered if providing already existing email', function() {
-        cy.visit('localhost:5000')
+        cy.visit('localhost:80')
 
         cy.contains('Are you a consultant').click()
         cy.get('.normal').last().click()
@@ -29,7 +29,7 @@ describe('TestRegisteringAlreadyExistingEmail', function() {
 
 describe('TestRegisteringAlreadyExistingUsername', function() {
     it('Test if user will be registered if providing already existing username', function() {
-        cy.visit('localhost:5000')
+        cy.visit('localhost:80')
 
         cy.contains('Are you a consultant').click()
         cy.contains('Sign up').click()
@@ -52,7 +52,7 @@ describe('TestRegisteringAlreadyExistingUsername', function() {
 
 describe('TestProvidingDifferentPasswords', function() {
     it('Test if user will be registered if providing differing passwords', function() {
-        cy.visit('localhost:5000')
+        cy.visit('localhost:80')
 
         cy.contains('Are you a consultant').click()
         cy.contains('Sign up').click()
@@ -75,7 +75,7 @@ describe('TestProvidingDifferentPasswords', function() {
 
 describe('TestDataInWrongFormat', function() {
     it('Test if user will be registered if some data is in wrong format or missing', function() {
-        cy.visit('localhost:5000')
+        cy.visit('localhost:80')
 
         cy.contains('Are you consultant').click()
         cy.contains('Sign up').click()
