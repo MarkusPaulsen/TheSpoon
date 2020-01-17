@@ -193,11 +193,11 @@ class ConsultantRegisterModal extends Component {
                         method: "POST",
                         headers: {"Content-Type": "application/json"},
                         body: {
+                            email: thisTemp.state.email,
                             username: thisTemp.state.username,
                             name: thisTemp.state.name,
                             surname: thisTemp.state.surname,
-                            email: thisTemp.state.email,
-                            companySecret: thisTemp.state.email,
+                            companySecret: thisTemp.state.companySecret,
                             password: thisTemp.state.password
                         },
                         timeout: timeouts,

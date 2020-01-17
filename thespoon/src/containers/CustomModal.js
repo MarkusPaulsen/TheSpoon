@@ -16,6 +16,7 @@ import {modals} from "../constants/Modals";
 //<editor-fold desc="Modals">
 import LogInModal from "../components/HomePage/Modals/LogInModal";
 import ConsultantLoginModal from "../components/ConsultantPage/ConsultantLoginModal";
+import ChooseConsultantModal from "../components/ConsultantPage/Modals/ChooseConsultantModal";
 import LogOutModal from "../components/HomePage/Modals/LogOutModal";
 import RegisterRestaurantowner from "../components/HomePage/Modals/RegisterRestaurantOwnerModal";
 import ConsultantRegisterModal from "../components/ConsultantPage/ConsultantRegisterModal";
@@ -46,6 +47,10 @@ class CustomModal extends Component {
                 // noinspection JSLint
                 return (
                     <ConsultantLoginModal onHide={() => {this.props._handleClose()}} />
+                );
+            case modals.SHOW_CHOOSE_CONSULTANT:
+                return (
+                    <ChooseConsultantModal onHide={() => {this.props._handleClose()}} />
                 );
 
             case modals.SHOW_LOGOUT:

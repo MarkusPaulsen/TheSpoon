@@ -75,7 +75,11 @@ class HomePage extends Component {
                                                 Get started
                                             </FilterLink>
                                         </button>
-                                        <Link to="/Consultant">Are you a consultant?</Link>
+                                        <p><FilterLink
+                                            modal={modals.SHOW_CHOOSE_CONSULTANT}
+                                        >
+                                           Are you a consultant?
+                                        </FilterLink></p>
                                     </div>
                                 </div>
                             </div>
@@ -96,7 +100,7 @@ class HomePage extends Component {
                     );
                 case roles["CONSULTANT"]:
                     return (
-                        <Redirect to={{pathname: "/ConsultantDashboard"}}/>
+                        <Redirect to={{pathname: "/Consultant"}}/>
                     );
                 default:
                     return (
