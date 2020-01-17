@@ -8,7 +8,7 @@ const db = require('../../../sequelizeSettings.js');
 
 const Consultant = require('../../../models/consultant.js');
 
-describe('/api/user/login', () => {
+describe('/api/consultant/register', () => {
 
     //start the server before each test suite
     beforeEach( done => {
@@ -59,7 +59,7 @@ describe('/api/user/login', () => {
             done();
         });
 
-        //it should return a 400 because the company sevret is wrong
+        //it should return a 400 because the company secret is wrong
         it('should return a 400', async (done) => {
 
             const exec = async () => {
