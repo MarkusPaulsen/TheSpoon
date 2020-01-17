@@ -8,7 +8,7 @@ const db = require('../../../sequelizeSettings.js');
 
 const Owner = require('../../../models/owner.js');
 
-describe('/api/user/login', () => {
+describe('/api/user/owner/register', () => {
 
     //start the server before each test suite
     beforeEach( done => {
